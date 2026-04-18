@@ -33,12 +33,10 @@
   .screen { display: none; }
   .screen.active { display: block; }
   
-  /* Level Selection - Exact same as Time Master */
   .level-btn {
     display: block; width: 100%; padding: 18px 20px; margin: 10px 0;
     border: none; border-radius: 20px; font-size: 1.15em; font-weight: bold;
     cursor: pointer; font-family: inherit; color: white; text-align: left;
-    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
   }
   .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
   .easy { background: #10b981; }
@@ -46,17 +44,14 @@
   .hard { background: #047857; }
   .expert { background: #064e3b; }
 
-  /* Stats Bar */
   .stats { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 1em; }
   .stat { background: #d1fae5; padding: 10px 15px; border-radius: 15px; font-weight: bold; }
   .score { color: #059669; }
   .streak { color: #dc2626; }
 
-  /* Progress Bar */
   .progress-bar { background: #d1fae5; border-radius: 10px; height: 15px; overflow: hidden; margin-bottom: 20px; }
   .progress-fill { background: linear-gradient(90deg, #34d399, #059669); height: 100%; transition: width 0.3s; width: 0%; }
 
-  /* Problem Box */
   .problem-box {
     background: linear-gradient(135deg, #d1fae5, #a7f3d0);
     border-radius: 20px; padding: 25px 20px; margin: 20px 0;
@@ -69,43 +64,26 @@
     padding: 3px 10px; border-radius: 10px; margin: 0 2px; font-family: 'Courier New', monospace;
   }
 
-  /* Coin Grid */
   .wallet { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
   .coin-btn {
     cursor: pointer; background: white; border: 3px solid #10b981;
     border-radius: 15px; padding: 12px; font-weight: bold; font-family: inherit;
     display: flex; flex-direction: column; align-items: center; transition: 0.2s;
   }
-  .coin-btn:active { transform: scale(0.9); }
-  .coin-img {
-    width: 45px; height: 45px; border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; margin-bottom: 5px; color: white;
-  }
+  .coin-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); border-color: #ccc; }
+  .coin-btn:active:not(:disabled) { transform: scale(0.9); }
+  .coin-img { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; color: white; }
   .c500 { background: #d4af37; } .c100 { background: #a5b1c2; }
   .c50 { background: #778ca3; } .c10 { background: #cd7f32; }
 
-  /* Input Style for Expert */
-  .money-input {
-    font-size: 2em; padding: 10px; width: 150px; text-align: center;
-    border: 4px solid #10b981; border-radius: 15px; outline: none;
-    font-family: 'Courier New', monospace; font-weight: bold;
-  }
-
-  .submit-btn {
-    display: block; width: 100%; padding: 15px; background: #059669;
-    color: white; border: none; border-radius: 20px; font-size: 1.3em;
-    font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 15px;
-  }
+  .money-input { font-size: 2em; padding: 10px; width: 150px; text-align: center; border: 4px solid #10b981; border-radius: 15px; outline: none; font-family: 'Courier New', monospace; font-weight: bold; }
+  .submit-btn { display: block; width: 100%; padding: 15px; background: #059669; color: white; border: none; border-radius: 20px; font-size: 1.3em; font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 15px; }
   .feedback { font-size: 1.2em; margin-top: 15px; min-height: 40px; font-weight: bold; }
   .correct-text { color: #059669; }
   .wrong-text { color: #dc2626; }
   .home-link { display: block; margin-top: 20px; color: #636e72; text-decoration: none; font-size: 0.9em; }
   
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
-  }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
   .shake { animation: shake 0.4s; }
 </style>
 </head>
@@ -117,15 +95,15 @@
     <p style="color:#064e3b; margin-bottom:20px;">Count Yen like a Pro! 💴</p>
     <button class="level-btn easy" onclick="startGame('easy')">
       🌱 Beginner
-      <small>Prices: ¥100, ¥200... · Use ¥100 coins</small>
+      <small>Prices: ¥100, ¥200... · Use ¥100 coins ONLY</small>
     </button>
     <button class="level-btn medium" onclick="startGame('medium')">
       🌟 Intermediate
-      <small>Prices: ¥50, ¥150... · Use ¥50 & ¥500 coins</small>
+      <small>Prices: ¥50, ¥150... · Use ¥100 & ¥50 coins</small>
     </button>
     <button class="level-btn hard" onclick="startGame('hard')">
       🔥 Advanced
-      <small>Mixed prices (¥120, ¥480) · All coins</small>
+      <small>Mixed prices · All coins unlocked!</small>
     </button>
     <button class="level-btn expert" onclick="startGame('expert')">
       🏆 Champion
@@ -152,10 +130,10 @@
         Total Paid: ¥<span id="current-total">0</span>
       </div>
       <div class="wallet">
-        <button class="coin-btn" onclick="addMoney(500)"><div class="coin-img c500">500</div>¥500</button>
-        <button class="coin-btn" onclick="addMoney(100)"><div class="coin-img c100">100</div>¥100</button>
-        <button class="coin-btn" onclick="addMoney(50)"><div class="coin-img c50">50</div>¥50</button>
-        <button class="coin-btn" onclick="addMoney(10)"><div class="coin-img c10">10</div>¥10</button>
+        <button id="coin-500" class="coin-btn" onclick="addMoney(500)"><div class="coin-img c500">500</div>¥500</button>
+        <button id="coin-100" class="coin-btn" onclick="addMoney(100)"><div class="coin-img c100">100</div>¥100</button>
+        <button id="coin-50" class="coin-btn" onclick="addMoney(50)"><div class="coin-img c50">50</div>¥50</button>
+        <button id="coin-10" class="coin-btn" onclick="addMoney(10)"><div class="coin-img c10">10</div>¥10</button>
       </div>
       <button class="submit-btn" style="background:#ff7675;" onclick="resetTotal()">Clear Money</button>
     </div>
@@ -172,9 +150,7 @@
   <div id="end-screen" class="screen">
     <div style="font-size:5em; margin:20px 0;">🏆</div>
     <h1>Well Done!</h1>
-    <div style="font-size:2em; color:#059669; margin:20px 0; font-weight:bold;">
-      Score: <span id="final-score">0</span>/10
-    </div>
+    <div style="font-size:2em; color:#059669; margin:20px 0; font-weight:bold;">Score: <span id="final-score">0</span>/10</div>
     <button class="level-btn easy" onclick="location.reload()" style="text-align:center;">🏠 Play Again</button>
     <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
@@ -182,27 +158,28 @@
 </div>
 
 <script>
-  let score = 0;
-  let streak = 0;
-  let questionNum = 0;
-  let mode = 'easy';
-  let targetPrice = 0;
-  let currentTotal = 0;
-  let correctChange = 0;
+  let score = 0, streak = 0, questionNum = 0, mode = 'easy', targetPrice = 0, currentTotal = 0, correctChange = 0;
   const totalQuestions = 10;
   const items = [{e:'🍎', p:150}, {e:'🍦', p:320}, {e:'🍩', p:210}, {e:'🧸', p:850}, {e:'🍰', p:450}, {e:'🥤', p:120}, {e:'🍔', p:680}, {e:'🍌', p:90}, {e:'🍫', p:110}];
 
   function startGame(m) {
-    mode = m;
-    score = 0; streak = 0; questionNum = 0;
+    mode = m; score = 0; streak = 0; questionNum = 0;
     showScreen('game-screen');
+    setupCoins();
     nextQuestion();
+  }
+
+  function setupCoins() {
+    // Disable coins based on level
+    document.getElementById('coin-500').disabled = (mode === 'easy' || mode === 'medium');
+    document.getElementById('coin-100').disabled = false; // Always on except expert
+    document.getElementById('coin-50').disabled = (mode === 'easy');
+    document.getElementById('coin-10').disabled = (mode === 'easy' || mode === 'medium');
   }
 
   function nextQuestion() {
     questionNum++;
     if (questionNum > totalQuestions) { endGame(); return; }
-    
     currentTotal = 0;
     document.getElementById('feedback').textContent = '';
     document.getElementById('current-total').textContent = '0';
@@ -217,14 +194,14 @@
         correctChange = 1000 - targetPrice;
         document.getElementById('wallet-area').style.display = 'none';
         document.getElementById('input-area').style.display = 'block';
-        document.getElementById('problem-text').innerHTML = `You pay <span class="highlight">¥1000</span> for an item costing <span class="highlight">¥${targetPrice}</span>. How much change do you get?`;
+        document.getElementById('problem-text').innerHTML = `You pay <span class="highlight">¥1000</span> for an item costing <span class="highlight">¥${targetPrice}</span>. What's the change?`;
     } else {
         document.getElementById('wallet-area').style.display = 'block';
         document.getElementById('input-area').style.display = 'none';
-        if (mode === 'easy') targetPrice = (Math.floor(Math.random()*5)+1) * 100;
+        if (mode === 'easy') targetPrice = (Math.floor(Math.random()*8)+1) * 100;
         else if (mode === 'medium') targetPrice = (Math.floor(Math.random()*15)+1) * 50;
-        else targetPrice = Math.floor(Math.random()*90 + 10) * 10;
-        document.getElementById('problem-text').innerHTML = `Pay exactly <span class="highlight">¥${targetPrice}</span> for the ${item.e}!`;
+        else targetPrice = Math.floor(Math.random()*90 + 5) * 10;
+        document.getElementById('problem-text').innerHTML = `Pay exactly <span class="highlight">¥${targetPrice}</span>!`;
     }
   }
 
@@ -245,8 +222,7 @@
     } else {
         if (currentTotal === targetPrice) isCorrect = true;
         else if (currentTotal > targetPrice) {
-            triggerFeedback('Too much money! Try again.', false);
-            resetTotal();
+            triggerFeedback('Too much money! Clear and try again.', false);
             return;
         } else return; 
     }
