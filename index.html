@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Multiplication Fun!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    color: #ff6b6b;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #ffe66d;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Start screen */
+  .level-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: inherit;
+    color: white;
+  }
+  .level-btn:hover { transform: scale(1.05); }
+  .easy { background: #4ecdc4; }
+  .medium { background: #ffa502; }
+  .hard { background: #ff4757; }
+  .mixed { background: #a55eea; }
+
+  /* Game screen */
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+  .stat {
+    background: #f1f2f6;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  .score { color: #2ed573; }
+  .streak { color: #ff6348; }
+  .question {
+    font-size: 3.5em;
+    margin: 30px 0;
+    color: #2f3542;
+    font-weight: bold;
+  }
+  .answer-input {
+    font-size: 2em;
+    padding: 15px;
+    width: 150px;
+    text-align: center;
+    border: 4px solid #70a1ff;
+    border-radius: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  .answer-input:focus { border-color: #ff6b6b; }
+  .submit-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 40px;
+    background: #5352ed;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .submit-btn:hover { background: #3742fa; }
+  .feedback {
+    font-size: 1.5em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct { color: #2ed573; }
+  .wrong { color: #ff4757; }
+
+  /* End screen */
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #ff6b6b;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2f3542;
+    margin: 15px 0;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    background: #dfe4ea;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #4ecdc4, #5352ed);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="start-screen" class="screen active">
+    <h1>🎉 Math Star! ⭐</h1>
+    <p style="color:#57606f; margin-bottom:20px;">Pick your level and become a multiplication hero!</p>
+    <button class="level-btn easy" onclick="startGame('easy')">🌱 Easy (1-5)</button>
+    <button class="level-btn medium" onclick="startGame('medium')">🌟 Medium (1-9)</button>
+    <button class="level-btn hard" onclick="startGame('hard')">🔥 Hard (1-12)</button>
+    <button class="level-btn mixed" onclick="startGame('mixed')">🎲 Surprise Me!</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+    <div class="question" id="question">2 × 3 = ?</div>
+    <input type="number" id="answer" class="answer-input" autocomplete="off">
+    <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="end-screen" class="screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button class="level-btn easy" onclick="goHome()">🏠 Play Again</button>
+  </div>
+
+</div>
+
+<script>
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let currentAnswer = 0;
+  let level = 'easy';
+  const totalQuestions = 10;
+
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fantastic! 🌟', 'Super! 🎊'];
+
+  function startGame(lvl) {
+    level = lvl;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
+
+  function getRange() {
+    if (level === 'easy') return [1, 5];
+    if (level === 'medium') return [1, 9];
+    if (level === 'hard') return [1, 12];
+    // mixed
+    return [1, Math.floor(Math.random() * 8) + 5];
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+    const [min, max] = getRange();
+    const a = Math.floor(Math.random() * (max - min + 1)) + min;
+    const b = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentAnswer = a * b;
+    document.getElementById('question').textContent = `${a} × ${b} = ?`;
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('answer').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+    document.getElementById('answer').focus();
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById('answer');
+    const feedback = document.getElementById('feedback');
+    const userAnswer = parseInt(input.value);
+
+    if (isNaN(userAnswer)) {
+      feedback.textContent = 'Type a number! 🔢';
+      feedback.className = 'feedback wrong';
+      return;
+    }
+
+    if (userAnswer === currentAnswer) {
+      score++;
+      streak++;
+      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+      feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      feedback.className = 'feedback correct';
+    } else {
+      streak = 0;
+      feedback.textContent = `Oops! The answer was ${currentAnswer} 💪 Keep going!`;
+      feedback.className = 'feedback wrong';
+    }
+
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+
+    setTimeout(nextQuestion, 1300);
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are a multiplication MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'You did great! Keep it up!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Good job — practice makes perfect!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Every champion started here. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  // Allow Enter key to submit
+  document.getElementById('answer').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+</script>
+</body>
+</html>
