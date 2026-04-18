@@ -45,18 +45,17 @@
     border: 3px dashed #6c5ce7; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
 
-  /* Visual Bar Styles */
   .visual-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 15px; width: 100%; }
   .fraction-visual {
-    width: 280px; height: 40px; border: 3px solid #2d3436;
-    display: flex; border-radius: 10px; overflow: hidden; background: white;
+    width: 280px; height: 35px; border: 3px solid #2d3436;
+    display: flex; border-radius: 8px; overflow: hidden; background: white;
   }
-  .fraction-part { border-right: 1px solid #2d3436; height: 100%; flex: 1; transition: background 0.3s; }
-  .fraction-part.shaded { background: #fab1a0; } /* Group A color */
-  .fraction-part.shaded-b { background: #74b9ff; } /* Group B color (for addition) */
+  .fraction-part { border-right: 1px solid #2d3436; height: 100%; flex: 1; }
+  .fraction-part.shaded { background: #fab1a0; }
+  .fraction-part.shaded-b { background: #74b9ff; }
   .fraction-part:last-child { border-right: none; }
 
-  .math-text { font-size: 2em; font-weight: bold; color: #2d3436; margin-bottom: 10px; }
+  .math-text { font-size: 1.8em; font-weight: bold; color: #2d3436; margin-bottom: 10px; }
 
   .input-group { margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
   .fraction-input-container { display: inline-flex; flex-direction: column; }
@@ -79,7 +78,6 @@
 
   .shake { animation: shake 0.4s; }
   @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-  .home-link { display: block; margin-top: 20px; color: #747d8c; text-decoration: none; font-size: 0.9em; }
 </style>
 </head>
 <body>
@@ -87,45 +85,33 @@
 
   <div id="start-screen" class="screen active">
     <h1>🍕 Fraction Hero!</h1>
-    <p style="color:#636e72; margin-bottom:20px;">Use the pictures to help you solve! 🍰</p>
-    <button class="level-btn easy" onclick="startGame('easy')">🌱 Beginner <small>Count the colored slices</small></button>
-    <button class="level-btn medium" onclick="startGame('medium')">🌟 Intermediate <small>Fill in the missing parts</small></button>
-    <button class="level-btn hard" onclick="startGame('hard')">🔥 Advanced <small>Add & Subtract fractions</small></button>
-    <a href="../" class="home-link">← Back to Marulearn</a>
+    <button class="level-btn easy" onclick="startGame('easy')">🌱 Beginner <small>Identify visual fractions</small></button>
+    <button class="level-btn medium" onclick="startGame('medium')">🌟 Intermediate <small>Add & Subtract (Same Bottom #)</small></button>
+    <button class="level-btn hard" onclick="startGame('hard')">🔥 Advanced <small>Different Denominators!</small></button>
+    <a href="../" style="display:block; margin-top:20px; color:#747d8c; text-decoration:none;">← Back</a>
   </div>
 
   <div id="game-screen" class="screen">
     <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-    <div class="stats">
-      <div class="stat score">⭐ <span id="score">0</span></div>
-      <div class="stat">❓ <span id="q-num">1</span>/10</div>
-      <div class="stat streak">🔥 <span id="streak">0</span></div>
-    </div>
-
+    <div class="stats"><div class="stat score">⭐ <span id="score">0</span></div><div class="stat streak">🔥 <span id="streak">0</span></div></div>
     <div class="problem-box">
-      <div class="visual-container" id="visual-container">
-        </div>
+      <div class="visual-container" id="visual-container"></div>
       <div id="math-display" class="math-text"></div>
       <div id="problem-text" style="font-size: 1.1em; font-weight: bold;"></div>
     </div>
-
     <div class="input-group">
       <div class="fraction-input-container">
         <input type="number" id="ans-num" class="qty-input numerator" placeholder="?">
         <input type="number" id="ans-den" class="qty-input denominator" placeholder="?">
       </div>
     </div>
-
     <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
     <div class="feedback" id="feedback"></div>
   </div>
 
   <div id="end-screen" class="screen">
-    <div style="font-size:5em; margin:20px 0;" id="trophy">🏆</div>
-    <h1 id="end-title">Amazing!</h1>
-    <div style="font-size:2em; color:#6c5ce7; margin:20px 0; font-weight:bold;">Score: <span id="final-score">0</span>/10</div>
-    <p id="end-message" style="margin-bottom:20px;"></p>
-    <button class="level-btn easy" onclick="location.reload()" style="text-align:center;">🏠 Play Again</button>
+    <h1 id="end-title">Score: <span id="final-score">0</span>/10</h1>
+    <button class="level-btn easy" onclick="location.reload()">🏠 Home</button>
   </div>
 
 </div>
@@ -133,8 +119,6 @@
 <script>
   let score = 0, streak = 0, questionNum = 0, mode = 'easy';
   let targetNum = 0, targetDen = 0;
-  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Fantastic! 🌟', 'Super! 🎊'];
-  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Almost! Try once more! ✨'];
 
   function startGame(m) {
     mode = m; score = 0; streak = 0; questionNum = 0;
@@ -143,94 +127,75 @@
     nextQuestion();
   }
 
-  function createBar(total, shaded, colorClass = 'shaded', startFrom = 0) {
+  function createBar(total, shaded, colorClass = 'shaded') {
     const bar = document.createElement('div');
     bar.className = 'fraction-visual';
     for (let i = 0; i < total; i++) {
       let part = document.createElement('div');
-      part.className = 'fraction-part';
-      if (i >= startFrom && i < (startFrom + shaded)) {
-        part.classList.add(colorClass);
-      }
+      part.className = 'fraction-part' + (i < shaded ? ' ' + colorClass : '');
       bar.appendChild(part);
     }
     return bar;
   }
 
+  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
   function nextQuestion() {
     questionNum++;
     if (questionNum > 10) { endGame(); return; }
-    
-    document.getElementById('feedback').textContent = '';
-    document.getElementById('q-num').textContent = questionNum;
-    document.getElementById('progress').style.width = ((questionNum - 1) / 10 * 100) + '%';
-    document.getElementById('ans-num').value = '';
-    document.getElementById('ans-den').value = '';
-    
+    document.getElementById('ans-num').value = ''; document.getElementById('ans-den').value = '';
     const container = document.getElementById('visual-container');
     const mathDisplay = document.getElementById('math-display');
     const problemText = document.getElementById('problem-text');
-    container.innerHTML = '';
-    mathDisplay.textContent = '';
-    
+    container.innerHTML = ''; mathDisplay.textContent = '';
+
     if (mode === 'easy') {
       targetDen = Math.floor(Math.random() * 5) + 2;
       targetNum = Math.floor(Math.random() * (targetDen - 1)) + 1;
       container.appendChild(createBar(targetDen, targetNum));
-      problemText.textContent = "What fraction is shaded pink?";
+      problemText.textContent = "What is this fraction?";
     } 
     else if (mode === 'medium') {
-      targetDen = Math.floor(Math.random() * 8) + 2;
-      targetNum = Math.floor(Math.random() * (targetDen - 1)) + 1;
-      container.appendChild(createBar(targetDen, targetNum));
-      problemText.innerHTML = `Write the fraction for:<br><span style="color:#6c5ce7">${targetNum} out of ${targetDen} pieces</span>`;
-    }
-    else if (mode === 'hard') {
       let den = Math.floor(Math.random() * 5) + 4;
       let isAdd = Math.random() > 0.5;
-      
-      if (isAdd) {
-        let n1 = Math.floor(Math.random() * 2) + 1;
-        let n2 = Math.floor(Math.random() * 2) + 1;
-        targetNum = n1 + n2;
-        mathDisplay.textContent = `${n1}/${den} + ${n2}/${den} = ?`;
-        container.appendChild(createBar(den, n1, 'shaded'));
-        container.appendChild(createBar(den, n2, 'shaded-b'));
-        problemText.textContent = "Combine the pink and blue parts!";
-      } else {
-        let n1 = Math.floor(Math.random() * 3) + 3;
-        let n2 = Math.floor(Math.random() * 2) + 1;
-        targetNum = n1 - n2;
-        mathDisplay.textContent = `${n1}/${den} - ${n2}/${den} = ?`;
-        container.appendChild(createBar(den, n1, 'shaded'));
-        // Show the subtraction visually by making the taken parts "faded" or a cross? 
-        // For simplicity, we show the second bar as what is being removed.
-        container.appendChild(createBar(den, n2, 'shaded-b')); 
-        problemText.textContent = "Take the blue away from the pink!";
-      }
+      let n1 = Math.floor(Math.random() * 2) + 1;
+      let n2 = Math.floor(Math.random() * 2) + 1;
+      if (isAdd) { targetNum = n1 + n2; mathDisplay.textContent = `${n1}/${den} + ${n2}/${den} = ?`; }
+      else { n1 = 4; n2 = Math.floor(Math.random() * 2) + 1; targetNum = n1 - n2; mathDisplay.textContent = `${n1}/${den} - ${n2}/${den} = ?`; }
       targetDen = den;
+      container.appendChild(createBar(den, n1, 'shaded'));
+      container.appendChild(createBar(den, n2, 'shaded-b'));
+    }
+    else if (mode === 'hard') {
+      // Different Denominators
+      let d1 = [2, 3, 4][Math.floor(Math.random()*3)];
+      let d2 = [5, 6][Math.floor(Math.random()*2)];
+      let n1 = 1, n2 = 1;
+      mathDisplay.textContent = `${n1}/${d1} + ${n2}/${d2} = ?`;
+      targetNum = (n1 * d2) + (n2 * d1);
+      targetDen = d1 * d2;
+      // Simplify if possible
+      let common = gcd(targetNum, targetDen);
+      targetNum /= common; targetDen /= common;
+      
+      container.appendChild(createBar(d1, n1, 'shaded'));
+      container.appendChild(createBar(d2, n2, 'shaded-b'));
+      problemText.textContent = "Tip: Find a common bottom number!";
     }
   }
 
   function checkAnswer() {
+    const uNum = parseInt(document.getElementById('ans-num').value);
+    const uDen = parseInt(document.getElementById('ans-den').value);
     const feedback = document.getElementById('feedback');
-    const userNum = parseInt(document.getElementById('ans-num').value);
-    const userDen = parseInt(document.getElementById('ans-den').value);
-
-    if (userNum === targetNum && userDen === targetDen) {
-        score++; streak++;
-        feedback.textContent = encouragement[Math.floor(Math.random() * encouragement.length)];
-        feedback.className = 'feedback correct';
-        document.getElementById('score').textContent = score;
-        document.getElementById('streak').textContent = streak;
-        setTimeout(nextQuestion, 1500);
+    
+    if (uNum === targetNum && uDen === targetDen) {
+      score++; streak++; feedback.textContent = "Correct! 🎉"; feedback.className = "feedback correct";
+      setTimeout(nextQuestion, 1500);
     } else {
-        streak = 0;
-        document.getElementById('streak').textContent = streak;
-        feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
-        feedback.className = 'feedback wrong';
-        document.getElementById('game-screen').classList.add('shake');
-        setTimeout(() => document.getElementById('game-screen').classList.remove('shake'), 400);
+      streak = 0; feedback.textContent = "Try again! 💪"; feedback.className = "feedback wrong";
+      document.getElementById('game-screen').classList.add('shake');
+      setTimeout(() => document.getElementById('game-screen').classList.remove('shake'), 400);
     }
   }
 
@@ -238,11 +203,6 @@
     document.getElementById('game-screen').classList.remove('active');
     document.getElementById('end-screen').classList.add('active');
     document.getElementById('final-score').textContent = score;
-    const trophy = document.getElementById('trophy');
-    const title = document.getElementById('end-title');
-    if (score === 10) { trophy.textContent = '🏆'; title.textContent = 'FRACTION HERO! 🎊'; }
-    else if (score >= 7) { trophy.textContent = '🥇'; title.textContent = 'Great Work!'; }
-    else { trophy.textContent = '🌱'; title.textContent = 'Keep Learning!'; }
   }
 </script>
 </body>
