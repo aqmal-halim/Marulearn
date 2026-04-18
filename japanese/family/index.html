@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👨‍👩‍👧 Family & People!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #ff9f43 0%, #ee5a24 50%, #c0392b 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+/* SHARED */
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.back-btn {
+background: white; border: 2px solid #eee; border-radius: 12px;
+padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
+cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+
+/* MENU */
+.menu-header {
+background: white; border-radius: 25px; padding: 22px 20px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+.menu-header .big-title { font-size: 2em; font-weight: 900; color: #ee5a24; margin-bottom: 4px; }
+.menu-header .subtitle  { font-size: 0.9em; color: #888; }
+
+.tip-box {
+background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+border-radius: 15px; padding: 12px 16px; margin-bottom: 15px;
+color: white; font-size: 0.82em; font-weight: 600; line-height: 1.5;
+}
+.tip-box strong { color: #fff9c4; }
+
+.section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin: 16px 0 8px 2px; }
+.menu-grid { display: grid; gap: 10px; }
+
+.menu-card {
+width: 100%; background: white; border-radius: 18px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px; cursor: pointer;
+border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+}
+.menu-card:active { transform: scale(0.98); }
+.menu-card * { pointer-events: none; }
+.menu-card.immediate { border-color: #ee5a24; }
+.menu-card.close     { border-color: #ff9f43; }
+.menu-card.extended  { border-color: #f9ca24; }
+.menu-card.body      { border-color: #6ab04c; }
+.menu-card.titles    { border-color: #4834d4; }
+.menu-card.mix       { border-color: #22a6b3; }
+
+.menu-icon { font-size: 2.5em; min-width: 55px; text-align: center; }
+.menu-info { flex: 1; }
+.menu-name { font-weight: 900; font-size: 1em; color: #2d3436; }
+.menu-desc { font-size: 0.8em; color: #888; margin-top: 2px; }
+.menu-count { background: #fff3e0; color: #ee5a24; border: 1px solid #ffd6a5; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
+
+/* LEARN */
+.learn-card {
+background: white; border-radius: 25px; padding: 25px 20px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px; text-align: center;
+}
+.word-banner {
+background: linear-gradient(135deg, #fff3e0, #ffe8cc);
+border-radius: 16px; padding: 20px 15px; margin-bottom: 14px;
+}
+.word-banner-cat { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #ee5a24; margin-bottom: 6px; }
+.word-banner-jp  { font-size: 3em; font-weight: 700; color: #2d3436; line-height: 1; }
+
+.word-romaji  { font-size: 1em; color: #aaa; font-weight: 700; margin-bottom: 8px; }
+.word-en      { font-size: 1.3em; font-weight: 900; color: #ee5a24; margin-bottom: 10px; }
+
+/* Formal/informal split — the KEY feature for Japanese family words */
+.formal-box {
+background: #fff3e0; border: 2px solid #ffd6a5; border-radius: 14px;
+padding: 12px 15px; margin-top: 10px; text-align: left;
+}
+.formal-box .fb-title { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ee5a24; margin-bottom: 8px; }
+.formal-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.formal-row:last-child { margin-bottom: 0; }
+.fb-label  { font-size: 0.78em; color: #888; font-weight: 700; min-width: 80px; }
+.fb-word   { font-size: 1em; font-weight: 900; color: #2d3436; }
+.fb-romaji { font-size: 0.75em; color: #aaa; }
+
+.word-example { background: #fff8e6; border-radius: 12px; padding: 12px 15px; margin-top: 10px; font-size: 0.88em; color: #555; line-height: 1.7; text-align: left; }
+.word-tip     { background: #e8f4ff; border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: 0.8em; color: #118ab2; font-weight: 700; }
+
+.speak-btn {
+background: #ee5a24; color: white; border: none; border-radius: 50px;
+padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; display: flex; align-items: center; gap: 8px;
+margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.learn-nav { display: flex; justify-content: space-between; align-items: center; }
+.nav-btn {
+background: #2d3436; color: white; border: none; border-radius: 12px;
+padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:disabled { background: #ddd; color: #aaa; }
+.learn-counter  { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
+.start-quiz-btn {
+display: block; width: 100%; margin-top: 18px; padding: 15px;
+background: #ee5a24; color: white; border: none; border-radius: 16px;
+font-family: inherit; font-weight: 800; font-size: 1.1em;
+cursor: pointer; -webkit-appearance: none; text-align: center;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* QUIZ */
+.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
+.progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
+.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.stat-pill.score  { color: #ee5a24; }
+.stat-pill.streak { color: #e63946; }
+
+.question-card {
+background: white; border-radius: 22px; padding: 25px 20px; text-align: center;
+box-shadow: 0 6px 25px rgba(0,0,0,0.15); margin-bottom: 16px; min-height: 160px;
+display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+}
+.q-type-badge { position: absolute; top: 12px; right: 12px; background: #fff3e0; color: #ee5a24; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
+.q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.q-jp    { font-size: 2.8em; color: #2d3436; font-weight: 700; line-height: 1; }
+.q-en    { font-size: 1.4em; font-weight: 900; color: #2d3436; }
+.q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
+
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.option-btn {
+background: white; border: 2px solid #eee; border-radius: 15px; padding: 14px 10px;
+font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
+-webkit-appearance: none; text-align: center; transition: all 0.15s;
+box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
+}
+.option-btn * { pointer-events: none; }
+.option-btn .opt-jp   { font-size: 1.4em; display: block; color: #2d3436; font-weight: 900; }
+.option-btn .opt-en   { font-size: 0.85em; display: block; color: #aaa; margin-top: 2px; }
+.option-btn:active:not(:disabled) { transform: scale(0.97); }
+.option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
+.option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
+.option-btn:disabled { cursor: not-allowed; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25%       { transform: translateX(-8px); }
+75%       { transform: translateX(8px); }
+}
+
+.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
+.feedback.correct-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.feedback.wrong-text   { color: #ffe0cc; }
+.feedback.hint-text    { color: white; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; font-size: 0.88em; }
+
+.hint-btn {
+background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
+border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* END */
+.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+.trophy    { font-size: 5em; margin: 20px 0; }
+.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+.end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
+.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
+.end-btns  { display: grid; gap: 10px; }
+.end-btn {
+background: white; color: #ee5a24; border: none; border-radius: 15px; padding: 16px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- MENU -->
+
+<div id="menu-screen" class="screen active">
+  <div class="menu-header">
+    <div style="font-size:2.5em;margin-bottom:5px;">👨‍👩‍👧</div>
+    <div class="big-title">Family & People!</div>
+    <div class="subtitle">Talk about your family in Japanese</div>
+  </div>
+
+  <div class="tip-box">
+    ⚠️ <strong>Key rule:</strong> Japanese uses DIFFERENT words depending on whether you talk about <strong>YOUR OWN</strong> family (humble) or <strong>SOMEONE ELSE'S</strong> family (respectful). Learn both!
+  </div>
+
+  <div class="section-lbl">📖 Choose a Category</div>
+  <div class="menu-grid">
+    <button type="button" class="menu-card immediate" data-cat="immediate">
+      <div class="menu-icon">👨‍👩‍👧</div>
+      <div class="menu-info"><div class="menu-name">Immediate Family</div><div class="menu-desc">Parents, siblings, husband, wife</div><div class="menu-count">10 words</div></div>
+    </button>
+    <button type="button" class="menu-card close" data-cat="close">
+      <div class="menu-icon">👴</div>
+      <div class="menu-info"><div class="menu-name">Close Relatives</div><div class="menu-desc">Grandparents, aunts, uncles, cousins</div><div class="menu-count">8 words</div></div>
+    </button>
+    <button type="button" class="menu-card body" data-cat="body">
+      <div class="menu-icon">👁️</div>
+      <div class="menu-info"><div class="menu-name">Body Parts</div><div class="menu-desc">Head, eyes, hands, legs and more</div><div class="menu-count">14 words</div></div>
+    </button>
+    <button type="button" class="menu-card titles" data-cat="titles">
+      <div class="menu-icon">🎌</div>
+      <div class="menu-info"><div class="menu-name">Titles & Honorifics</div><div class="menu-desc">さん、くん、ちゃん、せんせい...</div><div class="menu-count">8 words</div></div>
+    </button>
+    <button type="button" class="menu-card extended" data-cat="describing">
+      <div class="menu-icon">💬</div>
+      <div class="menu-info"><div class="menu-name">Describing People</div><div class="menu-desc">Tall, short, kind, young, old...</div><div class="menu-count">12 words</div></div>
+    </button>
+    <button type="button" class="menu-card mix" data-cat="mix">
+      <div class="menu-icon">🎲</div>
+      <div class="menu-info"><div class="menu-name">Mixed Quiz!</div><div class="menu-desc">All categories — the ultimate test!</div><div class="menu-count">All 52 words</div></div>
+    </button>
+  </div>
+  <a href="../" class="home-link">← Back to Japanese Hub</a>
+</div>
+
+<!-- LEARN -->
+
+<div id="learn-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-learn">← Back</button>
+    <h2 id="learn-title">Immediate Family</h2>
+  </div>
+  <div class="learn-card">
+    <div class="word-banner">
+      <div class="word-banner-cat" id="learn-cat-label"></div>
+      <div class="word-banner-jp"  id="learn-banner-jp"></div>
+    </div>
+    <div class="word-romaji"  id="learn-romaji"></div>
+    <div class="word-en"      id="learn-en"></div>
+    <div class="formal-box"   id="learn-formal-box" style="display:none;">
+      <div class="fb-title">⚠️ Japanese uses different words for your family vs others</div>
+      <div class="formal-row">
+        <span class="fb-label">My (humble)</span>
+        <span class="fb-word"  id="learn-my-word"></span>
+        <span class="fb-romaji" id="learn-my-romaji"></span>
+      </div>
+      <div class="formal-row">
+        <span class="fb-label">Their (polite)</span>
+        <span class="fb-word"  id="learn-their-word"></span>
+        <span class="fb-romaji" id="learn-their-romaji"></span>
+      </div>
+    </div>
+    <div class="word-example" id="learn-example" style="display:none;"></div>
+    <div class="word-tip"     id="learn-tip"     style="display:none;"></div>
+  </div>
+  <div style="text-align:center;margin-bottom:18px;">
+    <button type="button" class="speak-btn" id="learn-speak-btn">🔊 Hear it</button>
+  </div>
+  <div class="learn-nav">
+    <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+    <span class="learn-counter" id="learn-counter">1 / 10</span>
+    <button type="button" class="nav-btn" id="learn-next">Next →</button>
+  </div>
+  <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">🎯 Start Quiz!</button>
+  <a href="#" class="home-link" id="learn-back-link">← Back to categories</a>
+</div>
+
+<!-- QUIZ -->
+
+<div id="quiz-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-quiz">← Back</button>
+    <h2 id="quiz-title">Quiz</h2>
+  </div>
+  <div class="game-header">
+    <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+    <div class="q-count" id="q-count">1/10</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="score">0</span></div>
+    <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+  </div>
+  <div class="question-card">
+    <div class="q-type-badge" id="q-type-badge">JP → EN</div>
+    <div class="q-label" id="q-label">What does this mean?</div>
+    <div class="q-jp"   id="q-jp"   style="display:none;"></div>
+    <div class="q-en"   id="q-en"   style="display:none;"></div>
+    <div class="q-hint" id="q-hint"></div>
+  </div>
+  <div class="options-grid" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+</div>
+
+<!-- END -->
+
+<div id="end-screen" class="screen">
+  <div class="end-inner">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">すごい！</div>
+    <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
+    <div class="end-msg"   id="end-msg"></div>
+    <div class="end-btns">
+      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Categories</button>
+    </div>
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// Each word has:
+//   jp = primary Japanese (what quiz shows)
+//   r  = romaji
+//   en = English meaning
+//   myWord / myRomaji = humble form (talking about YOUR family)
+//   theirWord / theirRomaji = respectful form (talking about OTHERS' family)
+//   ex = example sentence
+//   tip = cultural tip
+// ══════════════════════════════════════════
+const WORDS = {
+
+  immediate: [
+    { id:'chichi',    jp:'ちち',       r:'chichi',    en:'father (my own)',
+      myWord:'ちち',          myRomaji:'chichi',
+      theirWord:'おとうさん',  theirRomaji:'otousan',
+      ex:'ちちはかいしゃいんです = My father is a company employee',
+      tip:'Never call your OWN dad おとうさん when talking to others — use ちち!' },
+    { id:'haha',      jp:'はは',       r:'haha',      en:'mother (my own)',
+      myWord:'はは',          myRomaji:'haha',
+      theirWord:'おかあさん',  theirRomaji:'okaasan',
+      ex:'はははりょうりがじょうずです = My mother is good at cooking',
+      tip:'Use おかあさん to someone\'s face (your own mum) but はは to others' },
+    { id:'otto',      jp:'おっと',     r:'otto',      en:'husband (my own)',
+      myWord:'おっと',         myRomaji:'otto',
+      theirWord:'ごしゅじん',  theirRomaji:'goshujin',
+      ex:'おっとはいまかいしゃにいます = My husband is at work now',
+      tip:'ごしゅじん means "honourable master" — only use for OTHERS\' husbands!' },
+    { id:'tsuma',     jp:'つま',       r:'tsuma',     en:'wife (my own)',
+      myWord:'つま',           myRomaji:'tsuma',
+      theirWord:'おくさん',    theirRomaji:'okusan',
+      ex:'つまはかんごしです = My wife is a nurse',
+      tip:'おくさん is respectful — use for other people\'s wives only' },
+    { id:'musume',    jp:'むすめ',     r:'musume',    en:'daughter (my own)',
+      myWord:'むすめ',         myRomaji:'musume',
+      theirWord:'おじょうさん', theirRomaji:'ojoosan',
+      ex:'むすめはしょうがっこうにかよっています = My daughter attends elementary school',
+      tip:'おじょうさん = someone else\'s daughter. Very polite! 👧' },
+    { id:'musuko',    jp:'むすこ',     r:'musuko',    en:'son (my own)',
+      myWord:'むすこ',         myRomaji:'musuko',
+      theirWord:'おぼっちゃん', theirRomaji:'obocchan',
+      ex:'むすこはサッカーがすきです = My son likes football',
+      tip:'おぼっちゃん for someone else\'s son (young boy). Less common now 👦' },
+    { id:'ane',       jp:'あね',       r:'ane',       en:'older sister (my own)',
+      myWord:'あね',           myRomaji:'ane',
+      theirWord:'おねえさん',  theirRomaji:'oneesan',
+      ex:'あねはだいがくせいです = My older sister is a university student',
+      tip:'You call your OWN older sister おねえちゃん/おねえさん to her face!' },
+    { id:'ani',       jp:'あに',       r:'ani',       en:'older brother (my own)',
+      myWord:'あに',           myRomaji:'ani',
+      theirWord:'おにいさん',  theirRomaji:'oniisan',
+      ex:'あにはとうきょうにすんでいます = My older brother lives in Tokyo',
+      tip:'To his face: おにいちゃん/おにいさん. To others: あに' },
+    { id:'imouto',    jp:'いもうと',   r:'imouto',    en:'younger sister',
+      myWord:'いもうと',       myRomaji:'imouto',
+      theirWord:'いもうとさん', theirRomaji:'imoutosan',
+      ex:'いもうとはよんさいです = My younger sister is 4 years old',
+      tip:'Younger siblings: no お prefix for YOUR own. さん added for others\' ✅' },
+    { id:'otouto',    jp:'おとうと',   r:'otouto',    en:'younger brother',
+      myWord:'おとうと',       myRomaji:'otouto',
+      theirWord:'おとうとさん', theirRomaji:'otoutosan',
+      ex:'おとうとはまだあかちゃんです = My younger brother is still a baby',
+      tip:'Same rule — no honorific for YOUR younger siblings 👶' },
+  ],
+
+  close: [
+    { id:'sofu',      jp:'そふ',       r:'sofu',      en:'grandfather (my own)',
+      myWord:'そふ',           myRomaji:'sofu',
+      theirWord:'おじいさん',  theirRomaji:'ojiisan',
+      ex:'そふはななじゅうごさいです = My grandfather is 75 years old',
+      tip:'Children call their own grandad おじいちゃん to his face, but そふ to others 👴' },
+    { id:'sobo',      jp:'そぼ',       r:'sobo',      en:'grandmother (my own)',
+      myWord:'そぼ',           myRomaji:'sobo',
+      theirWord:'おばあさん',  theirRomaji:'obaasan',
+      ex:'そぼのりょうりはおいしい = My grandmother\'s cooking is delicious',
+      tip:'おばあちゃん to her face, そぼ when speaking to others 👵' },
+    { id:'oji',       jp:'おじ',       r:'oji',       en:'uncle',
+      myWord:'おじ',           myRomaji:'oji',
+      theirWord:'おじさん',    theirRomaji:'ojisan',
+      ex:'おじはいしゃです = My uncle is a doctor',
+      tip:'おじさん also means "middle-aged man" — context matters! 👨' },
+    { id:'oba',       jp:'おば',       r:'oba',       en:'aunt',
+      myWord:'おば',           myRomaji:'oba',
+      theirWord:'おばさん',    theirRomaji:'obasan',
+      ex:'おばはマレーシアにすんでいます = My aunt lives in Malaysia',
+      tip:'おばさん can also mean "middle-aged woman" — be careful! 👩' },
+    { id:'itoko',     jp:'いとこ',     r:'itoko',     en:'cousin',
+      myWord:'いとこ',         myRomaji:'itoko',
+      theirWord:'いとこさん',  theirRomaji:'itokosan',
+      ex:'いとこがにほんにきます = My cousin is coming to Japan',
+      tip:'Same word for male/female cousin! Japanese doesn\'t distinguish 😊' },
+    { id:'kazoku',    jp:'かぞく',     r:'kazoku',    en:'family',
+      myWord:'かぞく',         myRomaji:'kazoku',
+      theirWord:'ごかぞく',    theirRomaji:'gokazoku',
+      ex:'かぞくでにほんにきました = We came to Japan as a family',
+      tip:'ご prefix makes it respectful — ごかぞく for someone else\'s family 🏠' },
+    { id:'ryoushin',  jp:'りょうしん', r:'ryoushin',  en:'parents (both)',
+      myWord:'りょうしん',     myRomaji:'ryoushin',
+      theirWord:'ごりょうしん', theirRomaji:'goryoushin',
+      ex:'りょうしんはマレーシアにいます = My parents are in Malaysia',
+      tip:'りょう = both, しん = parents. ご makes it respectful 🙏' },
+    { id:'kodomo',    jp:'こども',     r:'kodomo',    en:'child / children',
+      myWord:'こども',         myRomaji:'kodomo',
+      theirWord:'おこさん',    theirRomaji:'okosan',
+      ex:'こどもがふたりいます = I have two children',
+      tip:'おこさん is used when asking others "do you have children?" 👨‍👩‍👧' },
+  ],
+
+  body: [
+    { id:'atama',  jp:'あたま',   r:'atama',   en:'head',          myWord:null, ex:'あたまがいたい = I have a headache',  tip:'あたまがいい = smart/clever (lit. good head)' },
+    { id:'kao',    jp:'かお',     r:'kao',     en:'face',          myWord:null, ex:'かおをあらってください = Please wash your face', tip:'かおいろがわるい = you look pale (lit. bad face colour)' },
+    { id:'me',     jp:'め',       r:'me',      en:'eye(s)',         myWord:null, ex:'めをとじてください = Please close your eyes', tip:'め can mean eyes OR bud of a plant — same kanji 目' },
+    { id:'mimi',   jp:'みみ',     r:'mimi',    en:'ear(s)',         myWord:null, ex:'ももがいたい = My ear hurts',            tip:'ミミ in katakana can be a name! Cute word 👂' },
+    { id:'hana',   jp:'はな',     r:'hana',    en:'nose',          myWord:null, ex:'はながつまっています = My nose is blocked', tip:'はな also means flower — same sound, different kanji!' },
+    { id:'kuchi',  jp:'くち',     r:'kuchi',   en:'mouth',         myWord:null, ex:'くちをあけてください = Please open your mouth', tip:'くちがかるい = talkative (lit. light mouth) 🗣️' },
+    { id:'ha',     jp:'は',       r:'ha',      en:'tooth / teeth', myWord:null, ex:'はをみがいてください = Please brush your teeth', tip:'はいしゃ = dentist. は + いしゃ (doctor) 🦷' },
+    { id:'kubi',   jp:'くび',     r:'kubi',    en:'neck',          myWord:null, ex:'くびがいたい = My neck hurts',           tip:'くびになる = to get fired from a job! Interesting idiom 😅' },
+    { id:'kata',   jp:'かた',     r:'kata',    en:'shoulder(s)',   myWord:null, ex:'かたがこっています = My shoulders are stiff', tip:'Stiff shoulders from stress — very common in Japan! 💆' },
+    { id:'te',     jp:'て',       r:'te',      en:'hand(s)',        myWord:null, ex:'てをあらってください = Please wash your hands', tip:'てつだう = to help (lit. lend a hand). て is very useful! 🤲' },
+    { id:'yubi',   jp:'ゆび',     r:'yubi',    en:'finger / toe',  myWord:null, ex:'ゆびをきりました = I cut my finger',     tip:'てのゆび = finger, あしのゆび = toe. Same word! 👆' },
+    { id:'onaka',  jp:'おなか',   r:'onaka',   en:'stomach / belly', myWord:null, ex:'おなかがすきました = I am hungry',    tip:'おなかがいっぱい = I\'m full! Very useful phrase 🍱' },
+    { id:'ashi',   jp:'あし',     r:'ashi',    en:'leg / foot',    myWord:null, ex:'あしがいたい = My leg/foot hurts',       tip:'あし means BOTH leg AND foot — same word!' },
+    { id:'senaka', jp:'せなか',   r:'senaka',  en:'back (of body)', myWord:null, ex:'せなかがいたい = My back hurts',        tip:'Common complaint! おなかとせなかがくっつく = starving (stomach touches back) 😄' },
+  ],
+
+  titles: [
+    { id:'san',     jp:'〜さん',   r:'~san',    en:'Mr / Mrs / Ms (polite)',
+      myWord:null,
+      ex:'たなかさん = Mr/Ms Tanaka',
+      tip:'Use for adults. Never use on yourself! Most common honorific 🎌' },
+    { id:'kun',     jp:'〜くん',   r:'~kun',    en:'(for boys / junior males)',
+      myWord:null,
+      ex:'たろうくん = Taro (boy\'s name)',
+      tip:'Used for boys and younger male colleagues. Shows familiarity 👦' },
+    { id:'chan',    jp:'〜ちゃん', r:'~chan',   en:'(cute/affectionate, children/close friends)',
+      myWord:null,
+      ex:'さくらちゃん = Sakura (cute/affectionate)',
+      tip:'Used for children, girls, close friends. Your daughter will hear this! 👧' },
+    { id:'sama',    jp:'〜さま',   r:'~sama',   en:'(very formal/respectful)',
+      myWord:null,
+      ex:'おきゃくさま = honoured customer/guest',
+      tip:'Most respectful. Used in customer service and formal letters 🙇' },
+    { id:'sensei2', jp:'せんせい', r:'sensei',  en:'Teacher / Doctor / Master',
+      myWord:null,
+      ex:'やまだせんせい = Teacher Yamada',
+      tip:'Used for teachers, doctors, lawyers, politicians. Very important! 👩‍🏫' },
+    { id:'senpai',  jp:'せんぱい', r:'senpai',  en:'Senior / upperclassman',
+      myWord:null,
+      ex:'やまもとせんぱい = Senior Yamamoto',
+      tip:'Older/more experienced person. Kohai (後輩) is the junior 📚' },
+    { id:'kouhai',  jp:'こうはい', r:'kouhai',  en:'Junior / underclassman',
+      myWord:null,
+      ex:'わたしのこうはい = my junior',
+      tip:'Opposite of senpai. The senpai-kouhai relationship is very important in Japan 🤝' },
+    { id:'tomodachi2', jp:'ともだち', r:'tomodachi', en:'friend',
+      myWord:null,
+      ex:'わたしのともだち = my friend',
+      tip:'No honorific needed for friends — that would sound strange! 😊' },
+  ],
+
+  describing: [
+    { id:'takai',    jp:'たかい',   r:'takai',   en:'tall / expensive / high', myWord:null, ex:'せがたかい = tall (stature). ねだんがたかい = expensive', tip:'Same word for tall AND expensive! Context tells you which 📏' },
+    { id:'hikui',    jp:'ひくい',   r:'hikui',   en:'short / low',             myWord:null, ex:'せがひくい = short in height',                           tip:'Opposite of たかい ↕️' },
+    { id:'futoi',    jp:'ふとい',   r:'futoi',   en:'fat / thick',             myWord:null, ex:'ふといえんぴつ = thick pencil. ふとっている = chubby',     tip:'Be careful — saying this about a person is very rude! 😅' },
+    { id:'hosoi',    jp:'ほそい',   r:'hosoi',   en:'thin / slim',             myWord:null, ex:'ほそいみち = a narrow road. ほそい = slim (person)',       tip:'More polite than やせている for slim people ✨' },
+    { id:'wakai',    jp:'わかい',   r:'wakai',   en:'young',                   myWord:null, ex:'わかいひと = a young person',                             tip:'わかくみえる = you look young! A great compliment in Japan 🌟' },
+    { id:'toshiyori', jp:'としより', r:'toshiyori', en:'elderly person / old', myWord:null, ex:'としよりのかたにせきをゆずる = give up seat to elderly',   tip:'ろうじん (老人) also means elderly. としより is warmer 👴' },
+    { id:'yasashii', jp:'やさしい', r:'yasashii', en:'kind / gentle',          myWord:null, ex:'やさしいせんせい = kind teacher',                         tip:'やさしい can also mean "easy"! わかりやすい = easy to understand 💛' },
+    { id:'kashikoi', jp:'かしこい', r:'kashikoi', en:'smart / clever / wise',  myWord:null, ex:'かしこいこ = clever child',                               tip:'あたまがいい is more common in daily speech for "smart" 🧠' },
+    { id:'genki',    jp:'げんき',   r:'genki',   en:'energetic / healthy / fine', myWord:null, ex:'げんきですか？ = How are you? (Are you well?)',         tip:'The most common way to say "I\'m fine" = げんきです! 💪' },
+    { id:'shizuka',  jp:'しずか',   r:'shizuka', en:'quiet / peaceful',        myWord:null, ex:'しずかにしてください = Please be quiet',                  tip:'Also a popular girl\'s name! 静香 🌸' },
+    { id:'urusai',   jp:'うるさい', r:'urusai',  en:'noisy / loud / annoying', myWord:null, ex:'うるさい！= Noisy! / Shut up! (rude)',                    tip:'うるさい！directly = very rude. Be careful in Japan! 🔇' },
+    { id:'kawaii',   jp:'かわいい', r:'kawaii',  en:'cute / adorable',         myWord:null, ex:'かわいいこ = cute child. かわいいね！= How cute!',         tip:'The most famous Japanese word worldwide! Use freely 💕' },
+  ],
+
+};
+
+const ALL_WORDS = Object.entries(WORDS)
+  .filter(([k]) => k !== 'mix')
+  .flatMap(([, arr]) => arr);
+
+// ── STATE ──
+let currentCat  = 'immediate';
+let learnData   = [];
+let learnIdx    = 0;
+let quizData    = [];
+let quizPool    = [];
+let quizIdx     = 0;
+let quizTotal   = 0;
+let score       = 0;
+let streak      = 0;
+let attempts    = 0;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP'; u.rate=0.75; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── CATEGORY LABELS ──
+const CAT_LABELS = {
+  immediate:  '👨‍👩‍👧 Immediate Family',
+  close:      '👴 Close Relatives',
+  body:       '👁️ Body Parts',
+  titles:     '🎌 Titles & Honorifics',
+  describing: '💬 Describing People',
+  mix:        '🎲 Mixed',
+};
+
+// ── START ──
+function startCat(cat) {
+  currentCat = cat;
+  learnData  = cat === 'mix' ? [...ALL_WORDS].sort(() => Math.random()-0.5).slice(0,15) : WORDS[cat];
+  quizPool   = ALL_WORDS;
+  learnIdx   = 0;
+  const titles = { immediate:'Immediate Family', close:'Close Relatives', body:'Body Parts', titles:'Titles & Honorifics', describing:'Describing People', mix:'Mixed Quiz' };
+  document.getElementById('learn-title').textContent = titles[cat] || cat;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(learnData[0].jp), 600);
+}
+
+// ── LEARN ──
+function showLearnCard() {
+  const w = learnData[learnIdx];
+  document.getElementById('learn-cat-label').textContent = CAT_LABELS[currentCat] || '';
+  document.getElementById('learn-banner-jp').textContent  = w.jp;
+  document.getElementById('learn-romaji').textContent     = w.r;
+  document.getElementById('learn-en').textContent         = w.en;
+  document.getElementById('learn-counter').textContent    = (learnIdx+1)+' / '+learnData.length;
+  document.getElementById('learn-prev').disabled = learnIdx === 0;
+  document.getElementById('learn-next').disabled = learnIdx === learnData.length-1;
+
+  // Formal/informal box — show only for family words that have myWord
+  const formalBox = document.getElementById('learn-formal-box');
+  if (w.myWord) {
+    document.getElementById('learn-my-word').textContent    = w.myWord;
+    document.getElementById('learn-my-romaji').textContent  = '(' + w.myRomaji + ')';
+    document.getElementById('learn-their-word').textContent  = w.theirWord;
+    document.getElementById('learn-their-romaji').textContent = '(' + w.theirRomaji + ')';
+    formalBox.style.display = 'block';
+  } else {
+    formalBox.style.display = 'none';
+  }
+
+  const exEl  = document.getElementById('learn-example');
+  const tipEl = document.getElementById('learn-tip');
+  if (w.ex)  { exEl.innerHTML  = w.ex.replace(/\n/g,'<br>'); exEl.style.display='block'; }
+  else        { exEl.style.display='none'; }
+  if (w.tip) { tipEl.textContent = '💡 '+w.tip; tipEl.style.display='block'; }
+  else        { tipEl.style.display='none'; }
+}
+
+// ── QUIZ ──
+function startQuiz() {
+  score=0; streak=0; quizIdx=0; attempts=0;
+  quizData  = [...learnData].sort(()=>Math.random()-0.5).slice(0, Math.min(10, learnData.length));
+  quizTotal = quizData.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+  const titles = { immediate:'Family Quiz', close:'Relatives Quiz', body:'Body Parts Quiz', titles:'Titles Quiz', describing:'Describing Quiz', mix:'Mixed Quiz!' };
+  document.getElementById('quiz-title').textContent = titles[currentCat] || 'Quiz';
+  showScreen('quiz-screen');
+  showQuizQ();
+}
+
+function showQuizQ() {
+  if (quizIdx >= quizTotal) { endQuiz(); return; }
+  attempts = 0;
+  const w = quizData[quizIdx];
+
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display='none';
+
+  const jpEl   = document.getElementById('q-jp');
+  const enEl   = document.getElementById('q-en');
+  const hintEl = document.getElementById('q-hint');
+  jpEl.style.display='none'; enEl.style.display='none';
+
+  const qType = Math.floor(Math.random() * 2);
+
+  if (qType === 0) {
+    // Show Japanese → pick English
+    document.getElementById('q-type-badge').textContent = 'Japanese → English';
+    document.getElementById('q-label').textContent = 'What does this mean?';
+    jpEl.textContent=w.jp; jpEl.style.display='block';
+    hintEl.textContent = '(' + w.r + ')';
+    setTimeout(()=>speak(w.jp), 300);
+    buildOptions(w, 'en');
+  } else {
+    // Show English → pick Japanese
+    document.getElementById('q-type-badge').textContent = 'English → Japanese';
+    document.getElementById('q-label').textContent = 'How do you say this?';
+    enEl.textContent=w.en; enEl.style.display='block';
+    hintEl.textContent = '';
+    buildOptions(w, 'jp');
+  }
+}
+
+function buildOptions(correct, type) {
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML='';
+  const wrong = quizPool.filter(x=>x.id!==correct.id).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts  = [...wrong, correct].sort(()=>Math.random()-0.5);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    if (type==='en') {
+      btn.innerHTML = '<span class="opt-en">'+opt.en+'</span>';
+    } else {
+      btn.innerHTML = '<span class="opt-jp">'+opt.jp+'</span>';
+    }
+    btn.addEventListener('click', ()=>checkAnswer(opt.id===correct.id, btn, correct));
+    optDiv.appendChild(btn);
+  });
+}
+
+const encouragement=['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ Amazing! 💫','パーフェクト！ 🌟'];
+const tryAgain=['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
+
+function checkAnswer(isCorrect, btn, word) {
+  const feedback=document.getElementById('feedback');
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
+    speak(word.jp);
+    if(attempts===1){score++;streak++;const msg=encouragement[Math.floor(Math.random()*encouragement.length)];feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg;}
+    else{streak=0;feedback.textContent='Yes! '+word.jp+' = '+word.en+' 🌟';}
+    feedback.className='feedback correct-text';
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    setTimeout(()=>{quizIdx++;showQuizQ();},1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
+  }
+}
+
+function showHint() {
+  const w=quizData[quizIdx];
+  const hintText = w.myWord
+    ? '💡 '+w.jp+' = '+w.en+' · My: '+w.myWord+' / Their: '+w.theirWord
+    : '💡 '+w.jp+' ('+w.r+') = '+w.en;
+  document.getElementById('feedback').textContent=hintText+(w.tip?' · '+w.tip:'');
+  document.getElementById('feedback').className='feedback hint-text';
+  speak(w.jp);
+}
+
+function endQuiz() {
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=quizTotal;
+  const pct=score/quizTotal;
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  if(pct===1)      {trophy.textContent='🏆';title.textContent='パーフェクト！';msg.textContent='Perfect! Your Japanese family knowledge is amazing! 👨‍👩‍👧';}
+  else if(pct>=0.8){trophy.textContent='🥇';title.textContent='すごい！';      msg.textContent='Excellent! Try another category!';}
+  else if(pct>=0.6){trophy.textContent='🥈';title.textContent='よくできました！';msg.textContent='Good job! Practice the humble/polite forms!';}
+  else             {trophy.textContent='🌱';title.textContent='がんばれ！';    msg.textContent='Try Learn mode first — the formal/informal split is tricky!';}
+}
+
+// ── EVENTS ──
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.menu-card').forEach(card=>{
+    card.addEventListener('click', function(){ startCat(this.dataset.cat); });
+  });
+  document.getElementById('back-to-menu-learn').addEventListener('click', ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-quiz').addEventListener('click',  ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-end').addEventListener('click',   ()=>showScreen('menu-screen'));
+  document.getElementById('learn-back-link').addEventListener('click',    function(e){e.preventDefault();showScreen('menu-screen');});
+  document.getElementById('learn-speak-btn').addEventListener('click',    ()=>speak(learnData[learnIdx].jp));
+  document.getElementById('learn-prev').addEventListener('click', function(){
+    if(learnIdx>0){learnIdx--;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('learn-next').addEventListener('click', function(){
+    if(learnIdx<learnData.length-1){learnIdx++;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('start-quiz-from-learn').addEventListener('click', startQuiz);
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+  document.getElementById('try-again-btn').addEventListener('click', startQuiz);
+});
+</script>
+
+</body>
+</html>
