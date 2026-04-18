@@ -51,18 +51,6 @@
   .medium { background: #ffa502; }
   .hard { background: #ff4757; }
   .mixed { background: #a55eea; }
-  .back-btn {
-    display: inline-block;
-    background: #747d8c;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 15px;
-    font-family: inherit;
-    font-size: 0.9em;
-    cursor: pointer;
-    margin-bottom: 15px;
-  }
   .stats {
     display: flex;
     justify-content: space-around;
@@ -94,6 +82,15 @@
     outline: none;
   }
   .answer-input:focus { border-color: #ff6b6b; }
+  .answer-input.shake {
+    animation: shake 0.4s;
+    border-color: #ff4757;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
   .submit-btn {
     display: block;
     margin: 20px auto;
@@ -107,14 +104,26 @@
     cursor: pointer;
     font-family: inherit;
   }
+  .hint-btn {
+    background: #ffa502;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+  }
   .feedback {
-    font-size: 1.5em;
+    font-size: 1.3em;
     margin-top: 15px;
     min-height: 40px;
     font-weight: bold;
   }
   .correct { color: #2ed573; }
   .wrong { color: #ff4757; }
+  .hint { color: #ffa502; font-size: 1.1em; margin-top: 10px; }
   .trophy { font-size: 5em; margin: 20px 0; }
   .final-score {
     font-size: 2em;
@@ -154,7 +163,7 @@
 
   <div id="start-screen" class="screen active">
     <h1>🎉 Math Star! ⭐</h1>
-    <p style="color:#57606f; margin-bottom:20px;">Pick your level and become a multiplication hero!</p>
+    <p style="color:#57606f; margin-bottom:20px;">Keep trying until you get it right!</p>
     <button class="level-btn easy" onclick="startGame('easy')">🌱 Easy (1-5)</button>
     <button class="level-btn medium" onclick="startGame('medium')">🌟 Medium (1-9)</button>
     <button class="level-btn hard" onclick="startGame('hard')">🔥 Hard (1-12)</button>
@@ -173,6 +182,7 @@
     <input type="number" id="answer" class="answer-input" autocomplete="off">
     <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
     <div class="feedback" id="feedback"></div>
+    <button class="hint-btn" id="hint-btn" onclick="showHint()" style="display:none;">💡 Need a hint?</button>
   </div>
 
   <div id="end-screen" class="screen">
@@ -191,9 +201,13 @@
   let streak = 0;
   let questionNum = 0;
   let currentAnswer = 0;
+  let currentA = 0;
+  let currentB = 0;
+  let attempts = 0;
   let level = 'easy';
   const totalQuestions = 10;
   const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fantastic! 🌟', 'Super! 🎊'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Keep going! You got this! 🌟', 'Almost! Try once more! ✨'];
 
   function startGame(lvl) {
     level = lvl;
@@ -213,18 +227,20 @@
 
   function nextQuestion() {
     questionNum++;
+    attempts = 0;
     if (questionNum > totalQuestions) {
       endGame();
       return;
     }
     const [min, max] = getRange();
-    const a = Math.floor(Math.random() * (max - min + 1)) + min;
-    const b = Math.floor(Math.random() * (max - min + 1)) + min;
-    currentAnswer = a * b;
-    document.getElementById('question').textContent = `${a} × ${b} = ?`;
+    currentA = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentB = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentAnswer = currentA * currentB;
+    document.getElementById('question').textContent = `${currentA} × ${currentB} = ?`;
     document.getElementById('q-num').textContent = questionNum;
     document.getElementById('answer').value = '';
     document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
     document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
     document.getElementById('answer').focus();
   }
@@ -233,25 +249,52 @@
     const input = document.getElementById('answer');
     const feedback = document.getElementById('feedback');
     const userAnswer = parseInt(input.value);
+
     if (isNaN(userAnswer)) {
       feedback.textContent = 'Type a number! 🔢';
       feedback.className = 'feedback wrong';
       return;
     }
+
+    attempts++;
+
     if (userAnswer === currentAnswer) {
-      score++;
-      streak++;
-      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
-      feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      // Only score if first attempt
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      } else {
+        streak = 0;
+        feedback.textContent = `Yes! ${currentAnswer} is correct! 🌟 Moving on...`;
+      }
       feedback.className = 'feedback correct';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1500);
     } else {
       streak = 0;
-      feedback.textContent = `Oops! The answer was ${currentAnswer} 💪 Keep going!`;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
       feedback.className = 'feedback wrong';
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 400);
+      input.value = '';
+      input.focus();
+      // Show hint button after 2 wrong attempts
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
     }
-    document.getElementById('score').textContent = score;
-    document.getElementById('streak').textContent = streak;
-    setTimeout(nextQuestion, 1300);
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    // Hint: show as repeated addition
+    feedback.innerHTML = `💡 Hint: ${currentA} × ${currentB} means adding ${currentA} together ${currentB} times!<br>${Array(currentB).fill(currentA).join(' + ')} = ?`;
+    feedback.className = 'feedback hint';
   }
 
   function endGame() {
