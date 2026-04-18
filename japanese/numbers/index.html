@@ -549,7 +549,7 @@ function showQuizQ() {
       document.getElementById('q-type-badge').textContent = '¥ Price → Reading';
       document.getElementById('q-label').textContent = 'How do you say this price?';
       textEl.textContent = d.display; textEl.style.display='block';
-      hintEl.textContent = d.hint;
+      hintEl.textContent = "";
       buildPriceOpts(d, 'reading');
     }
 
@@ -560,7 +560,7 @@ function showQuizQ() {
       document.getElementById('q-type-badge').textContent = 'Age → Reading';
       document.getElementById('q-label').textContent = 'How do you say this age?';
       textEl.textContent = d.display; textEl.style.display='block';
-      hintEl.textContent = d.hint;
+      hintEl.textContent = "";
       buildAgeOpts(d, 'reading');
     } else {
       document.getElementById('q-type-badge').textContent = 'Reading → Age';
