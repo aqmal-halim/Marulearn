@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🆘 Survival Japanese!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+JP:wght@400;700&display=swap');
+
+:root {
+–red: #e63946;
+–pink: #ff6b9d;
+–orange: #ff9500;
+–yellow: #ffd60a;
+–green: #06d6a0;
+–blue: #118ab2;
+–navy: #073b4c;
+–white: #ffffff;
+–soft: #fff8f0;
+–card: #ffffff;
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Nunito’, sans-serif;
+background: var(–soft);
+min-height: 100vh;
+padding: 20px;
+}
+
+/* ── PROFILE SELECTOR ── */
+.profile-screen {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+
+.profile-screen h1 {
+font-size: 2em;
+font-weight: 900;
+color: var(–navy);
+margin-bottom: 8px;
+text-align: center;
+}
+
+.profile-screen p {
+color: #666;
+margin-bottom: 30px;
+text-align: center;
+font-size: 1em;
+}
+
+.profile-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+width: 100%;
+max-width: 420px;
+}
+
+.profile-card {
+background: white;
+border-radius: 20px;
+padding: 20px 15px;
+text-align: center;
+cursor: pointer;
+border: 3px solid transparent;
+box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+transition: all 0.2s;
+-webkit-tap-highlight-color: transparent;
+}
+
+.profile-card:hover, .profile-card:active { transform: scale(1.04); }
+.profile-card.tiny { border-color: #ff9500; }
+.profile-card.kids { border-color: #e63946; }
+.profile-card.daily { border-color: #118ab2; }
+.profile-card.n5 { border-color: #06d6a0; }
+
+.profile-card .emoji { font-size: 3em; margin-bottom: 8px; }
+.profile-card .name { font-weight: 900; font-size: 1em; color: var(–navy); }
+.profile-card .desc { font-size: 0.75em; color: #888; margin-top: 3px; }
+
+/* ── CATEGORY SCREEN ── */
+.cat-screen {
+max-width: 500px;
+margin: 0 auto;
+padding: 10px 0;
+}
+
+.top-bar {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.back-btn {
+background: white;
+border: 2px solid #eee;
+border-radius: 12px;
+padding: 8px 14px;
+font-family: inherit;
+font-weight: 700;
+font-size: 0.9em;
+cursor: pointer;
+color: var(–navy);
+-webkit-appearance: none;
+}
+
+.top-bar h2 {
+font-size: 1.3em;
+font-weight: 900;
+color: var(–navy);
+flex: 1;
+}
+
+.profile-badge {
+background: var(–navy);
+color: white;
+padding: 5px 12px;
+border-radius: 20px;
+font-size: 0.8em;
+font-weight: 700;
+}
+
+.section-title {
+font-size: 0.8em;
+font-weight: 800;
+text-transform: uppercase;
+letter-spacing: 1.5px;
+color: #aaa;
+margin: 20px 0 10px;
+}
+
+.cat-grid { display: grid; gap: 12px; }
+
+.cat-card {
+background: white;
+border-radius: 18px;
+padding: 18px 20px;
+display: flex;
+align-items: center;
+gap: 15px;
+cursor: pointer;
+border: 2px solid transparent;
+box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+transition: all 0.2s;
+text-decoration: none;
+-webkit-tap-highlight-color: transparent;
+}
+
+.cat-card:hover, .cat-card:active { transform: scale(1.02); }
+.cat-card.urgent { border-color: #e63946; background: #fff5f5; }
+.cat-card.blue { border-color: #118ab2; }
+.cat-card.green { border-color: #06d6a0; }
+.cat-card.orange { border-color: #ff9500; }
+.cat-card.purple { border-color: #7b5ea7; }
+
+.cat-icon { font-size: 2.5em; min-width: 50px; text-align: center; }
+.cat-info { flex: 1; }
+.cat-name { font-weight: 900; font-size: 1.1em; color: var(–navy); }
+.cat-desc { font-size: 0.82em; color: #888; margin-top: 2px; }
+.cat-count { font-size: 0.75em; font-weight: 700; color: #bbb; }
+
+.urgent-badge {
+background: var(–red);
+color: white;
+padding: 3px 10px;
+border-radius: 20px;
+font-size: 0.7em;
+font-weight: 800;
+}
+
+/* ── FLASHCARD GAME ── */
+.game-screen {
+max-width: 500px;
+margin: 0 auto;
+}
+
+.game-header {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.progress-wrap {
+flex: 1;
+background: #eee;
+border-radius: 10px;
+height: 10px;
+overflow: hidden;
+}
+
+.progress-fill {
+background: linear-gradient(90deg, var(–pink), var(–red));
+height: 100%;
+transition: width 0.4s;
+width: 0%;
+border-radius: 10px;
+}
+
+.q-count {
+font-weight: 800;
+font-size: 0.9em;
+color: var(–navy);
+white-space: nowrap;
+}
+
+.stats-row {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.stat-pill {
+background: white;
+border-radius: 12px;
+padding: 8px 15px;
+font-weight: 800;
+font-size: 0.9em;
+box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+flex: 1;
+text-align: center;
+}
+
+.stat-pill.score { color: var(–blue); }
+.stat-pill.streak { color: var(–red); }
+
+/* Flashcard */
+.flashcard {
+background: white;
+border-radius: 25px;
+padding: 30px 25px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+margin-bottom: 20px;
+text-align: center;
+min-height: 220px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+
+.card-mode-badge {
+position: absolute;
+top: 15px;
+right: 15px;
+background: #f0f0f0;
+color: #888;
+padding: 4px 10px;
+border-radius: 20px;
+font-size: 0.7em;
+font-weight: 700;
+}
+
+.card-situation {
+font-size: 0.85em;
+font-weight: 700;
+color: #aaa;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-bottom: 12px;
+}
+
+.card-japanese {
+font-family: ‘Noto Sans JP’, sans-serif;
+font-size: 2.2em;
+font-weight: 700;
+color: var(–navy);
+margin-bottom: 8px;
+line-height: 1.3;
+}
+
+.card-romaji {
+font-size: 1em;
+color: var(–blue);
+font-weight: 700;
+margin-bottom: 8px;
+}
+
+.card-english {
+font-size: 1.1em;
+color: #555;
+font-weight: 600;
+}
+
+.card-context {
+margin-top: 12px;
+background: #f8f9fa;
+border-radius: 12px;
+padding: 10px 15px;
+font-size: 0.82em;
+color: #777;
+font-style: italic;
+width: 100%;
+}
+
+.speak-btn {
+background: var(–blue);
+color: white;
+border: none;
+border-radius: 50px;
+padding: 12px 25px;
+font-family: inherit;
+font-weight: 800;
+font-size: 1em;
+cursor: pointer;
+margin: 10px 0 20px;
+display: flex;
+align-items: center;
+gap: 8px;
+-webkit-appearance: none;
+}
+
+/* Multiple choice options */
+.options-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 15px;
+}
+
+.option-btn {
+background: white;
+border: 2px solid #eee;
+border-radius: 15px;
+padding: 14px 10px;
+font-family: ‘Nunito’, sans-serif;
+font-weight: 700;
+font-size: 0.9em;
+cursor: pointer;
+color: var(–navy);
+transition: all 0.15s;
+-webkit-appearance: none;
+text-align: center;
+line-height: 1.3;
+}
+
+.option-btn .opt-jp {
+font-family: ‘Noto Sans JP’, sans-serif;
+font-size: 1.1em;
+display: block;
+margin-bottom: 3px;
+}
+
+.option-btn .opt-romaji {
+font-size: 0.75em;
+color: #aaa;
+display: block;
+}
+
+.option-btn:hover:not(:disabled) { border-color: var(–blue); background: #f0f8ff; }
+.option-btn.correct { background: #e8fff5; border-color: var(–green); color: #059669; }
+.option-btn.wrong { background: #fff0f0; border-color: var(–red); color: var(–red); animation: shake 0.4s; }
+.option-btn:disabled { cursor: not-allowed; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25% { transform: translateX(-8px); }
+75% { transform: translateX(8px); }
+}
+
+.feedback {
+text-align: center;
+font-weight: 800;
+font-size: 1.1em;
+min-height: 35px;
+margin-bottom: 10px;
+}
+
+.feedback.correct-text { color: var(–green); }
+.feedback.wrong-text { color: var(–red); }
+.feedback.hint-text {
+color: var(–orange);
+background: #fff8e6;
+padding: 10px 15px;
+border-radius: 12px;
+font-size: 0.9em;
+font-weight: 600;
+}
+
+.hint-btn {
+background: #fff8e6;
+color: #c87000;
+border: 2px solid #ffd580;
+border-radius: 12px;
+padding: 8px 18px;
+font-family: inherit;
+font-weight: 700;
+font-size: 0.85em;
+cursor: pointer;
+-webkit-appearance: none;
+display: block;
+margin: 0 auto;
+}
+
+/* Learn mode (flashcard browse) */
+.learn-card {
+background: white;
+border-radius: 25px;
+padding: 30px 25px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+margin-bottom: 20px;
+text-align: center;
+}
+
+.learn-nav {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 20px;
+}
+
+.nav-btn {
+background: var(–navy);
+color: white;
+border: none;
+border-radius: 12px;
+padding: 12px 20px;
+font-family: inherit;
+font-weight: 800;
+font-size: 1em;
+cursor: pointer;
+-webkit-appearance: none;
+}
+
+.nav-btn:disabled { background: #ddd; color: #aaa; }
+
+.learn-counter {
+font-weight: 800;
+color: #aaa;
+font-size: 0.9em;
+}
+
+/* End screen */
+.end-screen {
+max-width: 500px;
+margin: 0 auto;
+text-align: center;
+padding: 20px;
+}
+
+.trophy { font-size: 5em; margin: 20px 0; }
+.end-title { font-size: 2em; font-weight: 900; color: var(–navy); margin-bottom: 10px; }
+.end-score { font-size: 1.8em; font-weight: 900; color: var(–blue); margin: 15px 0; }
+.end-msg { color: #666; font-size: 1em; margin-bottom: 25px; }
+
+.end-btns { display: grid; gap: 10px; }
+.end-btn {
+background: var(–navy);
+color: white;
+border: none;
+border-radius: 15px;
+padding: 16px;
+font-family: inherit;
+font-weight: 800;
+font-size: 1em;
+cursor: pointer;
+-webkit-appearance: none;
+}
+.end-btn.secondary { background: white; color: var(–navy); border: 2px solid #eee; }
+
+.home-link {
+display: block;
+margin-top: 20px;
+color: #aaa;
+text-decoration: none;
+font-weight: 700;
+font-size: 0.9em;
+text-align: center;
+}
+
+/* Mode toggle */
+.mode-toggle {
+display: flex;
+background: #eee;
+border-radius: 12px;
+padding: 4px;
+margin-bottom: 20px;
+gap: 4px;
+}
+
+.mode-btn {
+flex: 1;
+background: transparent;
+border: none;
+border-radius: 9px;
+padding: 10px;
+font-family: inherit;
+font-weight: 700;
+font-size: 0.85em;
+cursor: pointer;
+color: #888;
+transition: all 0.2s;
+-webkit-appearance: none;
+}
+
+.mode-btn.active {
+background: white;
+color: var(–navy);
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+.profile-screen.active { display: flex; }
+</style>
+
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+
+<!-- SCREEN 1: PROFILE SELECT              -->
+
+<!-- ══════════════════════════════════════ -->
+
+<div id="profile-screen" class="profile-screen screen active">
+  <div style="font-size:3em; margin-bottom:10px;">🇯🇵</div>
+  <h1>Survival Japanese</h1>
+  <p>Who's learning today?</p>
+  <div class="profile-grid">
+    <div class="profile-card tiny" data-profile="tiny">
+      <div class="emoji">👶</div>
+      <div class="name">Tiny</div>
+      <div class="desc">Age 4 · Pictures & audio</div>
+    </div>
+    <div class="profile-card kids" data-profile="kids">
+      <div class="emoji">👧</div>
+      <div class="name">School Kid</div>
+      <div class="desc">Grade 2-3 · School phrases</div>
+    </div>
+    <div class="profile-card daily" data-profile="daily">
+      <div class="emoji">👩</div>
+      <div class="name">Daily Life</div>
+      <div class="desc">Adult · Shopping & life</div>
+    </div>
+    <div class="profile-card n5" data-profile="n5">
+      <div class="emoji">🏆</div>
+      <div class="name">N5 Prep</div>
+      <div class="desc">Full phrases · All levels</div>
+    </div>
+  </div>
+  <a href="../japanese/" class="home-link" style="margin-top:25px;">← Back to Japanese Hub</a>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+
+<!-- SCREEN 2: CATEGORY SELECT             -->
+
+<!-- ══════════════════════════════════════ -->
+
+<div id="cat-screen" class="screen">
+  <div class="cat-screen">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-profile">← Back</button>
+      <h2>Survival Japanese</h2>
+      <div class="profile-badge" id="profile-badge">Kids</div>
+    </div>
+
+```
+<div class="mode-toggle">
+  <button type="button" class="mode-btn active" data-mode="learn">📖 Learn First</button>
+  <button type="button" class="mode-btn" data-mode="quiz">🎯 Quiz Me</button>
+</div>
+
+<div class="section-title">🚨 Use These TODAY</div>
+<div class="cat-grid" id="urgent-cats"></div>
+
+<div class="section-title">📚 Good to Know</div>
+<div class="cat-grid" id="other-cats"></div>
+
+<a href="../japanese/" class="home-link">← Back to Japanese Hub</a>
+```
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+
+<!-- SCREEN 3A: LEARN MODE (Flashcards)   -->
+
+<!-- ══════════════════════════════════════ -->
+
+<div id="learn-screen" class="screen">
+  <div class="game-screen">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-cats-learn">← Back</button>
+      <h2 id="learn-title">Greetings</h2>
+    </div>
+
+```
+<div class="learn-card">
+  <div class="card-situation" id="learn-situation"></div>
+  <div class="card-japanese" id="learn-japanese"></div>
+  <div class="card-romaji" id="learn-romaji"></div>
+  <div class="card-english" id="learn-english"></div>
+  <div class="card-context" id="learn-context"></div>
+</div>
+
+<div style="text-align:center; margin-bottom:15px;">
+  <button type="button" class="speak-btn" id="learn-speak-btn" style="margin: 0 auto;">
+    🔊 Hear it
+  </button>
+</div>
+
+<div class="learn-nav">
+  <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+  <span class="learn-counter" id="learn-counter">1 / 10</span>
+  <button type="button" class="nav-btn" id="learn-next">Next →</button>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+  <button type="button" class="end-btn" id="start-quiz-btn" style="padding: 14px 30px; border-radius: 15px;">
+    🎯 Ready to Quiz!
+  </button>
+</div>
+
+<a href="#" class="home-link" id="learn-back-link">← Back to categories</a>
+```
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+
+<!-- SCREEN 3B: QUIZ MODE                  -->
+
+<!-- ══════════════════════════════════════ -->
+
+<div id="quiz-screen" class="screen">
+  <div class="game-screen">
+    <div class="game-header">
+      <button type="button" class="back-btn" id="back-to-cats-quiz">← Back</button>
+      <div class="progress-wrap">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+      <div class="q-count" id="q-count">1/10</div>
+    </div>
+
+```
+<div class="stats-row">
+  <div class="stat-pill score">⭐ <span id="score">0</span></div>
+  <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+</div>
+
+<div class="flashcard">
+  <div class="card-mode-badge" id="quiz-mode-badge">EN → JP</div>
+  <div class="card-situation" id="quiz-situation"></div>
+  <div class="card-japanese" id="quiz-question"></div>
+  <div class="card-romaji" id="quiz-romaji"></div>
+</div>
+
+<div style="text-align:center; margin-bottom:15px;">
+  <button type="button" class="speak-btn" id="quiz-speak-btn" style="margin: 0 auto; display:none;">
+    🔊 Hear it again
+  </button>
+</div>
+
+<div class="options-grid" id="options"></div>
+
+<div class="feedback" id="feedback"></div>
+<button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+```
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+
+<!-- SCREEN 4: END                         -->
+
+<!-- ══════════════════════════════════════ -->
+
+<div id="end-screen" class="screen">
+  <div class="end-screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">Amazing!</div>
+    <div class="end-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="end-msg" id="end-msg"></div>
+    <div class="end-btns">
+      <button type="button" class="end-btn" id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-btn">📚 More Categories</button>
+    </div>
+    <a href="../japanese/" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA — All phrases by profile + category
+// ══════════════════════════════════════════
+const PHRASES = {
+  tiny: {
+    greetings: {
+      name: 'Greetings 👋', color: 'urgent', urgent: true,
+      desc: 'Say hello and goodbye!',
+      phrases: [
+        { jp: 'こんにちは', romaji: 'Konnichiwa', en: 'Hello / Good afternoon', situation: 'Meeting someone', context: 'Use this during the day! 🌞' },
+        { jp: 'おはよう', romaji: 'Ohayou', en: 'Good morning', situation: 'Morning greeting', context: 'Say this when you wake up! 🌅' },
+        { jp: 'ありがとう', romaji: 'Arigatou', en: 'Thank you', situation: 'Being thankful', context: 'When someone gives you something! 🎁' },
+        { jp: 'ごめんなさい', romaji: 'Gomennasai', en: 'Sorry', situation: 'Saying sorry', context: 'When you make a mistake 😅' },
+        { jp: 'さようなら', romaji: 'Sayounara', en: 'Goodbye', situation: 'Leaving', context: 'When going home! 🏠' },
+      ]
+    },
+    needs: {
+      name: 'I Need... 🙋', color: 'orange', urgent: true,
+      desc: 'Ask for what you need',
+      phrases: [
+        { jp: 'トイレ', romaji: 'Toire', en: 'Toilet', situation: 'Needing the bathroom', context: 'Point and say this! 🚻' },
+        { jp: 'みず', romaji: 'Mizu', en: 'Water', situation: 'Feeling thirsty', context: 'When you are thirsty! 💧' },
+        { jp: 'おなかすいた', romaji: 'Onaka suita', en: 'I am hungry', situation: 'Feeling hungry', context: 'When your tummy rumbles! 🍱' },
+        { jp: 'いたい', romaji: 'Itai', en: 'It hurts / Ouch!', situation: 'Feeling pain', context: 'When something hurts! 🤕' },
+        { jp: 'たすけて', romaji: 'Tasukete', en: 'Help me!', situation: 'Needing help', context: 'When you need help! 🆘' },
+      ]
+    }
+  },
+
+  kids: {
+    emergency: {
+      name: '🚨 Emergency Phrases', color: 'urgent', urgent: true,
+      desc: 'Must know for school today!',
+      phrases: [
+        { jp: 'トイレに行っていいですか？', romaji: 'Toire ni itte ii desu ka?', en: 'Can I go to the toilet?', situation: 'During class', context: 'Raise your hand and say this to your teacher 🙋' },
+        { jp: 'わかりません', romaji: 'Wakarimasen', en: "I don't understand", situation: "When confused", context: 'It\'s OK to say this! Teachers will help you 😊' },
+        { jp: 'もう一度言ってください', romaji: 'Mou ichido itte kudasai', en: 'Please say it again', situation: 'Didn\'t hear/understand', context: 'Ask your teacher to repeat 🔁' },
+        { jp: 'せんせい、たすけてください', romaji: 'Sensei, tasukete kudasai', en: 'Teacher, please help me', situation: 'Needing teacher help', context: 'Raise your hand and say this 🆘' },
+        { jp: 'きもちがわるいです', romaji: 'Kimochi ga warui desu', en: 'I feel sick', situation: 'Feeling unwell', context: 'Tell your teacher if you feel sick 🤒' },
+      ]
+    },
+    classroom: {
+      name: '🏫 Classroom Commands', color: 'blue', urgent: true,
+      desc: 'Understand what teacher says',
+      phrases: [
+        { jp: 'たってください', romaji: 'Tatte kudasai', en: 'Please stand up', situation: 'Teacher command', context: 'Stand up when you hear this! 🧍' },
+        { jp: 'すわってください', romaji: 'Suwatte kudasai', en: 'Please sit down', situation: 'Teacher command', context: 'Sit down when you hear this! 🪑' },
+        { jp: 'きいてください', romaji: 'Kiite kudasai', en: 'Please listen', situation: 'Teacher command', context: 'Stop and listen to teacher 👂' },
+        { jp: 'ほんをあけてください', romaji: 'Hon wo akete kudasai', en: 'Please open your book', situation: 'Lesson time', context: 'Open your textbook! 📖' },
+        { jp: 'しずかにしてください', romaji: 'Shizuka ni shite kudasai', en: 'Please be quiet', situation: 'Teacher command', context: 'Shhh! Be quiet 🤫' },
+        { jp: 'かいてください', romaji: 'Kaite kudasai', en: 'Please write', situation: 'Writing time', context: 'Take out your pencil! ✏️' },
+        { jp: 'だしてください', romaji: 'Dashite kudasai', en: 'Please take it out/submit', situation: 'Homework time', context: 'Hand in your homework! 📋' },
+        { jp: 'きりつ・れい・ちゃくせき', romaji: 'Kiritsu / Rei / Chakuseki', en: 'Stand / Bow / Sit', situation: 'Start/end of class', context: 'The 3 commands at start/end of every class! 🏫' },
+      ]
+    },
+    friends: {
+      name: '👫 Making Friends', color: 'green', urgent: false,
+      desc: 'Talk to classmates',
+      phrases: [
+        { jp: 'なまえはなんですか？', romaji: 'Namae wa nan desu ka?', en: "What's your name?", situation: 'Meeting a classmate', context: 'Ask a new friend their name! 😊' },
+        { jp: 'わたしのなまえは___です', romaji: 'Watashi no namae wa ___ desu', en: 'My name is ___', situation: 'Introducing yourself', context: 'Say your name after "wa"! 👋' },
+        { jp: 'いっしょにあそぼう', romaji: 'Issho ni asobou', en: "Let's play together!", situation: 'Recess time', context: 'Ask a friend to play with you! 🎮' },
+        { jp: 'いいよ', romaji: 'Ii yo', en: 'Sure! / OK!', situation: 'Agreeing', context: 'Say yes to a friend! ✅' },
+        { jp: 'どこにすんでいますか？', romaji: 'Doko ni sunde imasu ka?', en: 'Where do you live?', situation: 'Getting to know someone', context: 'Ask where your friend lives! 🏠' },
+      ]
+    },
+    lunchtime: {
+      name: '🍱 Lunchtime Words', color: 'orange', urgent: false,
+      desc: 'Japanese school lunch phrases',
+      phrases: [
+        { jp: 'いただきます', romaji: 'Itadakimasu', en: 'Let\'s eat! (before meal)', situation: 'Before eating', context: 'Say this before EVERY meal in Japan! 🙏' },
+        { jp: 'ごちそうさまでした', romaji: 'Gochisousama deshita', en: 'Thank you for the meal', situation: 'After eating', context: 'Say this after you finish eating! 🍱' },
+        { jp: 'おいしい！', romaji: 'Oishii!', en: 'Delicious!', situation: 'Enjoying food', context: 'Your friends will love hearing this! 😋' },
+        { jp: 'きらいです', romaji: 'Kirai desu', en: "I don't like it", situation: 'Disliking food', context: 'Be polite when saying this 😅' },
+        { jp: 'ぜんぶたべました', romaji: 'Zenbu tabemashita', en: 'I ate everything!', situation: 'Finished eating', context: 'Teachers like hearing this! ⭐' },
+      ]
+    }
+  },
+
+  daily: {
+    shopping: {
+      name: '🛒 Shopping', color: 'urgent', urgent: true,
+      desc: 'Supermarket & convenience store',
+      phrases: [
+        { jp: 'これはいくらですか？', romaji: 'Kore wa ikura desu ka?', en: 'How much is this?', situation: 'Shopping', context: 'Point at the item when asking! 💴' },
+        { jp: 'ふくろはいりますか？', romaji: 'Fukuro wa irimasu ka?', en: 'Do you need a bag?', situation: 'At the register', context: 'Cashier will ask you this! Answer はい or いいえ 🛍️' },
+        { jp: 'カードでいいですか？', romaji: 'Kaado de ii desu ka?', en: 'Can I pay by card?', situation: 'Paying', context: 'Ask if card payment is OK 💳' },
+        { jp: 'レシートをください', romaji: 'Reshiito wo kudasai', en: 'Please give me a receipt', situation: 'After paying', context: 'Ask for your receipt 🧾' },
+        { jp: 'どこにありますか？', romaji: 'Doko ni arimasu ka?', en: 'Where is it?', situation: 'Looking for something', context: 'Ask where to find something in the store 🗺️' },
+      ]
+    },
+    hospital: {
+      name: '🏥 Hospital / Pharmacy', color: 'urgent', urgent: true,
+      desc: 'Essential medical phrases',
+      phrases: [
+        { jp: 'きょうはどうされましたか？', romaji: 'Kyou wa dou saremashita ka?', en: 'What brings you in today?', situation: 'At the clinic', context: 'Doctor will ask you this! 🩺' },
+        { jp: 'ここがいたいです', romaji: 'Koko ga itai desu', en: 'It hurts here', situation: 'Describing pain', context: 'Point to where it hurts! 🤕' },
+        { jp: 'アレルギーがあります', romaji: 'Arerugii ga arimasu', en: 'I have allergies', situation: 'Medical history', context: 'Important to know! 💊' },
+        { jp: 'ほけんしょうはありますか？', romaji: 'Hokenshou wa arimasu ka?', en: 'Do you have your insurance card?', situation: 'At reception', context: 'Always bring your 保険証! 📋' },
+        { jp: 'えいごはなせますか？', romaji: 'Eigo hanasemasu ka?', en: 'Can you speak English?', situation: 'Needing help', context: 'Ask if someone speaks English 🇬🇧' },
+      ]
+    },
+    directions: {
+      name: '🚃 Transport & Directions', color: 'blue', urgent: false,
+      desc: 'Getting around Japan',
+      phrases: [
+        { jp: '___駅はどこですか？', romaji: '___ eki wa doko desu ka?', en: 'Where is ___ station?', situation: 'Finding a station', context: 'Fill in the station name! 🚉' },
+        { jp: 'つぎはなんですか？', romaji: 'Tsugi wa nan desu ka?', en: 'What is the next stop?', situation: 'On the train', context: 'Ask on the train! 🚄' },
+        { jp: 'このでんしゃは___にとまりますか？', romaji: 'Kono densha wa ___ ni tomarimasu ka?', en: 'Does this train stop at ___?', situation: 'Checking the train', context: 'Ask before boarding! 🚆' },
+        { jp: 'みぎにまがってください', romaji: 'Migi ni magatte kudasai', en: 'Please turn right', situation: 'Giving directions', context: 'Right is 右 (migi) 👉' },
+        { jp: 'まっすぐいってください', romaji: 'Massugu itte kudasai', en: 'Please go straight', situation: 'Giving directions', context: 'Straight ahead! ⬆️' },
+      ]
+    },
+    school_parent: {
+      name: '🏫 School (Parent)', color: 'green', urgent: false,
+      desc: 'Talk to teachers & school',
+      phrases: [
+        { jp: 'よろしくおねがいします', romaji: 'Yoroshiku onegaishimasu', en: 'Please take care of my child / Nice to meet you', situation: 'Meeting teacher', context: 'Say this when meeting your child\'s teacher! Very important! 🙏' },
+        { jp: 'けんがくさせていただけますか？', romaji: 'Kengaku sasete itadakemasu ka?', en: 'May I observe the class?', situation: 'School visit', context: 'Ask to watch a lesson 📚' },
+        { jp: 'むすめがにほんごをまだならっています', romaji: 'Musume ga nihongo wo mada naratte imasu', en: 'My daughter is still learning Japanese', situation: 'Explaining to teacher', context: 'Helpful context for teachers! 👧' },
+        { jp: 'れんらくちょうをみてください', romaji: 'Renraku chou wo mite kudasai', en: 'Please check the contact book', situation: 'School communication', context: 'The 連絡帳 (contact book) is very important in Japanese schools! 📒' },
+        { jp: 'おむかえにきました', romaji: 'Omukae ni kimashita', en: 'I am here to pick up', situation: 'Picking up child', context: 'Say this at school reception 🏫' },
+      ]
+    }
+  },
+
+  n5: {
+    greetings_formal: {
+      name: '🎌 Formal Greetings', color: 'urgent', urgent: true,
+      desc: 'N5 level greetings & introductions',
+      phrases: [
+        { jp: 'はじめまして', romaji: 'Hajimemashite', en: 'Nice to meet you (first time)', situation: 'First meeting', context: 'Always use this the FIRST time you meet someone! 🤝' },
+        { jp: 'こちらこそ、よろしくおねがいします', romaji: 'Kochira koso, yoroshiku onegaishimasu', en: 'Likewise, pleased to meet you', situation: 'Responding to introduction', context: 'The polite response to よろしく 🙇' },
+        { jp: 'おひさしぶりです', romaji: 'Ohisashiburi desu', en: 'Long time no see', situation: 'Meeting again after long time', context: 'Use when you haven\'t seen someone in a while 📅' },
+        { jp: 'おげんきですか？', romaji: 'Ogenki desu ka?', en: 'How are you?', situation: 'Checking on someone', context: 'Formal way to ask how someone is doing 💚' },
+        { jp: 'おかげさまで、げんきです', romaji: 'Okagesama de, genki desu', en: 'I\'m well, thanks to you', situation: 'Replying to ogenki', context: 'Very polite response to おげんきですか 😊' },
+      ]
+    },
+    daily_life: {
+      name: '🏠 Daily Life Phrases', color: 'blue', urgent: true,
+      desc: 'Common N5 daily expressions',
+      phrases: [
+        { jp: 'いってきます', romaji: 'Ittekimasu', en: 'I\'m heading out (will come back)', situation: 'Leaving home', context: 'Say this every time you leave home! 🚪' },
+        { jp: 'いってらっしゃい', romaji: 'Itterasshai', en: 'Take care / Safe travels', situation: 'Sending someone off', context: 'Reply to いってきます 👋' },
+        { jp: 'ただいま', romaji: 'Tadaima', en: 'I\'m home!', situation: 'Returning home', context: 'Shout this when you get home! 🏠' },
+        { jp: 'おかえりなさい', romaji: 'Okaerinasai', en: 'Welcome back!', situation: 'Welcoming someone home', context: 'Reply to ただいま 🤗' },
+        { jp: 'おやすみなさい', romaji: 'Oyasuminasai', en: 'Good night', situation: 'Bedtime', context: 'Say before sleeping 🌙' },
+        { jp: 'きをつけて', romaji: 'Ki wo tsukete', en: 'Take care / Be careful', situation: 'Saying goodbye', context: 'Show you care about someone 💛' },
+      ]
+    },
+    polite_requests: {
+      name: '🙏 Polite Requests', color: 'green', urgent: false,
+      desc: 'N5 request patterns',
+      phrases: [
+        { jp: '___をください', romaji: '___ wo kudasai', en: 'Please give me ___', situation: 'Asking for something', context: 'Most useful N5 pattern! Add any noun before を 🎯' },
+        { jp: '___をみせてください', romaji: '___ wo misete kudasai', en: 'Please show me ___', situation: 'Asking to see something', context: 'Point and ask to see it 👀' },
+        { jp: 'まってください', romaji: 'Matte kudasai', en: 'Please wait', situation: 'Asking someone to wait', context: 'Hold on! ⏸️' },
+        { jp: 'ゆっくりはなしてください', romaji: 'Yukkuri hanashite kudasai', en: 'Please speak slowly', situation: 'Japanese is too fast!', context: 'Ask anyone to speak slower — they will! 🐢' },
+        { jp: 'かいてください', romaji: 'Kaite kudasai', en: 'Please write it', situation: 'Can\'t understand spoken', context: 'Ask them to write it down ✏️' },
+      ]
+    },
+    expressing_self: {
+      name: '💬 Expressing Yourself', color: 'orange', urgent: false,
+      desc: 'Say how you feel in N5',
+      phrases: [
+        { jp: 'すきです', romaji: 'Suki desu', en: 'I like it', situation: 'Expressing like', context: 'Say what you love! ❤️' },
+        { jp: 'きらいです', romaji: 'Kirai desu', en: 'I dislike it', situation: 'Expressing dislike', context: 'Be careful — this is strong! 😅' },
+        { jp: 'たのしいです', romaji: 'Tanoshii desu', en: 'It\'s fun!', situation: 'Having fun', context: 'Express joy! 🎉' },
+        { jp: 'むずかしいです', romaji: 'Muzukashii desu', en: 'It\'s difficult', situation: 'Finding something hard', context: 'It\'s OK to admit it! 💪' },
+        { jp: 'わかりました', romaji: 'Wakarimashita', en: 'I understood / Got it!', situation: 'Understanding something', context: 'Shows you\'re following along ✅' },
+      ]
+    }
+  }
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentProfile = 'kids';
+let currentCat = null;
+let currentMode = 'learn';
+let currentPhrases = [];
+let learnIndex = 0;
+let quizPhrases = [];
+let quizIndex = 0;
+let score = 0;
+let streak = 0;
+let attempts = 0;
+
+// ══════════════════════════════════════════
+// SPEECH
+// ══════════════════════════════════════════
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  u.rate = 0.8;
+  u.pitch = 1.1;
+  window.speechSynthesis.speak(u);
+}
+
+// ══════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// PROFILE SELECT
+// ══════════════════════════════════════════
+function buildCategoryScreen(profile) {
+  currentProfile = profile;
+  const data = PHRASES[profile];
+  const badge = { tiny: '👶 Tiny', kids: '👧 School Kid', daily: '👩 Daily Life', n5: '🏆 N5 Prep' };
+  document.getElementById('profile-badge').textContent = badge[profile];
+
+  const urgentEl = document.getElementById('urgent-cats');
+  const otherEl = document.getElementById('other-cats');
+  urgentEl.innerHTML = '';
+  otherEl.innerHTML = '';
+
+  Object.entries(data).forEach(([key, cat]) => {
+    const card = document.createElement('div');
+    card.className = 'cat-card ' + cat.color;
+    card.innerHTML = `
+      <div class="cat-icon">${cat.name.split(' ')[0]}</div>
+      <div class="cat-info">
+        <div class="cat-name">${cat.name.substring(cat.name.indexOf(' ')+1)}</div>
+        <div class="cat-desc">${cat.desc}</div>
+        <div class="cat-count">${cat.phrases.length} phrases</div>
+      </div>
+      ${cat.urgent ? '<span class="urgent-badge">USE NOW</span>' : ''}
+    `;
+    card.addEventListener('click', () => startCategory(key));
+    if (cat.urgent) urgentEl.appendChild(card);
+    else otherEl.appendChild(card);
+  });
+
+  showScreen('cat-screen');
+}
+
+// ══════════════════════════════════════════
+// CATEGORY START
+// ══════════════════════════════════════════
+function startCategory(catKey) {
+  const cat = PHRASES[currentProfile][catKey];
+  currentCat = catKey;
+  currentPhrases = [...cat.phrases];
+
+  if (currentMode === 'learn') {
+    startLearnMode(cat);
+  } else {
+    startQuizMode(cat);
+  }
+}
+
+// ══════════════════════════════════════════
+// LEARN MODE
+// ══════════════════════════════════════════
+function startLearnMode(cat) {
+  learnIndex = 0;
+  document.getElementById('learn-title').textContent = cat.name;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(currentPhrases[0].jp), 600);
+}
+
+function showLearnCard() {
+  const p = currentPhrases[learnIndex];
+  document.getElementById('learn-situation').textContent = p.situation;
+  document.getElementById('learn-japanese').textContent = p.jp;
+  document.getElementById('learn-romaji').textContent = p.romaji;
+  document.getElementById('learn-english').textContent = p.en;
+  document.getElementById('learn-context').textContent = p.context;
+  document.getElementById('learn-counter').textContent = (learnIndex+1) + ' / ' + currentPhrases.length;
+  document.getElementById('learn-prev').disabled = learnIndex === 0;
+  document.getElementById('learn-next').disabled = learnIndex === currentPhrases.length - 1;
+}
+
+// ══════════════════════════════════════════
+// QUIZ MODE
+// ══════════════════════════════════════════
+function startQuizMode(cat) {
+  score = 0;
+  streak = 0;
+  quizIndex = 0;
+  attempts = 0;
+  // Take up to 10 questions, shuffle
+  quizPhrases = [...currentPhrases].sort(() => Math.random()-0.5).slice(0, Math.min(10, currentPhrases.length));
+  document.getElementById('score').textContent = 0;
+  document.getElementById('streak').textContent = 0;
+  showScreen('quiz-screen');
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  if (quizIndex >= quizPhrases.length) { endQuiz(); return; }
+  attempts = 0;
+
+  const p = quizPhrases[quizIndex];
+  const total = quizPhrases.length;
+
+  document.getElementById('q-count').textContent = (quizIndex+1) + '/' + total;
+  document.getElementById('progress').style.width = (quizIndex / total * 100) + '%';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('hint-btn').style.display = 'none';
+
+  // Alternate: show Japanese → pick English, or show English → pick Japanese
+  const showJpQuestion = Math.random() < 0.5;
+  document.getElementById('quiz-mode-badge').textContent = showJpQuestion ? 'JP → EN' : 'EN → JP';
+
+  if (showJpQuestion) {
+    document.getElementById('quiz-situation').textContent = p.situation;
+    document.getElementById('quiz-question').textContent = p.jp;
+    document.getElementById('quiz-romaji').textContent = p.romaji;
+    document.getElementById('quiz-speak-btn').style.display = 'flex';
+    setTimeout(() => speak(p.jp), 400);
+  } else {
+    document.getElementById('quiz-situation').textContent = '🇬🇧 What is this in Japanese?';
+    document.getElementById('quiz-question').textContent = p.en;
+    document.getElementById('quiz-romaji').textContent = '';
+    document.getElementById('quiz-speak-btn').style.display = 'none';
+  }
+
+  // Build options
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  // Get 3 wrong answers from same profile
+  const allPhrases = Object.values(PHRASES[currentProfile]).flatMap(c => c.phrases);
+  const wrong = allPhrases.filter(x => x.jp !== p.jp).sort(() => Math.random()-0.5).slice(0, 3);
+  const opts = [...wrong, p].sort(() => Math.random()-0.5);
+
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    if (showJpQuestion) {
+      btn.innerHTML = '<span class="opt-jp" style="font-size:0.9em; font-family:\'Noto Sans JP\',sans-serif">' + opt.en + '</span>';
+    } else {
+      btn.innerHTML = '<span class="opt-jp">' + opt.jp + '</span><span class="opt-romaji">' + opt.romaji + '</span>';
+    }
+    btn.addEventListener('click', () => checkQuizAnswer(opt.jp === p.jp, btn, p, showJpQuestion));
+    optionsDiv.appendChild(btn);
+  });
+}
+
+const encouragement = ['すごい！ Sugoi! 🎉', 'よくできました！ Well done! ⭐', 'がんばれ！ Keep it up! 🚀', 'さいこう！ Amazing! 💫', 'パーフェクト！ Perfect! 🌟'];
+const tryAgain = ['もう一度！ Try again! 💪', 'ちがいます。Not quite! 🎯', 'がんばって！ You got this! ✨'];
+
+function checkQuizAnswer(isCorrect, btn, phrase, showJpQuestion) {
+  const feedback = document.getElementById('feedback');
+  attempts++;
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    // Speak the Japanese answer
+    speak(phrase.jp);
+
+    if (attempts === 1) {
+      score++;
+      streak++;
+      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+      feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+    } else {
+      streak = 0;
+      feedback.textContent = 'Yes! ' + phrase.jp + ' = ' + phrase.en + ' 🌟';
+    }
+    feedback.className = 'feedback correct-text';
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+    setTimeout(() => { quizIndex++; showQuizQuestion(); }, 1800);
+  } else {
+    btn.classList.add('wrong');
+    btn.disabled = true;
+    streak = 0;
+    document.getElementById('streak').textContent = streak;
+    const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+    feedback.textContent = msg;
+    feedback.className = 'feedback wrong-text';
+    if (attempts >= 2) {
+      document.getElementById('hint-btn').style.display = 'block';
+    }
+  }
+}
+
+function showHint() {
+  const p = quizPhrases[quizIndex];
+  document.getElementById('feedback').textContent = '💡 ' + p.jp + ' (' + p.romaji + ') = ' + p.en;
+  document.getElementById('feedback').className = 'feedback hint-text';
+  speak(p.jp);
+}
+
+function endQuiz() {
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent = score;
+  const total = quizPhrases.length;
+  const trophy = document.getElementById('trophy');
+  const title = document.getElementById('end-title');
+  const msg = document.getElementById('end-msg');
+  if (score === total) {
+    trophy.textContent = '🏆'; title.textContent = 'パーフェクト！'; msg.textContent = 'Perfect score! You\'re a survival Japanese master! 🎌';
+  } else if (score >= total * 0.7) {
+    trophy.textContent = '🥇'; title.textContent = 'すごい！ Amazing!'; msg.textContent = 'Great job! Keep practicing these phrases every day!';
+  } else if (score >= total * 0.4) {
+    trophy.textContent = '🥈'; title.textContent = 'よくできました！'; msg.textContent = 'Good effort! Go back to Learn mode and try again!';
+  } else {
+    trophy.textContent = '🌱'; title.textContent = 'がんばれ！'; msg.textContent = 'Keep going! Try the Learn mode first, then quiz again!';
+  }
+}
+
+// ══════════════════════════════════════════
+// EVENT LISTENERS
+// ══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Profile cards
+  document.querySelectorAll('.profile-card').forEach(card => {
+    card.addEventListener('click', function() {
+      buildCategoryScreen(this.dataset.profile);
+    });
+  });
+
+  // Mode toggle
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentMode = this.dataset.mode;
+    });
+  });
+
+  // Back buttons
+  document.getElementById('back-to-profile').addEventListener('click', () => showScreen('profile-screen'));
+  document.getElementById('back-to-cats-learn').addEventListener('click', () => showScreen('cat-screen'));
+  document.getElementById('back-to-cats-quiz').addEventListener('click', () => showScreen('cat-screen'));
+
+  // Learn mode navigation
+  document.getElementById('learn-prev').addEventListener('click', () => {
+    if (learnIndex > 0) { learnIndex--; showLearnCard(); speak(currentPhrases[learnIndex].jp); }
+  });
+  document.getElementById('learn-next').addEventListener('click', () => {
+    if (learnIndex < currentPhrases.length - 1) { learnIndex++; showLearnCard(); speak(currentPhrases[learnIndex].jp); }
+  });
+
+  // Speak buttons
+  document.getElementById('learn-speak-btn').addEventListener('click', () => speak(currentPhrases[learnIndex].jp));
+  document.getElementById('quiz-speak-btn').addEventListener('click', () => speak(quizPhrases[quizIndex].jp));
+
+  // Start quiz from learn screen
+  document.getElementById('start-quiz-btn').addEventListener('click', () => {
+    const cat = PHRASES[currentProfile][currentCat];
+    startQuizMode(cat);
+  });
+
+  // End screen
+  document.getElementById('try-again-btn').addEventListener('click', () => {
+    const cat = PHRASES[currentProfile][currentCat];
+    startQuizMode(cat);
+  });
+  document.getElementById('back-to-menu-btn').addEventListener('click', () => showScreen('cat-screen'));
+
+  // Hint
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+
+  // Learn back link
+  document.getElementById('learn-back-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    showScreen('cat-screen');
+  });
+});
+</script>
+
+</body>
+</html>
