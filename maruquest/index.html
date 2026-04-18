@@ -3,49 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruQuest: Clean Math</title>
+    <title>MaruQuest: Math Duel</title>
     <style>
         body { 
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; 
-            background-color: #F0F4F8; 
+            background-color: #F8FAFC; 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh;
         }
 
         #game-container { 
             width: 90%; max-width: 400px; background: white; 
             border: 8px solid #FF784E; border-radius: 40px; 
-            padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            position: relative; overflow: hidden;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
         }
 
-        /* ── TOP STATS ── */
-        .stats-bar { 
-            display: flex; justify-content: space-between; 
-            font-weight: 900; color: #555; font-size: 1rem;
-            margin-bottom: 10px;
+        /* ── TOP NAV ── */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        
+        .home-btn {
+            background: #eee; border: none; padding: 8px 12px; border-radius: 12px;
+            font-weight: 900; color: #555; cursor: pointer; text-decoration: none; font-size: 0.8rem;
         }
+        .home-btn:hover { background: #ddd; }
+
+        .stats { font-weight: 900; color: #555; font-size: 0.9rem; }
 
         /* ── BATTLE ZONE ── */
         #stage { 
             height: 220px; position: relative; 
-            background: #fdfdfd; border-radius: 20px; 
-            border: 2px solid #eee; margin-bottom: 15px;
+            background: #ffffff; border-radius: 25px; 
+            border: 2px solid #F1F5F9; margin-bottom: 15px;
         }
         
         #hero { position: absolute; bottom: 20px; left: 20px; font-size: 60px; transition: 0.3s; z-index: 2; }
         #enemy { position: absolute; top: 40px; right: 20px; font-size: 80px; transition: 0.3s; z-index: 2; }
         
-        .target-tag {
+        .goal-bubble {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
             background: white; border: 3px solid #FF784E; border-radius: 50px;
-            padding: 5px 15px; font-weight: 900; font-size: 1.1rem; color: #333;
-            box-shadow: 0 4px 0 #FF784E22;
+            padding: 5px 20px; font-weight: 900; font-size: 1.2rem; box-shadow: 0 4px 0 #FF784E22;
         }
 
-        /* ── EQUATION & INPUT ── */
+        /* Enemy HP Bar */
+        .enemy-hp-container {
+            position: absolute; top: 120px; right: 20px; width: 80px;
+            height: 10px; background: #eee; border-radius: 5px; border: 2px solid #333;
+        }
+        #enemy-hp-fill { background: #FF5E5E; width: 100%; height: 100%; transition: 0.3s; }
+
+        /* ── INTERFACE ── */
         #equation-box {
             background: #FF784E; color: white; border-radius: 25px;
-            padding: 18px; font-size: 1.8rem; font-weight: 900; text-align: center;
+            padding: 18px; font-size: 2rem; font-weight: 900; text-align: center;
             margin-bottom: 20px; box-shadow: 0 6px 0 #E66A45;
         }
 
@@ -53,41 +63,30 @@
         
         .card {
             width: 65px; height: 65px; background: #5BBAFF; color: white;
-            border-radius: 18px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.6rem; font-weight: 900; cursor: pointer;
-            border: 3px solid white; box-shadow: 0 5px 0 #3a8cc7; transition: 0.1s;
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 900; cursor: pointer;
+            border: 4px solid white; box-shadow: 0 5px 0 #3a8cc7; transition: 0.1s;
         }
         .card:active { transform: translateY(4px); box-shadow: 0 1px 0 #3a8cc7; }
-        .card.hidden { visibility: hidden; }
 
-        /* ── FX ── */
-        .pop-text { 
-            position: absolute; font-weight: 900; font-size: 2.2rem; z-index: 10;
-            animation: float-fade 0.7s forwards;
-        }
-        @keyframes float-fade { 
-            0% { transform: translateY(0); opacity: 1; scale: 1; }
-            100% { transform: translateY(-60px); opacity: 0; scale: 1.2; }
-        }
-
-        .shake { animation: shake-ani 0.3s; }
-        @keyframes shake-ani {
-            0%, 100% { transform: translate(0,0); }
-            20%, 60% { transform: translate(-5px, 0); }
-            40%, 80% { transform: translate(5px, 0); }
-        }
+        /* ── EFFECTS ── */
+        .pop-fx { position: absolute; font-weight: 900; font-size: 2rem; animation: pop-up 0.7s forwards; }
+        @keyframes pop-up { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-60px); opacity: 0; } }
+        .shake { animation: shake-screen 0.3s; }
+        @keyframes shake-screen { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div class="stats-bar">
-        <span>❤️ HP: <span id="hp-val">3</span></span>
-        <span>🏰 Floor: <span id="floor-val">1</span></span>
+    <div class="nav-bar">
+        <a href="https://aqmal-halim.github.io" class="home-btn">🏠 Home</a>
+        <div class="stats">❤️ <span id="p-hp">3</span> | 🏰 Floor: <span id="floor">1</span></div>
     </div>
 
     <div id="stage">
-        <div class="target-tag">🎯 Goal: <span id="target-val">10</span></div>
+        <div class="goal-bubble">🎯 Goal: <span id="goal-val">10</span></div>
+        <div class="enemy-hp-container"><div id="enemy-hp-fill"></div></div>
         <div id="enemy">👾</div>
         <div id="hero">🧙‍♂️</div>
     </div>
@@ -100,114 +99,108 @@
 <script>
     let floor = 1;
     let playerHP = 3;
-    let monsterHP = 3;
-    let currentConstant = 5;
-    let currentGoal = 10;
+    let enemyHP = 3;
+    let maxEnemyHP = 3;
+    let currentConstant = 0;
+    let currentGoal = 0;
+    let correctCardValue = 0;
     let isBusy = false;
 
-    function initGame() {
+    function init() {
         isBusy = false;
-        monsterHP = (floor % 5 === 0) ? 5 : 3;
+        maxEnemyHP = (floor % 5 === 0) ? 5 : 3;
+        enemyHP = maxEnemyHP;
         document.getElementById('enemy').innerText = (floor % 5 === 0) ? "👹" : "👾";
-        document.getElementById('floor-val').innerText = floor;
-        document.getElementById('hp-val').innerText = playerHP;
+        document.getElementById('floor').innerText = floor;
+        document.getElementById('p-hp').innerText = playerHP;
         
-        setupMath();
-        renderCards();
+        newRound();
+        updateHPBar();
     }
 
-    function setupMath() {
-        // Randomize the math problem
-        currentConstant = Math.floor(Math.random() * 6) + 1; // 1-6
-        let winningCard = Math.floor(Math.random() * 9) + 1; // 1-9
-        currentGoal = currentConstant + winningCard;
+    function newRound() {
+        // 1. Generate Math
+        currentConstant = Math.floor(Math.random() * 5) + 1; // 1-5
+        correctCardValue = Math.floor(Math.random() * 9) + 1; // 1-9
+        currentGoal = currentConstant + correctCardValue;
         
-        document.getElementById('target-val').innerText = currentGoal;
+        document.getElementById('goal-val').innerText = currentGoal;
         document.getElementById('equation-box').innerText = `? + ${currentConstant}`;
-        window.correctChoice = winningCard;
-    }
-
-    function renderCards() {
+        
+        // 2. Refresh Hand with guaranteed correct card
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
-        let pool = [window.correctChoice];
-        while(pool.length < 5) {
-            let r = Math.floor(Math.random() * 9) + 1;
-            if(!pool.includes(r)) pool.push(r);
+        let cards = [correctCardValue];
+        
+        while(cards.length < 5) {
+            let r = Math.floor(Math.random() * 12) + 1;
+            if(!cards.includes(r)) cards.push(r);
         }
-        pool.sort(() => Math.random() - 0.5).forEach(n => {
-            let card = document.createElement('div');
-            card.className = 'card';
-            card.innerText = n;
-            card.onclick = () => playTurn(n, card);
-            hand.appendChild(card);
+        
+        cards.sort(() => Math.random() - 0.5).forEach(n => {
+            let c = document.createElement('div');
+            c.className = 'card';
+            c.innerText = n;
+            c.onclick = () => play(n, c);
+            hand.appendChild(c);
         });
     }
 
-    function playTurn(num, element) {
+    function play(n, el) {
         if(isBusy) return;
         isBusy = true;
-        element.classList.add('hidden');
-        
-        let total = num + currentConstant;
+        el.style.visibility = 'hidden';
 
-        if (total === currentGoal) {
-            showFX("PERFECT!", "#FFD700", true);
-            monsterHP--;
-            if (monsterHP <= 0) {
-                setTimeout(() => { 
-                    alert("Victory! Moving to Floor " + (floor + 1)); 
-                    floor++; 
-                    initGame(); 
-                }, 600);
+        if ((n + currentConstant) === currentGoal) {
+            fx("EXCELLENT!", "#FFD700");
+            enemyHP--;
+            updateHPBar();
+            if(enemyHP <= 0) {
+                setTimeout(() => { alert("Level Clear!"); floor++; init(); }, 600);
             } else {
-                setTimeout(() => { setupMath(); isBusy = false; }, 800);
+                setTimeout(() => { newRound(); isBusy = false; }, 800);
             }
         } else {
-            let errorMsg = total > currentGoal ? "TOO HIGH!" : "TOO WEAK...";
-            showFX(errorMsg, "#FF5E5E", false);
-            monsterStrike();
+            fx("MISS!", "#FF5E5E");
+            monsterHit();
         }
     }
 
-    function monsterStrike() {
+    function monsterHit() {
         setTimeout(() => {
-            const enemy = document.getElementById('enemy');
-            enemy.style.transform = "translate(-180px, 80px) scale(1.4)";
-            
+            const e = document.getElementById('enemy');
+            e.style.transform = "translate(-180px, 80px) scale(1.4)";
             setTimeout(() => {
                 playerHP--;
-                document.getElementById('hp-val').innerText = playerHP;
+                document.getElementById('p-hp').innerText = playerHP;
                 document.getElementById('game-container').classList.add('shake');
                 setTimeout(() => document.getElementById('game-container').classList.remove('shake'), 300);
-                enemy.style.transform = "translate(0,0) scale(1)";
+                e.style.transform = "translate(0,0) scale(1)";
                 
-                if (playerHP <= 0) {
-                    alert("Game Over! Let's start again.");
-                    location.reload();
+                if(playerHP <= 0) {
+                    alert("Game Over!"); location.reload();
                 } else {
                     isBusy = false;
                 }
             }, 200);
-        }, 500);
+        }, 400);
     }
 
-    function showFX(txt, color, isHit) {
-        let fx = document.createElement('div');
-        fx.className = 'pop-text';
-        fx.innerText = txt;
-        fx.style.color = color;
-        fx.style.left = "30%"; fx.style.top = "100px";
-        document.getElementById('stage').appendChild(fx);
-        setTimeout(() => fx.remove(), 700);
-
-        if(isHit) {
-            document.getElementById('enemy').style.filter = "invert(1)";
-            setTimeout(() => document.getElementById('enemy').style.filter = "none", 150);
-        }
+    function fx(t, c) {
+        let f = document.createElement('div');
+        f.className = 'pop-fx';
+        f.innerText = t; f.style.color = c;
+        f.style.left = "30%"; f.style.top = "100px";
+        document.getElementById('stage').appendChild(f);
+        setTimeout(() => f.remove(), 700);
     }
 
-    initGame();
+    function updateHPBar() {
+        let pct = (enemyHP / maxEnemyHP) * 100;
+        document.getElementById('enemy-hp-fill').style.width = pct + "%";
+    }
+
+    init();
 </script>
 </body>
 </html>
