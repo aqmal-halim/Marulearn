@@ -21,13 +21,12 @@ padding: 20px;
 .screen.active { display: block; }
 
 /* ── SHARED ── */
-.top-bar {
-display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-}
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
 .back-btn {
 background: white; border: 2px solid #eee; border-radius: 12px;
 padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
 cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
 }
 .top-bar h2 {
 font-size: 1.2em; font-weight: 900; color: white; flex: 1;
@@ -36,30 +35,27 @@ text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 .home-link {
 display: block; margin-top: 20px; color: rgba(255,255,255,0.7);
 text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center;
+-webkit-tap-highlight-color: transparent;
 }
 
 /* ── FAMILY SCREEN ── */
 .family-header {
 background: white; border-radius: 25px; padding: 22px 20px;
-text-align: center; margin-bottom: 18px;
-box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
 }
-.family-header .big-title {
-font-size: 2em; font-weight: 900; color: #c1121f; margin-bottom: 4px;
-}
-.family-header .subtitle { font-size: 0.9em; color: #888; }
+.family-header .big-title { font-size: 2em; font-weight: 900; color: #c1121f; margin-bottom: 4px; }
+.family-header .subtitle  { font-size: 0.9em; color: #888; }
 
 .progress-overview {
 background: white; border-radius: 18px; padding: 15px 18px;
 margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
-.prog-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.prog-row  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .prog-label { font-size: 0.78em; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
 .prog-count { font-size: 0.85em; font-weight: 700; color: #555; }
-.overall-bar { background: #eee; border-radius: 10px; height: 12px; overflow: hidden; }
+.overall-bar  { background: #eee; border-radius: 10px; height: 12px; overflow: hidden; }
 .overall-fill { background: linear-gradient(90deg, #06d6a0, #118ab2); height: 100%; transition: width 0.5s; border-radius: 10px; }
 
-/* Dakuten toggle */
 .daku-toggle {
 background: white; border-radius: 15px; padding: 12px 18px;
 margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -72,6 +68,7 @@ position: relative; width: 48px; height: 26px;
 background: #ddd; border-radius: 13px; cursor: pointer;
 transition: background 0.3s; flex-shrink: 0;
 border: none; -webkit-appearance: none; appearance: none;
+-webkit-tap-highlight-color: transparent;
 }
 .toggle-switch.on { background: #e63946; }
 .toggle-switch::after {
@@ -87,21 +84,21 @@ letter-spacing: 1.5px; color: rgba(255,255,255,0.7); margin: 16px 0 8px 2px;
 }
 .family-grid { display: grid; gap: 10px; }
 
+/* ✅ KEY FIX: family cards are now <button> elements */
 .family-card {
-background: white; border-radius: 18px; padding: 15px 18px;
+width: 100%; background: white; border-radius: 18px; padding: 15px 18px;
 display: flex; align-items: center; gap: 14px; cursor: pointer;
 border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
 }
-.family-card:active { transform: scale(1.02); }
-.family-card.mastered   { border-color: #06d6a0; }
+.family-card:active { transform: scale(0.98); }
+.family-card.mastered    { border-color: #06d6a0; }
 .family-card.in-progress { border-color: #ffd60a; }
+.family-card * { pointer-events: none; }
 
-.family-chars {
-font-size: 1.3em; font-weight: 700; color: #e63946; min-width: 80px;
-letter-spacing: 2px;
-}
-.family-info { flex: 1; }
+.family-chars  { font-size: 1.3em; font-weight: 700; color: #e63946; min-width: 80px; letter-spacing: 2px; }
+.family-info   { flex: 1; }
 .family-name   { font-weight: 900; font-size: 1em; color: #2d3436; }
 .family-romaji { font-size: 0.75em; color: #aaa; margin-top: 1px; }
 .family-prog   { margin-top: 5px; background: #eee; border-radius: 5px; height: 5px; overflow: hidden; }
@@ -122,17 +119,22 @@ background: #fff5f5; border: 2px solid #ffc8cc; border-radius: 10px; padding: 6p
 .char-pill .rm { font-size: 0.65em; color: #aaa; font-weight: 700; margin-top: 2px; }
 
 .mode-grid { display: grid; gap: 10px; }
+
+/* ✅ KEY FIX: mode cards are now <button> elements */
 .mode-card {
-background: white; border-radius: 16px; padding: 16px 18px;
+width: 100%; background: white; border-radius: 16px; padding: 16px 18px;
 display: flex; align-items: center; gap: 14px; cursor: pointer;
 border: 2px solid #eee; box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
 }
-.mode-card:active { transform: scale(1.02); }
+.mode-card:active { transform: scale(0.98); }
+.mode-card * { pointer-events: none; }
 .mode-card.learn-mode  { border-color: #118ab2; }
 .mode-card.recog-mode  { border-color: #e63946; }
 .mode-card.read-mode   { border-color: #f77f00; }
 .mode-card.speed-mode  { border-color: #7b5ea7; }
+
 .mode-icon { font-size: 2.2em; min-width: 45px; text-align: center; }
 .mode-info { flex: 1; }
 .mode-name { font-weight: 900; font-size: 1em; color: #2d3436; }
@@ -143,64 +145,51 @@ transition: all 0.2s; -webkit-tap-highlight-color: transparent;
 background: white; border-radius: 25px; padding: 30px 25px;
 box-shadow: 0 8px 30px rgba(0,0,0,0.12); margin-bottom: 18px; text-align: center;
 }
-.learn-char {
-font-size: 7em; color: #e63946; margin-bottom: 8px; line-height: 1;
-text-shadow: 2px 2px 0 rgba(230,57,70,0.15);
-}
-.learn-romaji-big { font-size: 2em; font-weight: 900; color: #118ab2; margin-bottom: 6px; }
-.learn-example {
-display: flex; align-items: center; justify-content: center; gap: 10px;
-background: #fff5f5; border-radius: 12px; padding: 12px 15px; margin-top: 15px;
-}
-.learn-ex-emoji { font-size: 2em; }
-.learn-ex-jp { font-size: 1.2em; font-weight: 700; color: #2d3436; }
-.learn-ex-en { font-size: 0.8em; color: #888; }
+.learn-char        { font-size: 7em; color: #e63946; margin-bottom: 8px; line-height: 1; text-shadow: 2px 2px 0 rgba(230,57,70,0.15); }
+.learn-romaji-big  { font-size: 2em; font-weight: 900; color: #118ab2; margin-bottom: 6px; }
+.learn-example     { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff5f5; border-radius: 12px; padding: 12px 15px; margin-top: 15px; }
+.learn-ex-emoji    { font-size: 2em; }
+.learn-ex-jp       { font-size: 1.2em; font-weight: 700; color: #2d3436; }
+.learn-ex-en       { font-size: 0.8em; color: #888; }
 
 .speak-btn {
 background: #118ab2; color: white; border: none; border-radius: 50px;
 padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
 cursor: pointer; display: flex; align-items: center; gap: 8px;
-margin: 0 auto 18px; -webkit-appearance: none;
+margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
 }
-.learn-nav { display: flex; justify-content: space-between; align-items: center; }
+.learn-nav     { display: flex; justify-content: space-between; align-items: center; }
 .nav-btn {
 background: #2d3436; color: white; border: none; border-radius: 12px;
 padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
-cursor: pointer; -webkit-appearance: none;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
 }
 .nav-btn:disabled { background: #ddd; color: #aaa; }
-.learn-counter { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
+.learn-counter    { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
 .start-quiz-btn {
 display: block; width: 100%; margin-top: 18px; padding: 15px;
 background: #e63946; color: white; border: none; border-radius: 16px;
 font-family: inherit; font-weight: 800; font-size: 1.1em;
 cursor: pointer; -webkit-appearance: none; text-align: center;
+-webkit-tap-highlight-color: transparent;
 }
 
 /* ── QUIZ SCREEN ── */
-.game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
 .progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
-.q-count { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
-.stats-row { display: flex; gap: 10px; margin-bottom: 15px; }
-.stat-pill {
-background: white; border-radius: 12px; padding: 8px 15px;
-font-weight: 800; font-size: 0.9em; flex: 1; text-align: center;
-box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .stat-pill.score  { color: #118ab2; }
 .stat-pill.streak { color: #e63946; }
 
 .question-card {
 background: white; border-radius: 22px; padding: 30px 20px; text-align: center;
 box-shadow: 0 6px 25px rgba(0,0,0,0.12); margin-bottom: 16px; min-height: 160px;
-display: flex; flex-direction: column; align-items: center; justify-content: center;
-position: relative;
+display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
 }
-.q-type-badge {
-position: absolute; top: 12px; right: 12px; background: #f0f0f0;
-color: #888; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700;
-}
+.q-type-badge { position: absolute; top: 12px; right: 12px; background: #f0f0f0; color: #888; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
 .q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
 .q-char  { font-size: 5.5em; color: #e63946; line-height: 1; }
 .q-text  { font-size: 2.5em; font-weight: 900; color: #2d3436; }
@@ -211,12 +200,13 @@ color: #888; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weig
 background: white; border: 2px solid #eee; border-radius: 15px; padding: 16px 10px;
 font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
 -webkit-appearance: none; text-align: center; transition: all 0.15s;
-box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
 }
+.option-btn * { pointer-events: none; }
 .option-btn .opt-char { font-size: 2em; display: block; color: #e63946; }
 .option-btn .opt-rm   { font-size: 1.1em; display: block; font-weight: 900; color: #2d3436; }
 .option-btn .opt-sub  { font-size: 0.75em; display: block; color: #aaa; margin-top: 2px; }
-.option-btn:active:not(:disabled) { border-color: #e63946; background: #fff5f5; }
+.option-btn:active:not(:disabled) { transform: scale(0.97); }
 .option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
 .option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
 .option-btn:disabled { cursor: not-allowed; }
@@ -238,15 +228,13 @@ text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-b
 background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
 border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
 font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+-webkit-tap-highlight-color: transparent;
 }
 
 /* ── SPEED SCREEN ── */
-.speed-timer {
-background: white; border-radius: 15px; padding: 10px 18px;
-text-align: center; margin-bottom: 15px; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-.time-left  { font-size: 2.5em; font-weight: 900; color: #e63946; }
-.time-label { font-size: 0.75em; color: #aaa; font-weight: 700; }
+.speed-timer   { background: white; border-radius: 15px; padding: 10px 18px; text-align: center; margin-bottom: 15px; box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+.time-left     { font-size: 2.5em; font-weight: 900; color: #e63946; }
+.time-label    { font-size: 0.75em; color: #aaa; font-weight: 700; }
 
 /* ── END SCREEN ── */
 .end-inner   { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
@@ -255,17 +243,15 @@ text-align: center; margin-bottom: 15px; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
 .end-score   { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
 .end-msg     { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
 
-.mastered-badge {
-background: white; border-radius: 18px; padding: 14px 20px;
-margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
+.mastered-badge { background: white; border-radius: 18px; padding: 14px 20px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 .mastered-badge .mb-title { font-weight: 900; color: #06d6a0; font-size: 1.1em; }
 .mastered-badge .mb-chars { font-size: 1.8em; letter-spacing: 5px; margin-top: 5px; color: #e63946; }
 
 .end-btns { display: grid; gap: 10px; }
 .end-btn {
 background: white; color: #e63946; border: none; border-radius: 15px; padding: 16px;
-font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer; -webkit-appearance: none;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
 }
 .end-btn.secondary {
 background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
@@ -278,18 +264,16 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
 
 <!-- ══════════════════════════════ -->
 
-<!-- FAMILY SELECT (first screen!) -->
+<!-- FAMILY SELECT (first screen)  -->
 
 <!-- ══════════════════════════════ -->
 
 <div id="family-screen" class="screen active">
-
   <div class="family-header">
-    <div style="font-size:2.5em; margin-bottom:5px;">🎌</div>
+    <div style="font-size:2.5em;margin-bottom:5px;">🎌</div>
     <div class="big-title">Hiragana Hero!</div>
     <div class="subtitle">Learn all 46 Japanese characters</div>
   </div>
-
   <div class="progress-overview">
     <div class="prog-row">
       <div class="prog-label">📍 Overall Progress</div>
@@ -299,7 +283,6 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
       <div class="overall-fill" id="overall-fill" style="width:0%"></div>
     </div>
   </div>
-
   <div class="daku-toggle">
     <div>
       <div class="daku-label">゛Include Dakuten</div>
@@ -307,7 +290,6 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
     </div>
     <button type="button" class="toggle-switch" id="daku-toggle-btn"></button>
   </div>
-
   <div class="section-lbl">Choose a family to study:</div>
   <div class="family-grid" id="family-grid"></div>
   <a href="../" class="home-link">← Back to Japanese Hub</a>
@@ -324,41 +306,39 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
     <button type="button" class="back-btn" id="back-to-family">← Back</button>
     <h2 id="mode-title">あ行</h2>
   </div>
-
   <div class="char-preview">
     <div class="char-preview-title" id="char-preview-title">5 characters</div>
     <div class="chars-preview-row" id="chars-preview-row"></div>
   </div>
-
   <div class="mode-grid">
-    <div class="mode-card learn-mode" id="mode-learn">
+    <button type="button" class="mode-card learn-mode" id="mode-learn">
       <div class="mode-icon">📖</div>
       <div class="mode-info">
         <div class="mode-name">Learn Mode</div>
         <div class="mode-desc">See, hear & understand each character</div>
       </div>
-    </div>
-    <div class="mode-card recog-mode" id="mode-recog">
+    </button>
+    <button type="button" class="mode-card recog-mode" id="mode-recog">
       <div class="mode-icon">👁️</div>
       <div class="mode-info">
         <div class="mode-name">Recognition Quiz</div>
         <div class="mode-desc">See hiragana → pick the reading</div>
       </div>
-    </div>
-    <div class="mode-card read-mode" id="mode-read">
+    </button>
+    <button type="button" class="mode-card read-mode" id="mode-read">
       <div class="mode-icon">🔤</div>
       <div class="mode-info">
         <div class="mode-name">Reading Quiz</div>
         <div class="mode-desc">See romaji → pick the hiragana</div>
       </div>
-    </div>
-    <div class="mode-card speed-mode" id="mode-speed">
+    </button>
+    <button type="button" class="mode-card speed-mode" id="mode-speed">
       <div class="mode-icon">⚡</div>
       <div class="mode-info">
         <div class="mode-name">Speed Round</div>
         <div class="mode-desc">30 seconds — how many can you get?</div>
       </div>
-    </div>
+    </button>
   </div>
   <a href="#" class="home-link" id="mode-back-link">← Back to families</a>
 </div>
@@ -385,7 +365,7 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
       </div>
     </div>
   </div>
-  <div style="text-align:center; margin-bottom:18px;">
+  <div style="text-align:center;margin-bottom:18px;">
     <button type="button" class="speak-btn" id="learn-speak-btn">🔊 Hear it</button>
   </div>
   <div class="learn-nav">
@@ -480,232 +460,226 @@ background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,
   </div>
 </div>
 
-</div><!-- /container -->
+</div>
 
 <script>
-// ══════════════════════════════════════════
-// DATA
-// ══════════════════════════════════════════
 const FAMILIES = [
   {
-    id: 'a', name: 'あ行', romaji: 'a · i · u · e · o',
-    chars: [
-      { h:'あ', r:'a',   ex:'あめ',    ee:'rain / candy',   emoji:'🍬' },
-      { h:'い', r:'i',   ex:'いぬ',    ee:'dog',            emoji:'🐕' },
-      { h:'う', r:'u',   ex:'うみ',    ee:'sea / ocean',    emoji:'🌊' },
-      { h:'え', r:'e',   ex:'えき',    ee:'station',        emoji:'🚉' },
-      { h:'お', r:'o',   ex:'おかあさん', ee:'mother',      emoji:'👩' },
+    id:'a', name:'あ行', romaji:'a · i · u · e · o',
+    chars:[
+      {h:'あ',r:'a',  ex:'あめ',    ee:'rain / candy',   emoji:'🍬'},
+      {h:'い',r:'i',  ex:'いぬ',    ee:'dog',            emoji:'🐕'},
+      {h:'う',r:'u',  ex:'うみ',    ee:'sea / ocean',    emoji:'🌊'},
+      {h:'え',r:'e',  ex:'えき',    ee:'station',        emoji:'🚉'},
+      {h:'お',r:'o',  ex:'おかあさん',ee:'mother',        emoji:'👩'},
     ]
   },
   {
-    id: 'ka', name: 'か行', romaji: 'ka · ki · ku · ke · ko',
-    chars: [
-      { h:'か', r:'ka',  ex:'かさ',    ee:'umbrella',       emoji:'☂️' },
-      { h:'き', r:'ki',  ex:'きって',  ee:'stamp',          emoji:'📮' },
-      { h:'く', r:'ku',  ex:'くつ',    ee:'shoes',          emoji:'👟' },
-      { h:'け', r:'ke',  ex:'けむり',  ee:'smoke',          emoji:'💨' },
-      { h:'こ', r:'ko',  ex:'こども',  ee:'child',          emoji:'👦' },
+    id:'ka', name:'か行', romaji:'ka · ki · ku · ke · ko',
+    chars:[
+      {h:'か',r:'ka', ex:'かさ',    ee:'umbrella',       emoji:'☂️'},
+      {h:'き',r:'ki', ex:'きって',  ee:'stamp',          emoji:'📮'},
+      {h:'く',r:'ku', ex:'くつ',    ee:'shoes',          emoji:'👟'},
+      {h:'け',r:'ke', ex:'けむり',  ee:'smoke',          emoji:'💨'},
+      {h:'こ',r:'ko', ex:'こども',  ee:'child',          emoji:'👦'},
     ]
   },
   {
-    id: 'sa', name: 'さ行', romaji: 'sa · shi · su · se · so',
-    chars: [
-      { h:'さ', r:'sa',  ex:'さかな',  ee:'fish',           emoji:'🐟' },
-      { h:'し', r:'shi', ex:'しお',    ee:'salt',           emoji:'🧂' },
-      { h:'す', r:'su',  ex:'すし',    ee:'sushi',          emoji:'🍣' },
-      { h:'せ', r:'se',  ex:'せんせい', ee:'teacher',       emoji:'👩‍🏫' },
-      { h:'そ', r:'so',  ex:'そら',    ee:'sky',            emoji:'☁️' },
+    id:'sa', name:'さ行', romaji:'sa · shi · su · se · so',
+    chars:[
+      {h:'さ',r:'sa',  ex:'さかな', ee:'fish',           emoji:'🐟'},
+      {h:'し',r:'shi', ex:'しお',   ee:'salt',           emoji:'🧂'},
+      {h:'す',r:'su',  ex:'すし',   ee:'sushi',          emoji:'🍣'},
+      {h:'せ',r:'se',  ex:'せんせい',ee:'teacher',       emoji:'👩‍🏫'},
+      {h:'そ',r:'so',  ex:'そら',   ee:'sky',            emoji:'☁️'},
     ]
   },
   {
-    id: 'ta', name: 'た行', romaji: 'ta · chi · tsu · te · to',
-    chars: [
-      { h:'た', r:'ta',  ex:'たまご',  ee:'egg',            emoji:'🥚' },
-      { h:'ち', r:'chi', ex:'ちず',    ee:'map',            emoji:'🗺️' },
-      { h:'つ', r:'tsu', ex:'つき',    ee:'moon',           emoji:'🌙' },
-      { h:'て', r:'te',  ex:'てがみ',  ee:'letter / mail',  emoji:'✉️' },
-      { h:'と', r:'to',  ex:'とり',    ee:'bird',           emoji:'🐦' },
+    id:'ta', name:'た行', romaji:'ta · chi · tsu · te · to',
+    chars:[
+      {h:'た',r:'ta',  ex:'たまご', ee:'egg',            emoji:'🥚'},
+      {h:'ち',r:'chi', ex:'ちず',   ee:'map',            emoji:'🗺️'},
+      {h:'つ',r:'tsu', ex:'つき',   ee:'moon',           emoji:'🌙'},
+      {h:'て',r:'te',  ex:'てがみ', ee:'letter / mail',  emoji:'✉️'},
+      {h:'と',r:'to',  ex:'とり',   ee:'bird',           emoji:'🐦'},
     ]
   },
   {
-    id: 'na', name: 'な行', romaji: 'na · ni · nu · ne · no',
-    chars: [
-      { h:'な', r:'na',  ex:'なつ',    ee:'summer',         emoji:'☀️' },
-      { h:'に', r:'ni',  ex:'にわ',    ee:'garden',         emoji:'🌳' },
-      { h:'ぬ', r:'nu',  ex:'ぬいぐるみ', ee:'stuffed toy', emoji:'🧸' },
-      { h:'ね', r:'ne',  ex:'ねこ',    ee:'cat',            emoji:'🐱' },
-      { h:'の', r:'no',  ex:'のり',    ee:'seaweed',        emoji:'🍱' },
+    id:'na', name:'な行', romaji:'na · ni · nu · ne · no',
+    chars:[
+      {h:'な',r:'na', ex:'なつ',    ee:'summer',         emoji:'☀️'},
+      {h:'に',r:'ni', ex:'にわ',    ee:'garden',         emoji:'🌳'},
+      {h:'ぬ',r:'nu', ex:'ぬいぐるみ',ee:'stuffed toy',  emoji:'🧸'},
+      {h:'ね',r:'ne', ex:'ねこ',    ee:'cat',            emoji:'🐱'},
+      {h:'の',r:'no', ex:'のり',    ee:'seaweed',        emoji:'🍱'},
     ]
   },
   {
-    id: 'ha', name: 'は行', romaji: 'ha · hi · fu · he · ho',
-    chars: [
-      { h:'は', r:'ha',  ex:'はな',    ee:'flower',         emoji:'🌸' },
-      { h:'ひ', r:'hi',  ex:'ひと',    ee:'person',         emoji:'🧍' },
-      { h:'ふ', r:'fu',  ex:'ふね',    ee:'boat / ship',    emoji:'🚢' },
-      { h:'へ', r:'he',  ex:'へや',    ee:'room',           emoji:'🏠' },
-      { h:'ほ', r:'ho',  ex:'ほし',    ee:'star',           emoji:'⭐' },
+    id:'ha', name:'は行', romaji:'ha · hi · fu · he · ho',
+    chars:[
+      {h:'は',r:'ha', ex:'はな',    ee:'flower',         emoji:'🌸'},
+      {h:'ひ',r:'hi', ex:'ひと',    ee:'person',         emoji:'🧍'},
+      {h:'ふ',r:'fu', ex:'ふね',    ee:'boat / ship',    emoji:'🚢'},
+      {h:'へ',r:'he', ex:'へや',    ee:'room',           emoji:'🏠'},
+      {h:'ほ',r:'ho', ex:'ほし',    ee:'star',           emoji:'⭐'},
     ]
   },
   {
-    id: 'ma', name: 'ま行', romaji: 'ma · mi · mu · me · mo',
-    chars: [
-      { h:'ま', r:'ma',  ex:'まど',    ee:'window',         emoji:'🪟' },
-      { h:'み', r:'mi',  ex:'みず',    ee:'water',          emoji:'💧' },
-      { h:'む', r:'mu',  ex:'むし',    ee:'insect / bug',   emoji:'🐛' },
-      { h:'め', r:'me',  ex:'めだか',  ee:'small fish',     emoji:'🐠' },
-      { h:'も', r:'mo',  ex:'もり',    ee:'forest',         emoji:'🌲' },
+    id:'ma', name:'ま行', romaji:'ma · mi · mu · me · mo',
+    chars:[
+      {h:'ま',r:'ma', ex:'まど',    ee:'window',         emoji:'🪟'},
+      {h:'み',r:'mi', ex:'みず',    ee:'water',          emoji:'💧'},
+      {h:'む',r:'mu', ex:'むし',    ee:'insect / bug',   emoji:'🐛'},
+      {h:'め',r:'me', ex:'めだか',  ee:'small fish',     emoji:'🐠'},
+      {h:'も',r:'mo', ex:'もり',    ee:'forest',         emoji:'🌲'},
     ]
   },
   {
-    id: 'ya', name: 'や行', romaji: 'ya · yu · yo',
-    chars: [
-      { h:'や', r:'ya',  ex:'やま',    ee:'mountain',       emoji:'⛰️' },
-      { h:'ゆ', r:'yu',  ex:'ゆき',    ee:'snow',           emoji:'❄️' },
-      { h:'よ', r:'yo',  ex:'よる',    ee:'night',          emoji:'🌙' },
+    id:'ya', name:'や行', romaji:'ya · yu · yo',
+    chars:[
+      {h:'や',r:'ya', ex:'やま',    ee:'mountain',       emoji:'⛰️'},
+      {h:'ゆ',r:'yu', ex:'ゆき',    ee:'snow',           emoji:'❄️'},
+      {h:'よ',r:'yo', ex:'よる',    ee:'night',          emoji:'🌙'},
     ]
   },
   {
-    id: 'ra', name: 'ら行', romaji: 'ra · ri · ru · re · ro',
-    chars: [
-      { h:'ら', r:'ra',  ex:'らいおん', ee:'lion',          emoji:'🦁' },
-      { h:'り', r:'ri',  ex:'りんご',  ee:'apple',          emoji:'🍎' },
-      { h:'る', r:'ru',  ex:'るすばん', ee:'house-sitting', emoji:'🏡' },
-      { h:'れ', r:'re',  ex:'れいぞうこ', ee:'fridge',      emoji:'🧊' },
-      { h:'ろ', r:'ro',  ex:'ろうそく', ee:'candle',        emoji:'🕯️' },
+    id:'ra', name:'ら行', romaji:'ra · ri · ru · re · ro',
+    chars:[
+      {h:'ら',r:'ra', ex:'らいおん', ee:'lion',          emoji:'🦁'},
+      {h:'り',r:'ri', ex:'りんご',  ee:'apple',          emoji:'🍎'},
+      {h:'る',r:'ru', ex:'るすばん', ee:'house-sitting', emoji:'🏡'},
+      {h:'れ',r:'re', ex:'れいぞうこ',ee:'fridge',       emoji:'🧊'},
+      {h:'ろ',r:'ro', ex:'ろうそく', ee:'candle',        emoji:'🕯️'},
     ]
   },
   {
-    id: 'wa', name: 'わ行 + ん', romaji: 'wa · wo · n',
-    chars: [
-      { h:'わ', r:'wa',  ex:'わに',    ee:'crocodile',      emoji:'🐊' },
-      { h:'を', r:'wo',  ex:'を (particle)', ee:'object marker', emoji:'📝' },
-      { h:'ん', r:'n',   ex:'ほん',    ee:'book',           emoji:'📚' },
+    id:'wa', name:'わ行 + ん', romaji:'wa · wo · n',
+    chars:[
+      {h:'わ',r:'wa', ex:'わに',    ee:'crocodile',      emoji:'🐊'},
+      {h:'を',r:'wo', ex:'を (particle)',ee:'object marker',emoji:'📝'},
+      {h:'ん',r:'n',  ex:'ほん',    ee:'book',           emoji:'📚'},
     ]
   },
   {
-    id: 'daku', name: '゛Dakuten', romaji: 'ga·gi·gu·ge·go·za·ji·zu·ze·zo...', isDaku: true,
-    chars: [
-      { h:'が', r:'ga',  ex:'がっこう', ee:'school',        emoji:'🏫' },
-      { h:'ぎ', r:'gi',  ex:'ぎんこう', ee:'bank',          emoji:'🏦' },
-      { h:'ぐ', r:'gu',  ex:'ぐんて',  ee:'gloves',         emoji:'🧤' },
-      { h:'げ', r:'ge',  ex:'げた',    ee:'wooden sandals', emoji:'👡' },
-      { h:'ご', r:'go',  ex:'ごはん',  ee:'rice / meal',    emoji:'🍚' },
-      { h:'ざ', r:'za',  ex:'ざっし',  ee:'magazine',       emoji:'📰' },
-      { h:'じ', r:'ji',  ex:'じかん',  ee:'time',           emoji:'⏰' },
-      { h:'ず', r:'zu',  ex:'ずかん',  ee:'picture book',   emoji:'📖' },
-      { h:'ぜ', r:'ze',  ex:'ぜんぶ',  ee:'everything',     emoji:'✨' },
-      { h:'ぞ', r:'zo',  ex:'ぞう',    ee:'elephant',       emoji:'🐘' },
-      { h:'だ', r:'da',  ex:'だいこん', ee:'radish',        emoji:'🥗' },
-      { h:'で', r:'de',  ex:'でんしゃ', ee:'train',         emoji:'🚃' },
-      { h:'ど', r:'do',  ex:'どうぶつ', ee:'animal',        emoji:'🦁' },
-      { h:'ば', r:'ba',  ex:'ばなな',  ee:'banana',         emoji:'🍌' },
-      { h:'び', r:'bi',  ex:'びょういん', ee:'hospital',    emoji:'🏥' },
-      { h:'ぶ', r:'bu',  ex:'ぶどう',  ee:'grapes',         emoji:'🍇' },
-      { h:'べ', r:'be',  ex:'べんきょう', ee:'study',       emoji:'📝' },
-      { h:'ぼ', r:'bo',  ex:'ぼうし',  ee:'hat',            emoji:'🎩' },
-      { h:'ぱ', r:'pa',  ex:'ぱん',    ee:'bread',          emoji:'🍞' },
-      { h:'ぴ', r:'pi',  ex:'ぴかぴか', ee:'sparkling',     emoji:'✨' },
-      { h:'ぷ', r:'pu',  ex:'ぷりん',  ee:'pudding',        emoji:'🍮' },
-      { h:'ぺ', r:'pe',  ex:'ぺん',    ee:'pen',            emoji:'✒️' },
-      { h:'ぽ', r:'po',  ex:'ぽすと',  ee:'mailbox',        emoji:'📮' },
+    id:'daku', name:'゛Dakuten', romaji:'ga·gi·gu·ge·go·za·ji·zu...', isDaku:true,
+    chars:[
+      {h:'が',r:'ga', ex:'がっこう', ee:'school',        emoji:'🏫'},
+      {h:'ぎ',r:'gi', ex:'ぎんこう', ee:'bank',          emoji:'🏦'},
+      {h:'ぐ',r:'gu', ex:'ぐんて',  ee:'gloves',         emoji:'🧤'},
+      {h:'げ',r:'ge', ex:'げた',    ee:'wooden sandals', emoji:'👡'},
+      {h:'ご',r:'go', ex:'ごはん',  ee:'rice / meal',    emoji:'🍚'},
+      {h:'ざ',r:'za', ex:'ざっし',  ee:'magazine',       emoji:'📰'},
+      {h:'じ',r:'ji', ex:'じかん',  ee:'time',           emoji:'⏰'},
+      {h:'ず',r:'zu', ex:'ずかん',  ee:'picture book',   emoji:'📖'},
+      {h:'ぜ',r:'ze', ex:'ぜんぶ',  ee:'everything',     emoji:'✨'},
+      {h:'ぞ',r:'zo', ex:'ぞう',    ee:'elephant',       emoji:'🐘'},
+      {h:'だ',r:'da', ex:'だいこん', ee:'radish',        emoji:'🥗'},
+      {h:'で',r:'de', ex:'でんしゃ', ee:'train',         emoji:'🚃'},
+      {h:'ど',r:'do', ex:'どうぶつ', ee:'animal',        emoji:'🦁'},
+      {h:'ば',r:'ba', ex:'ばなな',  ee:'banana',         emoji:'🍌'},
+      {h:'び',r:'bi', ex:'びょういん',ee:'hospital',     emoji:'🏥'},
+      {h:'ぶ',r:'bu', ex:'ぶどう',  ee:'grapes',         emoji:'🍇'},
+      {h:'べ',r:'be', ex:'べんきょう',ee:'study',        emoji:'📝'},
+      {h:'ぼ',r:'bo', ex:'ぼうし',  ee:'hat',            emoji:'🎩'},
+      {h:'ぱ',r:'pa', ex:'ぱん',    ee:'bread',          emoji:'🍞'},
+      {h:'ぴ',r:'pi', ex:'ぴかぴか', ee:'sparkling',     emoji:'✨'},
+      {h:'ぷ',r:'pu', ex:'ぷりん',  ee:'pudding',        emoji:'🍮'},
+      {h:'ぺ',r:'pe', ex:'ぺん',    ee:'pen',            emoji:'✒️'},
+      {h:'ぽ',r:'po', ex:'ぽすと',  ee:'mailbox',        emoji:'📮'},
     ]
   },
 ];
 
-// Progress per session
 const progress = {};
-FAMILIES.forEach(f => { progress[f.id] = { bestScore: 0, mastered: false }; });
+FAMILIES.forEach(f => { progress[f.id] = { bestScore:0, mastered:false }; });
 
-// State
-let showDaku       = false;
-let currentFamId   = 'a';
-let currentFamily  = null;
-let currentMode    = 'recog';
-let learnIdx       = 0;
-let quizChars      = [];
-let quizIdx        = 0;
-let quizTotal      = 0;
-let score          = 0;
-let streak         = 0;
-let attempts       = 0;
-let speedTimer     = null;
-let speedTimeLeft  = 30;
-let speedScore     = 0;
-let speedWrong     = 0;
-let speedCurrent   = null;
+let showDaku      = false;
+let currentFamId  = 'a';
+let currentFamily = null;
+let currentMode   = 'recog';
+let learnIdx      = 0;
+let quizChars     = [];
+let quizIdx       = 0;
+let quizTotal     = 0;
+let score         = 0;
+let streak        = 0;
+let attempts      = 0;
+let speedTimer    = null;
+let speedTimeLeft = 30;
+let speedScore    = 0;
+let speedWrong    = 0;
+let speedCurrent  = null;
 
-// ════════════ UTILS ════════════
 function speak(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ja-JP'; u.rate = 0.8; u.pitch = 1.1;
+  u.lang='ja-JP'; u.rate=0.8; u.pitch=1.1;
   window.speechSynthesis.speak(u);
 }
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
 }
 
-// ════════════ FAMILY SCREEN ════════════
 function buildFamilyScreen() {
   const families = FAMILIES.filter(f => showDaku ? true : !f.isDaku);
-
-  // Total chars to master
-  const totalChars   = families.reduce((s, f) => s + f.chars.length, 0);
-  const masteredChars = families.filter(f => progress[f.id].mastered).reduce((s, f) => s + f.chars.length, 0);
-  const pct = totalChars > 0 ? Math.round(masteredChars / totalChars * 100) : 0;
-  document.getElementById('overall-fill').style.width = pct + '%';
-  document.getElementById('overall-text').textContent  = masteredChars + ' / ' + totalChars + ' mastered';
+  const totalChars    = families.reduce((s,f) => s+f.chars.length, 0);
+  const masteredChars = families.filter(f => progress[f.id].mastered).reduce((s,f) => s+f.chars.length, 0);
+  const pct = totalChars > 0 ? Math.round(masteredChars/totalChars*100) : 0;
+  document.getElementById('overall-fill').style.width = pct+'%';
+  document.getElementById('overall-text').textContent  = masteredChars+' / '+totalChars+' mastered';
 
   const grid = document.getElementById('family-grid');
   grid.innerHTML = '';
   families.forEach(fam => {
-    const prog    = progress[fam.id];
-    const statusEm = prog.mastered ? '✅' : (prog.bestScore > 0 ? '🔄' : '📖');
-    const cls      = prog.mastered ? 'mastered' : (prog.bestScore > 0 ? 'in-progress' : '');
-    const previewChars = fam.chars.slice(0, 3).map(c => c.h).join('') + (fam.chars.length > 3 ? '…' : '');
-    const card = document.createElement('div');
-    card.className = 'family-card ' + cls;
-    card.innerHTML =
-      '<div class="family-chars">' + previewChars + '</div>' +
-      '<div class="family-info">' +
-        '<div class="family-name">' + fam.name + '</div>' +
-        '<div class="family-romaji">' + fam.romaji + '</div>' +
-        '<div class="family-prog"><div class="family-prog-fill" style="width:' + (prog.bestScore / fam.chars.length * 100) + '%"></div></div>' +
-      '</div>' +
-      '<div class="family-status">' + statusEm + '</div>';
-    card.addEventListener('click', () => openFamily(fam.id));
-    grid.appendChild(card);
+    const prog     = progress[fam.id];
+    const statusEm = prog.mastered ? '✅' : (prog.bestScore>0 ? '🔄' : '📖');
+    const cls      = prog.mastered ? 'mastered' : (prog.bestScore>0 ? 'in-progress' : '');
+    const preview  = fam.chars.slice(0,3).map(c=>c.h).join('')+(fam.chars.length>3?'…':'');
+    const progPct  = fam.chars.length > 0 ? (prog.bestScore/fam.chars.length*100) : 0;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'family-card ' + cls;
+    btn.innerHTML =
+      '<div class="family-chars">'+preview+'</div>'+
+      '<div class="family-info">'+
+        '<div class="family-name">'+fam.name+'</div>'+
+        '<div class="family-romaji">'+fam.romaji+'</div>'+
+        '<div class="family-prog"><div class="family-prog-fill" style="width:'+progPct+'%"></div></div>'+
+      '</div>'+
+      '<div class="family-status">'+statusEm+'</div>';
+    btn.addEventListener('click', function() { openFamily(fam.id); });
+    grid.appendChild(btn);
   });
+
+  showScreen('family-screen');
 }
 
-// ════════════ MODE SCREEN ════════════
 function openFamily(famId) {
   currentFamId  = famId;
-  currentFamily = FAMILIES.find(f => f.id === famId);
+  currentFamily = FAMILIES.find(f=>f.id===famId);
   document.getElementById('mode-title').textContent         = currentFamily.name;
-  document.getElementById('char-preview-title').textContent = currentFamily.chars.length + ' characters';
+  document.getElementById('char-preview-title').textContent = currentFamily.chars.length+' characters';
 
   const row = document.getElementById('chars-preview-row');
   row.innerHTML = '';
   currentFamily.chars.forEach(c => {
     const pill = document.createElement('div');
     pill.className = 'char-pill';
-    pill.innerHTML = '<div class="jp">' + c.h + '</div><div class="rm">' + c.r + '</div>';
+    pill.innerHTML = '<div class="jp">'+c.h+'</div><div class="rm">'+c.r+'</div>';
     row.appendChild(pill);
   });
 
   showScreen('mode-screen');
 }
 
-// ════════════ LEARN MODE ════════════
 function startLearnMode() {
   learnIdx = 0;
-  document.getElementById('learn-title').textContent = 'Learn ' + currentFamily.name;
+  document.getElementById('learn-title').textContent = 'Learn '+currentFamily.name;
   showLearnCard();
   showScreen('learn-screen');
   setTimeout(() => speak(currentFamily.chars[0].h), 500);
@@ -713,17 +687,16 @@ function startLearnMode() {
 
 function showLearnCard() {
   const c = currentFamily.chars[learnIdx];
-  document.getElementById('learn-char').textContent    = c.h;
-  document.getElementById('learn-romaji').textContent  = c.r;
+  document.getElementById('learn-char').textContent     = c.h;
+  document.getElementById('learn-romaji').textContent   = c.r;
   document.getElementById('learn-ex-emoji').textContent = c.emoji;
-  document.getElementById('learn-ex-jp').textContent   = c.ex;
-  document.getElementById('learn-ex-en').textContent   = c.ee;
-  document.getElementById('learn-counter').textContent = (learnIdx + 1) + ' / ' + currentFamily.chars.length;
-  document.getElementById('learn-prev').disabled = learnIdx === 0;
-  document.getElementById('learn-next').disabled = learnIdx === currentFamily.chars.length - 1;
+  document.getElementById('learn-ex-jp').textContent    = c.ex;
+  document.getElementById('learn-ex-en').textContent    = c.ee;
+  document.getElementById('learn-counter').textContent  = (learnIdx+1)+' / '+currentFamily.chars.length;
+  document.getElementById('learn-prev').disabled = learnIdx===0;
+  document.getElementById('learn-next').disabled = learnIdx===currentFamily.chars.length-1;
 }
 
-// ════════════ QUIZ MODES ════════════
 function startRecogQuiz() {
   currentMode = 'recog';
   initQuiz();
@@ -743,236 +716,231 @@ function startReadQuiz() {
 }
 
 function initQuiz() {
-  score    = 0; streak = 0; quizIdx = 0; attempts = 0;
-  quizChars = [...currentFamily.chars].sort(() => Math.random() - 0.5);
+  score=0; streak=0; quizIdx=0; attempts=0;
+  quizChars = [...currentFamily.chars].sort(()=>Math.random()-0.5);
   quizTotal = quizChars.length;
   document.getElementById('score').textContent  = 0;
   document.getElementById('streak').textContent = 0;
 }
 
 function showQuizQ() {
-  if (quizIdx >= quizTotal) { endQuiz(); return; }
-  attempts = 0;
-  const c = quizChars[quizIdx];
+  if (quizIdx>=quizTotal) { endQuiz(); return; }
+  attempts=0;
+  const c=quizChars[quizIdx];
 
-  document.getElementById('q-count').textContent  = (quizIdx + 1) + '/' + quizTotal;
-  document.getElementById('progress').style.width = (quizIdx / quizTotal * 100) + '%';
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
   document.getElementById('feedback').textContent  = '';
-  document.getElementById('hint-btn').style.display = 'none';
+  document.getElementById('hint-btn').style.display='none';
 
-  const charEl = document.getElementById('q-char');
-  const textEl = document.getElementById('q-text');
-  const hintEl = document.getElementById('q-hint');
+  const charEl=document.getElementById('q-char');
+  const textEl=document.getElementById('q-text');
+  const hintEl=document.getElementById('q-hint');
 
-  if (currentMode === 'recog') {
-    charEl.textContent = c.h; charEl.style.display = 'block';
-    textEl.style.display = 'none';
-    hintEl.textContent = c.emoji + '  ' + c.ex;
-    setTimeout(() => speak(c.h), 300);
+  if (currentMode==='recog') {
+    charEl.textContent=c.h; charEl.style.display='block';
+    textEl.style.display='none';
+    hintEl.textContent=c.emoji+'  '+c.ex;
+    setTimeout(()=>speak(c.h),300);
   } else {
-    textEl.textContent = c.r; textEl.style.display = 'block';
-    charEl.style.display = 'none';
-    hintEl.textContent = 'Find the hiragana for "' + c.r + '"';
+    textEl.textContent=c.r; textEl.style.display='block';
+    charEl.style.display='none';
+    hintEl.textContent='Find the hiragana for "'+c.r+'"';
   }
 
-  // Build 4 options
-  const allChars = currentFamily.chars;
-  let wrong = allChars.filter(x => x.h !== c.h).sort(() => Math.random() - 0.5).slice(0, 3);
-  if (wrong.length < 3) {
-    const extra = FAMILIES.flatMap(f => f.chars).filter(x => x.h !== c.h && !wrong.find(w => w.h === x.h)).sort(() => Math.random() - 0.5);
-    while (wrong.length < 3 && extra.length > 0) wrong.push(extra.shift());
+  const allChars=currentFamily.chars;
+  let wrong=allChars.filter(x=>x.h!==c.h).sort(()=>Math.random()-0.5).slice(0,3);
+  if (wrong.length<3) {
+    const extra=FAMILIES.flatMap(f=>f.chars).filter(x=>x.h!==c.h&&!wrong.find(w=>w.h===x.h)).sort(()=>Math.random()-0.5);
+    while(wrong.length<3&&extra.length>0) wrong.push(extra.shift());
   }
-  const opts = [...wrong, c].sort(() => Math.random() - 0.5);
+  const opts=[...wrong,c].sort(()=>Math.random()-0.5);
 
-  const optDiv = document.getElementById('options');
-  optDiv.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'option-btn';
-    btn.innerHTML = currentMode === 'recog'
-      ? '<span class="opt-rm">' + opt.r + '</span>'
-      : '<span class="opt-char">' + opt.h + '</span><span class="opt-sub">' + opt.r + '</span>';
-    btn.addEventListener('click', () => checkQuizAnswer(opt.h === c.h, btn, c));
+  const optDiv=document.getElementById('options');
+  optDiv.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    btn.innerHTML=currentMode==='recog'
+      ? '<span class="opt-rm">'+opt.r+'</span>'
+      : '<span class="opt-char">'+opt.h+'</span>';
+    btn.addEventListener('click', function() { checkQuizAnswer(opt.h===c.h, btn, c); });
     optDiv.appendChild(btn);
   });
 }
 
-const encouragement = ['すごい！ Sugoi! 🎉', 'よくできました！ ⭐', 'がんばれ！ Keep it up! 🚀', 'さいこう！ Amazing! 💫', 'パーフェクト！ 🌟'];
-const tryAgain      = ['もう一度！ Try again! 💪', 'ちがいます。Not quite! 🎯', 'がんばって！ ✨'];
+const encouragement=['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ Amazing! 💫','パーフェクト！ 🌟'];
+const tryAgain=['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
 
 function checkQuizAnswer(isCorrect, btn, char) {
-  const feedback = document.getElementById('feedback');
+  const feedback=document.getElementById('feedback');
   attempts++;
   if (isCorrect) {
     btn.classList.add('correct');
-    document.querySelectorAll('#options .option-btn').forEach(b => b.disabled = true);
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
     speak(char.h);
-    if (attempts === 1) {
+    if (attempts===1) {
       score++; streak++;
-      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
-      feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+      const msg=encouragement[Math.floor(Math.random()*encouragement.length)];
+      feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg;
     } else {
-      streak = 0;
-      feedback.textContent = 'Yes! ' + char.h + ' = ' + char.r + ' 🌟';
+      streak=0;
+      feedback.textContent='Yes! '+char.h+' = '+char.r+' 🌟';
     }
-    feedback.className = 'feedback correct-text';
+    feedback.className='feedback correct-text';
     document.getElementById('score').textContent  = score;
     document.getElementById('streak').textContent = streak;
-    setTimeout(() => { quizIdx++; showQuizQ(); }, 1600);
+    setTimeout(()=>{ quizIdx++; showQuizQ(); },1600);
   } else {
-    btn.classList.add('wrong'); btn.disabled = true;
-    streak = 0; document.getElementById('streak').textContent = 0;
-    feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
-    feedback.className   = 'feedback wrong-text';
-    if (attempts >= 2) document.getElementById('hint-btn').style.display = 'block';
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
   }
 }
 
 function showHint() {
-  const c = quizChars[quizIdx];
-  document.getElementById('feedback').textContent = '💡 ' + c.h + ' = ' + c.r + ' · Example: ' + c.ex + ' ' + c.emoji;
-  document.getElementById('feedback').className   = 'feedback hint-text';
+  const c=quizChars[quizIdx];
+  document.getElementById('feedback').textContent='💡 '+c.h+' = '+c.r+' · Example: '+c.ex+' '+c.emoji;
+  document.getElementById('feedback').className='feedback hint-text';
   speak(c.h);
 }
 
 function endQuiz() {
-  const pct = score / quizTotal;
-  if (pct >= 0.8) progress[currentFamId].mastered = true;
-  if (score > progress[currentFamId].bestScore) progress[currentFamId].bestScore = score;
+  const pct=score/quizTotal;
+  if(pct>=0.8) progress[currentFamId].mastered=true;
+  if(score>progress[currentFamId].bestScore) progress[currentFamId].bestScore=score;
 
   showScreen('end-screen');
-  document.getElementById('final-score').textContent = score;
-  document.getElementById('final-total').textContent = quizTotal;
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=quizTotal;
 
-  const trophy = document.getElementById('trophy');
-  const title  = document.getElementById('end-title');
-  const msg    = document.getElementById('end-msg');
-  const badge  = document.getElementById('mastered-badge');
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  const badge=document.getElementById('mastered-badge');
 
-  if (pct === 1)       { trophy.textContent = '🏆'; title.textContent = 'パーフェクト！'; msg.textContent = 'You mastered this family! Move to the next one! 🎌'; }
-  else if (pct >= 0.8) { trophy.textContent = '🥇'; title.textContent = 'すごい！';       msg.textContent = 'Excellent! Try again for a perfect score!'; }
-  else if (pct >= 0.6) { trophy.textContent = '🥈'; title.textContent = 'よくできました！'; msg.textContent = 'Good job! Practice more to master it!'; }
-  else                  { trophy.textContent = '🌱'; title.textContent = 'がんばれ！';     msg.textContent = 'Try Learn mode first, then quiz again!'; }
+  if(pct===1)       {trophy.textContent='🏆';title.textContent='パーフェクト！';msg.textContent='You mastered this family! Move to the next one! 🎌';}
+  else if(pct>=0.8) {trophy.textContent='🥇';title.textContent='すごい！';      msg.textContent='Excellent! Try again for a perfect score!';}
+  else if(pct>=0.6) {trophy.textContent='🥈';title.textContent='よくできました！';msg.textContent='Good job! Practice more to master it!';}
+  else              {trophy.textContent='🌱';title.textContent='がんばれ！';    msg.textContent='Try Learn mode first, then quiz again!';}
 
-  badge.style.display = progress[currentFamId].mastered ? 'block' : 'none';
-  if (progress[currentFamId].mastered) {
-    document.getElementById('mb-chars').textContent = currentFamily.chars.map(c => c.h).join(' ');
-  }
+  badge.style.display=progress[currentFamId].mastered?'block':'none';
+  if(progress[currentFamId].mastered) document.getElementById('mb-chars').textContent=currentFamily.chars.map(c=>c.h).join(' ');
 
-  // Next family button
-  const families = FAMILIES.filter(f => showDaku ? true : !f.isDaku);
-  const curIdx   = families.findIndex(f => f.id === currentFamId);
-  const nextBtn  = document.getElementById('next-family-btn');
-  if (curIdx < families.length - 1) {
-    nextBtn.textContent    = '➡️ Next: ' + families[curIdx + 1].name;
-    nextBtn.style.display  = 'block';
-    nextBtn.dataset.nextId = families[curIdx + 1].id;
+  const families=FAMILIES.filter(f=>showDaku?true:!f.isDaku);
+  const curIdx=families.findIndex(f=>f.id===currentFamId);
+  const nextBtn=document.getElementById('next-family-btn');
+  if(curIdx<families.length-1) {
+    nextBtn.textContent='➡️ Next: '+families[curIdx+1].name;
+    nextBtn.style.display='block';
+    nextBtn.dataset.nextId=families[curIdx+1].id;
   } else {
-    nextBtn.style.display = 'none';
+    nextBtn.style.display='none';
   }
 }
 
-// ════════════ SPEED MODE ════════════
 function startSpeedMode() {
-  currentMode   = 'speed';
-  speedScore    = 0; speedWrong = 0; speedTimeLeft = 30;
-  document.getElementById('speed-score').textContent    = 0;
-  document.getElementById('speed-wrong').textContent    = 0;
-  document.getElementById('time-left').textContent      = 30;
-  document.getElementById('speed-feedback').textContent = '';
+  currentMode='speed';
+  speedScore=0; speedWrong=0; speedTimeLeft=30;
+  document.getElementById('speed-score').textContent   =0;
+  document.getElementById('speed-wrong').textContent   =0;
+  document.getElementById('time-left').textContent     =30;
+  document.getElementById('speed-feedback').textContent='';
   showScreen('speed-screen');
   showSpeedQ();
-  speedTimer = setInterval(() => {
+  speedTimer=setInterval(()=>{
     speedTimeLeft--;
-    document.getElementById('time-left').textContent = speedTimeLeft;
-    if (speedTimeLeft <= 0) { clearInterval(speedTimer); endSpeedMode(); }
-  }, 1000);
+    document.getElementById('time-left').textContent=speedTimeLeft;
+    if(speedTimeLeft<=0){clearInterval(speedTimer);endSpeedMode();}
+  },1000);
 }
 
 function showSpeedQ() {
-  const chars   = currentFamily.chars;
-  speedCurrent  = chars[Math.floor(Math.random() * chars.length)];
-  document.getElementById('speed-char').textContent = speedCurrent.h;
+  const chars=currentFamily.chars;
+  speedCurrent=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('speed-char').textContent=speedCurrent.h;
   speak(speedCurrent.h);
 
-  let wrong = chars.filter(x => x.h !== speedCurrent.h).sort(() => Math.random() - 0.5).slice(0, 3);
-  if (wrong.length < 3) {
-    const extra = FAMILIES.flatMap(f => f.chars).filter(x => x.h !== speedCurrent.h && !wrong.find(w => w.h === x.h)).sort(() => Math.random() - 0.5);
-    while (wrong.length < 3 && extra.length > 0) wrong.push(extra.shift());
+  let wrong=chars.filter(x=>x.h!==speedCurrent.h).sort(()=>Math.random()-0.5).slice(0,3);
+  if(wrong.length<3){
+    const extra=FAMILIES.flatMap(f=>f.chars).filter(x=>x.h!==speedCurrent.h&&!wrong.find(w=>w.h===x.h)).sort(()=>Math.random()-0.5);
+    while(wrong.length<3&&extra.length>0) wrong.push(extra.shift());
   }
-  const opts = [...wrong, speedCurrent].sort(() => Math.random() - 0.5);
+  const opts=[...wrong,speedCurrent].sort(()=>Math.random()-0.5);
 
-  const optDiv = document.getElementById('speed-options');
-  optDiv.innerHTML = '';
-  opts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'option-btn';
-    btn.innerHTML = '<span class="opt-rm">' + opt.r + '</span>';
-    btn.addEventListener('click', () => checkSpeedAnswer(opt.h === speedCurrent.h, btn));
+  const optDiv=document.getElementById('speed-options');
+  optDiv.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    btn.innerHTML='<span class="opt-rm">'+opt.r+'</span>';
+    btn.addEventListener('click', function() { checkSpeedAnswer(opt.h===speedCurrent.h, btn); });
     optDiv.appendChild(btn);
   });
 }
 
 function checkSpeedAnswer(isCorrect, btn) {
-  if (speedTimeLeft <= 0) return;
-  const fb = document.getElementById('speed-feedback');
-  if (isCorrect) {
+  if(speedTimeLeft<=0) return;
+  const fb=document.getElementById('speed-feedback');
+  if(isCorrect) {
     speedScore++;
-    document.getElementById('speed-score').textContent = speedScore;
+    document.getElementById('speed-score').textContent=speedScore;
     btn.classList.add('correct');
-    fb.textContent = '✅ ' + speedCurrent.h + ' = ' + speedCurrent.r;
-    fb.className   = 'feedback correct-text';
+    fb.textContent='✅ '+speedCurrent.h+' = '+speedCurrent.r;
+    fb.className='feedback correct-text';
     speak(speedCurrent.h);
-    setTimeout(showSpeedQ, 700);
+    setTimeout(showSpeedQ,700);
   } else {
     speedWrong++;
-    document.getElementById('speed-wrong').textContent = speedWrong;
-    btn.classList.add('wrong'); btn.disabled = true;
-    fb.textContent = '❌ Try again!';
-    fb.className   = 'feedback wrong-text';
+    document.getElementById('speed-wrong').textContent=speedWrong;
+    btn.classList.add('wrong'); btn.disabled=true;
+    fb.textContent='❌ Try again!';
+    fb.className='feedback wrong-text';
   }
 }
 
 function endSpeedMode() {
   showScreen('end-screen');
-  document.getElementById('final-score').textContent = speedScore;
-  document.getElementById('final-total').textContent = speedScore + speedWrong;
-  document.getElementById('mastered-badge').style.display = 'none';
+  document.getElementById('final-score').textContent=speedScore;
+  document.getElementById('final-total').textContent=speedScore+speedWrong;
+  document.getElementById('mastered-badge').style.display='none';
 
-  const trophy = document.getElementById('trophy');
-  const title  = document.getElementById('end-title');
-  const msg    = document.getElementById('end-msg');
-  const nextBtn = document.getElementById('next-family-btn');
-  nextBtn.textContent   = '⚡ Play Speed Again';
-  nextBtn.style.display = 'block';
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  const nextBtn=document.getElementById('next-family-btn');
+  nextBtn.textContent='⚡ Play Speed Again';
+  nextBtn.style.display='block';
   delete nextBtn.dataset.nextId;
 
-  if (speedScore >= 15)     { trophy.textContent = '⚡'; title.textContent = 'Speed Master!'; msg.textContent = speedScore + ' correct in 30 seconds! 🔥'; }
-  else if (speedScore >= 8) { trophy.textContent = '🥇'; title.textContent = 'Great Speed!';  msg.textContent = speedScore + ' correct! Keep going!'; }
-  else if (speedScore >= 4) { trophy.textContent = '🥈'; title.textContent = 'Good Start!';   msg.textContent = 'Try again to beat your score!'; }
-  else                       { trophy.textContent = '🌱'; title.textContent = 'Keep Going!';   msg.textContent = 'Practice more in Learn mode first!'; }
+  if(speedScore>=15)    {trophy.textContent='⚡';title.textContent='Speed Master!';msg.textContent=speedScore+' correct in 30 seconds! 🔥';}
+  else if(speedScore>=8){trophy.textContent='🥇';title.textContent='Great Speed!'; msg.textContent=speedScore+' correct! Keep going!';}
+  else if(speedScore>=4){trophy.textContent='🥈';title.textContent='Good Start!';  msg.textContent='Try again to beat your score!';}
+  else                  {trophy.textContent='🌱';title.textContent='Keep Going!';  msg.textContent='Practice more in Learn mode first!';}
 }
 
-// ════════════ EVENT LISTENERS ════════════
+// ════════════ ALL EVENT LISTENERS ════════════
 document.addEventListener('DOMContentLoaded', function() {
 
   // Dakuten toggle
-  const dakuBtn = document.getElementById('daku-toggle-btn');
-  dakuBtn.addEventListener('click', function() {
+  document.getElementById('daku-toggle-btn').addEventListener('click', function() {
     showDaku = !showDaku;
     this.classList.toggle('on', showDaku);
     buildFamilyScreen();
   });
 
-  // Back buttons
-  document.getElementById('back-to-family').addEventListener('click',     buildFamilyScreen);
-  document.getElementById('back-to-mode-learn').addEventListener('click', () => openFamily(currentFamId));
-  document.getElementById('back-to-mode-quiz').addEventListener('click',  () => openFamily(currentFamId));
-  document.getElementById('back-to-mode-speed').addEventListener('click', () => { clearInterval(speedTimer); openFamily(currentFamId); });
+  // Mode screen — back button
+  document.getElementById('back-to-family').addEventListener('click', function() {
+    buildFamilyScreen();
+  });
 
-  // Home links
-  document.getElementById('mode-back-link').addEventListener('click',   function(e) { e.preventDefault(); buildFamilyScreen(); });
-  document.getElementById('learn-back-to-mode').addEventListener('click', function(e) { e.preventDefault(); openFamily(currentFamId); });
+  // Mode screen — "Back to families" link
+  document.getElementById('mode-back-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    buildFamilyScreen();
+  });
 
   // Mode cards
   document.getElementById('mode-learn').addEventListener('click',  startLearnMode);
@@ -980,32 +948,52 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('mode-read').addEventListener('click',   startReadQuiz);
   document.getElementById('mode-speed').addEventListener('click',  startSpeedMode);
 
-  // Learn navigation
-  document.getElementById('learn-speak-btn').addEventListener('click', () => speak(currentFamily.chars[learnIdx].h));
-  document.getElementById('learn-prev').addEventListener('click', () => {
-    if (learnIdx > 0) { learnIdx--; showLearnCard(); speak(currentFamily.chars[learnIdx].h); }
+  // Learn screen
+  document.getElementById('back-to-mode-learn').addEventListener('click', function() {
+    openFamily(currentFamId);
   });
-  document.getElementById('learn-next').addEventListener('click', () => {
-    if (learnIdx < currentFamily.chars.length - 1) { learnIdx++; showLearnCard(); speak(currentFamily.chars[learnIdx].h); }
+  document.getElementById('learn-speak-btn').addEventListener('click', function() {
+    speak(currentFamily.chars[learnIdx].h);
+  });
+  document.getElementById('learn-prev').addEventListener('click', function() {
+    if(learnIdx>0){ learnIdx--; showLearnCard(); speak(currentFamily.chars[learnIdx].h); }
+  });
+  document.getElementById('learn-next').addEventListener('click', function() {
+    if(learnIdx<currentFamily.chars.length-1){ learnIdx++; showLearnCard(); speak(currentFamily.chars[learnIdx].h); }
   });
   document.getElementById('start-quiz-from-learn').addEventListener('click', startRecogQuiz);
+  document.getElementById('learn-back-to-mode').addEventListener('click', function(e) {
+    e.preventDefault();
+    openFamily(currentFamId);
+  });
 
-  // Quiz
+  // Quiz screen
+  document.getElementById('back-to-mode-quiz').addEventListener('click', function() {
+    openFamily(currentFamId);
+  });
   document.getElementById('hint-btn').addEventListener('click', showHint);
 
+  // Speed screen
+  document.getElementById('back-to-mode-speed').addEventListener('click', function() {
+    clearInterval(speedTimer);
+    openFamily(currentFamId);
+  });
+
   // End screen
-  document.getElementById('try-again-btn').addEventListener('click', () => {
-    if      (currentMode === 'recog') startRecogQuiz();
-    else if (currentMode === 'read')  startReadQuiz();
-    else if (currentMode === 'speed') startSpeedMode();
+  document.getElementById('try-again-btn').addEventListener('click', function() {
+    if      (currentMode==='recog') startRecogQuiz();
+    else if (currentMode==='read')  startReadQuiz();
+    else if (currentMode==='speed') startSpeedMode();
   });
   document.getElementById('next-family-btn').addEventListener('click', function() {
-    if (this.dataset.nextId) openFamily(this.dataset.nextId);
+    if(this.dataset.nextId) openFamily(this.dataset.nextId);
     else startSpeedMode();
   });
-  document.getElementById('back-to-fam-btn').addEventListener('click', buildFamilyScreen);
+  document.getElementById('back-to-fam-btn').addEventListener('click', function() {
+    buildFamilyScreen();
+  });
 
-  // Build the family screen immediately on load
+  // Start on family screen
   buildFamilyScreen();
 });
 </script>
