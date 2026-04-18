@@ -91,7 +91,7 @@
 
 <div id="game-container">
     <div class="nav-bar">
-        <a href="https://aqmal-halim.github.io/marulearn/" class="home-btn">🏠 Home</a>
+        <a href="https://aqmal-halim.github.io/Marulearn" class="home-btn">🏠 Home</a>
         <div class="stats">❤️ <span id="p-hp">3</span> | 🏰 Floor: <span id="floor">1</span></div>
     </div>
 
@@ -137,7 +137,7 @@
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
         let cards = [correctCardValue];
-        while(cards.length < 4) { // Only 4 options now
+        while(cards.length < 4) { // 4 options
             let r = Math.floor(Math.random() * 12) + 1;
             if(!cards.includes(r)) cards.push(r);
         }
