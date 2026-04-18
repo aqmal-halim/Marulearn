@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎌 Hiragana Hero!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Comic Sans MS’, ‘Trebuchet MS’, sans-serif;
+background: linear-gradient(135deg, #c1121f 0%, #e63946 50%, #ff6b6b 100%);
+min-height: 100vh;
+padding: 20px;
+}
+
+.container { max-width: 500px; margin: 0 auto; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── SHARED ── */
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.back-btn {
+background: white; border: 2px solid #eee; border-radius: 12px; padding: 8px 14px;
+font-family: inherit; font-weight: 700; font-size: 0.9em; cursor: pointer;
+color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+}
+.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+
+/* ── PROFILE SCREEN ── */
+.profile-screen {
+min-height: 100vh; display: flex; flex-direction: column;
+align-items: center; justify-content: center; padding: 20px;
+}
+.profile-screen.active { display: flex; }
+.profile-screen h1 { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-align: center; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+.profile-screen p  { color: rgba(255,255,255,0.85); margin-bottom: 25px; text-align: center; }
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px; }
+.profile-card {
+background: white; border-radius: 18px; padding: 18px 12px; text-align: center;
+cursor: pointer; border: 3px solid transparent; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+}
+.profile-card:active { transform: scale(1.04); }
+.profile-card.kids  { border-color: #e63946; }
+.profile-card.daily { border-color: #118ab2; }
+.profile-card.n5    { border-color: #06d6a0; }
+.profile-card .emoji { font-size: 2.5em; margin-bottom: 6px; }
+.profile-card .name  { font-weight: 900; font-size: 0.95em; color: #2d3436; }
+.profile-card .desc  { font-size: 0.72em; color: #888; margin-top: 3px; }
+
+/* ── FAMILY SELECT SCREEN ── */
+.family-screen-inner { padding-bottom: 20px; }
+.progress-overview {
+background: white; border-radius: 18px; padding: 15px 18px;
+margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.progress-overview .label { font-size: 0.78em; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.overall-bar { background: #eee; border-radius: 10px; height: 12px; overflow: hidden; }
+.overall-fill { background: linear-gradient(90deg, #06d6a0, #118ab2); height: 100%; transition: width 0.5s; border-radius: 10px; }
+.overall-text { font-size: 0.85em; font-weight: 700; color: #555; margin-top: 6px; }
+
+.section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); margin: 16px 0 8px 2px; }
+.family-grid { display: grid; gap: 10px; }
+.family-card {
+background: white; border-radius: 18px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px;
+cursor: pointer; border: 2px solid transparent;
+box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.2s;
+-webkit-tap-highlight-color: transparent;
+}
+.family-card:active { transform: scale(1.02); }
+.family-card.locked { opacity: 0.5; cursor: not-allowed; }
+.family-card.mastered { border-color: #06d6a0; }
+.family-card.in-progress { border-color: #ffd60a; }
+
+.family-chars {
+font-size: 1.4em; font-weight: 700; color: #e63946; min-width: 90px;
+letter-spacing: 3px; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif;
+}
+.family-info { flex: 1; }
+.family-name { font-weight: 900; font-size: 1em; color: #2d3436; }
+.family-romaji { font-size: 0.78em; color: #aaa; margin-top: 2px; }
+.family-status { font-size: 1.5em; }
+
+.family-prog { margin-top: 6px; background: #eee; border-radius: 5px; height: 5px; overflow: hidden; }
+.family-prog-fill { background: #06d6a0; height: 100%; transition: width 0.3s; border-radius: 5px; }
+
+/* ── MODE SELECT SCREEN ── */
+.mode-screen-inner { padding-bottom: 20px; }
+.char-preview {
+background: white; border-radius: 20px; padding: 25px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+.char-big { font-size: 4em; color: #e63946; margin-bottom: 5px; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; }
+.char-count { font-size: 0.85em; color: #aaa; font-weight: 700; }
+.chars-preview-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.char-pill {
+background: #fff5f5; border: 2px solid #ffc8cc; border-radius: 10px;
+padding: 6px 10px; text-align: center;
+}
+.char-pill .jp { font-size: 1.3em; color: #e63946; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; }
+.char-pill .rm { font-size: 0.65em; color: #aaa; font-weight: 700; margin-top: 2px; }
+
+.mode-grid { display: grid; gap: 10px; }
+.mode-card {
+background: white; border-radius: 16px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px;
+cursor: pointer; border: 2px solid #eee;
+box-shadow: 0 3px 12px rgba(0,0,0,0.08); transition: all 0.2s;
+-webkit-tap-highlight-color: transparent;
+}
+.mode-card:active { transform: scale(1.02); }
+.mode-card.learn-mode   { border-color: #118ab2; }
+.mode-card.recog-mode   { border-color: #e63946; }
+.mode-card.read-mode    { border-color: #f77f00; }
+.mode-card.speed-mode   { border-color: #7b5ea7; }
+.mode-icon { font-size: 2.2em; min-width: 45px; text-align: center; }
+.mode-info { flex: 1; }
+.mode-name { font-weight: 900; font-size: 1em; color: #2d3436; }
+.mode-desc { font-size: 0.8em; color: #888; margin-top: 2px; }
+
+/* ── LEARN MODE ── */
+.learn-inner { padding-bottom: 20px; }
+.learn-card {
+background: white; border-radius: 25px; padding: 30px 25px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.12); margin-bottom: 18px; text-align: center;
+}
+.learn-char {
+font-size: 7em; color: #e63946; margin-bottom: 8px;
+font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif;
+text-shadow: 2px 2px 0 rgba(230,57,70,0.15);
+}
+.learn-romaji-big { font-size: 2em; font-weight: 900; color: #118ab2; margin-bottom: 6px; }
+.learn-example {
+display: flex; align-items: center; justify-content: center; gap: 10px;
+background: #fff5f5; border-radius: 12px; padding: 12px 15px; margin-top: 15px;
+}
+.learn-ex-emoji { font-size: 2em; }
+.learn-ex-info { text-align: left; }
+.learn-ex-jp { font-size: 1.2em; font-weight: 700; color: #2d3436; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; }
+.learn-ex-en { font-size: 0.8em; color: #888; }
+
+.speak-btn {
+background: #118ab2; color: white; border: none; border-radius: 50px; padding: 12px 25px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+display: flex; align-items: center; gap: 8px; margin: 0 auto 18px;
+-webkit-appearance: none;
+}
+.learn-nav { display: flex; justify-content: space-between; align-items: center; }
+.nav-btn {
+background: #2d3436; color: white; border: none; border-radius: 12px; padding: 12px 20px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer; -webkit-appearance: none;
+}
+.nav-btn:disabled { background: #ddd; color: #aaa; }
+.learn-counter { font-weight: 800; color: rgba(255,255,255,0.8); font-size: 0.9em; }
+
+.start-quiz-from-learn {
+display: block; width: 100%; margin-top: 18px; padding: 15px;
+background: #e63946; color: white; border: none; border-radius: 16px;
+font-family: inherit; font-weight: 800; font-size: 1.1em; cursor: pointer;
+-webkit-appearance: none; text-align: center;
+}
+
+/* ── QUIZ MODE ── */
+.quiz-inner { padding-bottom: 20px; }
+.game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
+.progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
+.q-count { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill {
+background: white; border-radius: 12px; padding: 8px 15px;
+font-weight: 800; font-size: 0.9em; flex: 1; text-align: center;
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.stat-pill.score  { color: #118ab2; }
+.stat-pill.streak { color: #e63946; }
+
+.question-card {
+background: white; border-radius: 22px; padding: 30px 20px;
+text-align: center; box-shadow: 0 6px 25px rgba(0,0,0,0.12);
+margin-bottom: 16px; min-height: 160px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+position: relative;
+}
+.q-type-badge {
+position: absolute; top: 12px; right: 12px; background: #f0f0f0;
+color: #888; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700;
+}
+.q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.q-char  { font-size: 5.5em; color: #e63946; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; line-height: 1; }
+.q-text  { font-size: 2.5em; font-weight: 900; color: #2d3436; }
+.q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
+
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.option-btn {
+background: white; border: 2px solid #eee; border-radius: 15px; padding: 16px 10px;
+font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
+-webkit-appearance: none; text-align: center; transition: all 0.15s;
+box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+.option-btn .opt-char { font-size: 2em; display: block; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; color: #e63946; }
+.option-btn .opt-rm   { font-size: 1.1em; display: block; font-weight: 900; color: #2d3436; }
+.option-btn .opt-sub  { font-size: 0.75em; display: block; color: #aaa; margin-top: 2px; }
+.option-btn:active:not(:disabled) { border-color: #e63946; background: #fff5f5; }
+.option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
+.option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
+.option-btn:disabled { cursor: not-allowed; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25%       { transform: translateX(-8px); }
+75%       { transform: translateX(8px); }
+}
+
+.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
+.feedback.correct-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.feedback.wrong-text   { color: #ffe0e0; }
+.feedback.hint-text    { color: white; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; font-size: 0.88em; font-weight: 600; }
+
+.hint-btn {
+background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
+border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+}
+
+/* ── SPEED MODE ── */
+.speed-timer {
+background: white; border-radius: 15px; padding: 10px 18px;
+text-align: center; margin-bottom: 15px; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+.speed-timer .time-left { font-size: 2em; font-weight: 900; color: #e63946; }
+.speed-timer .time-label { font-size: 0.75em; color: #aaa; font-weight: 700; }
+
+/* ── END SCREEN ── */
+.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+.trophy    { font-size: 5em; margin: 20px 0; }
+.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+.end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
+.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
+
+.mastered-badge {
+background: white; border-radius: 18px; padding: 14px 20px;
+margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.mastered-badge .mb-title { font-weight: 900; color: #06d6a0; font-size: 1.1em; }
+.mastered-badge .mb-chars { font-size: 1.8em; letter-spacing: 5px; margin-top: 5px; font-family: ‘Hiragino Sans’, ‘Yu Gothic’, sans-serif; color: #e63946; }
+
+.end-btns { display: grid; gap: 10px; }
+.end-btn {
+background: white; color: #e63946; border: none; border-radius: 15px; padding: 16px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer; -webkit-appearance: none;
+}
+.end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- ════════════════════════════════ -->
+
+<!-- PROFILE SCREEN                  -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="profile-screen" class="profile-screen screen active">
+  <div style="font-size:3em;margin-bottom:8px;">🎌</div>
+  <h1>Hiragana Hero!</h1>
+  <p>Who's learning today?</p>
+  <div class="profile-grid">
+    <div class="profile-card kids"  data-profile="kids">  <div class="emoji">👧</div><div class="name">School Kid</div><div class="desc">Grade 2-3 · Full hiragana</div></div>
+    <div class="profile-card daily" data-profile="daily"> <div class="emoji">👩</div><div class="name">Daily Life</div><div class="desc">Adult · Reading focus</div></div>
+    <div class="profile-card n5"    data-profile="n5">    <div class="emoji">🏆</div><div class="name">N5 Prep</div>   <div class="desc">Full + dakuten chars</div></div>
+    <div class="profile-card kids"  data-profile="all">   <div class="emoji">👨‍👩‍👧</div><div class="name">All Family</div>  <div class="desc">Everyone · All 46 chars</div></div>
+  </div>
+  <a href="../" class="home-link" style="margin-top:25px;">← Back to Japanese Hub</a>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- FAMILY SELECT SCREEN            -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="family-screen" class="screen">
+  <div class="family-screen-inner">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-profile">← Back</button>
+      <h2>🎌 Hiragana Hero</h2>
+    </div>
+
+```
+<div class="progress-overview">
+  <div class="label">📍 Overall Progress</div>
+  <div class="overall-bar"><div class="overall-fill" id="overall-fill" style="width:0%"></div></div>
+  <div class="overall-text" id="overall-text">0 / 46 characters mastered</div>
+</div>
+
+<div class="section-lbl">Choose a hiragana family to study:</div>
+<div class="family-grid" id="family-grid"></div>
+<a href="../" class="home-link">← Back to Japanese Hub</a>
+```
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- MODE SELECT SCREEN              -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="mode-screen" class="screen">
+  <div class="mode-screen-inner">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-family">← Back</button>
+      <h2 id="mode-screen-title">あ行</h2>
+    </div>
+
+```
+<div class="char-preview">
+  <div class="char-count" id="char-count-label">5 characters</div>
+  <div class="chars-preview-row" id="chars-preview-row"></div>
+</div>
+
+<div class="mode-grid">
+  <div class="mode-card learn-mode" id="mode-learn">
+    <div class="mode-icon">📖</div>
+    <div class="mode-info">
+      <div class="mode-name">Learn Mode</div>
+      <div class="mode-desc">See, hear & understand each character</div>
+    </div>
+  </div>
+  <div class="mode-card recog-mode" id="mode-recog">
+    <div class="mode-icon">👁️</div>
+    <div class="mode-info">
+      <div class="mode-name">Recognition Quiz</div>
+      <div class="mode-desc">See hiragana → pick the reading</div>
+    </div>
+  </div>
+  <div class="mode-card read-mode" id="mode-read">
+    <div class="mode-icon">🔤</div>
+    <div class="mode-info">
+      <div class="mode-name">Reading Quiz</div>
+      <div class="mode-desc">See romaji → pick the hiragana</div>
+    </div>
+  </div>
+  <div class="mode-card speed-mode" id="mode-speed">
+    <div class="mode-icon">⚡</div>
+    <div class="mode-info">
+      <div class="mode-name">Speed Round</div>
+      <div class="mode-desc">30 seconds — how many can you get?</div>
+    </div>
+  </div>
+</div>
+<a href="#" class="home-link" id="mode-back-link">← Back to families</a>
+```
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- LEARN SCREEN                    -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="learn-screen" class="screen">
+  <div class="learn-inner">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-mode-learn">← Back</button>
+      <h2 id="learn-title">Learn あ行</h2>
+    </div>
+    <div class="learn-card">
+      <div class="learn-char"       id="learn-char">あ</div>
+      <div class="learn-romaji-big" id="learn-romaji">a</div>
+      <div class="learn-example">
+        <div class="learn-ex-emoji" id="learn-ex-emoji">🍬</div>
+        <div class="learn-ex-info">
+          <div class="learn-ex-jp" id="learn-ex-jp">あめ</div>
+          <div class="learn-ex-en" id="learn-ex-en">candy / rain</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:18px;">
+      <button type="button" class="speak-btn" id="learn-speak-char">🔊 Hear it</button>
+    </div>
+    <div class="learn-nav">
+      <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+      <span class="learn-counter" id="learn-counter">1 / 5</span>
+      <button type="button" class="nav-btn" id="learn-next">Next →</button>
+    </div>
+    <button type="button" class="start-quiz-from-learn" id="start-recog-from-learn">🎯 Start Recognition Quiz!</button>
+    <a href="#" class="home-link" id="learn-back-to-mode">← Back to modes</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- QUIZ SCREEN (Recognition+Read)  -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="quiz-screen" class="screen">
+  <div class="quiz-inner">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-mode-quiz">← Back</button>
+      <h2 id="quiz-title">Recognition Quiz</h2>
+    </div>
+    <div class="game-header">
+      <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+      <div class="q-count" id="q-count">1/5</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-pill score">⭐ <span id="score">0</span></div>
+      <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+    </div>
+    <div class="question-card">
+      <div class="q-type-badge" id="q-type-badge">Hiragana → Romaji</div>
+      <div class="q-label" id="q-label">What does this say?</div>
+      <div class="q-char" id="q-char" style="display:none;"></div>
+      <div class="q-text" id="q-text" style="display:none;"></div>
+      <div class="q-hint" id="q-hint"></div>
+    </div>
+    <div class="options-grid" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- SPEED SCREEN                    -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="speed-screen" class="screen">
+  <div class="quiz-inner">
+    <div class="top-bar">
+      <button type="button" class="back-btn" id="back-to-mode-speed">← Back</button>
+      <h2>⚡ Speed Round!</h2>
+    </div>
+    <div class="speed-timer">
+      <div class="time-left" id="time-left">30</div>
+      <div class="time-label">seconds left</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-pill score">⭐ <span id="speed-score">0</span> correct</div>
+      <div class="stat-pill streak">❌ <span id="speed-wrong">0</span> wrong</div>
+    </div>
+    <div class="question-card">
+      <div class="q-label">What does this say?</div>
+      <div class="q-char" id="speed-char">あ</div>
+    </div>
+    <div class="options-grid" id="speed-options"></div>
+    <div class="feedback" id="speed-feedback"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ -->
+
+<!-- END SCREEN                      -->
+
+<!-- ════════════════════════════════ -->
+
+<div id="end-screen" class="screen">
+  <div class="end-inner">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">すごい！</div>
+    <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
+    <div class="end-msg"   id="end-msg"></div>
+    <div class="mastered-badge" id="mastered-badge" style="display:none;">
+      <div class="mb-title">✅ Family Mastered!</div>
+      <div class="mb-chars" id="mb-chars"></div>
+    </div>
+    <div class="end-btns">
+      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="next-family-btn">➡️ Next Family</button>
+      <button type="button" class="end-btn secondary" id="back-to-fam-btn">📋 All Families</button>
+    </div>
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ══════════════════════════════════════════
+// HIRAGANA DATA — all 46 + dakuten
+// ══════════════════════════════════════════
+const FAMILIES = [
+  {
+    id: 'a', name: 'あ行', romaji: 'a-i-u-e-o', order: 0,
+    chars: [
+      { h: 'あ', r: 'a',  ex: 'あめ',   ee: 'rain/candy', emoji: '🍬' },
+      { h: 'い', r: 'i',  ex: 'いぬ',   ee: 'dog',        emoji: '🐕' },
+      { h: 'う', r: 'u',  ex: 'うみ',   ee: 'sea/ocean',  emoji: '🌊' },
+      { h: 'え', r: 'e',  ex: 'えき',   ee: 'station',    emoji: '🚉' },
+      { h: 'お', r: 'o',  ex: 'おかあさん', ee: 'mother',  emoji: '👩' },
+    ]
+  },
+  {
+    id: 'ka', name: 'か行', romaji: 'ka-ki-ku-ke-ko', order: 1,
+    chars: [
+      { h: 'か', r: 'ka', ex: 'かさ',   ee: 'umbrella',   emoji: '☂️' },
+      { h: 'き', r: 'ki', ex: 'きって', ee: 'stamp',      emoji: '📮' },
+      { h: 'く', r: 'ku', ex: 'くつ',   ee: 'shoes',      emoji: '👟' },
+      { h: 'け', r: 'ke', ex: 'けむり', ee: 'smoke',      emoji: '💨' },
+      { h: 'こ', r: 'ko', ex: 'こども', ee: 'child',      emoji: '👦' },
+    ]
+  },
+  {
+    id: 'sa', name: 'さ行', romaji: 'sa-shi-su-se-so', order: 2,
+    chars: [
+      { h: 'さ', r: 'sa',  ex: 'さかな', ee: 'fish',      emoji: '🐟' },
+      { h: 'し', r: 'shi', ex: 'しお',   ee: 'salt',      emoji: '🧂' },
+      { h: 'す', r: 'su',  ex: 'すし',   ee: 'sushi',     emoji: '🍣' },
+      { h: 'せ', r: 'se',  ex: 'せんせい', ee: 'teacher', emoji: '👩‍🏫' },
+      { h: 'そ', r: 'so',  ex: 'そら',   ee: 'sky',       emoji: '☁️' },
+    ]
+  },
+  {
+    id: 'ta', name: 'た行', romaji: 'ta-chi-tsu-te-to', order: 3,
+    chars: [
+      { h: 'た', r: 'ta',  ex: 'たまご', ee: 'egg',       emoji: '🥚' },
+      { h: 'ち', r: 'chi', ex: 'ちず',   ee: 'map',       emoji: '🗺️' },
+      { h: 'つ', r: 'tsu', ex: 'つき',   ee: 'moon',      emoji: '🌙' },
+      { h: 'て', r: 'te',  ex: 'てがみ', ee: 'letter',    emoji: '✉️' },
+      { h: 'と', r: 'to',  ex: 'とり',   ee: 'bird',      emoji: '🐦' },
+    ]
+  },
+  {
+    id: 'na', name: 'な行', romaji: 'na-ni-nu-ne-no', order: 4,
+    chars: [
+      { h: 'な', r: 'na', ex: 'なつ',   ee: 'summer',    emoji: '☀️' },
+      { h: 'に', r: 'ni', ex: 'にわ',   ee: 'garden',    emoji: '🌳' },
+      { h: 'ぬ', r: 'nu', ex: 'ぬこ',   ee: 'cat',       emoji: '🐱' },
+      { h: 'ね', r: 'ne', ex: 'ねこ',   ee: 'cat',       emoji: '🐈' },
+      { h: 'の', r: 'no', ex: 'のり',   ee: 'seaweed',   emoji: '🍱' },
+    ]
+  },
+  {
+    id: 'ha', name: 'は行', romaji: 'ha-hi-fu-he-ho', order: 5,
+    chars: [
+      { h: 'は', r: 'ha', ex: 'はな',   ee: 'flower',    emoji: '🌸' },
+      { h: 'ひ', r: 'hi', ex: 'ひと',   ee: 'person',    emoji: '🧍' },
+      { h: 'ふ', r: 'fu', ex: 'ふね',   ee: 'boat/ship', emoji: '🚢' },
+      { h: 'へ', r: 'he', ex: 'へや',   ee: 'room',      emoji: '🏠' },
+      { h: 'ほ', r: 'ho', ex: 'ほし',   ee: 'star',      emoji: '⭐' },
+    ]
+  },
+  {
+    id: 'ma', name: 'ま行', romaji: 'ma-mi-mu-me-mo', order: 6,
+    chars: [
+      { h: 'ま', r: 'ma', ex: 'まど',   ee: 'window',    emoji: '🪟' },
+      { h: 'み', r: 'mi', ex: 'みず',   ee: 'water',     emoji: '💧' },
+      { h: 'む', r: 'mu', ex: 'むし',   ee: 'bug/insect', emoji: '🐛' },
+      { h: 'め', r: 'me', ex: 'めだか', ee: 'small fish', emoji: '🐠' },
+      { h: 'も', r: 'mo', ex: 'もり',   ee: 'forest',    emoji: '🌲' },
+    ]
+  },
+  {
+    id: 'ya', name: 'や行', romaji: 'ya-yu-yo', order: 7,
+    chars: [
+      { h: 'や', r: 'ya', ex: 'やま',   ee: 'mountain',  emoji: '⛰️' },
+      { h: 'ゆ', r: 'yu', ex: 'ゆき',   ee: 'snow',      emoji: '❄️' },
+      { h: 'よ', r: 'yo', ex: 'よる',   ee: 'night',     emoji: '🌙' },
+    ]
+  },
+  {
+    id: 'ra', name: 'ら行', romaji: 'ra-ri-ru-re-ro', order: 8,
+    chars: [
+      { h: 'ら', r: 'ra', ex: 'らいおん', ee: 'lion',    emoji: '🦁' },
+      { h: 'り', r: 'ri', ex: 'りんご',  ee: 'apple',    emoji: '🍎' },
+      { h: 'る', r: 'ru', ex: 'るすばん', ee: 'watching house', emoji: '🏡' },
+      { h: 'れ', r: 're', ex: 'れいぞうこ', ee: 'fridge', emoji: '🧊' },
+      { h: 'ろ', r: 'ro', ex: 'ろうそく', ee: 'candle',  emoji: '🕯️' },
+    ]
+  },
+  {
+    id: 'wa', name: 'わ行 & ん', romaji: 'wa-wo-n', order: 9,
+    chars: [
+      { h: 'わ', r: 'wa', ex: 'わに',   ee: 'crocodile', emoji: '🐊' },
+      { h: 'を', r: 'wo', ex: 'を',     ee: 'object particle', emoji: '📝' },
+      { h: 'ん', r: 'n',  ex: 'ほん',   ee: 'book',      emoji: '📚' },
+    ]
+  },
+  {
+    id: 'daku', name: '゛Dakuten', romaji: 'ga-gi-gu-ge-go...', order: 10,
+    chars: [
+      { h: 'が', r: 'ga', ex: 'がっこう', ee: 'school',  emoji: '🏫' },
+      { h: 'ぎ', r: 'gi', ex: 'ぎんこう', ee: 'bank',    emoji: '🏦' },
+      { h: 'ぐ', r: 'gu', ex: 'ぐんて',  ee: 'gloves',   emoji: '🧤' },
+      { h: 'げ', r: 'ge', ex: 'げた',    ee: 'wooden sandals', emoji: '👡' },
+      { h: 'ご', r: 'go', ex: 'ごはん',  ee: 'rice/meal', emoji: '🍚' },
+      { h: 'ざ', r: 'za', ex: 'ざっし',  ee: 'magazine', emoji: '📰' },
+      { h: 'じ', r: 'ji', ex: 'じかん',  ee: 'time',     emoji: '⏰' },
+      { h: 'ず', r: 'zu', ex: 'ずかん',  ee: 'picture book', emoji: '📖' },
+      { h: 'ぜ', r: 'ze', ex: 'ぜんぶ',  ee: 'all/everything', emoji: '✨' },
+      { h: 'ぞ', r: 'zo', ex: 'ぞう',    ee: 'elephant', emoji: '🐘' },
+      { h: 'だ', r: 'da', ex: 'だいこん', ee: 'radish',  emoji: '🥗' },
+      { h: 'ぢ', r: 'ji', ex: 'ぢめん',  ee: 'ground',   emoji: '🌍' },
+      { h: 'づ', r: 'zu', ex: 'つづく',  ee: 'to continue', emoji: '▶️' },
+      { h: 'で', r: 'de', ex: 'でんしゃ', ee: 'train',   emoji: '🚃' },
+      { h: 'ど', r: 'do', ex: 'どうぶつ', ee: 'animal',  emoji: '🦁' },
+      { h: 'ば', r: 'ba', ex: 'ばなな',  ee: 'banana',   emoji: '🍌' },
+      { h: 'び', r: 'bi', ex: 'びょういん', ee: 'hospital', emoji: '🏥' },
+      { h: 'ぶ', r: 'bu', ex: 'ぶどう',  ee: 'grapes',   emoji: '🍇' },
+      { h: 'べ', r: 'be', ex: 'べんきょう', ee: 'study', emoji: '📝' },
+      { h: 'ぼ', r: 'bo', ex: 'ぼうし',  ee: 'hat',      emoji: '🎩' },
+      { h: 'ぱ', r: 'pa', ex: 'ぱん',    ee: 'bread',    emoji: '🍞' },
+      { h: 'ぴ', r: 'pi', ex: 'ぴかぴか', ee: 'sparkling', emoji: '✨' },
+      { h: 'ぷ', r: 'pu', ex: 'ぷりん',  ee: 'pudding',  emoji: '🍮' },
+      { h: 'ぺ', r: 'pe', ex: 'ぺん',    ee: 'pen',      emoji: '✒️' },
+      { h: 'ぽ', r: 'po', ex: 'ぽすと',  ee: 'mailbox',  emoji: '📮' },
+    ]
+  },
+];
+
+// Which families are shown per profile
+const PROFILE_FAMILIES = {
+  kids:  ['a','ka','sa','ta','na','ha','ma','ya','ra','wa'],
+  daily: ['a','ka','sa','ta','na','ha','ma','ya','ra','wa'],
+  n5:    ['a','ka','sa','ta','na','ha','ma','ya','ra','wa','daku'],
+  all:   ['a','ka','sa','ta','na','ha','ma','ya','ra','wa','daku'],
+};
+
+// Progress tracking (in memory — resets on page reload; good for session practice)
+const progress = {}; // familyId -> { score, mastered }
+FAMILIES.forEach(f => { progress[f.id] = { bestScore: 0, mastered: false }; });
+
+// STATE
+let currentProfile  = 'kids';
+let currentFamilyId = 'a';
+let currentFamily   = null;
+let currentMode     = 'recog';
+let learnIndex      = 0;
+let quizChars       = [];
+let quizIndex       = 0;
+let quizTotal       = 0;
+let score           = 0;
+let streak          = 0;
+let attempts        = 0;
+let speedTimer      = null;
+let speedTimeLeft   = 30;
+let speedScore      = 0;
+let speedWrong      = 0;
+
+// ═══════════════════
+// SPEECH
+// ═══════════════════
+function speak(text, lang) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang  = lang || 'ja-JP';
+  u.rate  = 0.8;
+  u.pitch = 1.1;
+  window.speechSynthesis.speak(u);
+}
+
+// ═══════════════════
+// SCREENS
+// ═══════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════
+// FAMILY SCREEN
+// ═══════════════════
+function buildFamilyScreen(profile) {
+  currentProfile = profile;
+  const ids      = PROFILE_FAMILIES[profile];
+  const families = FAMILIES.filter(f => ids.includes(f.id));
+
+  // Overall progress
+  const totalChars   = families.reduce((s, f) => s + f.chars.length, 0);
+  const masteredChs  = families.filter(f => progress[f.id].mastered).reduce((s, f) => s + f.chars.length, 0);
+  const pct          = totalChars > 0 ? Math.round(masteredChs / totalChars * 100) : 0;
+  document.getElementById('overall-fill').style.width = pct + '%';
+  document.getElementById('overall-text').textContent = masteredChs + ' / ' + totalChars + ' characters mastered';
+
+  const grid = document.getElementById('family-grid');
+  grid.innerHTML = '';
+  families.forEach((fam, idx) => {
+    const prog     = progress[fam.id];
+    const statusEm = prog.mastered ? '✅' : (prog.bestScore > 0 ? '🔄' : '📖');
+    const cls      = prog.mastered ? 'mastered' : (prog.bestScore > 0 ? 'in-progress' : '');
+    const card     = document.createElement('div');
+    card.className = 'family-card ' + cls;
+    card.innerHTML =
+      '<div class="family-chars">' + fam.chars.map(c => c.h).slice(0,3).join('') + (fam.chars.length > 3 ? '…' : '') + '</div>' +
+      '<div class="family-info">' +
+        '<div class="family-name">' + fam.name + '</div>' +
+        '<div class="family-romaji">' + fam.romaji + '</div>' +
+        '<div class="family-prog"><div class="family-prog-fill" style="width:' + (prog.bestScore / fam.chars.length * 100) + '%"></div></div>' +
+      '</div>' +
+      '<div class="family-status">' + statusEm + '</div>';
+    card.addEventListener('click', () => openFamily(fam.id));
+    grid.appendChild(card);
+  });
+
+  showScreen('family-screen');
+}
+
+// ═══════════════════
+// MODE SCREEN
+// ═══════════════════
+function openFamily(famId) {
+  currentFamilyId = famId;
+  currentFamily   = FAMILIES.find(f => f.id === famId);
+  document.getElementById('mode-screen-title').textContent = currentFamily.name;
+  document.getElementById('char-count-label').textContent  = currentFamily.chars.length + ' characters';
+
+  const row = document.getElementById('chars-preview-row');
+  row.innerHTML = '';
+  currentFamily.chars.forEach(c => {
+    const pill = document.createElement('div');
+    pill.className = 'char-pill';
+    pill.innerHTML = '<div class="jp">' + c.h + '</div><div class="rm">' + c.r + '</div>';
+    row.appendChild(pill);
+  });
+
+  showScreen('mode-screen');
+}
+
+// ═══════════════════
+// LEARN MODE
+// ═══════════════════
+function startLearnMode() {
+  learnIndex = 0;
+  document.getElementById('learn-title').textContent = 'Learn ' + currentFamily.name;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(currentFamily.chars[0].h), 500);
+}
+
+function showLearnCard() {
+  const c = currentFamily.chars[learnIndex];
+  document.getElementById('learn-char').textContent    = c.h;
+  document.getElementById('learn-romaji').textContent  = c.r;
+  document.getElementById('learn-ex-emoji').textContent = c.emoji;
+  document.getElementById('learn-ex-jp').textContent   = c.ex;
+  document.getElementById('learn-ex-en').textContent   = c.ee;
+  document.getElementById('learn-counter').textContent = (learnIndex + 1) + ' / ' + currentFamily.chars.length;
+  document.getElementById('learn-prev').disabled = learnIndex === 0;
+  document.getElementById('learn-next').disabled = learnIndex === currentFamily.chars.length - 1;
+}
+
+// ═══════════════════
+// RECOGNITION QUIZ (see hiragana → pick romaji)
+// ═══════════════════
+function startRecogQuiz() {
+  currentMode = 'recog';
+  initQuiz();
+  document.getElementById('quiz-title').textContent = '👁️ Recognition Quiz';
+  document.getElementById('q-type-badge').textContent = 'Hiragana → Romaji';
+  showScreen('quiz-screen');
+  showQuizQ();
+}
+
+// ═══════════════════
+// READING QUIZ (see romaji → pick hiragana)
+// ═══════════════════
+function startReadQuiz() {
+  currentMode = 'read';
+  initQuiz();
+  document.getElementById('quiz-title').textContent = '🔤 Reading Quiz';
+  document.getElementById('q-type-badge').textContent = 'Romaji → Hiragana';
+  showScreen('quiz-screen');
+  showQuizQ();
+}
+
+function initQuiz() {
+  score     = 0;
+  streak    = 0;
+  quizIndex = 0;
+  attempts  = 0;
+  quizChars = [...currentFamily.chars].sort(() => Math.random() - 0.5);
+  quizTotal = quizChars.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+}
+
+function showQuizQ() {
+  if (quizIndex >= quizTotal) { endQuiz(); return; }
+  attempts = 0;
+
+  const c = quizChars[quizIndex];
+  document.getElementById('q-count').textContent  = (quizIndex + 1) + '/' + quizTotal;
+  document.getElementById('progress').style.width = (quizIndex / quizTotal * 100) + '%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display = 'none';
+
+  // Show question
+  const charEl = document.getElementById('q-char');
+  const textEl = document.getElementById('q-text');
+  const hintEl = document.getElementById('q-hint');
+
+  if (currentMode === 'recog') {
+    charEl.textContent = c.h; charEl.style.display = 'block';
+    textEl.style.display = 'none';
+    hintEl.textContent = c.emoji + '  ' + c.ex;
+    setTimeout(() => speak(c.h), 300);
+  } else {
+    textEl.textContent = c.r; textEl.style.display = 'block';
+    charEl.style.display = 'none';
+    hintEl.textContent = 'Find the hiragana for "' + c.r + '"';
+  }
+
+  // Build options — 4 from same pool (whole family + maybe others for variety)
+  const allChars = currentFamily.chars;
+  const wrong    = allChars.filter(x => x.h !== c.h).sort(() => Math.random() - 0.5).slice(0, 3);
+  // If not enough in family, pad with other family chars
+  if (wrong.length < 3) {
+    const extra = FAMILIES.flatMap(f => f.chars).filter(x => x.h !== c.h && !wrong.find(w => w.h === x.h)).sort(() => Math.random() - 0.5);
+    while (wrong.length < 3 && extra.length > 0) wrong.push(extra.shift());
+  }
+  const opts = [...wrong, c].sort(() => Math.random() - 0.5);
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    if (currentMode === 'recog') {
+      btn.innerHTML = '<span class="opt-rm">' + opt.r + '</span>';
+    } else {
+      btn.innerHTML = '<span class="opt-char">' + opt.h + '</span><span class="opt-sub">' + opt.r + '</span>';
+    }
+    btn.addEventListener('click', () => checkQuizAnswer(opt.h === c.h, btn, c));
+    optDiv.appendChild(btn);
+  });
+}
+
+const encouragement = ['すごい！ Sugoi! 🎉', 'よくできました！⭐', 'がんばれ！ Keep it up! 🚀', 'さいこう！ Amazing! 💫', 'パーフェクト！ 🌟'];
+const tryAgain      = ['もう一度！ Try again! 💪', 'ちがいます。Not quite! 🎯', 'がんばって！✨'];
+
+function checkQuizAnswer(isCorrect, btn, char) {
+  const feedback = document.getElementById('feedback');
+  attempts++;
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b => b.disabled = true);
+    speak(char.h);
+    if (attempts === 1) {
+      score++; streak++;
+      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+      feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+    } else {
+      streak = 0;
+      feedback.textContent = 'Yes! ' + char.h + ' = ' + char.r + ' 🌟';
+    }
+    feedback.className = 'feedback correct-text';
+    document.getElementById('score').textContent  = score;
+    document.getElementById('streak').textContent = streak;
+    setTimeout(() => { quizIndex++; showQuizQ(); }, 1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled = true;
+    streak = 0; document.getElementById('streak').textContent = 0;
+    feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+    feedback.className   = 'feedback wrong-text';
+    if (attempts >= 2) document.getElementById('hint-btn').style.display = 'block';
+  }
+}
+
+function showHint() {
+  const c = quizChars[quizIndex];
+  document.getElementById('feedback').innerHTML = '💡 ' + c.h + ' = ' + c.r + ' · Example: ' + c.ex + ' ' + c.emoji;
+  document.getElementById('feedback').className = 'feedback hint-text';
+  speak(c.h);
+}
+
+function endQuiz() {
+  const pct = score / quizTotal;
+  if (pct >= 0.8) { progress[currentFamilyId].mastered = true; }
+  if (score > progress[currentFamilyId].bestScore) progress[currentFamilyId].bestScore = score;
+
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('final-total').textContent = quizTotal;
+
+  const trophy = document.getElementById('trophy');
+  const title  = document.getElementById('end-title');
+  const msg    = document.getElementById('end-msg');
+  const badge  = document.getElementById('mastered-badge');
+
+  if (pct === 1)       { trophy.textContent = '🏆'; title.textContent = 'パーフェクト！'; msg.textContent = 'You mastered this family! 🎌'; }
+  else if (pct >= 0.8) { trophy.textContent = '🥇'; title.textContent = 'すごい！ Amazing!'; msg.textContent = 'Excellent! Try the next family!'; }
+  else if (pct >= 0.6) { trophy.textContent = '🥈'; title.textContent = 'よくできました！'; msg.textContent = 'Good job! Try again to master it!'; }
+  else                  { trophy.textContent = '🌱'; title.textContent = 'がんばれ！'; msg.textContent = 'Keep practicing! Try Learn mode first!'; }
+
+  if (progress[currentFamilyId].mastered) {
+    badge.style.display = 'block';
+    document.getElementById('mb-chars').textContent = currentFamily.chars.map(c => c.h).join(' ');
+  } else {
+    badge.style.display = 'none';
+  }
+
+  // Next family button
+  const ids    = PROFILE_FAMILIES[currentProfile];
+  const curIdx = ids.indexOf(currentFamilyId);
+  const nextBtn = document.getElementById('next-family-btn');
+  if (curIdx < ids.length - 1) {
+    const nextFam = FAMILIES.find(f => f.id === ids[curIdx + 1]);
+    nextBtn.textContent = '➡️ Next: ' + nextFam.name;
+    nextBtn.style.display = 'block';
+  } else {
+    nextBtn.style.display = 'none';
+  }
+}
+
+// ═══════════════════
+// SPEED MODE
+// ═══════════════════
+function startSpeedMode() {
+  currentMode = 'speed';
+  speedScore   = 0;
+  speedWrong   = 0;
+  speedTimeLeft = 30;
+  document.getElementById('speed-score').textContent = 0;
+  document.getElementById('speed-wrong').textContent = 0;
+  document.getElementById('time-left').textContent   = 30;
+  document.getElementById('speed-feedback').textContent = '';
+  showScreen('speed-screen');
+  showSpeedQ();
+  speedTimer = setInterval(() => {
+    speedTimeLeft--;
+    document.getElementById('time-left').textContent = speedTimeLeft;
+    if (speedTimeLeft <= 0) { clearInterval(speedTimer); endSpeedMode(); }
+  }, 1000);
+}
+
+let speedCurrentChar = null;
+function showSpeedQ() {
+  const chars = currentFamily.chars;
+  speedCurrentChar = chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('speed-char').textContent = speedCurrentChar.h;
+  speak(speedCurrentChar.h);
+
+  const wrong = chars.filter(x => x.h !== speedCurrentChar.h).sort(() => Math.random() - 0.5).slice(0, 3);
+  if (wrong.length < 3) {
+    const extra = FAMILIES.flatMap(f => f.chars).filter(x => x.h !== speedCurrentChar.h && !wrong.find(w => w.h === x.h)).sort(() => Math.random() - 0.5);
+    while (wrong.length < 3 && extra.length > 0) wrong.push(extra.shift());
+  }
+  const opts = [...wrong, speedCurrentChar].sort(() => Math.random() - 0.5);
+
+  const optDiv = document.getElementById('speed-options');
+  optDiv.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option-btn';
+    btn.innerHTML = '<span class="opt-rm">' + opt.r + '</span>';
+    btn.addEventListener('click', () => checkSpeedAnswer(opt.h === speedCurrentChar.h, btn));
+    optDiv.appendChild(btn);
+  });
+}
+
+function checkSpeedAnswer(isCorrect, btn) {
+  if (speedTimeLeft <= 0) return;
+  const fb = document.getElementById('speed-feedback');
+  if (isCorrect) {
+    speedScore++;
+    document.getElementById('speed-score').textContent = speedScore;
+    btn.classList.add('correct');
+    fb.textContent  = '✅ ' + speedCurrentChar.h + ' = ' + speedCurrentChar.r;
+    fb.className    = 'feedback correct-text';
+    speak(speedCurrentChar.h);
+    setTimeout(showSpeedQ, 700);
+  } else {
+    speedWrong++;
+    document.getElementById('speed-wrong').textContent = speedWrong;
+    btn.classList.add('wrong'); btn.disabled = true;
+    fb.textContent = '❌ Wrong! Keep trying!';
+    fb.className   = 'feedback wrong-text';
+  }
+}
+
+function endSpeedMode() {
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent = speedScore;
+  document.getElementById('final-total').textContent = speedScore + speedWrong;
+  document.getElementById('mastered-badge').style.display = 'none';
+  const trophy = document.getElementById('trophy');
+  const title  = document.getElementById('end-title');
+  const msg    = document.getElementById('end-msg');
+  const nextBtn = document.getElementById('next-family-btn');
+  nextBtn.textContent = '🔄 Play Speed Again';
+
+  if (speedScore >= 15)      { trophy.textContent = '⚡'; title.textContent = 'Speed Master!';  msg.textContent = speedScore + ' correct in 30 seconds! Amazing!'; }
+  else if (speedScore >= 8)  { trophy.textContent = '🥇'; title.textContent = 'Great Speed!';   msg.textContent = speedScore + ' correct! Keep practicing!'; }
+  else if (speedScore >= 4)  { trophy.textContent = '🥈'; title.textContent = 'Good Start!';    msg.textContent = 'Try again to beat your score!'; }
+  else                        { trophy.textContent = '🌱'; title.textContent = 'Keep Going!';    msg.textContent = 'Practice more in Learn mode first!'; }
+}
+
+// ═══════════════════
+// EVENT LISTENERS
+// ═══════════════════
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Profile select
+  document.querySelectorAll('.profile-card').forEach(card => {
+    card.addEventListener('click', function() { buildFamilyScreen(this.dataset.profile); });
+  });
+
+  // Family screen
+  document.getElementById('back-to-profile').addEventListener('click', () => showScreen('profile-screen'));
+
+  // Mode screen
+  document.getElementById('back-to-family').addEventListener('click',  () => buildFamilyScreen(currentProfile));
+  document.getElementById('mode-back-link').addEventListener('click',  function(e) { e.preventDefault(); buildFamilyScreen(currentProfile); });
+  document.getElementById('mode-learn').addEventListener('click',   startLearnMode);
+  document.getElementById('mode-recog').addEventListener('click',   startRecogQuiz);
+  document.getElementById('mode-read').addEventListener('click',    startReadQuiz);
+  document.getElementById('mode-speed').addEventListener('click',   startSpeedMode);
+
+  // Learn screen
+  document.getElementById('back-to-mode-learn').addEventListener('click', () => openFamily(currentFamilyId));
+  document.getElementById('learn-speak-char').addEventListener('click',   () => speak(currentFamily.chars[learnIndex].h));
+  document.getElementById('learn-prev').addEventListener('click', () => {
+    if (learnIndex > 0) { learnIndex--; showLearnCard(); speak(currentFamily.chars[learnIndex].h); }
+  });
+  document.getElementById('learn-next').addEventListener('click', () => {
+    if (learnIndex < currentFamily.chars.length - 1) { learnIndex++; showLearnCard(); speak(currentFamily.chars[learnIndex].h); }
+  });
+  document.getElementById('start-recog-from-learn').addEventListener('click', startRecogQuiz);
+  document.getElementById('learn-back-to-mode').addEventListener('click', function(e) { e.preventDefault(); openFamily(currentFamilyId); });
+
+  // Quiz screen
+  document.getElementById('back-to-mode-quiz').addEventListener('click',  () => openFamily(currentFamilyId));
+  document.getElementById('hint-btn').addEventListener('click',            showHint);
+
+  // Speed screen
+  document.getElementById('back-to-mode-speed').addEventListener('click', () => {
+    clearInterval(speedTimer);
+    openFamily(currentFamilyId);
+  });
+
+  // End screen
+  document.getElementById('try-again-btn').addEventListener('click', () => {
+    if      (currentMode === 'recog') startRecogQuiz();
+    else if (currentMode === 'read')  startReadQuiz();
+    else if (currentMode === 'speed') startSpeedMode();
+  });
+  document.getElementById('next-family-btn').addEventListener('click', () => {
+    if (currentMode === 'speed') { startSpeedMode(); return; }
+    const ids    = PROFILE_FAMILIES[currentProfile];
+    const curIdx = ids.indexOf(currentFamilyId);
+    if (curIdx < ids.length - 1) {
+      openFamily(ids[curIdx + 1]);
+    }
+  });
+  document.getElementById('back-to-fam-btn').addEventListener('click', () => buildFamilyScreen(currentProfile));
+});
+</script>
+
+</body>
+</html>
