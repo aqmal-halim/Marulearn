@@ -3,28 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruQuest: Grand Master</title>
+    <title>MaruQuest: Personality Update</title>
     <style>
         :root { --primary: #FF784E; --secondary: #60A5FA; --combo: #FACC15; }
         body { font-family: 'Comic Sans MS', sans-serif; background-color: #F0F4F8; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
         #game-container { width: 90%; max-width: 400px; background: white; border: 8px solid var(--primary); border-radius: 40px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; }
-        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+        /* UI Elements */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; }
-        .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.9rem; }
+        .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
         #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
         #timer-fill { width: 100%; height: 100%; background: #4ADE80; transition: width 0.1s linear; }
-        #stage { height: 210px; position: relative; border-radius: 25px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; border: 4px solid rgba(0,0,0,0.05); overflow: hidden; }
-        #combo-badge { position: absolute; top: 10px; left: 10px; background: var(--combo); color: #854D0E; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 900; opacity: 0; transition: 0.3s; z-index: 10; }
+
+        /* Battle Stage */
+        #stage { height: 230px; position: relative; border-radius: 25px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; border: 4px solid rgba(0,0,0,0.05); overflow: hidden; background: #F8FAFC; }
+        
+        #monster-label { position: absolute; top: 10px; background: rgba(255,255,255,0.8); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #64748B; font-size: 0.8rem; z-index: 5; border: 2px solid #E2E8F0; }
+        
+        /* Speech Bubbles */
+        .bubble { position: absolute; background: white; border-radius: 12px; padding: 5px 10px; font-size: 0.7rem; font-weight: 900; color: #1E293B; box-shadow: 0 4px 0 rgba(0,0,0,0.05); opacity: 0; transition: 0.2s; z-index: 10; border: 2px solid #E2E8F0; pointer-events: none; }
+        .bubble::after { content: ''; position: absolute; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid white; bottom: -6px; left: 50%; transform: translateX(-50%); }
+        #hero-bubble { bottom: 110px; left: 20px; }
+        #enemy-bubble { bottom: 110px; right: 20px; }
+
         #hero-wrap { position: absolute; bottom: 15px; left: 20px; width: 90px; transition: 0.3s; }
         #enemy { position: absolute; bottom: 35px; right: 35px; font-size: 80px; transition: 0.3s; }
-        .combo-glow { filter: drop-shadow(0 0 15px var(--combo)); transform: scale(1.1); }
+
+        .combo-glow { filter: drop-shadow(0 0 15px var(--combo)); }
         .hero-attack { transform: translateX(160px) rotate(15deg); }
-        .mega-blast { transform: translateX(160px) scale(2); filter: hue-rotate(90deg); }
-        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 40px; }
-        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 45px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .enemy-hit { transform: translateX(-160px); }
+
+        /* Math UI */
+        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+
         .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card { height: 65px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; }
-        .card:active { transform: translateY(3px); box-shadow: 0 2px 0 #2563EB; }
     </style>
 </head>
 <body>
@@ -34,82 +50,63 @@
         <a href="https://aqmal-halim.github.io/Marulearn" class="home-btn">🏠 Home</a>
         <div class="stats-col">
             <div>❤️ <span id="p-hp">3</span> | 🏰 F: <span id="floor">1</span></div>
-            <div style="font-size: 0.6rem; color: var(--primary)">🏆 Best: F <span id="best-floor">1</span></div>
         </div>
     </div>
     <div id="timer-container"><div id="timer-fill"></div></div>
+
     <div id="stage">
-        <div id="combo-badge">COMBO x0</div>
+        <div id="monster-label">Zappy the Monster</div>
+        <div id="hero-bubble" class="bubble">Take that!</div>
+        <div id="enemy-bubble" class="bubble">Grawr!</div>
+        
         <div id="enemy">👾</div>
         <div id="hero-wrap">
             <svg viewBox="0 0 130 155"><defs><radialGradient id="g" cx="38%" cy="32%" r="65%"><stop offset="0%" stop-color="#FFD4A1"/><stop offset="100%" stop-color="#FFB15E"/></radialGradient></defs><circle cx="65" cy="95" r="42" fill="url(#g)"/><rect x="45" y="42" width="40" height="15" rx="2" fill="#333"/><rect x="35" y="54" width="60" height="6" rx="3" fill="#333"/><ellipse cx="55" cy="91" rx="9" ry="11" fill="white"/><ellipse cx="75" cy="91" rx="9" ry="11" fill="white"/><circle cx="57" cy="93" r="5.5" fill="#333"/><circle cx="77" cy="93" r="5.5" fill="#333"/><path d="M52 110 Q65 122 78 110" fill="none" stroke="#333" stroke-width="2.8" stroke-linecap="round"/></svg>
         </div>
     </div>
+
     <div id="equation-box">
         <div class="slot">?</div> <span id="op">+</span> <span id="const-val">0</span> <span>=</span> <span id="goal-val">0</span>
     </div>
+
     <div class="hand" id="card-hand"></div>
 </div>
 
 <script>
-    let floor = 1, playerHP = 3, enemyHP = 2, maxEnemyHP = 2;
-    let combo = 0, isBusy = false, timerInterval, timeLeft = 100;
+    const monsterNames = ["Zappy", "Dusty", "Gloop", "Sparky", "Bones", "Crabby"];
+    const heroQuotes = ["Take that!", "Gotcha!", "Too easy!", "Hiyah!", "Maru-power!"];
+    const enemyQuotes = ["Oh no!", "Grawr!", "Not fair!", "Missed!", "Hehe!"];
+
+    let floor = 1, playerHP = 3, isBusy = false, timerInterval, timeLeft = 100;
 
     function init() {
         isBusy = false;
-        maxEnemyHP = (floor % 5 === 0) ? 5 : 2;
-        enemyHP = maxEnemyHP;
         document.getElementById('floor').innerText = floor;
         document.getElementById('p-hp').innerText = playerHP;
-        document.getElementById('enemy').innerText = (floor % 5 === 0) ? "👹" : "👾";
-        document.getElementById('best-floor').innerText = localStorage.getItem('maru_best') || 1;
+        document.getElementById('monster-label').innerText = monsterNames[Math.floor(Math.random()*monsterNames.length)] + " the Monster";
         newRound();
     }
 
-    function startTimer() {
-        clearInterval(timerInterval);
-        timeLeft = 100;
-        // Speed up slightly as floors increase
-        let speed = 1 + (floor * 0.05);
-        timerInterval = setInterval(() => {
-            timeLeft -= speed;
-            document.getElementById('timer-fill').style.width = timeLeft + "%";
-            if(timeLeft <= 0) { clearInterval(timerInterval); play(-1, null, 0); }
-        }, 100);
+    function say(who, text) {
+        const b = document.getElementById(who + '-bubble');
+        b.innerText = text;
+        b.style.opacity = "1";
+        setTimeout(() => b.style.opacity = "0", 1500);
     }
 
     function newRound() {
         let op = "+", ans, cVal, goal;
         
-        // --- ADAPTIVE LOGIC ---
-        if (floor >= 16) { // Addition, Subtraction, Multiplication, and Division
-            let choice = Math.random();
-            if (choice < 0.25) op = "÷"; else if (choice < 0.5) op = "×"; else if (choice < 0.75) op = "-"; else op = "+";
-        } else if (floor >= 11) { // Add, Sub, and Multiplication
-            let choice = Math.random();
-            if (choice < 0.33) op = "×"; else if (choice < 0.66) op = "-"; else op = "+";
-        } else if (floor >= 6) { // Add and Sub
-            op = Math.random() > 0.5 ? "-" : "+";
-        }
+        // Adaptive Math Logic
+        if (floor >= 16) op = ["+", "-", "×", "÷"][Math.floor(Math.random()*4)];
+        else if (floor >= 11) op = ["+", "-", "×"][Math.floor(Math.random()*3)];
+        else if (floor >= 6) op = Math.random() > 0.5 ? "-" : "+";
 
-        if (op === "÷") {
-            ans = Math.floor(Math.random() * 5) + 1; // Small numbers for division
-            cVal = Math.floor(Math.random() * 4) + 1;
-            goal = ans; ans = goal * cVal; // goal = ans / cVal
-            let temp = ans; ans = goal; goal = temp / cVal; // Correcting visual: ? / cVal = goal
-        } else if (op === "×") {
-            ans = Math.floor(Math.random() * 10) + 1;
-            cVal = [2, 3, 5, 10][Math.floor(Math.random() * 4)]; // Focus on easy tables first
-            goal = ans * cVal;
-        } else if (op === "-") {
-            ans = Math.floor(Math.random() * 10) + 5;
-            cVal = Math.floor(Math.random() * 5) + 1;
-            goal = ans - cVal;
-        } else {
-            ans = Math.floor(Math.random() * 10) + 1;
-            cVal = Math.floor(Math.random() * 9) + 1;
-            goal = ans + cVal;
-        }
+        // Logic for generating numbers based on operator
+        if(op === "×") { ans = Math.floor(Math.random()*5)+1; cVal = [2,5,10][Math.floor(Math.random()*3)]; goal = ans * cVal; }
+        else if(op === "÷") { cVal = Math.floor(Math.random()*4)+1; goal = Math.floor(Math.random()*5)+1; ans = goal * cVal; }
+        else if(op === "-") { ans = Math.floor(Math.random()*10)+5; cVal = Math.floor(Math.random()*5)+1; goal = ans - cVal; }
+        else { ans = Math.floor(Math.random()*10)+1; cVal = Math.floor(Math.random()*10)+1; goal = ans + cVal; }
 
         document.getElementById('op').innerText = op;
         document.getElementById('const-val').innerText = cVal;
@@ -119,53 +116,52 @@
         hand.innerHTML = '';
         let cards = [ans];
         while(cards.length < 6) {
-            let r = Math.floor(Math.random() * (op === "×" ? 20 : 15)) + 1;
+            let r = Math.floor(Math.random()*20)+1;
             if(!cards.includes(r)) cards.push(r);
         }
-        cards.sort(() => Math.random() - 0.5).forEach(n => {
+        cards.sort(()=>Math.random()-0.5).forEach(n => {
             let c = document.createElement('div');
             c.className = 'card'; c.innerText = n;
-            c.onclick = () => play(n, c, ans);
+            c.onclick = () => play(n, ans);
             hand.appendChild(c);
         });
         startTimer();
     }
 
-    function play(n, el, ans) {
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 100;
+        timerInterval = setInterval(() => {
+            timeLeft -= (0.5 + floor*0.05);
+            document.getElementById('timer-fill').style.width = timeLeft + "%";
+            if(timeLeft <= 0) { clearInterval(timerInterval); play(-1, 0); }
+        }, 100);
+    }
+
+    function play(n, ans) {
         if(isBusy) return;
         isBusy = true;
         clearInterval(timerInterval);
 
         if (n === ans) {
-            combo++; updateCombo();
-            const isMega = combo >= 3;
-            document.getElementById('hero-wrap').classList.add(isMega ? 'mega-blast' : 'hero-attack');
+            say('hero', heroQuotes[Math.floor(Math.random()*heroQuotes.length)]);
+            document.getElementById('hero-wrap').classList.add('hero-attack');
             setTimeout(() => {
-                enemyHP -= isMega ? 3 : 1;
-                document.getElementById('hero-wrap').classList.remove('hero-attack', 'mega-blast');
-                if(isMega) combo = 0; updateCombo();
-                if(enemyHP <= 0) { floor++; if(floor > (localStorage.getItem('maru_best')||0)) localStorage.setItem('maru_best', floor); setTimeout(init, 500); }
-                else { newRound(); isBusy = false; }
-            }, 400);
+                document.getElementById('hero-wrap').classList.remove('hero-attack');
+                floor++;
+                init();
+            }, 500);
         } else {
-            combo = 0; updateCombo();
-            document.getElementById('enemy').style.transform = "translateX(-160px)";
+            say('enemy', enemyQuotes[Math.floor(Math.random()*enemyQuotes.length)]);
+            document.getElementById('enemy').classList.add('enemy-hit');
             setTimeout(() => {
                 playerHP--;
                 document.getElementById('p-hp').innerText = playerHP;
-                document.getElementById('enemy').style.transform = "translateX(0)";
-                if(playerHP <= 0) { alert("Game Over! Back to Floor 1."); floor = 1; playerHP = 3; init(); }
-                else { newRound(); isBusy = false; }
-            }, 400);
+                document.getElementById('enemy').classList.remove('enemy-hit');
+                if(playerHP <= 0) { alert("Game Over!"); floor=1; playerHP=3; }
+                init();
+            }, 500);
         }
-    }
-
-    function updateCombo() {
-        const b = document.getElementById('combo-badge');
-        b.innerText = "COMBO x" + combo;
-        b.style.opacity = combo > 0 ? "1" : "0";
-        if(combo >= 3) document.getElementById('hero-wrap').classList.add('combo-glow');
-        else document.getElementById('hero-wrap').classList.remove('combo-glow');
     }
 
     init();
