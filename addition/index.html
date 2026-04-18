@@ -88,6 +88,15 @@
     outline: none;
   }
   .answer-input:focus { border-color: #00b894; }
+  .answer-input.shake {
+    animation: shake 0.4s;
+    border-color: #d63031;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
   .submit-btn {
     display: block;
     margin: 20px auto;
@@ -101,14 +110,27 @@
     cursor: pointer;
     font-family: inherit;
   }
+  .hint-btn {
+    background: #fdcb6e;
+    color: #2d3436;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+  }
   .feedback {
-    font-size: 1.5em;
+    font-size: 1.3em;
     margin-top: 15px;
     min-height: 40px;
     font-weight: bold;
   }
   .correct { color: #00b894; }
   .wrong { color: #d63031; }
+  .hint { color: #e17055; font-size: 1.1em; }
   .trophy { font-size: 5em; margin: 20px 0; }
   .final-score {
     font-size: 2em;
@@ -148,7 +170,7 @@
 
   <div id="start-screen" class="screen active">
     <h1>➕ Addition Adventure!</h1>
-    <p style="color:#636e72; margin-bottom:20px;">Add numbers and become an addition hero!</p>
+    <p style="color:#636e72; margin-bottom:20px;">Keep trying until you get it right!</p>
     <button class="level-btn easy" onclick="startGame('easy')">🌱 Easy (1-10)</button>
     <button class="level-btn medium" onclick="startGame('medium')">🌟 Medium (1-25)</button>
     <button class="level-btn hard" onclick="startGame('hard')">🔥 Hard (1-100)</button>
@@ -168,6 +190,7 @@
     <input type="number" id="answer" class="answer-input" autocomplete="off">
     <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
     <div class="feedback" id="feedback"></div>
+    <button class="hint-btn" id="hint-btn" onclick="showHint()" style="display:none;">💡 Need a hint?</button>
   </div>
 
   <div id="end-screen" class="screen">
@@ -186,9 +209,13 @@
   let streak = 0;
   let questionNum = 0;
   let currentAnswer = 0;
+  let currentA = 0;
+  let currentB = 0;
+  let attempts = 0;
   let level = 'easy';
   const totalQuestions = 10;
   const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fantastic! 🌟', 'Super! 🎊'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Keep going! You got this! 🌟', 'Almost! Try once more! ✨'];
 
   function startGame(lvl) {
     level = lvl;
@@ -209,26 +236,28 @@
 
   function nextQuestion() {
     questionNum++;
+    attempts = 0;
     if (questionNum > totalQuestions) {
       endGame();
       return;
     }
     const [min, max] = getRange();
-    const a = Math.floor(Math.random() * (max - min + 1)) + min;
-    const b = Math.floor(Math.random() * (max - min + 1)) + min;
-    currentAnswer = a + b;
-    document.getElementById('question').textContent = `${a} + ${b} = ?`;
-    
+    currentA = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentB = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentAnswer = currentA + currentB;
+    document.getElementById('question').textContent = `${currentA} + ${currentB} = ?`;
+
     const dots = document.getElementById('visual-dots');
-    if (level === 'easy' && a <= 10 && b <= 10) {
-      dots.textContent = '🔵'.repeat(a) + ' + ' + '🟢'.repeat(b);
+    if (level === 'easy' && currentA <= 10 && currentB <= 10) {
+      dots.textContent = '🔵'.repeat(currentA) + ' + ' + '🟢'.repeat(currentB);
     } else {
       dots.textContent = '';
     }
-    
+
     document.getElementById('q-num').textContent = questionNum;
     document.getElementById('answer').value = '';
     document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
     document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
     document.getElementById('answer').focus();
   }
@@ -237,25 +266,55 @@
     const input = document.getElementById('answer');
     const feedback = document.getElementById('feedback');
     const userAnswer = parseInt(input.value);
+
     if (isNaN(userAnswer)) {
       feedback.textContent = 'Type a number! 🔢';
       feedback.className = 'feedback wrong';
       return;
     }
+
+    attempts++;
+
     if (userAnswer === currentAnswer) {
-      score++;
-      streak++;
-      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
-      feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      } else {
+        streak = 0;
+        feedback.textContent = `Yes! ${currentAnswer} is correct! 🌟 Moving on...`;
+      }
       feedback.className = 'feedback correct';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1500);
     } else {
       streak = 0;
-      feedback.textContent = `Oops! The answer was ${currentAnswer} 💪 Keep going!`;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
       feedback.className = 'feedback wrong';
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 400);
+      input.value = '';
+      input.focus();
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
     }
-    document.getElementById('score').textContent = score;
-    document.getElementById('streak').textContent = streak;
-    setTimeout(nextQuestion, 1300);
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    // Hint: break down the addition
+    if (currentA <= 20 && currentB <= 20) {
+      feedback.innerHTML = `💡 Hint: Count ${currentA} then count ${currentB} more!<br>${'🔵'.repeat(currentA)} + ${'🟢'.repeat(currentB)}`;
+    } else {
+      // For larger numbers, show place value hint
+      feedback.innerHTML = `💡 Hint: Start with ${currentA}, then add ${currentB}.<br>Try counting up by tens first!`;
+    }
+    feedback.className = 'feedback hint';
   }
 
   function endGame() {
