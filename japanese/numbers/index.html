@@ -530,7 +530,7 @@ function showQuizQ() {
     document.getElementById('q-type-badge').textContent = 'Counter → Usage';
     document.getElementById('q-label').textContent = 'What do you count with '+d.counter+'?';
     textEl.textContent = d.counter+' ('+d.r+')'; textEl.style.display='block';
-    hintEl.textContent = d.ro;
+    hintEl.textContent = '';
     speak(d.r.replace('〜','いち'));
     buildCounterOpts(d);
     optDiv.className='options-grid single';
@@ -617,7 +617,7 @@ function buildCounterOpts(correct) {
   opts.forEach(opt=>{
     const btn=document.createElement('button');
     btn.type='button'; btn.className='option-btn';
-    btn.innerHTML='<span class="opt-read">'+opt.use+'</span><span class="opt-sub">e.g. '+opt.examples.split('\n')[0]+'</span>';
+    btn.innerHTML='<span class="opt-read">'+opt.use+'</span>';
     btn.addEventListener('click',()=>checkAnswer(opt.id===correct.id, btn, correct.r));
     optDiv.appendChild(btn);
   });
@@ -648,7 +648,7 @@ function buildAgeOpts(correct, type) {
     const btn=document.createElement('button');
     btn.type='button'; btn.className='option-btn';
     btn.innerHTML = type==='reading'
-      ? '<span class="opt-read">'+opt.r+'</span><span class="opt-sub">'+opt.ro+'</span>'
+      ? '<span class="opt-read">'+opt.r+'</span>'
       : '<span class="opt-read">'+opt.display+'</span>';
     btn.addEventListener('click',()=>checkAnswer(opt.id===correct.id, btn, correct.r));
     optDiv.appendChild(btn);
