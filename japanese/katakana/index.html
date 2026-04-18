@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔷 Katakana Quest!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+font-family: ‘Comic Sans MS’, ‘Trebuchet MS’, sans-serif;
+background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%);
+min-height: 100vh;
+padding: 20px;
+}
+
+.container { max-width: 500px; margin: 0 auto; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── SHARED ── */
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.back-btn {
+background: white; border: 2px solid #eee; border-radius: 12px;
+padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
+cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.top-bar h2 {
+font-size: 1.2em; font-weight: 900; color: white; flex: 1;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+.home-link {
+display: block; margin-top: 20px; color: rgba(255,255,255,0.5);
+text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* ── FAMILY SCREEN ── */
+.family-header {
+background: white; border-radius: 25px; padding: 22px 20px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+}
+.family-header .big-title { font-size: 2em; font-weight: 900; color: #0f3460; margin-bottom: 4px; }
+.family-header .subtitle  { font-size: 0.9em; color: #888; }
+
+.progress-overview {
+background: white; border-radius: 18px; padding: 15px 18px;
+margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.prog-row   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.prog-label { font-size: 0.78em; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+.prog-count { font-size: 0.85em; font-weight: 700; color: #555; }
+.overall-bar  { background: #eee; border-radius: 10px; height: 12px; overflow: hidden; }
+.overall-fill { background: linear-gradient(90deg, #4cc9f0, #4361ee); height: 100%; transition: width 0.5s; border-radius: 10px; }
+
+/* Dakuten toggle */
+.daku-toggle {
+background: white; border-radius: 15px; padding: 12px 18px;
+margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+display: flex; align-items: center; justify-content: space-between;
+}
+.daku-label { font-size: 0.9em; font-weight: 700; color: #2d3436; }
+.daku-sub   { font-size: 0.75em; color: #aaa; margin-top: 2px; }
+.toggle-switch {
+position: relative; width: 48px; height: 26px;
+background: #ddd; border-radius: 13px; cursor: pointer;
+transition: background 0.3s; flex-shrink: 0;
+border: none; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.toggle-switch.on { background: #4361ee; }
+.toggle-switch::after {
+content: ‘’; position: absolute; top: 3px; left: 3px;
+width: 20px; height: 20px; border-radius: 50%; background: white;
+transition: left 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on::after { left: 25px; }
+
+.section-lbl {
+font-size: 0.78em; font-weight: 800; text-transform: uppercase;
+letter-spacing: 1.5px; color: rgba(255,255,255,0.5); margin: 16px 0 8px 2px;
+}
+.family-grid { display: grid; gap: 10px; }
+
+.family-card {
+width: 100%; background: white; border-radius: 18px; padding: 15px 18px;
+display: flex; align-items: center; gap: 14px; cursor: pointer;
+border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+}
+.family-card:active { transform: scale(0.98); }
+.family-card.mastered    { border-color: #4cc9f0; }
+.family-card.in-progress { border-color: #ffd60a; }
+.family-card * { pointer-events: none; }
+
+.family-chars  { font-size: 1.3em; font-weight: 700; color: #4361ee; min-width: 80px; letter-spacing: 2px; }
+.family-info   { flex: 1; }
+.family-name   { font-weight: 900; font-size: 1em; color: #2d3436; }
+.family-romaji { font-size: 0.75em; color: #aaa; margin-top: 1px; }
+.family-prog   { margin-top: 5px; background: #eee; border-radius: 5px; height: 5px; overflow: hidden; }
+.family-prog-fill { background: #4cc9f0; height: 100%; border-radius: 5px; transition: width 0.3s; }
+.family-status { font-size: 1.4em; }
+
+/* Real world tag */
+.real-world-tag {
+background: #e8f4ff; color: #4361ee; border: 1px solid #b8d4f8;
+padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700;
+margin-top: 4px; display: inline-block;
+}
+
+/* ── MODE SCREEN ── */
+.char-preview {
+background: white; border-radius: 20px; padding: 20px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.char-preview-title { font-size: 1em; font-weight: 900; color: #0f3460; margin-bottom: 12px; }
+.chars-preview-row  { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.char-pill {
+background: #f0f4ff; border: 2px solid #b8d4f8; border-radius: 10px; padding: 6px 10px; text-align: center;
+}
+.char-pill .jp { font-size: 1.4em; color: #4361ee; }
+.char-pill .rm { font-size: 0.65em; color: #aaa; font-weight: 700; margin-top: 2px; }
+
+.mode-grid { display: grid; gap: 10px; }
+.mode-card {
+width: 100%; background: white; border-radius: 16px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px; cursor: pointer;
+border: 2px solid #eee; box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+}
+.mode-card:active { transform: scale(0.98); }
+.mode-card * { pointer-events: none; }
+.mode-card.learn-mode  { border-color: #4cc9f0; }
+.mode-card.recog-mode  { border-color: #4361ee; }
+.mode-card.read-mode   { border-color: #f77f00; }
+.mode-card.word-mode   { border-color: #06d6a0; }
+.mode-card.speed-mode  { border-color: #7b5ea7; }
+
+.mode-icon { font-size: 2.2em; min-width: 45px; text-align: center; }
+.mode-info { flex: 1; }
+.mode-name { font-weight: 900; font-size: 1em; color: #2d3436; }
+.mode-desc { font-size: 0.8em; color: #888; margin-top: 2px; }
+
+/* ── LEARN SCREEN ── */
+.learn-card {
+background: white; border-radius: 25px; padding: 30px 25px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.2); margin-bottom: 18px; text-align: center;
+}
+.learn-char        { font-size: 7em; color: #4361ee; margin-bottom: 8px; line-height: 1; text-shadow: 2px 2px 0 rgba(67,97,238,0.15); }
+.learn-romaji-big  { font-size: 2em; font-weight: 900; color: #0f3460; margin-bottom: 6px; }
+.learn-hiragana    { font-size: 1.2em; color: #aaa; margin-bottom: 6px; font-style: italic; }
+.learn-example     { display: flex; align-items: center; justify-content: center; gap: 10px; background: #f0f4ff; border-radius: 12px; padding: 12px 15px; margin-top: 15px; }
+.learn-ex-emoji    { font-size: 2em; }
+.learn-ex-word     { font-size: 1.3em; font-weight: 700; color: #4361ee; }
+.learn-ex-en       { font-size: 0.8em; color: #888; }
+.learn-ex-note     { font-size: 0.75em; color: #aaa; font-style: italic; margin-top: 2px; }
+
+.speak-btn {
+background: #4361ee; color: white; border: none; border-radius: 50px;
+padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; display: flex; align-items: center; gap: 8px;
+margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.learn-nav     { display: flex; justify-content: space-between; align-items: center; }
+.nav-btn {
+background: #0f3460; color: white; border: none; border-radius: 12px;
+padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:disabled { background: #ddd; color: #aaa; }
+.learn-counter    { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
+.start-quiz-btn {
+display: block; width: 100%; margin-top: 18px; padding: 15px;
+background: #4361ee; color: white; border: none; border-radius: 16px;
+font-family: inherit; font-weight: 800; font-size: 1.1em;
+cursor: pointer; -webkit-appearance: none; text-align: center;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* ── QUIZ SCREEN ── */
+.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-wrap { flex: 1; background: rgba(255,255,255,0.2); border-radius: 10px; height: 10px; overflow: hidden; }
+.progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
+.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.stat-pill.score  { color: #4361ee; }
+.stat-pill.streak { color: #e63946; }
+
+.question-card {
+background: white; border-radius: 22px; padding: 30px 20px; text-align: center;
+box-shadow: 0 6px 25px rgba(0,0,0,0.2); margin-bottom: 16px; min-height: 160px;
+display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+}
+.q-type-badge { position: absolute; top: 12px; right: 12px; background: #f0f4ff; color: #4361ee; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
+.q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.q-char  { font-size: 5.5em; color: #4361ee; line-height: 1; }
+.q-text  { font-size: 2.5em; font-weight: 900; color: #2d3436; }
+.q-word  { font-size: 2em; font-weight: 900; color: #4361ee; }
+.q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
+
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.options-grid.single-col { grid-template-columns: 1fr; }
+.option-btn {
+background: white; border: 2px solid #eee; border-radius: 15px; padding: 16px 10px;
+font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
+-webkit-appearance: none; text-align: center; transition: all 0.15s;
+box-shadow: 0 2px 10px rgba(0,0,0,0.08); -webkit-tap-highlight-color: transparent;
+}
+.option-btn * { pointer-events: none; }
+.option-btn .opt-char { font-size: 2em; display: block; color: #4361ee; }
+.option-btn .opt-rm   { font-size: 1.1em; display: block; font-weight: 900; color: #2d3436; }
+.option-btn .opt-word { font-size: 1.1em; display: block; font-weight: 900; color: #4361ee; }
+.option-btn .opt-en   { font-size: 0.8em; display: block; color: #aaa; margin-top: 2px; }
+.option-btn:active:not(:disabled) { transform: scale(0.97); }
+.option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
+.option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
+.option-btn:disabled { cursor: not-allowed; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25%       { transform: translateX(-8px); }
+75%       { transform: translateX(8px); }
+}
+
+.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
+.feedback.correct-text { color: #4cc9f0; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.feedback.wrong-text   { color: #ffb3b3; }
+.feedback.hint-text    { color: white; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 12px; font-size: 0.88em; font-weight: 600; }
+
+.hint-btn {
+background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3);
+border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* ── SPEED SCREEN ── */
+.speed-timer   { background: white; border-radius: 15px; padding: 10px 18px; text-align: center; margin-bottom: 15px; box-shadow: 0 3px 12px rgba(0,0,0,0.2); }
+.time-left     { font-size: 2.5em; font-weight: 900; color: #4361ee; }
+.time-label    { font-size: 0.75em; color: #aaa; font-weight: 700; }
+
+/* ── END SCREEN ── */
+.end-inner   { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+.trophy      { font-size: 5em; margin: 20px 0; }
+.end-title   { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+.end-score   { font-size: 1.8em; font-weight: 900; color: #4cc9f0; margin: 12px 0; }
+.end-msg     { color: rgba(255,255,255,0.8); font-size: 1em; margin-bottom: 22px; }
+
+.mastered-badge { background: white; border-radius: 18px; padding: 14px 20px; margin: 15px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.mastered-badge .mb-title { font-weight: 900; color: #4cc9f0; font-size: 1.1em; }
+.mastered-badge .mb-chars { font-size: 1.8em; letter-spacing: 5px; margin-top: 5px; color: #4361ee; }
+
+.end-btns { display: grid; gap: 10px; }
+.end-btn {
+background: white; color: #4361ee; border: none; border-radius: 15px; padding: 16px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.end-btn.secondary {
+background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3);
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- FAMILY SCREEN -->
+
+<div id="family-screen" class="screen active">
+  <div class="family-header">
+    <div style="font-size:2.5em;margin-bottom:5px;">🔷</div>
+    <div class="big-title">Katakana Quest!</div>
+    <div class="subtitle">Used for foreign words, menus & names in Japan</div>
+  </div>
+  <div class="progress-overview">
+    <div class="prog-row">
+      <div class="prog-label">📍 Overall Progress</div>
+      <div class="prog-count" id="overall-text">0 / 46 mastered</div>
+    </div>
+    <div class="overall-bar">
+      <div class="overall-fill" id="overall-fill" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="daku-toggle">
+    <div>
+      <div class="daku-label">゛Include Dakuten</div>
+      <div class="daku-sub">ガ、ザ、ダ、バ、パ... (advanced)</div>
+    </div>
+    <button type="button" class="toggle-switch" id="daku-toggle-btn"></button>
+  </div>
+  <div class="section-lbl">Choose a family to study:</div>
+  <div class="family-grid" id="family-grid"></div>
+  <a href="../" class="home-link">← Back to Japanese Hub</a>
+</div>
+
+<!-- MODE SCREEN -->
+
+<div id="mode-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-family">← Back</button>
+    <h2 id="mode-title">ア行</h2>
+  </div>
+  <div class="char-preview">
+    <div class="char-preview-title" id="char-preview-title">5 characters</div>
+    <div class="chars-preview-row" id="chars-preview-row"></div>
+  </div>
+  <div class="mode-grid">
+    <button type="button" class="mode-card learn-mode" id="mode-learn">
+      <div class="mode-icon">📖</div>
+      <div class="mode-info">
+        <div class="mode-name">Learn Mode</div>
+        <div class="mode-desc">See, hear & understand each character</div>
+      </div>
+    </button>
+    <button type="button" class="mode-card recog-mode" id="mode-recog">
+      <div class="mode-icon">👁️</div>
+      <div class="mode-info">
+        <div class="mode-name">Recognition Quiz</div>
+        <div class="mode-desc">See katakana → pick the reading</div>
+      </div>
+    </button>
+    <button type="button" class="mode-card read-mode" id="mode-read">
+      <div class="mode-icon">🔤</div>
+      <div class="mode-info">
+        <div class="mode-name">Reading Quiz</div>
+        <div class="mode-desc">See romaji → pick the katakana</div>
+      </div>
+    </button>
+    <button type="button" class="mode-card word-mode" id="mode-word">
+      <div class="mode-icon">🗾</div>
+      <div class="mode-info">
+        <div class="mode-name">Word Quiz</div>
+        <div class="mode-desc">Read real katakana words you see in Japan!</div>
+      </div>
+    </button>
+    <button type="button" class="mode-card speed-mode" id="mode-speed">
+      <div class="mode-icon">⚡</div>
+      <div class="mode-info">
+        <div class="mode-name">Speed Round</div>
+        <div class="mode-desc">30 seconds — how many can you get?</div>
+      </div>
+    </button>
+  </div>
+  <a href="#" class="home-link" id="mode-back-link">← Back to families</a>
+</div>
+
+<!-- LEARN SCREEN -->
+
+<div id="learn-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-mode-learn">← Back</button>
+    <h2 id="learn-title">Learn ア行</h2>
+  </div>
+  <div class="learn-card">
+    <div class="learn-char"       id="learn-char">ア</div>
+    <div class="learn-romaji-big" id="learn-romaji">a</div>
+    <div class="learn-hiragana"   id="learn-hiragana">← same as あ in hiragana</div>
+    <div class="learn-example">
+      <div class="learn-ex-emoji" id="learn-ex-emoji">🍎</div>
+      <div>
+        <div class="learn-ex-word" id="learn-ex-word">アップル</div>
+        <div class="learn-ex-en"   id="learn-ex-en">apple</div>
+        <div class="learn-ex-note" id="learn-ex-note">from English "apple"</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-bottom:18px;">
+    <button type="button" class="speak-btn" id="learn-speak-btn">🔊 Hear it</button>
+  </div>
+  <div class="learn-nav">
+    <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+    <span class="learn-counter" id="learn-counter">1 / 5</span>
+    <button type="button" class="nav-btn" id="learn-next">Next →</button>
+  </div>
+  <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">🎯 Start Recognition Quiz!</button>
+  <a href="#" class="home-link" id="learn-back-to-mode">← Back to modes</a>
+</div>
+
+<!-- QUIZ SCREEN -->
+
+<div id="quiz-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-mode-quiz">← Back</button>
+    <h2 id="quiz-title">Recognition Quiz</h2>
+  </div>
+  <div class="game-header">
+    <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+    <div class="q-count" id="q-count">1/5</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="score">0</span></div>
+    <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+  </div>
+  <div class="question-card">
+    <div class="q-type-badge" id="q-type-badge">Katakana → Romaji</div>
+    <div class="q-label"      id="q-label">What does this say?</div>
+    <div class="q-char"       id="q-char"  style="display:none;"></div>
+    <div class="q-text"       id="q-text"  style="display:none;"></div>
+    <div class="q-word"       id="q-word"  style="display:none;"></div>
+    <div class="q-hint"       id="q-hint"></div>
+  </div>
+  <div class="options-grid" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+</div>
+
+<!-- SPEED SCREEN -->
+
+<div id="speed-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-mode-speed">← Back</button>
+    <h2>⚡ Speed Round!</h2>
+  </div>
+  <div class="speed-timer">
+    <div class="time-left"  id="time-left">30</div>
+    <div class="time-label">seconds left</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="speed-score">0</span> correct</div>
+    <div class="stat-pill streak">❌ <span id="speed-wrong">0</span> wrong</div>
+  </div>
+  <div class="question-card">
+    <div class="q-label">What does this say?</div>
+    <div class="q-char" id="speed-char">ア</div>
+  </div>
+  <div class="options-grid" id="speed-options"></div>
+  <div class="feedback" id="speed-feedback"></div>
+</div>
+
+<!-- END SCREEN -->
+
+<div id="end-screen" class="screen">
+  <div class="end-inner">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">すごい！</div>
+    <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
+    <div class="end-msg"   id="end-msg"></div>
+    <div class="mastered-badge" id="mastered-badge" style="display:none;">
+      <div class="mb-title">✅ Family Mastered!</div>
+      <div class="mb-chars" id="mb-chars"></div>
+    </div>
+    <div class="end-btns">
+      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="next-family-btn">➡️ Next Family</button>
+      <button type="button" class="end-btn secondary" id="back-to-fam-btn">📋 All Families</button>
+    </div>
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA — All katakana families
+// ══════════════════════════════════════════
+const FAMILIES = [
+  {
+    id:'a', name:'ア行', romaji:'a · i · u · e · o',
+    chars:[
+      {k:'ア',h:'あ',r:'a',  word:'アイスクリーム', wEn:'ice cream',    wNote:'from English',  emoji:'🍦'},
+      {k:'イ',h:'い',r:'i',  word:'インターネット', wEn:'internet',     wNote:'from English',  emoji:'💻'},
+      {k:'ウ',h:'う',r:'u',  word:'ウイルス',       wEn:'virus',        wNote:'from English',  emoji:'🦠'},
+      {k:'エ',h:'え',r:'e',  word:'エレベーター',   wEn:'elevator',     wNote:'from English',  emoji:'🛗'},
+      {k:'オ',h:'お',r:'o',  word:'オレンジ',       wEn:'orange',       wNote:'from English',  emoji:'🍊'},
+    ]
+  },
+  {
+    id:'ka', name:'カ行', romaji:'ka · ki · ku · ke · ko',
+    chars:[
+      {k:'カ',h:'か',r:'ka', word:'カメラ',         wEn:'camera',       wNote:'from English',  emoji:'📷'},
+      {k:'キ',h:'き',r:'ki', word:'キッチン',       wEn:'kitchen',      wNote:'from English',  emoji:'🍳'},
+      {k:'ク',h:'く',r:'ku', word:'クリスマス',     wEn:'Christmas',    wNote:'from English',  emoji:'🎄'},
+      {k:'ケ',h:'け',r:'ke', word:'ケーキ',         wEn:'cake',         wNote:'from English',  emoji:'🎂'},
+      {k:'コ',h:'こ',r:'ko', word:'コーヒー',       wEn:'coffee',       wNote:'from English',  emoji:'☕'},
+    ]
+  },
+  {
+    id:'sa', name:'サ行', romaji:'sa · shi · su · se · so',
+    chars:[
+      {k:'サ',h:'さ',r:'sa',  word:'サラダ',        wEn:'salad',        wNote:'from English',  emoji:'🥗'},
+      {k:'シ',h:'し',r:'shi', word:'シャツ',        wEn:'shirt',        wNote:'from English',  emoji:'👕'},
+      {k:'ス',h:'す',r:'su',  word:'スマホ',        wEn:'smartphone',   wNote:'from English',  emoji:'📱'},
+      {k:'セ',h:'せ',r:'se',  word:'セーター',      wEn:'sweater',      wNote:'from English',  emoji:'🧥'},
+      {k:'ソ',h:'そ',r:'so',  word:'ソファ',        wEn:'sofa',         wNote:'from English',  emoji:'🛋️'},
+    ]
+  },
+  {
+    id:'ta', name:'タ行', romaji:'ta · chi · tsu · te · to',
+    chars:[
+      {k:'タ',h:'た',r:'ta',  word:'タクシー',      wEn:'taxi',         wNote:'from English',  emoji:'🚕'},
+      {k:'チ',h:'ち',r:'chi', word:'チョコレート',  wEn:'chocolate',    wNote:'from English',  emoji:'🍫'},
+      {k:'ツ',h:'つ',r:'tsu', word:'ツアー',        wEn:'tour',         wNote:'from English',  emoji:'✈️'},
+      {k:'テ',h:'て',r:'te',  word:'テレビ',        wEn:'television',   wNote:'from English',  emoji:'📺'},
+      {k:'ト',h:'と',r:'to',  word:'トマト',        wEn:'tomato',       wNote:'from English',  emoji:'🍅'},
+    ]
+  },
+  {
+    id:'na', name:'ナ行', romaji:'na · ni · nu · ne · no',
+    chars:[
+      {k:'ナ',h:'な',r:'na', word:'ナイフ',         wEn:'knife',        wNote:'from English',  emoji:'🔪'},
+      {k:'ニ',h:'に',r:'ni', word:'ニュース',       wEn:'news',         wNote:'from English',  emoji:'📰'},
+      {k:'ヌ',h:'ぬ',r:'nu', word:'ヌードル',       wEn:'noodle',       wNote:'from English',  emoji:'🍜'},
+      {k:'ネ',h:'ね',r:'ne', word:'ネクタイ',       wEn:'necktie',      wNote:'from English',  emoji:'👔'},
+      {k:'ノ',h:'の',r:'no', word:'ノート',         wEn:'notebook',     wNote:'from English',  emoji:'📓'},
+    ]
+  },
+  {
+    id:'ha', name:'ハ行', romaji:'ha · hi · fu · he · ho',
+    chars:[
+      {k:'ハ',h:'は',r:'ha', word:'ハンバーガー',   wEn:'hamburger',    wNote:'from English',  emoji:'🍔'},
+      {k:'ヒ',h:'ひ',r:'hi', word:'ヒーター',       wEn:'heater',       wNote:'from English',  emoji:'🔥'},
+      {k:'フ',h:'ふ',r:'fu', word:'フォーク',       wEn:'fork',         wNote:'from English',  emoji:'🍴'},
+      {k:'ヘ',h:'へ',r:'he', word:'ヘルメット',     wEn:'helmet',       wNote:'from English',  emoji:'⛑️'},
+      {k:'ホ',h:'ほ',r:'ho', word:'ホテル',         wEn:'hotel',        wNote:'from English',  emoji:'🏨'},
+    ]
+  },
+  {
+    id:'ma', name:'マ行', romaji:'ma · mi · mu · me · mo',
+    chars:[
+      {k:'マ',h:'ま',r:'ma', word:'マクドナルド',   wEn:'McDonald\'s',  wNote:'brand name',    emoji:'🍟'},
+      {k:'ミ',h:'み',r:'mi', word:'ミルク',         wEn:'milk',         wNote:'from English',  emoji:'🥛'},
+      {k:'ム',h:'む',r:'mu', word:'ムービー',       wEn:'movie',        wNote:'from English',  emoji:'🎬'},
+      {k:'メ',h:'め',r:'me', word:'メニュー',       wEn:'menu',         wNote:'from French',   emoji:'📋'},
+      {k:'モ',h:'も',r:'mo', word:'モデル',         wEn:'model',        wNote:'from English',  emoji:'🧍'},
+    ]
+  },
+  {
+    id:'ya', name:'ヤ行', romaji:'ya · yu · yo',
+    chars:[
+      {k:'ヤ',h:'や',r:'ya', word:'ヤクルト',       wEn:'Yakult',       wNote:'Japanese brand', emoji:'🥛'},
+      {k:'ユ',h:'ゆ',r:'yu', word:'ユニフォーム',   wEn:'uniform',      wNote:'from English',  emoji:'👕'},
+      {k:'ヨ',h:'よ',r:'yo', word:'ヨーグルト',     wEn:'yogurt',       wNote:'from English',  emoji:'🥣'},
+    ]
+  },
+  {
+    id:'ra', name:'ラ行', romaji:'ra · ri · ru · re · ro',
+    chars:[
+      {k:'ラ',h:'ら',r:'ra', word:'ラーメン',       wEn:'ramen',        wNote:'Japanese food', emoji:'🍜'},
+      {k:'リ',h:'り',r:'ri', word:'リモコン',       wEn:'remote control',wNote:'from English', emoji:'📺'},
+      {k:'ル',h:'る',r:'ru', word:'ルール',         wEn:'rule',         wNote:'from English',  emoji:'📏'},
+      {k:'レ',h:'れ',r:'re', word:'レストラン',     wEn:'restaurant',   wNote:'from French',   emoji:'🍽️'},
+      {k:'ロ',h:'ろ',r:'ro', word:'ロボット',       wEn:'robot',        wNote:'from English',  emoji:'🤖'},
+    ]
+  },
+  {
+    id:'wa', name:'ワ行 + ン', romaji:'wa · wo · n',
+    chars:[
+      {k:'ワ',h:'わ',r:'wa', word:'ワイン',         wEn:'wine',         wNote:'from English',  emoji:'🍷'},
+      {k:'ヲ',h:'を',r:'wo', word:'ヲタク',         wEn:'otaku (fan)',  wNote:'Japanese word', emoji:'🎮'},
+      {k:'ン',h:'ん',r:'n',  word:'パン',           wEn:'bread',        wNote:'from Portuguese',emoji:'🍞'},
+    ]
+  },
+  {
+    id:'daku', name:'゛Dakuten', romaji:'ga·gi·gu·ge·go·za·ji·zu...', isDaku:true,
+    chars:[
+      {k:'ガ',h:'が',r:'ga', word:'ガム',           wEn:'chewing gum',  wNote:'from English',  emoji:'🫧'},
+      {k:'ギ',h:'ぎ',r:'gi', word:'ギター',         wEn:'guitar',       wNote:'from English',  emoji:'🎸'},
+      {k:'グ',h:'ぐ',r:'gu', word:'グラス',         wEn:'glass',        wNote:'from English',  emoji:'🥛'},
+      {k:'ゲ',h:'げ',r:'ge', word:'ゲーム',         wEn:'game',         wNote:'from English',  emoji:'🎮'},
+      {k:'ゴ',h:'ご',r:'go', word:'ゴリラ',         wEn:'gorilla',      wNote:'from English',  emoji:'🦍'},
+      {k:'ザ',h:'ざ',r:'za', word:'ザッパー',       wEn:'pizza',        wNote:'from English',  emoji:'🍕'},
+      {k:'ジ',h:'じ',r:'ji', word:'ジュース',       wEn:'juice',        wNote:'from English',  emoji:'🧃'},
+      {k:'ズ',h:'ず',r:'zu', word:'ズボン',         wEn:'trousers',     wNote:'from French',   emoji:'👖'},
+      {k:'ゼ',h:'ぜ',r:'ze', word:'ゼリー',         wEn:'jelly',        wNote:'from English',  emoji:'🍮'},
+      {k:'ゾ',h:'ぞ',r:'zo', word:'ゾンビ',         wEn:'zombie',       wNote:'from English',  emoji:'🧟'},
+      {k:'ダ',h:'だ',r:'da', word:'ダイヤモンド',   wEn:'diamond',      wNote:'from English',  emoji:'💎'},
+      {k:'デ',h:'で',r:'de', word:'デザート',       wEn:'dessert',      wNote:'from English',  emoji:'🍰'},
+      {k:'ド',h:'ど',r:'do', word:'ドア',           wEn:'door',         wNote:'from English',  emoji:'🚪'},
+      {k:'バ',h:'ば',r:'ba', word:'バナナ',         wEn:'banana',       wNote:'from English',  emoji:'🍌'},
+      {k:'ビ',h:'び',r:'bi', word:'ビデオ',         wEn:'video',        wNote:'from English',  emoji:'📹'},
+      {k:'ブ',h:'ぶ',r:'bu', word:'ブラシ',         wEn:'brush',        wNote:'from English',  emoji:'🖌️'},
+      {k:'ベ',h:'べ',r:'be', word:'ベッド',         wEn:'bed',          wNote:'from English',  emoji:'🛏️'},
+      {k:'ボ',h:'ぼ',r:'bo', word:'ボール',         wEn:'ball',         wNote:'from English',  emoji:'⚽'},
+      {k:'パ',h:'ぱ',r:'pa', word:'パン',           wEn:'bread',        wNote:'from Portuguese',emoji:'🍞'},
+      {k:'ピ',h:'ぴ',r:'pi', word:'ピザ',           wEn:'pizza',        wNote:'from Italian',  emoji:'🍕'},
+      {k:'プ',h:'ぷ',r:'pu', word:'プリン',         wEn:'pudding',      wNote:'from English',  emoji:'🍮'},
+      {k:'ペ',h:'ぺ',r:'pe', word:'ペン',           wEn:'pen',          wNote:'from English',  emoji:'✒️'},
+      {k:'ポ',h:'ぽ',r:'po', word:'ポテト',         wEn:'potato',       wNote:'from English',  emoji:'🥔'},
+    ]
+  },
+];
+
+// Real-world word quiz data (common katakana words seen in Japan)
+const WORD_QUIZ = [
+  {word:'コンビニ',  en:'convenience store', emoji:'🏪', hint:'You see this everywhere in Japan!'},
+  {word:'マクドナルド',en:"McDonald's",       emoji:'🍟', hint:'Famous fast food chain'},
+  {word:'スーパー',  en:'supermarket',        emoji:'🛒', hint:'Where you buy groceries'},
+  {word:'バス',      en:'bus',                emoji:'🚌', hint:'Public transport'},
+  {word:'タクシー',  en:'taxi',               emoji:'🚕', hint:'You can hail one on the street'},
+  {word:'ホテル',    en:'hotel',              emoji:'🏨', hint:'Where you stay when travelling'},
+  {word:'レストラン',en:'restaurant',         emoji:'🍽️', hint:'Where you go to eat out'},
+  {word:'コーヒー',  en:'coffee',             emoji:'☕', hint:'Popular hot drink'},
+  {word:'アイスクリーム',en:'ice cream',      emoji:'🍦', hint:'Cold sweet treat'},
+  {word:'スマホ',    en:'smartphone',         emoji:'📱', hint:'You probably use one every day!'},
+  {word:'テレビ',    en:'television',         emoji:'📺', hint:'You watch shows on this'},
+  {word:'ラーメン',  en:'ramen',              emoji:'🍜', hint:'Famous Japanese noodle dish'},
+  {word:'ケーキ',    en:'cake',               emoji:'🎂', hint:'Eaten at birthday parties'},
+  {word:'ジュース',  en:'juice',              emoji:'🧃', hint:'A fruit drink'},
+  {word:'パン',      en:'bread',              emoji:'🍞', hint:'Baked food from wheat'},
+  {word:'ゲーム',    en:'game',               emoji:'🎮', hint:'You play this for fun'},
+  {word:'バナナ',    en:'banana',             emoji:'🍌', hint:'Yellow curved fruit'},
+  {word:'ピザ',      en:'pizza',              emoji:'🍕', hint:'Italian food with toppings'},
+  {word:'チョコレート',en:'chocolate',        emoji:'🍫', hint:'Sweet brown food'},
+  {word:'ロボット',  en:'robot',              emoji:'🤖', hint:'A machine that can move'},
+];
+
+const progress = {};
+FAMILIES.forEach(f => { progress[f.id] = { bestScore:0, mastered:false }; });
+
+let showDaku      = false;
+let currentFamId  = 'a';
+let currentFamily = null;
+let currentMode   = 'recog';
+let learnIdx      = 0;
+let quizChars     = [];
+let quizIdx       = 0;
+let quizTotal     = 0;
+let wordQuizList  = [];
+let score         = 0;
+let streak        = 0;
+let attempts      = 0;
+let speedTimer    = null;
+let speedTimeLeft = 30;
+let speedScore    = 0;
+let speedWrong    = 0;
+let speedCurrent  = null;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP'; u.rate=0.8; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function buildFamilyScreen() {
+  const families = FAMILIES.filter(f => showDaku ? true : !f.isDaku);
+  const totalChars    = families.reduce((s,f) => s+f.chars.length, 0);
+  const masteredChars = families.filter(f => progress[f.id].mastered).reduce((s,f) => s+f.chars.length, 0);
+  const pct = totalChars > 0 ? Math.round(masteredChars/totalChars*100) : 0;
+  document.getElementById('overall-fill').style.width = pct+'%';
+  document.getElementById('overall-text').textContent  = masteredChars+' / '+totalChars+' mastered';
+
+  const grid = document.getElementById('family-grid');
+  grid.innerHTML = '';
+  families.forEach(fam => {
+    const prog    = progress[fam.id];
+    const statusEm = prog.mastered ? '✅' : (prog.bestScore>0 ? '🔄' : '📖');
+    const cls      = prog.mastered ? 'mastered' : (prog.bestScore>0 ? 'in-progress' : '');
+    const preview  = fam.chars.slice(0,3).map(c=>c.k).join('')+(fam.chars.length>3?'…':'');
+    const progPct  = fam.chars.length > 0 ? (prog.bestScore/fam.chars.length*100) : 0;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'family-card '+cls;
+    btn.innerHTML =
+      '<div class="family-chars">'+preview+'</div>'+
+      '<div class="family-info">'+
+        '<div class="family-name">'+fam.name+'</div>'+
+        '<div class="family-romaji">'+fam.romaji+'</div>'+
+        '<div class="family-prog"><div class="family-prog-fill" style="width:'+progPct+'%"></div></div>'+
+      '</div>'+
+      '<div class="family-status">'+statusEm+'</div>';
+    btn.addEventListener('click', function() { openFamily(fam.id); });
+    grid.appendChild(btn);
+  });
+
+  showScreen('family-screen');
+}
+
+function openFamily(famId) {
+  currentFamId  = famId;
+  currentFamily = FAMILIES.find(f=>f.id===famId);
+  document.getElementById('mode-title').textContent         = currentFamily.name;
+  document.getElementById('char-preview-title').textContent = currentFamily.chars.length+' characters';
+
+  const row = document.getElementById('chars-preview-row');
+  row.innerHTML = '';
+  currentFamily.chars.forEach(c => {
+    const pill = document.createElement('div');
+    pill.className = 'char-pill';
+    pill.innerHTML = '<div class="jp">'+c.k+'</div><div class="rm">'+c.r+'</div>';
+    row.appendChild(pill);
+  });
+
+  showScreen('mode-screen');
+}
+
+// ════ LEARN MODE ════
+function startLearnMode() {
+  learnIdx = 0;
+  document.getElementById('learn-title').textContent = 'Learn '+currentFamily.name;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(currentFamily.chars[0].k), 500);
+}
+
+function showLearnCard() {
+  const c = currentFamily.chars[learnIdx];
+  document.getElementById('learn-char').textContent    = c.k;
+  document.getElementById('learn-romaji').textContent  = c.r;
+  document.getElementById('learn-hiragana').textContent = '← same as '+c.h+' in hiragana';
+  document.getElementById('learn-ex-emoji').textContent = c.emoji;
+  document.getElementById('learn-ex-word').textContent  = c.word;
+  document.getElementById('learn-ex-en').textContent    = c.wEn;
+  document.getElementById('learn-ex-note').textContent  = c.wNote;
+  document.getElementById('learn-counter').textContent  = (learnIdx+1)+' / '+currentFamily.chars.length;
+  document.getElementById('learn-prev').disabled = learnIdx===0;
+  document.getElementById('learn-next').disabled = learnIdx===currentFamily.chars.length-1;
+}
+
+// ════ QUIZ MODES ════
+function startRecogQuiz() {
+  currentMode = 'recog';
+  initQuiz();
+  document.getElementById('quiz-title').textContent   = '👁️ Recognition Quiz';
+  document.getElementById('q-type-badge').textContent = 'Katakana → Romaji';
+  showScreen('quiz-screen');
+  showQuizQ();
+}
+
+function startReadQuiz() {
+  currentMode = 'read';
+  initQuiz();
+  document.getElementById('quiz-title').textContent   = '🔤 Reading Quiz';
+  document.getElementById('q-type-badge').textContent = 'Romaji → Katakana';
+  showScreen('quiz-screen');
+  showQuizQ();
+}
+
+function startWordQuiz() {
+  currentMode = 'word';
+  score=0; streak=0; quizIdx=0; attempts=0;
+  wordQuizList = [...WORD_QUIZ].sort(()=>Math.random()-0.5).slice(0, 10);
+  quizTotal = wordQuizList.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+  document.getElementById('quiz-title').textContent   = '🗾 Word Quiz';
+  document.getElementById('q-type-badge').textContent = 'Katakana → English';
+  showScreen('quiz-screen');
+  showWordQ();
+}
+
+function initQuiz() {
+  score=0; streak=0; quizIdx=0; attempts=0;
+  quizChars = [...currentFamily.chars].sort(()=>Math.random()-0.5);
+  quizTotal = quizChars.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+}
+
+function showQuizQ() {
+  if (quizIdx>=quizTotal) { endQuiz(); return; }
+  attempts=0;
+  const c = quizChars[quizIdx];
+
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display = 'none';
+
+  const charEl = document.getElementById('q-char');
+  const textEl = document.getElementById('q-text');
+  const wordEl = document.getElementById('q-word');
+  const hintEl = document.getElementById('q-hint');
+  const optDiv = document.getElementById('options');
+
+  charEl.style.display='none'; textEl.style.display='none'; wordEl.style.display='none';
+  optDiv.className = 'options-grid';
+
+  if (currentMode==='recog') {
+    charEl.textContent=c.k; charEl.style.display='block';
+    hintEl.textContent=c.emoji+'  '+c.word+' = '+c.wEn;
+    setTimeout(()=>speak(c.k),300);
+
+    const allChars=currentFamily.chars;
+    let wrong=allChars.filter(x=>x.k!==c.k).sort(()=>Math.random()-0.5).slice(0,3);
+    if(wrong.length<3){
+      const extra=FAMILIES.flatMap(f=>f.chars).filter(x=>x.k!==c.k&&!wrong.find(w=>w.k===x.k)).sort(()=>Math.random()-0.5);
+      while(wrong.length<3&&extra.length>0) wrong.push(extra.shift());
+    }
+    const opts=[...wrong,c].sort(()=>Math.random()-0.5);
+    optDiv.innerHTML='';
+    opts.forEach(opt=>{
+      const btn=document.createElement('button');
+      btn.type='button'; btn.className='option-btn';
+      btn.innerHTML='<span class="opt-rm">'+opt.r+'</span>';
+      btn.addEventListener('click', function(){ checkQuizAnswer(opt.k===c.k, btn, c); });
+      optDiv.appendChild(btn);
+    });
+
+  } else {
+    // Reading quiz — romaji → pick katakana (NO romaji shown under options)
+    textEl.textContent=c.r; textEl.style.display='block';
+    hintEl.textContent='Find the katakana for "'+c.r+'"';
+
+    const allChars=currentFamily.chars;
+    let wrong=allChars.filter(x=>x.k!==c.k).sort(()=>Math.random()-0.5).slice(0,3);
+    if(wrong.length<3){
+      const extra=FAMILIES.flatMap(f=>f.chars).filter(x=>x.k!==c.k&&!wrong.find(w=>w.k===x.k)).sort(()=>Math.random()-0.5);
+      while(wrong.length<3&&extra.length>0) wrong.push(extra.shift());
+    }
+    const opts=[...wrong,c].sort(()=>Math.random()-0.5);
+    optDiv.innerHTML='';
+    opts.forEach(opt=>{
+      const btn=document.createElement('button');
+      btn.type='button'; btn.className='option-btn';
+      // ✅ No romaji shown — only katakana character
+      btn.innerHTML='<span class="opt-char">'+opt.k+'</span>';
+      btn.addEventListener('click', function(){ checkQuizAnswer(opt.k===c.k, btn, c); });
+      optDiv.appendChild(btn);
+    });
+  }
+}
+
+function showWordQ() {
+  if (quizIdx>=quizTotal) { endQuiz(); return; }
+  attempts=0;
+  const w = wordQuizList[quizIdx];
+
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display='none';
+
+  const charEl=document.getElementById('q-char');
+  const textEl=document.getElementById('q-text');
+  const wordEl=document.getElementById('q-word');
+  const hintEl=document.getElementById('q-hint');
+
+  charEl.style.display='none'; textEl.style.display='none';
+  wordEl.textContent=w.word; wordEl.style.display='block';
+  hintEl.textContent=w.emoji+'  '+w.hint;
+  setTimeout(()=>speak(w.word),300);
+
+  // Options: pick the English meaning
+  const wrong = WORD_QUIZ.filter(x=>x.word!==w.word).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts  = [...wrong,w].sort(()=>Math.random()-0.5);
+
+  const optDiv=document.getElementById('options');
+  optDiv.className='options-grid single-col';
+  optDiv.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    btn.innerHTML='<span class="opt-rm" style="font-size:1em;">'+opt.emoji+' '+opt.en+'</span>';
+    btn.addEventListener('click', function(){ checkWordAnswer(opt.word===w.word, btn, w); });
+    optDiv.appendChild(btn);
+  });
+}
+
+const encouragement=['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ Amazing! 💫','パーフェクト！ 🌟'];
+const tryAgain=['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
+
+function checkQuizAnswer(isCorrect, btn, char) {
+  const feedback=document.getElementById('feedback');
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
+    speak(char.k);
+    if(attempts===1){ score++; streak++; const msg=encouragement[Math.floor(Math.random()*encouragement.length)]; feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg; }
+    else { streak=0; feedback.textContent='Yes! '+char.k+' = '+char.r+' 🌟'; }
+    feedback.className='feedback correct-text';
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    setTimeout(()=>{ quizIdx++; showQuizQ(); },1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
+  }
+}
+
+function checkWordAnswer(isCorrect, btn, word) {
+  const feedback=document.getElementById('feedback');
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
+    speak(word.word);
+    if(attempts===1){ score++; streak++; const msg=encouragement[Math.floor(Math.random()*encouragement.length)]; feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg; }
+    else { streak=0; feedback.textContent='Yes! '+word.word+' = '+word.en+' 🌟'; }
+    feedback.className='feedback correct-text';
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    setTimeout(()=>{ quizIdx++; showWordQ(); },1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
+  }
+}
+
+function showHint() {
+  const feedback=document.getElementById('feedback');
+  if (currentMode==='word') {
+    const w=wordQuizList[quizIdx];
+    feedback.textContent='💡 '+w.word+' = '+w.en+' '+w.emoji;
+    speak(w.word);
+  } else {
+    const c=quizChars[quizIdx];
+    feedback.textContent='💡 '+c.k+' = '+c.r+' · Example: '+c.word+' = '+c.wEn+' '+c.emoji;
+    speak(c.k);
+  }
+  feedback.className='feedback hint-text';
+}
+
+function endQuiz() {
+  const pct=score/quizTotal;
+  if(currentMode!=='word'){
+    if(pct>=0.8) progress[currentFamId].mastered=true;
+    if(score>progress[currentFamId].bestScore) progress[currentFamId].bestScore=score;
+  }
+
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=quizTotal;
+
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  const badge=document.getElementById('mastered-badge');
+
+  if(pct===1)       {trophy.textContent='🏆';title.textContent='パーフェクト！';msg.textContent='Perfect! You\'re a katakana master! 🔷';}
+  else if(pct>=0.8) {trophy.textContent='🥇';title.textContent='すごい！';      msg.textContent='Excellent! Try for a perfect score!';}
+  else if(pct>=0.6) {trophy.textContent='🥈';title.textContent='よくできました！';msg.textContent='Good job! Practice more to master it!';}
+  else              {trophy.textContent='🌱';title.textContent='がんばれ！';    msg.textContent='Try Learn mode first, then quiz again!';}
+
+  if(currentMode!=='word'){
+    badge.style.display=progress[currentFamId].mastered?'block':'none';
+    if(progress[currentFamId].mastered) document.getElementById('mb-chars').textContent=currentFamily.chars.map(c=>c.k).join(' ');
+  } else {
+    badge.style.display='none';
+  }
+
+  const families=FAMILIES.filter(f=>showDaku?true:!f.isDaku);
+  const curIdx=families.findIndex(f=>f.id===currentFamId);
+  const nextBtn=document.getElementById('next-family-btn');
+  if(currentMode==='word'){
+    nextBtn.textContent='🗾 Play Word Quiz Again';
+    nextBtn.style.display='block';
+    delete nextBtn.dataset.nextId;
+  } else if(curIdx<families.length-1){
+    nextBtn.textContent='➡️ Next: '+families[curIdx+1].name;
+    nextBtn.style.display='block';
+    nextBtn.dataset.nextId=families[curIdx+1].id;
+  } else {
+    nextBtn.style.display='none';
+  }
+}
+
+// ════ SPEED MODE ════
+function startSpeedMode() {
+  currentMode='speed';
+  speedScore=0; speedWrong=0; speedTimeLeft=30;
+  document.getElementById('speed-score').textContent=0;
+  document.getElementById('speed-wrong').textContent=0;
+  document.getElementById('time-left').textContent=30;
+  document.getElementById('speed-feedback').textContent='';
+  showScreen('speed-screen');
+  showSpeedQ();
+  speedTimer=setInterval(()=>{
+    speedTimeLeft--;
+    document.getElementById('time-left').textContent=speedTimeLeft;
+    if(speedTimeLeft<=0){clearInterval(speedTimer);endSpeedMode();}
+  },1000);
+}
+
+function showSpeedQ() {
+  const chars=currentFamily.chars;
+  speedCurrent=chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('speed-char').textContent=speedCurrent.k;
+  speak(speedCurrent.k);
+
+  let wrong=chars.filter(x=>x.k!==speedCurrent.k).sort(()=>Math.random()-0.5).slice(0,3);
+  if(wrong.length<3){
+    const extra=FAMILIES.flatMap(f=>f.chars).filter(x=>x.k!==speedCurrent.k&&!wrong.find(w=>w.k===x.k)).sort(()=>Math.random()-0.5);
+    while(wrong.length<3&&extra.length>0) wrong.push(extra.shift());
+  }
+  const opts=[...wrong,speedCurrent].sort(()=>Math.random()-0.5);
+  const optDiv=document.getElementById('speed-options');
+  optDiv.innerHTML='';
+  opts.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    btn.innerHTML='<span class="opt-rm">'+opt.r+'</span>';
+    btn.addEventListener('click', function(){ checkSpeedAnswer(opt.k===speedCurrent.k, btn); });
+    optDiv.appendChild(btn);
+  });
+}
+
+function checkSpeedAnswer(isCorrect, btn) {
+  if(speedTimeLeft<=0) return;
+  const fb=document.getElementById('speed-feedback');
+  if(isCorrect){
+    speedScore++; document.getElementById('speed-score').textContent=speedScore;
+    btn.classList.add('correct');
+    fb.textContent='✅ '+speedCurrent.k+' = '+speedCurrent.r;
+    fb.className='feedback correct-text';
+    speak(speedCurrent.k);
+    setTimeout(showSpeedQ,700);
+  } else {
+    speedWrong++; document.getElementById('speed-wrong').textContent=speedWrong;
+    btn.classList.add('wrong'); btn.disabled=true;
+    fb.textContent='❌ Try again!'; fb.className='feedback wrong-text';
+  }
+}
+
+function endSpeedMode() {
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent=speedScore;
+  document.getElementById('final-total').textContent=speedScore+speedWrong;
+  document.getElementById('mastered-badge').style.display='none';
+
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  const nextBtn=document.getElementById('next-family-btn');
+  nextBtn.textContent='⚡ Play Speed Again';
+  nextBtn.style.display='block';
+  delete nextBtn.dataset.nextId;
+
+  if(speedScore>=15)    {trophy.textContent='⚡';title.textContent='Speed Master!';msg.textContent=speedScore+' correct in 30 seconds! 🔥';}
+  else if(speedScore>=8){trophy.textContent='🥇';title.textContent='Great Speed!'; msg.textContent=speedScore+' correct! Keep going!';}
+  else if(speedScore>=4){trophy.textContent='🥈';title.textContent='Good Start!';  msg.textContent='Try again to beat your score!';}
+  else                  {trophy.textContent='🌱';title.textContent='Keep Going!';  msg.textContent='Practice more in Learn mode first!';}
+}
+
+// ════ EVENT LISTENERS ════
+document.addEventListener('DOMContentLoaded', function() {
+
+  document.getElementById('daku-toggle-btn').addEventListener('click', function() {
+    showDaku=!showDaku; this.classList.toggle('on',showDaku); buildFamilyScreen();
+  });
+
+  document.getElementById('back-to-family').addEventListener('click',     buildFamilyScreen);
+  document.getElementById('mode-back-link').addEventListener('click',     function(e){ e.preventDefault(); buildFamilyScreen(); });
+  document.getElementById('back-to-mode-learn').addEventListener('click', function(){ openFamily(currentFamId); });
+  document.getElementById('back-to-mode-quiz').addEventListener('click',  function(){ openFamily(currentFamId); });
+  document.getElementById('back-to-mode-speed').addEventListener('click', function(){ clearInterval(speedTimer); openFamily(currentFamId); });
+  document.getElementById('learn-back-to-mode').addEventListener('click', function(e){ e.preventDefault(); openFamily(currentFamId); });
+
+  document.getElementById('mode-learn').addEventListener('click',  startLearnMode);
+  document.getElementById('mode-recog').addEventListener('click',  startRecogQuiz);
+  document.getElementById('mode-read').addEventListener('click',   startReadQuiz);
+  document.getElementById('mode-word').addEventListener('click',   startWordQuiz);
+  document.getElementById('mode-speed').addEventListener('click',  startSpeedMode);
+
+  document.getElementById('learn-speak-btn').addEventListener('click', function(){ speak(currentFamily.chars[learnIdx].k); });
+  document.getElementById('learn-prev').addEventListener('click', function(){
+    if(learnIdx>0){ learnIdx--; showLearnCard(); speak(currentFamily.chars[learnIdx].k); }
+  });
+  document.getElementById('learn-next').addEventListener('click', function(){
+    if(learnIdx<currentFamily.chars.length-1){ learnIdx++; showLearnCard(); speak(currentFamily.chars[learnIdx].k); }
+  });
+  document.getElementById('start-quiz-from-learn').addEventListener('click', startRecogQuiz);
+
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+
+  document.getElementById('try-again-btn').addEventListener('click', function(){
+    if      (currentMode==='recog') startRecogQuiz();
+    else if (currentMode==='read')  startReadQuiz();
+    else if (currentMode==='word')  startWordQuiz();
+    else if (currentMode==='speed') startSpeedMode();
+  });
+  document.getElementById('next-family-btn').addEventListener('click', function(){
+    if(this.dataset.nextId) openFamily(this.dataset.nextId);
+    else if(currentMode==='word') startWordQuiz();
+    else startSpeedMode();
+  });
+  document.getElementById('back-to-fam-btn').addEventListener('click', buildFamilyScreen);
+
+  buildFamilyScreen();
+});
+</script>
+
+</body>
+</html>
