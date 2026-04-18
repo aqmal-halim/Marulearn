@@ -6,140 +6,299 @@
 <title>Marulearn 🌟 Fun Learning for Kids</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background: #fff8f0;
     min-height: 100vh;
-    padding: 20px;
-    color: #2f3542;
+    color: #2d3436;
   }
-  .container { max-width: 600px; margin: 0 auto; }
-  header {
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #ff9a3c 0%, #ff6b35 60%, #e63946 100%);
+    border-radius: 0 0 40px 40px;
+    padding: 30px 24px 40px;
     text-align: center;
-    padding: 30px 20px;
-    background: white;
-    border-radius: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    margin-bottom: 25px;
-  }
-  .logo { font-size: 4em; margin-bottom: 10px; }
-  h1 {
-    font-size: 2.5em;
-    background: linear-gradient(135deg, #667eea, #f093fb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
-  }
-  .tagline { color: #57606f; font-size: 1.1em; }
-  .section-title {
-    color: white;
-    font-size: 1.5em;
-    margin: 25px 10px 15px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  }
-  .games-grid { display: grid; gap: 15px; }
-  .game-card {
-    background: white;
-    border-radius: 25px;
-    padding: 25px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    transition: transform 0.2s;
     position: relative;
     overflow: hidden;
+    margin-bottom: 20px;
   }
-  .game-card:hover, .game-card:active { transform: scale(1.03); }
-  .game-icon { font-size: 3.5em; min-width: 70px; text-align: center; }
-  .game-info { flex: 1; }
-  .game-title { font-size: 1.4em; font-weight: bold; color: #2f3542; margin-bottom: 5px; }
-  .game-desc { color: #747d8c; font-size: 0.95em; }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50px; right: -50px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.1); border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.07); border-radius: 50%;
+  }
 
-  .game-card.addition { border-left: 8px solid #00b894; }
-  .game-card.subtraction { border-left: 8px solid #e17055; }
-  .game-card.multiplication { border-left: 8px solid #ff6b6b; }
-  .game-card.division { border-left: 8px solid #a55eea; }
-  .game-card.fraction { border-left: 8px solid #6c5ce7; }
-  .game-card.clock { border-left: 8px solid #2980b9; }
-  .game-card.time { border-left: 8px solid #1d4ed8; }
-  .game-card.money { border-left: 8px solid #00b894; }
-  .game-card.abc { border-left: 8px solid #e67e22; }
-  .game-card.spelling { border-left: 8px solid #d97706; }
+  .star {
+    position: absolute; font-size: 1.4em;
+    animation: float 3s ease-in-out infinite; opacity: 0.9;
+  }
+  .star:nth-child(1) { top: 12%; left: 7%;  animation-delay: 0s; }
+  .star:nth-child(2) { top: 18%; right: 9%; animation-delay: 0.5s; font-size: 1em; }
+  .star:nth-child(3) { top: 52%; left: 4%;  animation-delay: 1s;   font-size: 0.9em; }
+  .star:nth-child(4) { top: 58%; right: 5%; animation-delay: 1.5s; }
+  .star:nth-child(5) { top: 32%; right: 3%; animation-delay: 0.8s; font-size: 0.8em; }
 
-  /* Japanese — big featured card */
-  .game-card.japanese {
-    border-left: 8px solid #e63946;
-    background: linear-gradient(135deg, #fff5f5, #fff);
-    padding: 28px 25px;
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-8px) rotate(10deg); }
   }
-  .game-card.japanese .game-title { color: #c1121f; }
-  .jp-sub-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
+
+  .mascot-wrap {
+    position: relative; display: inline-block;
+    margin-bottom: 12px;
+    animation: bounce 2.5s ease-in-out infinite;
   }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+  .mascot-svg { width: 115px; height: 115px; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2)); }
+
+  .speech-bubble {
+    position: absolute; top: -16px; right: -95px;
+    background: white; border-radius: 20px 20px 20px 4px;
+    padding: 7px 13px; font-size: 0.75em; font-weight: 800;
+    color: #e63946; white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    animation: pulse-bub 2s ease-in-out infinite;
+  }
+  .speech-bubble::before {
+    content: ''; position: absolute; bottom: -8px; left: 12px;
+    border: 8px solid transparent; border-top-color: white; border-bottom: none;
+  }
+  @keyframes pulse-bub {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.05); }
+  }
+
+  .hero-title {
+    font-size: 2.8em; font-weight: 900; color: white;
+    letter-spacing: -1px; text-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    margin-bottom: 6px;
+  }
+  .hero-title span { color: #fff9c4; }
+  .hero-subtitle { color: rgba(255,255,255,0.9); font-size: 1em; font-weight: 700; margin-bottom: 20px; }
+
+  .stats-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .stat-chip {
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 25px; padding: 6px 14px; color: white;
+    font-size: 0.82em; font-weight: 800;
+  }
+
+  /* ── CONTENT ── */
+  .container { max-width: 600px; margin: 0 auto; padding: 0 16px 40px; }
+
+  .section-header { display: flex; align-items: center; gap: 10px; margin: 24px 0 12px; }
+  .section-icon {
+    width: 36px; height: 36px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15em; flex-shrink: 0;
+  }
+  .section-icon.lang { background: #fff0f0; }
+  .section-icon.read { background: #fff8e6; }
+  .section-icon.math { background: #e8f4ff; }
+  .section-icon.life { background: #e8fff5; }
+  .section-title-text { font-size: 1.05em; font-weight: 900; color: #2d3436; }
+
+  .games-grid { display: grid; gap: 11px; }
+
+  /* ── CARDS ── */
+  .game-card {
+    background: white; border-radius: 18px; padding: 16px 18px;
+    text-decoration: none; color: inherit;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative; overflow: hidden;
+    border-left: 5px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .game-card:active { transform: scale(1.02); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+  .game-card.japanese    { border-left-color: #e63946; background: linear-gradient(135deg, #fff8f8, #fff); }
+  .game-card.abc         { border-left-color: #e67e22; }
+  .game-card.spelling    { border-left-color: #d97706; }
+  .game-card.addition    { border-left-color: #00b894; }
+  .game-card.subtraction { border-left-color: #e17055; }
+  .game-card.multiplication { border-left-color: #ff6b6b; }
+  .game-card.division    { border-left-color: #a55eea; }
+  .game-card.fraction    { border-left-color: #6c5ce7; }
+  .game-card.clock       { border-left-color: #2980b9; }
+  .game-card.time        { border-left-color: #1d4ed8; }
+  .game-card.money       { border-left-color: #00b894; }
+
+  .game-icon-wrap {
+    width: 54px; height: 54px; border-radius: 15px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8em; flex-shrink: 0;
+  }
+  .japanese    .game-icon-wrap { background: #fff0f0; }
+  .abc         .game-icon-wrap { background: #fff3e0; }
+  .spelling    .game-icon-wrap { background: #fff8e6; }
+  .addition    .game-icon-wrap { background: #e8fff5; }
+  .subtraction .game-icon-wrap { background: #fff5f0; }
+  .multiplication .game-icon-wrap { background: #fff0f0; }
+  .division    .game-icon-wrap { background: #f5f0ff; }
+  .fraction    .game-icon-wrap { background: #f0f0ff; }
+  .clock       .game-icon-wrap { background: #e8f4ff; }
+  .time        .game-icon-wrap { background: #e8f0ff; }
+  .money       .game-icon-wrap { background: #e8fff5; }
+
+  .game-info  { flex: 1; min-width: 0; }
+  .game-title { font-size: 1em; font-weight: 900; color: #2d3436; margin-bottom: 2px; }
+  .game-desc  { color: #999; font-size: 0.8em; line-height: 1.4; }
+
+  .jp-sub-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
   .jp-tag {
-    background: #fff0f0;
-    color: #e63946;
-    border: 1px solid #ffc8cc;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.75em;
-    font-weight: bold;
+    background: #fff0f0; color: #e63946; border: 1px solid #ffc8cc;
+    padding: 2px 8px; border-radius: 20px; font-size: 0.7em; font-weight: 800;
   }
 
   .badge {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: #ffa502;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.75em;
-    font-weight: bold;
+    position: absolute; top: 10px; right: 12px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 0.67em; font-weight: 800; color: white;
   }
   .badge.new { background: #2ed573; }
-  .badge.hot {
-    background: #e63946;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
+  .badge.hot { background: #e63946; animation: badge-pulse 2s infinite; }
+  @keyframes badge-pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    50%       { opacity: 0.55; }
   }
 
+  /* ── FOOTER ── */
   footer {
-    text-align: center;
-    padding: 30px 20px;
-    color: white;
-    font-size: 0.9em;
-    margin-top: 20px;
+    text-align: center; padding: 28px 20px 10px; color: #bbb; font-size: 0.82em;
   }
-  footer strong { color: #ffe66d; }
+  footer strong { color: #ff6b35; }
 </style>
 </head>
 <body>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="star">⭐</span>
+  <span class="star">✨</span>
+  <span class="star">🌟</span>
+  <span class="star">⭐</span>
+  <span class="star">✨</span>
+
+  <div class="mascot-wrap">
+    <div class="speech-bubble">Hello! Let's learn! 👋</div>
+    <svg class="mascot-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bg" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stop-color="rgba(255,210,120,0.35)"/>
+          <stop offset="100%" stop-color="rgba(200,80,0,0.2)"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Shadow -->
+      <ellipse cx="60" cy="113" rx="26" ry="5" fill="rgba(0,0,0,0.15)"/>
+
+      <!-- Legs -->
+      <ellipse cx="47" cy="104" rx="9" ry="7" fill="#e67e22"/>
+      <ellipse cx="73" cy="104" rx="9" ry="7" fill="#e67e22"/>
+      <!-- Shoes -->
+      <ellipse cx="45" cy="110" rx="12" ry="5.5" fill="#2d3436"/>
+      <ellipse cx="75" cy="110" rx="12" ry="5.5" fill="#2d3436"/>
+      <ellipse cx="42" cy="108" rx="8" ry="3.5" fill="#555"/>
+      <ellipse cx="72" cy="108" rx="8" ry="3.5" fill="#555"/>
+
+      <!-- Body -->
+      <circle cx="60" cy="68" r="37" fill="#ff9a3c"/>
+      <circle cx="60" cy="68" r="37" fill="url(#bg)"/>
+      <ellipse cx="48" cy="53" rx="10" ry="7" fill="rgba(255,255,255,0.22)" transform="rotate(-20 48 53)"/>
+
+      <!-- Left arm -->
+      <ellipse cx="23" cy="73" rx="8" ry="13" fill="#ff9a3c" transform="rotate(-18 23 73)"/>
+      <circle cx="16" cy="84" r="7.5" fill="white"/>
+      <circle cx="11" cy="80" r="4" fill="white"/>
+      <circle cx="15" cy="77" r="4.5" fill="white"/>
+      <circle cx="20" cy="77" r="4" fill="white"/>
+
+      <!-- Right arm — raised/waving -->
+      <ellipse cx="97" cy="62" rx="8" ry="13" fill="#ff9a3c" transform="rotate(-35 97 62)"/>
+      <circle cx="106" cy="52" r="7.5" fill="white"/>
+      <circle cx="111" cy="56" r="4" fill="white"/>
+      <circle cx="109" cy="50" r="4.5" fill="white"/>
+      <circle cx="104" cy="48" r="4" fill="white"/>
+
+      <!-- Eyes white -->
+      <ellipse cx="50" cy="63" rx="10" ry="11" fill="white"/>
+      <ellipse cx="70" cy="63" rx="10" ry="11" fill="white"/>
+      <!-- Pupils -->
+      <circle cx="52" cy="65" r="6" fill="#2d3436"/>
+      <circle cx="72" cy="65" r="6" fill="#2d3436"/>
+      <!-- Shine -->
+      <circle cx="54" cy="62" r="2.5" fill="white"/>
+      <circle cx="74" cy="62" r="2.5" fill="white"/>
+      <!-- Eye outline -->
+      <ellipse cx="50" cy="63" rx="10" ry="11" fill="none" stroke="#e67e22" stroke-width="1.5"/>
+      <ellipse cx="70" cy="63" rx="10" ry="11" fill="none" stroke="#e67e22" stroke-width="1.5"/>
+
+      <!-- Eyebrows — happy raised -->
+      <path d="M 42 52 Q 50 48 57 52" fill="none" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M 63 52 Q 70 48 77 52" fill="none" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Cheeks -->
+      <ellipse cx="40" cy="73" rx="7" ry="5" fill="#ff6b6b" opacity="0.38"/>
+      <ellipse cx="80" cy="73" rx="7" ry="5" fill="#ff6b6b" opacity="0.38"/>
+
+      <!-- Smile -->
+      <path d="M 47 77 Q 60 89 73 77" fill="none" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Nose -->
+      <ellipse cx="60" cy="73" rx="3" ry="2" fill="#e67e22" opacity="0.5"/>
+
+      <!-- Grad cap board -->
+      <rect x="33" y="28" width="54" height="7.5" rx="3" fill="#2d3436"/>
+      <!-- Cap top -->
+      <rect x="44" y="13" width="32" height="17" rx="4" fill="#2d3436"/>
+      <!-- Gold trim -->
+      <rect x="44" y="13" width="32" height="4" rx="2" fill="#ffd60a" opacity="0.5"/>
+      <!-- Tassel string -->
+      <line x1="81" y1="28" x2="90" y2="43" stroke="#ffd60a" stroke-width="2"/>
+      <!-- Tassel -->
+      <circle cx="90" cy="45" r="4" fill="#ffd60a"/>
+      <line x1="87" y1="49" x2="85" y2="56" stroke="#ffd60a" stroke-width="1.5"/>
+      <line x1="90" y1="49" x2="90" y2="57" stroke="#ffd60a" stroke-width="1.5"/>
+      <line x1="93" y1="49" x2="95" y2="56" stroke="#ffd60a" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <h1 class="hero-title">MARU<span>LEARN</span></h1>
+  <p class="hero-subtitle">Fun learning adventures for curious kids! 🚀</p>
+
+  <div class="stats-row">
+    <div class="stat-chip">🎮 11+ Games</div>
+    <div class="stat-chip">🇯🇵 Japanese Module</div>
+    <div class="stat-chip">🆓 Free Forever</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
 <div class="container">
 
-  <header>
-    <div class="logo">🌟</div>
-    <h1>Marulearn</h1>
-    <p class="tagline">Fun learning adventures for curious kids!</p>
-  </header>
-
-  <!-- ══════ JAPANESE ══════ -->
-  <h2 class="section-title">🇯🇵 Languages</h2>
-
+  <!-- JAPANESE -->
+  <div class="section-header">
+    <div class="section-icon lang">🇯🇵</div>
+    <div class="section-title-text">Languages</div>
+  </div>
   <div class="games-grid">
     <a href="japanese/" class="game-card japanese">
       <span class="badge hot">🔥 NEW</span>
-      <div class="game-icon">🎌</div>
+      <div class="game-icon-wrap">🎌</div>
       <div class="game-info">
         <div class="game-title">Learn Japanese</div>
         <div class="game-desc">Complete family module — beginner to JLPT N5!</div>
@@ -147,117 +306,110 @@
           <span class="jp-tag">🆘 Survival</span>
           <span class="jp-tag">🎌 Hiragana</span>
           <span class="jp-tag">🔷 Katakana</span>
-          <span class="jp-tag">⛩️ Kanji</span>
+          <span class="jp-tag">🔢 Numbers</span>
+          <span class="jp-tag">🏫 School</span>
           <span class="jp-tag">🎯 N5 Prep</span>
         </div>
       </div>
     </a>
   </div>
 
-  <!-- ══════ READING ══════ -->
-  <h2 class="section-title">📚 Reading & Language</h2>
-
+  <!-- READING -->
+  <div class="section-header">
+    <div class="section-icon read">📚</div>
+    <div class="section-title-text">Reading & Language</div>
+  </div>
   <div class="games-grid">
-
     <a href="abc/" class="game-card abc">
-      <div class="game-icon">🔤</div>
+      <div class="game-icon-wrap">🔤</div>
       <div class="game-info">
         <div class="game-title">ABC Adventure</div>
         <div class="game-desc">Learn letters, sounds & build words! 4 levels.</div>
       </div>
     </a>
-
     <a href="spelling/" class="game-card spelling">
-      <div class="game-icon">🐝</div>
+      <div class="game-icon-wrap">🐝</div>
       <div class="game-info">
         <div class="game-title">Spelling Bee</div>
         <div class="game-desc">Listen and spell! 64 words with audio. 🔊</div>
       </div>
     </a>
-
   </div>
 
-  <!-- ══════ MATH ══════ -->
-  <h2 class="section-title">🔢 Math Games</h2>
-
+  <!-- MATH -->
+  <div class="section-header">
+    <div class="section-icon math">🔢</div>
+    <div class="section-title-text">Math Games</div>
+  </div>
   <div class="games-grid">
-
     <a href="addition/" class="game-card addition">
-      <div class="game-icon">➕</div>
+      <div class="game-icon-wrap">➕</div>
       <div class="game-info">
         <div class="game-title">Addition Adventure</div>
         <div class="game-desc">Add numbers with visual helpers for beginners!</div>
       </div>
     </a>
-
     <a href="subtraction/" class="game-card subtraction">
-      <div class="game-icon">➖</div>
+      <div class="game-icon-wrap">➖</div>
       <div class="game-info">
         <div class="game-title">Subtraction Safari</div>
         <div class="game-desc">Take away numbers with visual apples! 🍎</div>
       </div>
     </a>
-
     <a href="multiplication/" class="game-card multiplication">
-      <div class="game-icon">✖️</div>
+      <div class="game-icon-wrap">✖️</div>
       <div class="game-info">
         <div class="game-title">Multiplication Star</div>
         <div class="game-desc">Practice times tables with 4 fun levels!</div>
       </div>
     </a>
-
     <a href="division/" class="game-card division">
-      <div class="game-icon">➗</div>
+      <div class="game-icon-wrap">➗</div>
       <div class="game-info">
         <div class="game-title">Division Quest</div>
         <div class="game-desc">Share numbers into groups with visual candies! 🍬</div>
       </div>
     </a>
-
     <a href="fraction/" class="game-card fraction">
-      <div class="game-icon">🍕</div>
+      <div class="game-icon-wrap">🍕</div>
       <div class="game-info">
         <div class="game-title">Fraction Hero</div>
         <div class="game-desc">Learn parts of a whole with visual bars!</div>
       </div>
     </a>
-
   </div>
 
-  <!-- ══════ LIFE SKILLS ══════ -->
-  <h2 class="section-title">⏰ Life Skills</h2>
-
+  <!-- LIFE SKILLS -->
+  <div class="section-header">
+    <div class="section-icon life">⏰</div>
+    <div class="section-title-text">Life Skills</div>
+  </div>
   <div class="games-grid">
-
     <a href="clock/" class="game-card clock">
-      <div class="game-icon">🕐</div>
+      <div class="game-icon-wrap">🕐</div>
       <div class="game-info">
         <div class="game-title">Clock Champion</div>
         <div class="game-desc">Learn to tell time with real clocks! 4 levels.</div>
       </div>
     </a>
-
     <a href="time/" class="game-card time">
-      <div class="game-icon">⏱️</div>
+      <div class="game-icon-wrap">⏱️</div>
       <div class="game-info">
         <div class="game-title">Time Master</div>
         <div class="game-desc">Calculate elapsed time & word problems! 4 levels.</div>
       </div>
     </a>
-
     <a href="money/" class="game-card money">
-      <div class="game-icon">💰</div>
+      <div class="game-icon-wrap">💰</div>
       <div class="game-info">
         <div class="game-title">Money Master</div>
         <div class="game-desc">Count Japanese yen coins & calculate change! 💴</div>
       </div>
     </a>
-
   </div>
 
   <footer>
-    Made with ❤️ by <strong>Maru</strong><br>
-    11 games · Japanese module launching! 🇯🇵🚀
+    Made with ❤️ by <strong>Maru</strong> · Keep learning, keep growing! 🌟
   </footer>
 
 </div>
