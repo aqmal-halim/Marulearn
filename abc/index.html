@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔤 ABC Adventure!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ffd89b 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    color: #e67e22;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #ffeaa7;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .level-btn {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: inherit;
+    color: white;
+    text-align: left;
+  }
+  .level-btn:hover { transform: scale(1.03); }
+  .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
+  .easy { background: #fab1a0; }
+  .medium { background: #ff7675; }
+  .hard { background: #e17055; }
+  .expert { background: #d63031; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.05em;
+  }
+  .stat {
+    background: #fff5e6;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  .score { color: #e67e22; }
+  .streak { color: #d63031; }
+  .big-letter {
+    font-size: 7em;
+    margin: 20px 0;
+    color: #e67e22;
+    font-weight: bold;
+    text-shadow: 4px 4px 0 #ffeaa7;
+    font-family: Georgia, serif;
+  }
+  .sound-emoji {
+    font-size: 5em;
+    margin: 20px 0;
+  }
+  .word-display {
+    font-size: 2.5em;
+    margin: 20px 0;
+    color: #2d3436;
+    font-weight: bold;
+    letter-spacing: 5px;
+  }
+  .missing-slot {
+    display: inline-block;
+    min-width: 60px;
+    border-bottom: 5px solid #e17055;
+    color: #e17055;
+  }
+  .prompt {
+    font-size: 1.3em;
+    color: #2d3436;
+    font-weight: bold;
+    margin: 15px 0 5px;
+  }
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .options-grid.four-col {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .option-btn {
+    background: #fff5e6;
+    border: 3px solid #ffd6a5;
+    padding: 18px 10px;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 1.8em;
+    font-weight: bold;
+    cursor: pointer;
+    color: #2d3436;
+    transition: all 0.2s;
+  }
+  .options-grid.four-col .option-btn {
+    font-size: 2em;
+    padding: 15px 5px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: #e17055;
+    background: #ffe8d6;
+    transform: scale(1.05);
+  }
+  .option-btn.correct {
+    background: #00b894;
+    color: white;
+    border-color: #00b894;
+  }
+  .option-btn.wrong {
+    background: #d63031;
+    color: white;
+    border-color: #d63031;
+    animation: shake 0.4s;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  .option-btn:disabled { cursor: not-allowed; }
+  .hint-btn {
+    background: #fdcb6e;
+    color: #2d3436;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  .feedback {
+    font-size: 1.3em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct-text { color: #00b894; }
+  .wrong-text { color: #d63031; }
+  .hint-text { color: #e17055; font-size: 1.05em; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #e67e22;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .progress-bar {
+    background: #ffe8d6;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #fab1a0, #d63031);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="start-screen" class="screen active">
+    <h1>🔤 ABC Adventure!</h1>
+    <p style="color:#636e72; margin-bottom:20px;">Learn letters, sounds, and words! Pick your level:</p>
+    <button class="level-btn easy" onclick="startGame('letters')">
+      🌱 Letter Spotter
+      <small>Find the matching letter (A, B, C...)</small>
+    </button>
+    <button class="level-btn medium" onclick="startGame('case')">
+      🌟 Big & Small Letters
+      <small>Match uppercase to lowercase (A → a)</small>
+    </button>
+    <button class="level-btn hard" onclick="startGame('sounds')">
+      🔥 First Letter Sounds
+      <small>Which letter does "apple" start with?</small>
+    </button>
+    <button class="level-btn expert" onclick="startGame('missing')">
+      🏆 Missing Letter
+      <small>Fill the gap: C_T → CAT</small>
+    </button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+
+    <div id="question-area"></div>
+    <div class="prompt" id="prompt"></div>
+    <div class="options-grid" id="options"></div>
+
+    <div class="feedback" id="feedback"></div>
+    <button class="hint-btn" id="hint-btn" onclick="showHint()" style="display:none;">💡 Need a hint?</button>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button class="level-btn easy" onclick="goHome()" style="text-align:center;">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+</div>
+
+<script>
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+  // Words for each letter with emojis
+  const letterWords = {
+    A: { word: 'APPLE', emoji: '🍎' },
+    B: { word: 'BEAR', emoji: '🐻' },
+    C: { word: 'CAT', emoji: '🐱' },
+    D: { word: 'DOG', emoji: '🐶' },
+    E: { word: 'ELEPHANT', emoji: '🐘' },
+    F: { word: 'FISH', emoji: '🐟' },
+    G: { word: 'GIRAFFE', emoji: '🦒' },
+    H: { word: 'HORSE', emoji: '🐴' },
+    I: { word: 'ICE', emoji: '🧊' },
+    J: { word: 'JUICE', emoji: '🧃' },
+    K: { word: 'KING', emoji: '🤴' },
+    L: { word: 'LION', emoji: '🦁' },
+    M: { word: 'MONKEY', emoji: '🐵' },
+    N: { word: 'NEST', emoji: '🪺' },
+    O: { word: 'OCTOPUS', emoji: '🐙' },
+    P: { word: 'PIZZA', emoji: '🍕' },
+    Q: { word: 'QUEEN', emoji: '👸' },
+    R: { word: 'RABBIT', emoji: '🐰' },
+    S: { word: 'SUN', emoji: '☀️' },
+    T: { word: 'TIGER', emoji: '🐯' },
+    U: { word: 'UMBRELLA', emoji: '☂️' },
+    V: { word: 'VAN', emoji: '🚐' },
+    W: { word: 'WHALE', emoji: '🐳' },
+    X: { word: 'XYLOPHONE', emoji: '🎹' },
+    Y: { word: 'YO-YO', emoji: '🪀' },
+    Z: { word: 'ZEBRA', emoji: '🦓' }
+  };
+
+  // Simple 3-4 letter words for missing letter game
+  const simpleWords = [
+    { word: 'CAT', emoji: '🐱' }, { word: 'DOG', emoji: '🐶' }, { word: 'SUN', emoji: '☀️' },
+    { word: 'CAR', emoji: '🚗' }, { word: 'BUS', emoji: '🚌' }, { word: 'HAT', emoji: '🎩' },
+    { word: 'CUP', emoji: '☕' }, { word: 'BED', emoji: '🛏️' }, { word: 'PIG', emoji: '🐷' },
+    { word: 'COW', emoji: '🐄' }, { word: 'BEE', emoji: '🐝' }, { word: 'OWL', emoji: '🦉' },
+    { word: 'FOX', emoji: '🦊' }, { word: 'EGG', emoji: '🥚' }, { word: 'BOOK', emoji: '📖' },
+    { word: 'FISH', emoji: '🐟' }, { word: 'STAR', emoji: '⭐' }, { word: 'MOON', emoji: '🌙' },
+    { word: 'BALL', emoji: '⚽' }, { word: 'TREE', emoji: '🌳' }
+  ];
+
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let attempts = 0;
+  let gameMode = 'letters';
+  let currentAnswer = '';
+  let currentHintData = null;
+  const totalQuestions = 10;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Super! 🌟'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Look again! 👀', 'Keep going! ✨'];
+
+  function startGame(mode) {
+    gameMode = mode;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    attempts = 0;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+
+    const qArea = document.getElementById('question-area');
+    const prompt = document.getElementById('prompt');
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.className = 'options-grid';
+    optionsDiv.innerHTML = '';
+
+    if (gameMode === 'letters') {
+      // Show a letter, pick the matching one
+      const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+      currentAnswer = letter;
+      currentHintData = { letter };
+      qArea.innerHTML = `<div class="big-letter">${letter}</div>`;
+      prompt.textContent = 'Which letter matches?';
+      const opts = makeOptions(letter, alphabet, 4);
+      buildOptions(opts);
+
+    } else if (gameMode === 'case') {
+      // Show uppercase, pick lowercase (or vice versa)
+      const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+      const showUpper = Math.random() < 0.5;
+      const question = showUpper ? letter : letter.toLowerCase();
+      currentAnswer = showUpper ? letter.toLowerCase() : letter;
+      currentHintData = { letter };
+      qArea.innerHTML = `<div class="big-letter">${question}</div>`;
+      prompt.textContent = showUpper ? 'Find the lowercase letter:' : 'Find the uppercase letter:';
+      const pool = showUpper ? alphabet.map(l => l.toLowerCase()) : alphabet;
+      const opts = makeOptions(currentAnswer, pool, 4);
+      buildOptions(opts);
+
+    } else if (gameMode === 'sounds') {
+      // Show a word/emoji, pick the first letter
+      const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+      const item = letterWords[letter];
+      currentAnswer = letter;
+      currentHintData = { letter, word: item.word };
+      qArea.innerHTML = `<div class="sound-emoji">${item.emoji}</div><div style="font-size:1.4em; font-weight:bold; color:#2d3436;">${item.word}</div>`;
+      prompt.textContent = 'What letter does it start with?';
+      const opts = makeOptions(letter, alphabet, 4);
+      buildOptions(opts);
+
+    } else if (gameMode === 'missing') {
+      // Show word with missing letter, pick it
+      const item = simpleWords[Math.floor(Math.random() * simpleWords.length)];
+      const word = item.word;
+      const missingIdx = Math.floor(Math.random() * word.length);
+      currentAnswer = word[missingIdx];
+      currentHintData = { word, missingIdx };
+      const displayWord = word.split('').map((l, i) =>
+        i === missingIdx ? '<span class="missing-slot">?</span>' : l
+      ).join(' ');
+      qArea.innerHTML = `<div class="sound-emoji">${item.emoji}</div><div class="word-display">${displayWord}</div>`;
+      prompt.textContent = 'Which letter is missing?';
+      optionsDiv.className = 'options-grid four-col';
+      const opts = makeOptions(currentAnswer, alphabet, 4);
+      buildOptions(opts);
+    }
+
+    document​​​​​​​​​​​​​​​​
