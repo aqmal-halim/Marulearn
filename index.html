@@ -5,119 +5,140 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marulearn 🌟 Fun Learning for Kids</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --primary: #FF784E;
-    --secondary: #5BBAFF;
-    --bg: #FFD9C6;
-    --text: #444;
-  }
-
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-font-family: ‘Fredoka’, ‘Comic Sans MS’, sans-serif;
-background-color: var(–bg);
-color: var(–text);
-padding: 15px;
+font-family: ‘Comic Sans MS’, ‘Chalkboard SE’, ‘Trebuchet MS’, sans-serif;
+background-color: #FFD9C6;
+color: #444;
+padding: 14px;
 display: flex;
 justify-content: center;
 }
 
-.app-container { width: 100%; max-width: 600px; }
+.app-container { width: 100%; max-width: 500px; }
 
 /* ── HERO CARD ── */
 .hero-card {
 background: white;
-border-radius: 40px;
-padding: 25px;
+border-radius: 32px;
+padding: 20px;
 position: relative;
-box-shadow: 0 12px 0 rgba(0,0,0,0.06);
-margin-bottom: 25px;
+box-shadow: 0 10px 0 rgba(0,0,0,0.06);
+margin-bottom: 22px;
 overflow: hidden;
 }
-.hero-card::before {
-content: ‘’; position: absolute; top: 0; right: 0;
-width: 58%; height: 100%; background: #D9EDFF;
-border-radius: 0 40px 100px 40px; z-index: 0;
+
+/* Blue panel — right side */
+.hero-blue-panel {
+position: absolute;
+top: 0; right: 0; bottom: 0;
+width: 48%;
+background: #D9EDFF;
+border-radius: 0 32px 80px 32px;
+z-index: 0;
 }
 
+/* Header row */
 .header-top {
 display: flex; justify-content: space-between; align-items: center;
-position: relative; z-index: 2; margin-bottom: 18px;
+position: relative; z-index: 2; margin-bottom: 16px;
 }
-.logo { font-size: 1.5rem; font-weight: 700; color: var(–primary); display: flex; align-items: center; gap: 8px; }
-.logo-circle { width: 30px; height: 30px; border: 4px solid var(–primary); border-radius: 50%; }
-.header-right { color: #aaa; font-weight: 700; font-size: 0.85rem; }
+.logo {
+font-size: 1.2rem; font-weight: 900; color: #FF784E;
+display: flex; align-items: center; gap: 7px;
+}
+.logo-ring {
+width: 26px; height: 26px;
+border: 3.5px solid #FF784E; border-radius: 50%;
+flex-shrink: 0;
+}
+.header-right { color: #bbb; font-weight: 700; font-size: 0.75rem; }
 
-.hero-body { display: flex; align-items: center; position: relative; z-index: 2; }
-.hero-text { flex: 1; }
-.welcome-tag { font-weight: 700; color: #bbb; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 4px; }
-.hero-text h1 { font-size: 2.6rem; color: var(–primary); line-height: 1; font-weight: 700; }
-.hero-text h1 span { color: var(–secondary); }
-.hero-text p { font-size: 0.95rem; color: #888; margin-top: 8px; font-weight: 500; }
+/* Hero body — text left, mascot right */
+.hero-body {
+display: flex; align-items: flex-end;
+position: relative; z-index: 2;
+gap: 0;
+}
 
-/* Stats chips under tagline */
-.hero-chips { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.hero-text { flex: 1; padding-right: 8px; }
+.welcome-tag { font-size: 0.72rem; font-weight: 700; color: #ccc; letter-spacing: 1.5px; margin-bottom: 4px; }
+.hero-title {
+font-size: 2em; font-weight: 900; line-height: 1;
+color: #FF784E;
+}
+.hero-title span { color: #5BBAFF; }
+.hero-tagline { font-size: 0.82rem; color: #aaa; margin-top: 7px; font-weight: 600; }
+
+.hero-chips { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
 .hero-chip {
-background: #fff3ee; color: var(–primary); border: 1.5px solid #ffd4c4;
-border-radius: 20px; padding: 3px 10px; font-size: 0.7rem; font-weight: 700;
+background: #fff3ee; color: #FF784E;
+border: 1.5px solid #ffd4c4; border-radius: 20px;
+padding: 3px 9px; font-size: 0.65rem; font-weight: 700;
 }
 
-/* ── MASCOT ── */
-.mascot-container {
-width: 145px; height: 165px; position: relative;
-animation: hover 3s ease-in-out infinite; flex-shrink: 0;
+/* Mascot — fixed size, no overflow */
+.mascot-wrap {
+width: 120px; height: 150px;
+position: relative; flex-shrink: 0;
+animation: mascot-hover 3s ease-in-out infinite;
 }
-@keyframes hover {
+@keyframes mascot-hover {
 0%, 100% { transform: translateY(0) rotate(-2deg); }
-50%       { transform: translateY(-10px) rotate(2deg); }
+50%       { transform: translateY(-8px) rotate(2deg); }
 }
+
+/* Speech bubble — positioned inside hero, above mascot */
 .bubble {
-position: absolute; top: -8px; left: -28px;
-background: white; padding: 7px 11px;
-border-radius: 18px 18px 18px 4px;
-font-size: 0.75rem; font-weight: 700; color: var(–primary);
-box-shadow: 0 4px 12px rgba(0,0,0,0.12); z-index: 10;
-white-space: nowrap;
-animation: bub 2s ease-in-out infinite;
+position: absolute;
+top: -12px; right: 4px;
+background: white;
+padding: 6px 10px;
+border-radius: 14px 14px 4px 14px;
+font-size: 0.68rem; font-weight: 700; color: #FF784E;
+box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+white-space: nowrap; z-index: 5;
+animation: bub-pulse 2s ease-in-out infinite;
 }
-@keyframes bub {
+@keyframes bub-pulse {
 0%, 100% { transform: scale(1); }
 50%       { transform: scale(1.05); }
 }
 
 /* ── SECTION TITLES ── */
 .section-title {
-display: flex; align-items: center; gap: 10px;
-margin: 28px 0 14px 5px; font-size: 1.15rem; font-weight: 700; color: #555;
+display: flex; align-items: center; gap: 9px;
+margin: 24px 0 12px 4px;
+font-size: 1rem; font-weight: 900; color: #555;
+letter-spacing: 0.5px;
 }
-.dot { width: 13px; height: 13px; border-radius: 50%; }
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 
 /* ── CARDS ── */
-.grid { display: grid; gap: 13px; }
+.grid { display: grid; gap: 12px; }
 
 .card {
-background: white; border-radius: 24px; padding: 18px 18px;
-text-decoration: none; display: flex; align-items: center; gap: 14px;
-position: relative; transition: all 0.1s ease;
+background: white; border-radius: 22px; padding: 16px;
+text-decoration: none; display: flex; align-items: center; gap: 13px;
+position: relative; color: #444;
 border-bottom: 5px solid #e8e8e8;
-color: var(–text);
+transition: all 0.1s ease;
 }
 .card:active { transform: translateY(3px); border-bottom-width: 2px; }
 
 .icon-box {
-width: 62px; height: 62px; border-radius: 18px;
+width: 58px; height: 58px; border-radius: 16px;
 display: flex; align-items: center; justify-content: center;
-font-size: 1.9rem; flex-shrink: 0;
+font-size: 1.8rem; flex-shrink: 0;
 }
 
-.card-info { flex: 1; }
-.card-info h3 { font-size: 1.1rem; color: #333; margin-bottom: 2px; font-weight: 700; }
-.card-info p  { font-size: 0.82rem; color: #999; font-weight: 500; line-height: 1.35; }
+.card-info { flex: 1; min-width: 0; }
+.card-info h3 { font-size: 1rem; color: #333; margin-bottom: 2px; font-weight: 900; }
+.card-info p  { font-size: 0.78rem; color: #aaa; font-weight: 600; line-height: 1.35; }
 
-/* Colors */
+/* Category colors */
 .cat-lang { background: #EBF5FF; border-bottom-color: #B8DBFF; }
 .cat-read { background: #FFF5E8; border-bottom-color: #FFD9A0; }
 .cat-math { background: #EDFFF5; border-bottom-color: #9FE8C0; }
@@ -130,8 +151,9 @@ font-size: 1.9rem; flex-shrink: 0;
 
 /* Badge */
 .badge {
-position: absolute; top: -10px; right: 15px;
-color: white; padding: 4px 11px; border-radius: 12px; font-size: 0.68rem; font-weight: 700;
+position: absolute; top: -10px; right: 14px;
+color: white; padding: 3px 10px; border-radius: 11px;
+font-size: 0.65rem; font-weight: 700;
 }
 .badge.hot  { background: #FF5E5E; animation: badge-pop 2s ease-in-out infinite; }
 .badge.new  { background: #2ED573; }
@@ -142,35 +164,44 @@ color: white; padding: 4px 11px; border-radius: 12px; font-size: 0.68rem; font-w
 
 /* JP sub tags */
 .jp-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.tag { background: white; border: 1.5px solid #dde; padding: 2px 8px; border-radius: 10px; font-size: 0.65rem; color: #777; font-weight: 600; }
+.tag {
+background: white; border: 1.5px solid #dde;
+padding: 2px 7px; border-radius: 10px;
+font-size: 0.62rem; color: #777; font-weight: 700;
+}
 
-/* ── FOOTER ── */
-footer { text-align: center; padding: 40px 0 20px; color: #B89080; font-weight: 600; font-size: 0.88rem; }
-footer strong { color: var(–primary); }
+/* Footer */
+footer {
+text-align: center; padding: 35px 0 15px;
+color: #B89080; font-weight: 700; font-size: 0.82rem;
+}
+footer strong { color: #FF784E; }
 </style>
 
 </head>
 <body>
 <div class="app-container">
 
-  <!-- ══════════════════════════ -->
-
-  <!-- HERO                      -->
-
-  <!-- ══════════════════════════ -->
+  <!-- ══════════════ HERO ══════════════ -->
 
   <div class="hero-card">
-    <div class="header-top">
-      <div class="logo"><div class="logo-circle"></div> MARULEARN</div>
-      <div class="header-right">GAMES • LESSONS</div>
-    </div>
+    <div class="hero-blue-panel"></div>
 
 ```
+<div class="header-top">
+  <div class="logo">
+    <div class="logo-ring"></div>
+    MARULEARN
+  </div>
+  <div class="header-right">GAMES · LESSONS</div>
+</div>
+
 <div class="hero-body">
+  <!-- Left: Text -->
   <div class="hero-text">
     <div class="welcome-tag">WELCOME!</div>
-    <h1>MARU<span>LEARN</span></h1>
-    <p>Fun learning for awesome kids! 🚀</p>
+    <div class="hero-title">MARU<span>LEARN</span></div>
+    <div class="hero-tagline">Fun learning for awesome kids! 🚀</div>
     <div class="hero-chips">
       <span class="hero-chip">🎮 11+ Games</span>
       <span class="hero-chip">🇯🇵 Japanese</span>
@@ -178,96 +209,88 @@ footer strong { color: var(–primary); }
     </div>
   </div>
 
-  <!-- ── IMPROVED MASCOT SVG ── -->
-  <div class="mascot-container">
+  <!-- Right: Mascot -->
+  <div class="mascot-wrap">
     <div class="bubble">Hello! Let's play! 👋</div>
-    <svg viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+    <svg viewBox="0 0 130 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
       <defs>
-        <radialGradient id="bodyGrad" cx="38%" cy="32%" r="65%">
+        <radialGradient id="bg2" cx="38%" cy="32%" r="65%">
           <stop offset="0%" stop-color="#FFD4A1"/>
           <stop offset="100%" stop-color="#FFB15E"/>
         </radialGradient>
-        <radialGradient id="capGrad" cx="50%" cy="50%" r="50%">
+        <radialGradient id="cap2" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stop-color="#4A4A4A"/>
           <stop offset="100%" stop-color="#2D2D2D"/>
         </radialGradient>
       </defs>
 
       <!-- Shadow -->
-      <ellipse cx="80" cy="163" rx="30" ry="6" fill="rgba(0,0,0,0.1)"/>
+      <ellipse cx="65" cy="150" rx="28" ry="5" fill="rgba(0,0,0,0.1)"/>
 
       <!-- Legs -->
-      <ellipse cx="64" cy="135" rx="10" ry="8" fill="#E8872A"/>
-      <ellipse cx="96" cy="135" rx="10" ry="8" fill="#E8872A"/>
+      <ellipse cx="52" cy="128" rx="9" ry="7" fill="#E8872A"/>
+      <ellipse cx="78" cy="128" rx="9" ry="7" fill="#E8872A"/>
 
-      <!-- Shoes — red with white stripe -->
-      <rect x="51" y="140" width="26" height="14" rx="7" fill="#FF5E5E"/>
-      <rect x="83" y="140" width="26" height="14" rx="7" fill="#FF5E5E"/>
-      <rect x="53" y="148" width="22" height="4" rx="2" fill="white" opacity="0.7"/>
-      <rect x="85" y="148" width="22" height="4" rx="2" fill="white" opacity="0.7"/>
+      <!-- Shoes -->
+      <rect x="40" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
+      <rect x="66" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
+      <rect x="42" y="140" width="20" height="3" rx="1.5" fill="white" opacity="0.7"/>
+      <rect x="68" y="140" width="20" height="3" rx="1.5" fill="white" opacity="0.7"/>
 
       <!-- Body -->
-      <circle cx="80" cy="90" r="48" fill="url(#bodyGrad)"/>
-      <!-- Body shine -->
-      <ellipse cx="65" cy="72" rx="14" ry="9" fill="rgba(255,255,255,0.22)" transform="rotate(-20 65 72)"/>
+      <circle cx="65" cy="82" r="42" fill="url(#bg2)"/>
+      <ellipse cx="52" cy="66" rx="12" ry="8" fill="rgba(255,255,255,0.22)" transform="rotate(-20 52 66)"/>
 
-      <!-- Left arm (down/resting) -->
-      <path d="M35 95 Q28 110 30 122" fill="none" stroke="#FFB15E" stroke-width="14" stroke-linecap="round"/>
-      <!-- Left glove -->
-      <circle cx="30" cy="126" r="11" fill="white"/>
-      <circle cx="22" cy="120" r="6" fill="white"/>
-      <circle cx="20" cy="128" r="5" fill="white"/>
-      <circle cx="25" cy="134" r="5.5" fill="white"/>
+      <!-- Left arm (resting down) -->
+      <path d="M26 87 Q20 100 22 112" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
+      <circle cx="22" cy="116" r="10" fill="white"/>
+      <circle cx="14" cy="111" r="5.5" fill="white"/>
+      <circle cx="13" cy="119" r="4.5" fill="white"/>
+      <circle cx="18" cy="124" r="5" fill="white"/>
 
-      <!-- Right arm (raised/waving) -->
-      <path d="M125 85 Q138 68 136 54" fill="none" stroke="#FFB15E" stroke-width="14" stroke-linecap="round"/>
-      <!-- Right glove -->
-      <circle cx="136" cy="50" r="11" fill="white"/>
-      <circle cx="144" cy="56" r="6" fill="white"/>
-      <circle cx="146" cy="47" r="5" fill="white"/>
-      <circle cx="140" cy="42" r="5.5" fill="white"/>
+      <!-- Right arm (waving up) -->
+      <path d="M104 77 Q114 62 112 50" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
+      <circle cx="112" cy="46" r="10" fill="white"/>
+      <circle cx="120" cy="51" r="5.5" fill="white"/>
+      <circle cx="121" cy="43" r="4.5" fill="white"/>
+      <circle cx="115" cy="38" r="5" fill="white"/>
 
       <!-- Eyes -->
-      <ellipse cx="68" cy="85" rx="10" ry="12" fill="white"/>
-      <ellipse cx="92" cy="85" rx="10" ry="12" fill="white"/>
-      <!-- Pupils -->
-      <circle cx="70" cy="87" r="6" fill="#333"/>
-      <circle cx="94" cy="87" r="6" fill="#333"/>
-      <!-- Eye shine -->
-      <circle cx="72" cy="84" r="2.5" fill="white"/>
-      <circle cx="96" cy="84" r="2.5" fill="white"/>
-      <!-- Eye outline -->
-      <ellipse cx="68" cy="85" rx="10" ry="12" fill="none" stroke="#E8872A" stroke-width="1.5"/>
-      <ellipse cx="92" cy="85" rx="10" ry="12" fill="none" stroke="#E8872A" stroke-width="1.5"/>
+      <ellipse cx="55" cy="78" rx="9" ry="11" fill="white"/>
+      <ellipse cx="75" cy="78" rx="9" ry="11" fill="white"/>
+      <circle cx="57" cy="80" r="5.5" fill="#333"/>
+      <circle cx="77" cy="80" r="5.5" fill="#333"/>
+      <circle cx="59" cy="77" r="2.2" fill="white"/>
+      <circle cx="79" cy="77" r="2.2" fill="white"/>
+      <ellipse cx="55" cy="78" rx="9" ry="11" fill="none" stroke="#E8872A" stroke-width="1.5"/>
+      <ellipse cx="75" cy="78" rx="9" ry="11" fill="none" stroke="#E8872A" stroke-width="1.5"/>
 
-      <!-- Eyebrows — happy -->
-      <path d="M60 73 Q68 68 76 73" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M84 73 Q92 68 100 73" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Eyebrows -->
+      <path d="M48 67 Q55 62 62 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M68 67 Q75 62 82 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
 
-      <!-- Rosy cheeks -->
-      <ellipse cx="56" cy="96" rx="8" ry="6" fill="#FF9090" opacity="0.35"/>
-      <ellipse cx="104" cy="96" rx="8" ry="6" fill="#FF9090" opacity="0.35"/>
+      <!-- Cheeks -->
+      <ellipse cx="44" cy="88" rx="7" ry="5" fill="#FF9090" opacity="0.38"/>
+      <ellipse cx="86" cy="88" rx="7" ry="5" fill="#FF9090" opacity="0.38"/>
 
       <!-- Smile -->
-      <path d="M65 104 Q80 118 95 104" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+      <path d="M52 97 Q65 109 78 97" fill="none" stroke="#333" stroke-width="2.8" stroke-linecap="round"/>
 
       <!-- Nose -->
-      <ellipse cx="80" cy="98" rx="3.5" ry="2.5" fill="#E8872A" opacity="0.5"/>
+      <ellipse cx="65" cy="90" rx="3" ry="2" fill="#E8872A" opacity="0.5"/>
 
-      <!-- Graduation cap — board -->
-      <rect x="48" y="42" width="64" height="9" rx="4" fill="url(#capGrad)"/>
-      <!-- Cap top -->
-      <rect x="58" y="24" width="44" height="20" rx="5" fill="url(#capGrad)"/>
+      <!-- Grad cap board -->
+      <rect x="38" y="38" width="54" height="8" rx="3.5" fill="url(#cap2)"/>
+      <!-- Cap body -->
+      <rect x="47" y="22" width="36" height="18" rx="4" fill="url(#cap2)"/>
       <!-- Gold band -->
-      <rect x="58" y="24" width="44" height="5" rx="3" fill="#FFD700" opacity="0.4"/>
-      <!-- Tassel string -->
-      <line x1="106" y1="42" x2="118" y2="58" stroke="#FFD700" stroke-width="2.5"/>
-      <!-- Tassel ball -->
-      <circle cx="118" cy="61" r="5" fill="#FFD700"/>
-      <!-- Tassel threads -->
-      <line x1="115" y1="66" x2="112" y2="75" stroke="#FFD700" stroke-width="2"/>
-      <line x1="118" y1="66" x2="118" y2="76" stroke="#FFD700" stroke-width="2"/>
-      <line x1="121" y1="66" x2="124" y2="75" stroke="#FFD700" stroke-width="2"/>
+      <rect x="47" y="22" width="36" height="5" rx="3" fill="#FFD700" opacity="0.4"/>
+      <!-- Tassel -->
+      <line x1="87" y1="38" x2="97" y2="52" stroke="#FFD700" stroke-width="2"/>
+      <circle cx="97" cy="55" r="4.5" fill="#FFD700"/>
+      <line x1="94" y1="59" x2="91" y2="67" stroke="#FFD700" stroke-width="1.8"/>
+      <line x1="97" y1="59" x2="97" y2="68" stroke="#FFD700" stroke-width="1.8"/>
+      <line x1="100" y1="59" x2="103" y2="67" stroke="#FFD700" stroke-width="1.8"/>
     </svg>
   </div>
 </div>
@@ -275,14 +298,11 @@ footer strong { color: var(–primary); }
 
   </div>
 
-  <!-- ══════════════════════════ -->
-
-  <!-- LANGUAGES                 -->
-
-  <!-- ══════════════════════════ -->
+  <!-- ══════════════ LANGUAGES ══════════════ -->
 
   <div class="section-title">
-    <div class="dot" style="background:var(--secondary);"></div> LANGUAGES
+    <div class="dot" style="background:#5BBAFF;"></div>
+    LANGUAGES
   </div>
   <div class="grid">
     <a href="japanese/" class="card cat-lang">
@@ -303,14 +323,11 @@ footer strong { color: var(–primary); }
     </a>
   </div>
 
-  <!-- ══════════════════════════ -->
-
-  <!-- READING & ABC             -->
-
-  <!-- ══════════════════════════ -->
+  <!-- ══════════════ READING ══════════════ -->
 
   <div class="section-title">
-    <div class="dot" style="background:#FFAA33;"></div> READING & ABC
+    <div class="dot" style="background:#FFAA33;"></div>
+    READING & ABC
   </div>
   <div class="grid">
     <a href="abc/" class="card cat-read">
@@ -329,14 +346,11 @@ footer strong { color: var(–primary); }
     </a>
   </div>
 
-  <!-- ══════════════════════════ -->
-
-  <!-- MATH                      -->
-
-  <!-- ══════════════════════════ -->
+  <!-- ══════════════ MATH ══════════════ -->
 
   <div class="section-title">
-    <div class="dot" style="background:#2ED573;"></div> MATH MAGIC
+    <div class="dot" style="background:#2ED573;"></div>
+    MATH MAGIC
   </div>
   <div class="grid">
     <a href="addition/" class="card cat-math">
@@ -383,14 +397,11 @@ footer strong { color: var(–primary); }
     </a>
   </div>
 
-  <!-- ══════════════════════════ -->
-
-  <!-- LIFE SKILLS               -->
-
-  <!-- ══════════════════════════ -->
+  <!-- ══════════════ LIFE SKILLS ══════════════ -->
 
   <div class="section-title">
-    <div class="dot" style="background:#A55EEA;"></div> LIFE SKILLS
+    <div class="dot" style="background:#A55EEA;"></div>
+    LIFE SKILLS
   </div>
   <div class="grid">
     <a href="clock/" class="card cat-life">
