@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⏱️ Time Master!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #8ec5fc 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    color: #1e3a8a;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #bfdbfe;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .level-btn {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.15em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    color: white;
+    text-align: left;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .level-btn * { pointer-events: none; }
+  .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
+  .easy { background: #60a5fa; }
+  .medium { background: #3b82f6; }
+  .hard { background: #1d4ed8; }
+  .expert { background: #1e3a8a; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1em;
+  }
+  .stat {
+    background: #dbeafe;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  .score { color: #1d4ed8; }
+  .streak { color: #dc2626; }
+  .problem-box {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border-radius: 20px;
+    padding: 25px 20px;
+    margin: 20px 0;
+    border: 3px dashed #3b82f6;
+  }
+  .problem-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+  }
+  .problem-text {
+    font-size: 1.15em;
+    color: #1e3a8a;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+  .time-highlight {
+    display: inline-block;
+    background: #fbbf24;
+    color: #78350f;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin: 0 2px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+  }
+  .answer-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+  }
+  .time-input {
+    font-size: 2em;
+    padding: 10px;
+    width: 80px;
+    text-align: center;
+    border: 4px solid #60a5fa;
+    border-radius: 15px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .time-input:focus { border-color: #1d4ed8; }
+  .time-input.shake {
+    animation: shake 0.4s;
+    border-color: #dc2626;
+  }
+  .time-separator {
+    font-size: 2.5em;
+    color: #1d4ed8;
+    font-weight: bold;
+  }
+  .ampm-toggle {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+    justify-content: center;
+  }
+  .ampm-btn {
+    padding: 10px 20px;
+    background: #dbeafe;
+    border: 3px solid #93c5fd;
+    border-radius: 15px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    color: #1e3a8a;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .ampm-btn.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #1d4ed8;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+  .submit-btn {
+    display: block;
+    margin: 20px auto 0;
+    padding: 15px 40px;
+    background: #1d4ed8;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .hint-btn {
+    background: #fbbf24;
+    color: #78350f;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .feedback {
+    font-size: 1.2em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct-text { color: #059669; }
+  .wrong-text { color: #dc2626; }
+  .hint-text { color: #d97706; font-size: 1em; text-align: left; background: #fef3c7; padding: 12px; border-radius: 12px; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #1d4ed8;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .progress-bar {
+    background: #dbeafe;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #60a5fa, #1e3a8a);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+  .format-label {
+    font-size: 0.9em;
+    color: #6b7280;
+    margin-top: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="start-screen" class="screen active">
+    <h1>⏱️ Time Master!</h1>
+    <p style="color:#1e3a8a; margin-bottom:20px;">Calculate time like a pro! ⏰</p>
+    <button type="button" class="level-btn easy" data-mode="add">
+      🌱 Beginner
+      <small>Add minutes (3:00 + 30 min = ?) · 12-hour</small>
+    </button>
+    <button type="button" class="level-btn medium" data-mode="elapsed">
+      🌟 Easy
+      <small>Elapsed time (start → end) · 12-hour</small>
+    </button>
+    <button type="button" class="level-btn hard" data-mode="mixed24">
+      🔥 Medium
+      <small>Add & subtract time · 24-hour format</small>
+    </button>
+    <button type="button" class="level-btn expert" data-mode="words">
+      🏆 Champion
+      <small>Real-life word problems · All formats</small>
+    </button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+
+    <div class="problem-box">
+      <div class="problem-icon" id="problem-icon">⏰</div>
+      <div class="problem-text" id="problem-text">Loading...</div>
+    </div>
+
+    <div class="answer-row">
+      <input type="number" id="hour-input" class="time-input" placeholder="HH" min="0" max="23">
+      <span class="time-separator">:</span>
+      <input type="number" id="minute-input" class="time-input" placeholder="MM" min="0" max="59">
+    </div>
+    <div class="format-label" id="format-label">Enter time in HH:MM format</div>
+    <div class="ampm-toggle" id="ampm-toggle" style="display:none;">
+      <button type="button" class="ampm-btn" data-val="AM">AM</button>
+      <button type="button" class="ampm-btn" data-val="PM">PM</button>
+    </div>
+
+    <button type="button" class="submit-btn" id="submit-btn">Check! ✓</button>
+    <div class="feedback" id="feedback"></div>
+    <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button type="button" class="level-btn easy" id="play-again-btn" style="text-align:center;">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+</div>
+
+<script>
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let attempts = 0;
+  let mode = 'add';
+  let currentAnswer = { h: 0, m: 0, ampm: null };
+  let currentHint = '';
+  let selectedAmPm = null;
+  const totalQuestions = 10;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'Time master! ⏱️', 'Brilliant! 💫', 'Super! 🌟'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Check your math! 🎯', 'Keep going! ✨'];
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function formatTime12(h, m) {
+    const period = h >= 12 ? 'PM' : 'AM';
+    let displayH = h % 12;
+    if (displayH === 0) displayH = 12;
+    return displayH + ':' + pad(m) + ' ' + period;
+  }
+
+  function formatTime24(h, m) {
+    return pad(h) + ':' + pad(m);
+  }
+
+  function addMinutes(h, m, addMin) {
+    let total = h * 60 + m + addMin;
+    total = ((total % 1440) + 1440) % 1440; // wrap around 24hrs
+    return { h: Math.floor(total / 60), m: total % 60 };
+  }
+
+  function startGame(m) {
+    mode = m;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    attempts = 0;
+    selectedAmPm = null;
+
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+
+    const problemText = document.getElementById('problem-text');
+    const problemIcon = document.getElementById('problem-icon');
+    const formatLabel = document.getElementById('format-label');
+    const ampmToggle = document.getElementById('ampm-toggle');
+    const hourInput = document.getElementById('hour-input');
+
+    ampmToggle.style.display = 'none';
+    document.querySelectorAll('.ampm-btn').forEach(b => b.classList.remove('active'));
+
+    if (mode === 'add') {
+      // Beginner: add minutes to a time (12-hour)
+      const startH = Math.floor(Math.random() * 12) + 1;
+      const startM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const addMin = [15, 30, 45, 60, 90][Math.floor(Math.random() * 5)];
+      const result = addMinutes(startH, startM, addMin);
+      const finalH = result.h === 0 ? 12 : (result.h > 12 ? result.h - 12 : result.h);
+      currentAnswer = { h: finalH, m: result.m, ampm: null };
+      problemIcon.textContent = '➕';
+      problemText.innerHTML = 'If it\'s <span class="time-highlight">' + startH + ':' + pad(startM) + '</span> and we add <span class="time-highlight">' + addMin + ' min</span>, what time is it?';
+      currentHint = 'Start at ' + startH + ':' + pad(startM) + '. Adding ' + addMin + ' minutes means adding ' + Math.floor(addMin/60) + ' hour(s) and ' + (addMin%60) + ' minutes. Think: ' + addMin + ' = ' + Math.floor(addMin/60) + '×60 + ' + (addMin%60);
+      formatLabel.textContent = 'Enter time in H:MM (12-hour, no AM/PM needed)';
+      hourInput.max = 12;
+
+    } else if (mode === 'elapsed') {
+      // Easy: elapsed time between two 12-hour times
+      const startH = Math.floor(Math.random() * 10) + 1;
+      const startM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const hoursElapsed = Math.floor(Math.random() * 3) + 1;
+      const minsElapsed = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const result = addMinutes(startH, startM, hoursElapsed * 60 + minsElapsed);
+      const endH = result.h === 0 ? 12 : (result.h > 12 ? result.h - 12 : result.h);
+      currentAnswer = { h: hoursElapsed, m: minsElapsed, ampm: null };
+      problemIcon.textContent = '⏳';
+      problemText.innerHTML = 'Sarah started at <span class="time-highlight">' + startH + ':' + pad(startM) + '</span> and finished at <span class="time-highlight">' + endH + ':' + pad(result.m) + '</span>. How long did it take?';
+      currentHint = 'Count from ' + startH + ':' + pad(startM) + ' to ' + endH + ':' + pad(result.m) + '. First count the hours, then the remaining minutes.';
+      formatLabel.textContent = 'Enter as H:MM (hours:minutes of time that passed)';
+      hourInput.max = 23;
+
+    } else if (mode === 'mixed24') {
+      // Medium: 24-hour add/subtract
+      const startH = Math.floor(Math.random() * 22) + 1;
+      const startM = [0, 10, 15, 20, 30, 40, 45, 50][Math.floor(Math.random() * 8)];
+      const addMin = [45, 60, 75, 90, 120, 135, 180][Math.floor(Math.random() * 7)];
+      const isAdd = Math.random() < 0.5;
+      const result = addMinutes(startH, startM, isAdd ? addMin : -addMin);
+      currentAnswer = { h: result.h, m: result.m, ampm: null };
+      problemIcon.textContent = isAdd ? '⏩' : '⏪';
+      problemText.innerHTML = 'Time is <span class="time-highlight">' + formatTime24(startH, startM) + '</span>. What is ' + (isAdd ? 'plus' : 'minus') + ' <span class="time-highlight">' + addMin + ' min</span>?';
+      currentHint = addMin + ' minutes = ' + Math.floor(addMin/60) + ' hr ' + (addMin%60) + ' min. ' + (isAdd ? 'Add' : 'Subtract') + ' it step by step from ' + formatTime24(startH, startM) + '.';
+      formatLabel.textContent = 'Enter in 24-hour HH:MM format (e.g., 15:30)';
+      hourInput.max = 23;
+
+    } else if (mode === 'words') {
+      // Champion: word problems mixing formats
+      const scenarios = generateWordProblem();
+      currentAnswer = scenarios.answer;
+      problemIcon.textContent = scenarios.icon;
+      problemText.innerHTML = scenarios.text;
+      currentHint = scenarios.hint;
+      formatLabel.textContent = scenarios.format;
+      hourInput.max = scenarios.maxHour;
+      if (scenarios.needAmPm) {
+        ampmToggle.style.display = 'flex';
+      }
+    }
+
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('hour-input').value = '';
+    document.getElementById('minute-input').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+  }
+
+  function generateWordProblem() {
+    const type = Math.floor(Math.random() * 4);
+
+    if (type === 0) {
+      // Movie scenario - 12hr with AM/PM
+      const startH = Math.floor(Math.random() * 8) + 1;
+      const startM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const isPM = Math.random() < 0.7;
+      const duration = [90, 105, 120, 135, 150][Math.floor(Math.random() * 5)];
+      const startTotal = (isPM ? startH + 12 : startH) * 60 + startM;
+      const endTotal = startTotal + duration;
+      const endH24 = Math.floor(endTotal / 60) % 24;
+      const endM = endTotal % 60;
+      const endIsPM = endH24 >= 12;
+      const endH12 = endH24 % 12 === 0 ? 12 : endH24 % 12;
+      return {
+        icon: '🎬',
+        text: 'A movie starts at <span class="time-highlight">' + startH + ':' + pad(startM) + ' ' + (isPM ? 'PM' : 'AM') + '</span> and is <span class="time-highlight">' + Math.floor(duration/60) + ' hr ' + (duration%60) + ' min</span> long. When does it end?',
+        answer: { h: endH12, m: endM, ampm: endIsPM ? 'PM' : 'AM' },
+        hint: 'Start: ' + startH + ':' + pad(startM) + ' ' + (isPM ? 'PM' : 'AM') + '. Add ' + Math.floor(duration/60) + ' hours first, then ' + (duration%60) + ' minutes. Don\'t forget to switch AM/PM if you cross 12!',
+        format: 'Enter 12-hour time and pick AM or PM',
+        maxHour: 12,
+        needAmPm: true
+      };
+    } else if (type === 1) {
+      // School bell - elapsed
+      const startH = Math.floor(Math.random() * 3) + 8;
+      const startM = [0, 15, 30][Math.floor(Math.random() * 3)];
+      const endH = startH + Math.floor(Math.random() * 3) + 1;
+      const endM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const diff = (endH * 60 + endM) - (startH * 60 + startM);
+      return {
+        icon: '🔔',
+        text: 'Class starts at <span class="time-highlight">' + startH + ':' + pad(startM) + ' AM</span> and ends at <span class="time-highlight">' + endH + ':' + pad(endM) + ' AM</span>. How long is class?',
+        answer: { h: Math.floor(diff / 60), m: diff % 60, ampm: null },
+        hint: 'From ' + startH + ':' + pad(startM) + ' to ' + endH + ':00 is ' + (endH - startH) + ' hours minus ' + startM + ' min. Then add ' + endM + ' min at the end.',
+        format: 'Enter as H:MM (hours:minutes)',
+        maxHour: 23,
+        needAmPm: false
+      };
+    } else if (type === 2) {
+      // Train 24hr
+      const depH = Math.floor(Math.random() * 20) + 2;
+      const depM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const journeyMin = [75, 90, 105, 150, 180, 240][Math.floor(Math.random() * 6)];
+      const total = depH * 60 + depM + journeyMin;
+      const arrH = Math.floor(total / 60) % 24;
+      const arrM = total % 60;
+      return {
+        icon: '🚂',
+        text: 'A train leaves at <span class="time-highlight">' + formatTime24(depH, depM) + '</span> and the journey takes <span class="time-highlight">' + Math.floor(journeyMin/60) + ' hr ' + (journeyMin%60) + ' min</span>. When does it arrive? (24-hour)',
+        answer: { h: arrH, m: arrM, ampm: null },
+        hint: 'Depart: ' + formatTime24(depH, depM) + '. Journey: ' + Math.floor(journeyMin/60) + ' hr ' + (journeyMin%60) + ' min. Add the hours first to ' + depH + ', then add ' + (journeyMin%60) + ' min to ' + depM + ' min.',
+        format: 'Enter in 24-hour HH:MM format',
+        maxHour: 23,
+        needAmPm: false
+      };
+    } else {
+      // Cookie baking (subtract)
+      const endH = Math.floor(Math.random() * 4) + 4;
+      const endM = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
+      const isPM = true;
+      const bakeMin = [25, 30, 35, 40, 45, 60][Math.floor(Math.random() * 6)];
+      const endTotal = (endH + 12) * 60 + endM;
+      const startTotal = endTotal - bakeMin;
+      const startH24 = Math.floor(startTotal / 60);
+      const startM = startTotal % 60;
+      const startH12 = startH24 % 12 === 0 ? 12 : startH24 % 12;
+      const startPM = startH24 >= 12;
+      return {
+        icon: '🍪',
+        text: 'Cookies need to come out at <span class="time-highlight">' + endH + ':' + pad(endM) + ' PM</span> and take <span class="time-highlight">' + bakeMin + ' minutes</span> to bake. When should you put them in?',
+        answer: { h: startH12, m: startM, ampm: startPM ? 'PM' : 'AM' },
+        hint: 'Work backwards from ' + endH + ':' + pad(endM) + ' PM. Subtract ' + bakeMin + ' minutes. ' + (bakeMin >= endM + 60 ? 'You\'ll need to borrow an hour!' : ''),
+        format: 'Enter 12-hour time and pick AM or PM',
+        maxHour: 12,
+        needAmPm: true
+      };
+    }
+  }
+
+  function checkAnswer() {
+    const hInput = document.getElementById('hour-input');
+    const mInput = document.getElementById('minute-input');
+    const feedback = document.getElementById('feedback');
+    const needsAmPm = document.getElementById('ampm-toggle').style.display !== 'none';
+
+    const userH = parseInt(hInput.value);
+    const userM = parseInt(mInput.value);
+
+    if (isNaN(userH) || isNaN(userM)) {
+      feedback.textContent = 'Fill in both the hour and minutes! ⏰';
+      feedback.className = 'feedback wrong-text';
+      return;
+    }
+
+    if (needsAmPm && !selectedAmPm) {
+      feedback.textContent = 'Pick AM or PM! ☀️🌙';
+      feedback.className = 'feedback wrong-text';
+      return;
+    }
+
+    attempts++;
+    const correct = userH === currentAnswer.h && userM === currentAnswer.m &&
+                    (!needsAmPm || selectedAmPm === currentAnswer.ampm);
+
+    if (correct) {
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+      } else {
+        streak = 0;
+        const ansStr = currentAnswer.h + ':' + pad(currentAnswer.m) + (currentAnswer.ampm ? ' ' + currentAnswer.ampm : '');
+        feedback.textContent = 'Yes! ' + ansStr + ' is correct! 🌟';
+      }
+      feedback.className = 'feedback correct-text';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1700);
+    } else {
+      streak = 0;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
+      feedback.className = 'feedback wrong-text';
+      hInput.classList.add('shake');
+      mInput.classList.add('shake');
+      setTimeout(() => {
+        hInput.classList.remove('shake');
+        mInput.classList.remove('shake');
+      }, 400);
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
+    }
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    feedback.innerHTML = '💡 ' + currentHint;
+    feedback.className = 'feedback hint-text';
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are a TIME MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'Great time skills!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Keep practicing — time math is tricky!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Time math takes practice. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#start-screen .level-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        startGame(this.dataset.mode);
+      });
+    });
+    document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+    document.getElementById('hint-btn').addEventListener('click', showHint);
+    document.getElementById('play-again-btn').addEventListener('click', goHome);
+
+    document.querySelectorAll('.ampm-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.ampm-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedAmPm = this.dataset.val;
+      });
+    });
+
+    // Enter key submits
+    ['hour-input', 'minute-input'].forEach(id => {
+      document.getElementById(id).addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAnswer();
+      });
+    });
+  });
+</script>
+</body>
+</html>
