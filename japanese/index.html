@@ -45,7 +45,7 @@
   }
   header p { color: #747d8c; font-size: 0.95em; }
 
-  /* JLPT roadmap banner */
+  /* Roadmap */
   .roadmap-banner {
     background: white;
     border-radius: 20px;
@@ -59,12 +59,11 @@
     color: #aaa;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .roadmap-steps {
     display: flex;
     align-items: center;
-    gap: 0;
     overflow-x: auto;
     padding-bottom: 5px;
   }
@@ -72,20 +71,416 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 65px;
+    min-width: 60px;
     text-align: center;
   }
   .step-dot {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-weight: bold;
     color: white;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
   }
-  .step-dot.done { background: #2ed573; }
-  .step-dot.active { background: #e63946; box-shadow: 0 0 0 3px #​​​​​​​​​​​​​​​​
+  .step-dot.active { background: #e63946; box-shadow: 0 0 0 3px #ffc8cc; }
+  .step-dot.pending { background: #dfe4ea; color: #aaa; }
+  .step-label { font-size: 0.62em; color: #888; font-weight: bold; line-height: 1.3; }
+  .step-line {
+    flex: 1;
+    height: 3px;
+    background: #dfe4ea;
+    min-width: 12px;
+    margin-bottom: 20px;
+  }
+
+  /* Section titles */
+  .section-title {
+    color: white;
+    font-size: 1.3em;
+    margin: 20px 10px 12px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .games-grid { display: grid; gap: 12px; }
+
+  .game-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-card:hover, .game-card:active { transform: scale(1.02); }
+  .game-card.coming { opacity: 0.6; cursor: not-allowed; }
+
+  .game-card.survival  { border-left: 7px solid #e63946; }
+  .game-card.hiragana  { border-left: 7px solid #c1121f; }
+  .game-card.katakana  { border-left: 7px solid #e63946; }
+  .game-card.numbers   { border-left: 7px solid #f77f00; }
+  .game-card.school    { border-left: 7px solid #fcbf49; }
+  .game-card.family    { border-left: 7px solid #ff9f43; }
+  .game-card.food      { border-left: 7px solid #ee5a24; }
+  .game-card.nature    { border-left: 7px solid #1dd1a1; }
+  .game-card.city      { border-left: 7px solid #54a0ff; }
+  .game-card.kanji1    { border-left: 7px solid #8e44ad; }
+  .game-card.kanji2    { border-left: 7px solid #6c5ce7; }
+  .game-card.particles { border-left: 7px solid #00b894; }
+  .game-card.sentences { border-left: 7px solid #0984e3; }
+  .game-card.n5vocab   { border-left: 7px solid #fdcb6e; }
+  .game-card.n5test    { border-left: 7px solid #e17055; }
+
+  .game-icon { font-size: 2.8em; min-width: 55px; text-align: center; }
+  .game-info { flex: 1; }
+  .game-title { font-size: 1.2em; font-weight: bold; color: #2f3542; margin-bottom: 3px; }
+  .game-desc  { color: #747d8c; font-size: 0.85em; line-height: 1.4; }
+
+  .game-profiles {
+    display: flex;
+    gap: 5px;
+    margin-top: 7px;
+    flex-wrap: wrap;
+  }
+  .gp {
+    font-size: 0.7em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+  .gp-tiny  { background: #fff3e0; color: #f39c12; }
+  .gp-kids  { background: #ffeef0; color: #e63946; }
+  .gp-daily { background: #e8f4ff; color: #2980b9; }
+  .gp-n5    { background: #e8fff5; color: #00b894; }
+
+  .badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: bold;
+    color: white;
+  }
+  .badge.live   { background: #2ed573; }
+  .badge.soon   { background: #b2bec3; }
+  .badge.urgent {
+    background: #e63946;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 25px 20px;
+    color: white;
+    font-size: 0.9em;
+    margin-top: 15px;
+  }
+  footer a { color: #ffd6d6; text-decoration: none; font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <a href="../" class="back-link">← Home</a>
+    <div class="flag">🇯🇵</div>
+    <h1>Learn Japanese</h1>
+    <p>Complete family module · Beginner → JLPT N5</p>
+  </header>
+
+  <!-- ROADMAP -->
+  <div class="roadmap-banner">
+    <div class="roadmap-title">📍 Your Learning Roadmap</div>
+    <div class="roadmap-steps">
+      <div class="roadmap-step">
+        <div class="step-dot active">1</div>
+        <div class="step-label">Survival<br>Phrases</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="roadmap-step">
+        <div class="step-dot pending">2</div>
+        <div class="step-label">Hiragana<br>& Katakana</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="roadmap-step">
+        <div class="step-dot pending">3</div>
+        <div class="step-label">Basic<br>Vocab</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="roadmap-step">
+        <div class="step-dot pending">4</div>
+        <div class="step-label">Kanji<br>Gr 1-2</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="roadmap-step">
+        <div class="step-dot pending">5</div>
+        <div class="step-label">Grammar</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="roadmap-step">
+        <div class="step-dot pending">🎯</div>
+        <div class="step-label">JLPT<br>N5!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 1 -->
+  <h2 class="section-title">🏗️ Stage 1 — Foundation</h2>
+  <div class="games-grid">
+
+    <a href="survival/" class="game-card survival">
+      <span class="badge urgent">START HERE</span>
+      <div class="game-icon">🆘</div>
+      <div class="game-info">
+        <div class="game-title">Survival Japanese</div>
+        <div class="game-desc">School phrases, shopping, emergencies & daily life</div>
+        <div class="game-profiles">
+          <span class="gp gp-tiny">👶 Tiny</span>
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="game-card hiragana coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🎌</div>
+      <div class="game-info">
+        <div class="game-title">Hiragana Hero</div>
+        <div class="game-desc">All 46 hiragana with audio, grouped by family</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card katakana coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🔷</div>
+      <div class="game-info">
+        <div class="game-title">Katakana Quest</div>
+        <div class="game-desc">Menus, names & foreign loan words in Japan</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STAGE 2 -->
+  <h2 class="section-title">📖 Stage 2 — Vocabulary</h2>
+  <div class="games-grid">
+
+    <div class="game-card numbers coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🔢</div>
+      <div class="game-info">
+        <div class="game-title">Japanese Numbers</div>
+        <div class="game-desc">1 to 10,000 + counters (本、枚、匹...)</div>
+        <div class="game-profiles">
+          <span class="gp gp-tiny">👶 Tiny</span>
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card school coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🏫</div>
+      <div class="game-info">
+        <div class="game-title">School Life Words</div>
+        <div class="game-desc">Classroom vocab aligned to Japanese elementary school</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card family coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">👨‍👩‍👧</div>
+      <div class="game-info">
+        <div class="game-title">Family & People</div>
+        <div class="game-desc">Family members, body parts, formal & informal titles</div>
+        <div class="game-profiles">
+          <span class="gp gp-tiny">👶 Tiny</span>
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card food coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🍱</div>
+      <div class="game-info">
+        <div class="game-title">Food & Drink</div>
+        <div class="game-desc">School lunch, restaurant & supermarket vocab</div>
+        <div class="game-profiles">
+          <span class="gp gp-tiny">👶 Tiny</span>
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card nature coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🌸</div>
+      <div class="game-info">
+        <div class="game-title">Nature & Seasons</div>
+        <div class="game-desc">Weather, animals, seasons — common in Grade 2-3 texts</div>
+        <div class="game-profiles">
+          <span class="gp gp-tiny">👶 Tiny</span>
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card city coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🏙️</div>
+      <div class="game-info">
+        <div class="game-title">In the City</div>
+        <div class="game-desc">Train, convenience store, shops & getting around</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STAGE 3 -->
+  <h2 class="section-title">⛩️ Stage 3 — Kanji</h2>
+  <div class="games-grid">
+
+    <div class="game-card kanji1 coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">⛩️</div>
+      <div class="game-info">
+        <div class="game-title">Kanji Grade 1</div>
+        <div class="game-desc">All 80 Grade 1 kanji (一二三山川日月...)</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card kanji2 coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🏯</div>
+      <div class="game-info">
+        <div class="game-title">Kanji Grade 2</div>
+        <div class="game-desc">All 160 Grade 2 kanji (話、読、書、友...)</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STAGE 4 -->
+  <h2 class="section-title">💬 Stage 4 — Grammar</h2>
+  <div class="games-grid">
+
+    <div class="game-card particles coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🧩</div>
+      <div class="game-info">
+        <div class="game-title">Particles Practice</div>
+        <div class="game-desc">は、が、を、に、で、と、も — the glue of Japanese!</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card sentences coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">💬</div>
+      <div class="game-info">
+        <div class="game-title">Sentence Builder</div>
+        <div class="game-desc">Drag words to build correct Japanese sentences</div>
+        <div class="game-profiles">
+          <span class="gp gp-kids">👧 School Kid</span>
+          <span class="gp gp-daily">👩 Daily Life</span>
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STAGE 5 -->
+  <h2 class="section-title">🎯 Stage 5 — JLPT N5 Target</h2>
+  <div class="games-grid">
+
+    <div class="game-card n5vocab coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">📝</div>
+      <div class="game-info">
+        <div class="game-title">N5 Vocabulary Quiz</div>
+        <div class="game-desc">All 800 N5 words with spaced repetition</div>
+        <div class="game-profiles">
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-card n5test coming">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🎯</div>
+      <div class="game-info">
+        <div class="game-title">N5 Mock Test</div>
+        <div class="game-desc">Timed full exam simulation — are you ready?</div>
+        <div class="game-profiles">
+          <span class="gp gp-n5">🏆 N5</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <a href="../">← Back to Marulearn Home</a><br><br>
+    Made with ❤️ for our family in Japan 🇯🇵
+  </footer>
+
+</div>
+</body>
+</html>
