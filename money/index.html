@@ -10,71 +10,214 @@
     font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
     background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #c2e9fb 100%);
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
   }
   .container {
-    background: white; border-radius: 30px; padding: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 500px; width: 100%; text-align: center;
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
   }
-  h1 { color: #00b894; font-size: 2.2em; margin-bottom: 10px; text-shadow: 3px 3px 0 #ffeaa7; }
+  h1 {
+    color: #00b894;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #ffeaa7;
+  }
   .screen { display: none; }
   .screen.active { display: block; }
-  
   .level-btn {
-    display: block; width: 100%; padding: 18px; margin: 10px 0;
-    border: none; border-radius: 20px; font-size: 1.2em; font-weight: bold;
-    cursor: pointer; transition: transform 0.2s; font-family: inherit; color: white; text-align: left;
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    color: white;
+    text-align: left;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .level-btn:hover { transform: scale(1.05); }
-  .level-btn small { display: block; font-size: 0.7em; opacity: 0.9; font-weight: normal; }
-  
+  .level-btn * { pointer-events: none; }
+  .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
   .easy { background: #55efc4; }
   .medium { background: #00cec9; }
   .hard { background: #0984e3; }
   .expert { background: #6c5ce7; }
-
-  .stats { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 1.1em; }
-  .stat { background: #f1f2f6; padding: 10px 20px; border-radius: 15px; font-weight: bold; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.05em;
+  }
+  .stat {
+    background: #f1f2f6;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
   .score { color: #00b894; }
   .streak { color: #e17055; }
-
-  .progress-bar { background: #dfe4ea; border-radius: 10px; height: 15px; overflow: hidden; margin-bottom: 20px; }
-  .progress-fill { background: linear-gradient(90deg, #55efc4, #0984e3); height: 100%; transition: width 0.3s; width: 0%; }
-
+  .progress-bar {
+    background: #dfe4ea;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #55efc4, #0984e3);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
   .problem-box {
-    background: #f1f2f6; border-radius: 20px; padding: 25px; margin: 20px 0;
+    background: #f1f2f6;
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
     border: 3px dashed #00b894;
   }
-  .highlight { display: inline-block; background: #ffeaa7; color: #d63031; padding: 3px 10px; border-radius: 10px; font-family: 'Courier New', monospace; font-weight: bold; }
-
-  /* Input Grid */
-  .input-grid { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
-  .input-row { display: flex; align-items: center; justify-content: space-between; background: #f9f9f9; padding: 10px 20px; border-radius: 20px; border: 2px solid #eee; }
-  .input-row.disabled { opacity: 0.3; filter: grayscale(1); }
-  
-  .coin-label { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 1.1em; }
-  .coin-img { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em; }
-  .c500 { background: #d4af37; } .c100 { background: #a5b1c2; }
-  .c50 { background: #778ca3; } .c10 { background: #cd7f32; }
-
+  .highlight {
+    display: inline-block;
+    background: #ffeaa7;
+    color: #d63031;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+  }
+  .input-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .input-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f9f9;
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: 2px solid #eee;
+  }
+  .input-row.disabled {
+    opacity: 0.3;
+    filter: grayscale(1);
+  }
+  .coin-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  .coin-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+  .c500 { background: #d4af37; }
+  .c100 { background: #a5b1c2; }
+  .c50 { background: #778ca3; }
+  .c10 { background: #cd7f32; }
   .qty-input {
-    width: 80px; font-size: 1.5em; padding: 5px; text-align: center;
-    border: 3px solid #00b894; border-radius: 10px; outline: none; font-family: inherit;
+    width: 80px;
+    font-size: 1.5em;
+    padding: 8px;
+    text-align: center;
+    border: 3px solid #00b894;
+    border-radius: 12px;
+    outline: none;
+    font-family: inherit;
+    font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
   }
-
+  .qty-input.shake {
+    animation: shake 0.4s;
+    border-color: #d63031;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
   .submit-btn {
-    display: block; width: 100%; padding: 15px; background: #00b894;
-    color: white; border: none; border-radius: 20px; font-size: 1.3em;
-    font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 10px;
+    display: block;
+    margin: 20px auto 0;
+    padding: 15px 40px;
+    background: #00b894;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
   }
-
-  .feedback { font-size: 1.3em; margin-top: 15px; min-height: 40px; font-weight: bold; }
-  .correct { color: #00b894; }
-  .wrong { color: #d63031; }
-
-  .shake { animation: shake 0.4s; }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-  .home-link { display: block; margin-top: 20px; color: #747d8c; text-decoration: none; font-size: 0.9em; }
+  .hint-btn {
+    background: #fdcb6e;
+    color: #2d3436;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .feedback {
+    font-size: 1.3em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct-text { color: #00b894; }
+  .wrong-text { color: #d63031; }
+  .hint-text { color: #d97706; font-size: 1.05em; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #00b894;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
 </style>
 </head>
 <body>
@@ -83,10 +226,22 @@
   <div id="start-screen" class="screen active">
     <h1>💰 Money Master!</h1>
     <p style="color:#636e72; margin-bottom:20px;">Master the Japanese Yen! 💴</p>
-    <button class="level-btn easy" onclick="startGame('easy')">🌱 Beginner <small>How many ¥100 coins?</small></button>
-    <button class="level-btn medium" onclick="startGame('medium')">🌟 Intermediate <small>Use ¥100 & ¥50 coins</small></button>
-    <button class="level-btn hard" onclick="startGame('hard')">🔥 Advanced <small>Full coin breakdown</small></button>
-    <button class="level-btn expert" onclick="startGame('expert')">🏆 Champion <small>Calculate the change from ¥1000</small></button>
+    <button type="button" class="level-btn easy" data-mode="easy">
+      🌱 Beginner
+      <small>How many ¥100 coins?</small>
+    </button>
+    <button type="button" class="level-btn medium" data-mode="medium">
+      🌟 Intermediate
+      <small>Use ¥100 & ¥50 coins</small>
+    </button>
+    <button type="button" class="level-btn hard" data-mode="hard">
+      🔥 Advanced
+      <small>Full coin breakdown (¥500, ¥100, ¥50, ¥10)</small>
+    </button>
+    <button type="button" class="level-btn expert" data-mode="expert">
+      🏆 Champion
+      <small>Calculate the change from ¥1000</small>
+    </button>
     <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
 
@@ -100,140 +255,225 @@
 
     <div class="problem-box">
       <div id="item-emoji" style="font-size:3.5em; margin-bottom:10px;">🍎</div>
-      <div class="problem-text" id="problem-text">Loading...</div>
+      <div id="problem-text" style="font-weight:bold; font-size:1.05em; color:#2d3436;">Loading...</div>
     </div>
 
     <div id="input-area">
       <div id="quantity-grid" class="input-grid">
         <div class="input-row" id="row-500">
-            <div class="coin-label"><div class="coin-img c500">500</div> ¥500</div>
-            <input type="number" id="qty-500" class="qty-input" placeholder="0">
+          <div class="coin-label"><div class="coin-img c500">500</div> ¥500</div>
+          <input type="number" id="qty-500" class="qty-input" placeholder="0" min="0">
         </div>
         <div class="input-row" id="row-100">
-            <div class="coin-label"><div class="coin-img c100">100</div> ¥100</div>
-            <input type="number" id="qty-100" class="qty-input" placeholder="0">
+          <div class="coin-label"><div class="coin-img c100">100</div> ¥100</div>
+          <input type="number" id="qty-100" class="qty-input" placeholder="0" min="0">
         </div>
         <div class="input-row" id="row-50">
-            <div class="coin-label"><div class="coin-img c50">50</div> ¥50</div>
-            <input type="number" id="qty-50" class="qty-input" placeholder="0">
+          <div class="coin-label"><div class="coin-img c50">50</div> ¥50</div>
+          <input type="number" id="qty-50" class="qty-input" placeholder="0" min="0">
         </div>
         <div class="input-row" id="row-10">
-            <div class="coin-label"><div class="coin-img c10">10</div> ¥10</div>
-            <input type="number" id="qty-10" class="qty-input" placeholder="0">
+          <div class="coin-label"><div class="coin-img c10">10</div> ¥10</div>
+          <input type="number" id="qty-10" class="qty-input" placeholder="0" min="0">
         </div>
       </div>
 
       <div id="expert-input-box" style="display:none; margin-bottom:20px;">
-        <p style="font-weight:bold; margin-bottom:10px;">Type the change amount:</p>
-        <input type="number" id="change-input" class="qty-input" style="width:160px;" placeholder="¥">
+        <p style="font-weight:bold; margin-bottom:10px; color:#2d3436;">Type the change amount:</p>
+        <input type="number" id="change-input" class="qty-input" style="width:160px; font-size:1.8em;" placeholder="¥" min="0">
       </div>
 
-      <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+      <button type="button" class="submit-btn" id="submit-btn">Check! ✓</button>
     </div>
 
     <div class="feedback" id="feedback"></div>
+    <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
   </div>
 
   <div id="end-screen" class="screen">
-    <div style="font-size:5em; margin:20px 0;" id="trophy">🏆</div>
+    <div class="trophy" id="trophy">🏆</div>
     <h1 id="end-title">Amazing!</h1>
-    <div style="font-size:2em; color:#00b894; margin:20px 0; font-weight:bold;">Score: <span id="final-score">0</span>/10</div>
-    <p id="end-message" style="margin-bottom:20px;"></p>
-    <button class="level-btn easy" onclick="location.reload()" style="text-align:center;">🏠 Play Again</button>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button type="button" class="level-btn easy" id="play-again-btn" style="text-align:center;">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
 
 </div>
 
 <script>
-  let score = 0, streak = 0, questionNum = 0, mode = 'easy', targetPrice = 0, correctChange = 0;
-  const items = [{e:'🍎', p:150}, {e:'🍦', p:320}, {e:'🍩', p:210}, {e:'🧸', p:850}, {e:'🍰', p:450}, {e:'🥤', p:120}, {e:'🍔', p:680}, {e:'🍌', p:90}, {e:'🍫', p:110}];
-  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Fantastic! 🌟', 'Super! 🎊'];
-  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Almost! Try once more! ✨'];
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let attempts = 0;
+  let mode = 'easy';
+  let targetPrice = 0;
+  let correctChange = 0;
+  let currentHint = '';
+  const totalQuestions = 10;
+  const items = [
+    {e:'🍎', p:150}, {e:'🍦', p:320}, {e:'🍩', p:210}, {e:'🧸', p:850},
+    {e:'🍰', p:450}, {e:'🥤', p:120}, {e:'🍔', p:680}, {e:'🍌', p:90},
+    {e:'🍫', p:110}, {e:'🍪', p:180}, {e:'🍙', p:250}, {e:'🥛', p:140}
+  ];
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Money master! 💰', 'Super! 🌟'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Count again! 🎯', 'Keep going! ✨', 'Almost! Try once more! 🌟'];
 
   function startGame(m) {
-    mode = m; score = 0; streak = 0; questionNum = 0;
+    mode = m;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
     showScreen('game-screen');
     nextQuestion();
   }
 
   function nextQuestion() {
     questionNum++;
-    if (questionNum > 10) { endGame(); return; }
+    attempts = 0;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
     document.getElementById('feedback').textContent = '';
     document.getElementById('q-num').textContent = questionNum;
-    document.getElementById('progress').style.width = ((questionNum - 1) / 10 * 100) + '%';
-    
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+    document.getElementById('hint-btn').style.display = 'none';
+
     // Reset all inputs
-    const inputs = ['qty-500', 'qty-100', 'qty-50', 'qty-10', 'change-input'];
-    inputs.forEach(id => document.getElementById(id).value = '');
+    ['qty-500', 'qty-100', 'qty-50', 'qty-10', 'change-input'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
 
-    let item = items[Math.floor(Math.random()*items.length)];
+    const item = items[Math.floor(Math.random() * items.length)];
     document.getElementById('item-emoji').textContent = item.e;
-    
+
     if (mode === 'expert') {
-        targetPrice = (Math.floor(Math.random()*80)+10) * 10;
-        correctChange = 1000 - targetPrice;
-        document.getElementById('quantity-grid').style.display = 'none';
-        document.getElementById('expert-input-box').style.display = 'block';
-        document.getElementById('problem-text').innerHTML = `You pay <span class="highlight">¥1000</span> for the ${item.e}.<br>The price is <span class="highlight">¥${targetPrice}</span>. What is the change?`;
+      targetPrice = (Math.floor(Math.random() * 80) + 10) * 10;
+      correctChange = 1000 - targetPrice;
+      document.getElementById('quantity-grid').style.display = 'none';
+      document.getElementById('expert-input-box').style.display = 'block';
+      document.getElementById('problem-text').innerHTML =
+        'You pay <span class="highlight">¥1000</span> for this ' + item.e + '.<br>' +
+        'The price is <span class="highlight">¥' + targetPrice + '</span>. What is the change?';
+      currentHint = 'Change = ¥1000 - ¥' + targetPrice + '. Try counting up from ' + targetPrice + ' to 1000! Hint: ' + targetPrice + ' + ? = 1000';
     } else {
-        document.getElementById('quantity-grid').style.display = 'flex';
-        document.getElementById('expert-input-box').style.display = 'none';
-        
-        // Lock/Unlock rows based on difficulty
-        document.getElementById('row-500').className = (mode === 'hard') ? 'input-row' : 'input-row disabled';
-        document.getElementById('qty-500').disabled = (mode !== 'hard');
-        
-        document.getElementById('row-50').className = (mode !== 'easy') ? 'input-row' : 'input-row disabled';
-        document.getElementById('qty-50').disabled = (mode === 'easy');
-        
-        document.getElementById('row-10').className = (mode === 'hard') ? 'input-row' : 'input-row disabled';
-        document.getElementById('qty-10').disabled = (mode !== 'hard');
+      document.getElementById('quantity-grid').style.display = 'flex';
+      document.getElementById('expert-input-box').style.display = 'none';
 
-        if (mode === 'easy') targetPrice = (Math.floor(Math.random()*9)+1) * 100;
-        else if (mode === 'medium') targetPrice = (Math.floor(Math.random()*15)+1) * 50;
-        else targetPrice = Math.floor(Math.random()*90 + 5) * 10;
+      // Lock/Unlock rows based on difficulty
+      const set500 = (mode === 'hard');
+      const set50 = (mode !== 'easy');
+      const set10 = (mode === 'hard');
 
-        document.getElementById('problem-text').innerHTML = `How many of each coin do you need to pay exactly <span class="highlight">¥${targetPrice}</span>?`;
+      document.getElementById('row-500').className = set500 ? 'input-row' : 'input-row disabled';
+      document.getElementById('qty-500').disabled = !set500;
+      document.getElementById('row-50').className = set50 ? 'input-row' : 'input-row disabled';
+      document.getElementById('qty-50').disabled = !set50;
+      document.getElementById('row-10').className = set10 ? 'input-row' : 'input-row disabled';
+      document.getElementById('qty-10').disabled = !set10;
+
+      if (mode === 'easy') {
+        targetPrice = (Math.floor(Math.random() * 9) + 1) * 100;
+        currentHint = '¥' + targetPrice + ' ÷ 100 = ' + (targetPrice/100) + '. You need ' + (targetPrice/100) + ' coins of ¥100!';
+      } else if (mode === 'medium') {
+        targetPrice = (Math.floor(Math.random() * 15) + 1) * 50;
+        const hundreds = Math.floor(targetPrice / 100);
+        const fifty = (targetPrice % 100 === 50) ? 1 : 0;
+        currentHint = 'Use as many ¥100 coins as you can first (' + hundreds + '), then add ¥50 coin' + (fifty ? 's (' + fifty + ')' : 's (0) if needed') + '.';
+      } else {
+        targetPrice = (Math.floor(Math.random() * 90) + 5) * 10;
+        let remain = targetPrice;
+        const f = Math.floor(remain / 500); remain -= f * 500;
+        const h = Math.floor(remain / 100); remain -= h * 100;
+        const fi = Math.floor(remain / 50); remain -= fi * 50;
+        const t = Math.floor(remain / 10);
+        currentHint = 'Use biggest coins first! Try: ' + f + ' × ¥500, ' + h + ' × ¥100, ' + fi + ' × ¥50, ' + t + ' × ¥10.';
+      }
+
+      document.getElementById('problem-text').innerHTML =
+        'How many of each coin do you need to pay exactly <span class="highlight">¥' + targetPrice + '</span>?';
     }
   }
 
   function checkAnswer() {
     const feedback = document.getElementById('feedback');
     let isCorrect = false;
+    let hasInput = false;
 
     if (mode === 'expert') {
-        isCorrect = (parseInt(document.getElementById('change-input').value) === correctChange);
+      const val = parseInt(document.getElementById('change-input').value);
+      if (isNaN(val)) {
+        feedback.textContent = 'Type the change amount! 💴';
+        feedback.className = 'feedback wrong-text';
+        return;
+      }
+      hasInput = true;
+      isCorrect = (val === correctChange);
     } else {
-        let q500 = parseInt(document.getElementById('qty-500').value) || 0;
-        let q100 = parseInt(document.getElementById('qty-100').value) || 0;
-        let q50 = parseInt(document.getElementById('qty-50').value) || 0;
-        let q10 = parseInt(document.getElementById('qty-10').value) || 0;
-        
-        let total = (q500 * 500) + (q100 * 100) + (q50 * 50) + (q10 * 10);
-        isCorrect = (total === targetPrice);
+      const q500 = parseInt(document.getElementById('qty-500').value) || 0;
+      const q100 = parseInt(document.getElementById('qty-100').value) || 0;
+      const q50 = parseInt(document.getElementById('qty-50').value) || 0;
+      const q10 = parseInt(document.getElementById('qty-10').value) || 0;
+      hasInput = (q500 + q100 + q50 + q10) > 0;
+      if (!hasInput) {
+        feedback.textContent = 'Add some coins first! 🪙';
+        feedback.className = 'feedback wrong-text';
+        return;
+      }
+      const total = (q500 * 500) + (q100 * 100) + (q50 * 50) + (q10 * 10);
+      isCorrect = (total === targetPrice);
     }
 
+    attempts++;
+
     if (isCorrect) {
-        score++; streak++;
-        feedback.textContent = encouragement[Math.floor(Math.random() * encouragement.length)];
-        feedback.className = 'feedback correct';
-        document.getElementById('score').textContent = score;
-        document.getElementById('streak').textContent = streak;
-        setTimeout(nextQuestion, 1500);
-    } else {
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+      } else {
         streak = 0;
-        document.getElementById('streak').textContent = streak;
-        feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
-        feedback.className = 'feedback wrong';
-        document.getElementById('game-screen').classList.add('shake');
-        setTimeout(() => document.getElementById('game-screen').classList.remove('shake'), 400);
+        const ans = mode === 'expert' ? '¥' + correctChange : '¥' + targetPrice;
+        feedback.textContent = 'Yes! ' + ans + ' is correct! 🌟';
+      }
+      feedback.className = 'feedback correct-text';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1500);
+    } else {
+      streak = 0;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
+      feedback.className = 'feedback wrong-text';
+      // Shake inputs only (not whole screen)
+      document.querySelectorAll('.qty-input').forEach(inp => {
+        if (!inp.disabled && (inp.value !== '' || inp.id === 'change-input')) {
+          inp.classList.add('shake');
+          setTimeout(() => inp.classList.remove('shake'), 400);
+        }
+      });
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
     }
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    feedback.innerHTML = '💡 ' + currentHint;
+    feedback.className = 'feedback hint-text';
   }
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
   }
 
   function endGame() {
@@ -242,10 +482,42 @@
     const trophy = document.getElementById('trophy');
     const title = document.getElementById('end-title');
     const msg = document.getElementById('end-message');
-    if (score === 10) { trophy.textContent = '🏆'; title.textContent = 'PERFECT! 🎊'; msg.textContent = 'You are a Money Master!'; }
-    else if (score >= 7) { trophy.textContent = '🥇'; title.textContent = 'Awesome Work!'; msg.textContent = 'You did great!'; }
-    else { trophy.textContent = '🌱'; title.textContent = 'Keep Practicing!'; msg.textContent = 'You are getting better!'; }
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are a Money MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'Great money skills!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Keep counting — practice makes perfect!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Money math takes practice. Try again!';
+    }
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#start-screen .level-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        startGame(this.dataset.mode);
+      });
+    });
+    document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+    document.getElementById('hint-btn').addEventListener('click', showHint);
+    document.getElementById('play-again-btn').addEventListener('click', goHome);
+
+    // Enter key submits
+    ['qty-500', 'qty-100', 'qty-50', 'qty-10', 'change-input'].forEach(id => {
+      document.getElementById(id).addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAnswer();
+      });
+    });
+  });
 </script>
 </body>
 </html>
