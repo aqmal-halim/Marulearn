@@ -42,12 +42,16 @@
     font-size: 1.2em;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
     font-family: inherit;
     color: white;
     text-align: left;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .level-btn:hover { transform: scale(1.03); }
+  .level-btn * {
+    pointer-events: none;
+  }
   .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
   .easy { background: #fab1a0; }
   .medium { background: #ff7675; }
@@ -118,16 +122,13 @@
     font-weight: bold;
     cursor: pointer;
     color: #2d3436;
-    transition: all 0.2s;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-appearance: none;
+    appearance: none;
   }
   .options-grid.four-col .option-btn {
     font-size: 2em;
     padding: 15px 5px;
-  }
-  .option-btn:hover:not(:disabled) {
-    border-color: #e17055;
-    background: #ffe8d6;
-    transform: scale(1.05);
   }
   .option-btn.correct {
     background: #00b894;
@@ -157,6 +158,8 @@
     cursor: pointer;
     margin-top: 10px;
     font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
   }
   .feedback {
     font-size: 1.3em;
@@ -207,19 +210,19 @@
   <div id="start-screen" class="screen active">
     <h1>🔤 ABC Adventure!</h1>
     <p style="color:#636e72; margin-bottom:20px;">Learn letters, sounds, and words! Pick your level:</p>
-    <button class="level-btn easy" onclick="startGame('letters')">
+    <button type="button" class="level-btn easy" data-mode="letters">
       🌱 Letter Spotter
       <small>Find the matching letter (A, B, C...)</small>
     </button>
-    <button class="level-btn medium" onclick="startGame('case')">
+    <button type="button" class="level-btn medium" data-mode="case">
       🌟 Big & Small Letters
       <small>Match uppercase to lowercase (A → a)</small>
     </button>
-    <button class="level-btn hard" onclick="startGame('sounds')">
+    <button type="button" class="level-btn hard" data-mode="sounds">
       🔥 First Letter Sounds
       <small>Which letter does "apple" start with?</small>
     </button>
-    <button class="level-btn expert" onclick="startGame('missing')">
+    <button type="button" class="level-btn expert" data-mode="missing">
       🏆 Missing Letter
       <small>Fill the gap: C_T → CAT</small>
     </button>
@@ -239,7 +242,7 @@
     <div class="options-grid" id="options"></div>
 
     <div class="feedback" id="feedback"></div>
-    <button class="hint-btn" id="hint-btn" onclick="showHint()" style="display:none;">💡 Need a hint?</button>
+    <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
   </div>
 
   <div id="end-screen" class="screen">
@@ -247,7 +250,7 @@
     <h1 id="end-title">Amazing!</h1>
     <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
     <div class="message" id="end-message"></div>
-    <button class="level-btn easy" onclick="goHome()" style="text-align:center;">🏠 Play Again</button>
+    <button type="button" class="level-btn easy" id="play-again-btn" style="text-align:center;">🏠 Play Again</button>
     <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
 
@@ -256,7 +259,6 @@
 <script>
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-  // Words for each letter with emojis
   const letterWords = {
     A: { word: 'APPLE', emoji: '🍎' },
     B: { word: 'BEAR', emoji: '🐻' },
@@ -286,7 +288,6 @@
     Z: { word: 'ZEBRA', emoji: '🦓' }
   };
 
-  // Simple 3-4 letter words for missing letter game
   const simpleWords = [
     { word: 'CAT', emoji: '🐱' }, { word: 'DOG', emoji: '🐶' }, { word: 'SUN', emoji: '☀️' },
     { word: 'CAR', emoji: '🚗' }, { word: 'BUS', emoji: '🚌' }, { word: 'HAT', emoji: '🎩' },
@@ -332,41 +333,34 @@
     optionsDiv.innerHTML = '';
 
     if (gameMode === 'letters') {
-      // Show a letter, pick the matching one
       const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
       currentAnswer = letter;
       currentHintData = { letter };
-      qArea.innerHTML = `<div class="big-letter">${letter}</div>`;
+      qArea.innerHTML = '<div class="big-letter">' + letter + '</div>';
       prompt.textContent = 'Which letter matches?';
-      const opts = makeOptions(letter, alphabet, 4);
-      buildOptions(opts);
+      buildOptions(makeOptions(letter, alphabet, 4));
 
     } else if (gameMode === 'case') {
-      // Show uppercase, pick lowercase (or vice versa)
       const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
       const showUpper = Math.random() < 0.5;
       const question = showUpper ? letter : letter.toLowerCase();
       currentAnswer = showUpper ? letter.toLowerCase() : letter;
       currentHintData = { letter };
-      qArea.innerHTML = `<div class="big-letter">${question}</div>`;
+      qArea.innerHTML = '<div class="big-letter">' + question + '</div>';
       prompt.textContent = showUpper ? 'Find the lowercase letter:' : 'Find the uppercase letter:';
       const pool = showUpper ? alphabet.map(l => l.toLowerCase()) : alphabet;
-      const opts = makeOptions(currentAnswer, pool, 4);
-      buildOptions(opts);
+      buildOptions(makeOptions(currentAnswer, pool, 4));
 
     } else if (gameMode === 'sounds') {
-      // Show a word/emoji, pick the first letter
       const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
       const item = letterWords[letter];
       currentAnswer = letter;
       currentHintData = { letter, word: item.word };
-      qArea.innerHTML = `<div class="sound-emoji">${item.emoji}</div><div style="font-size:1.4em; font-weight:bold; color:#2d3436;">${item.word}</div>`;
+      qArea.innerHTML = '<div class="sound-emoji">' + item.emoji + '</div><div style="font-size:1.4em; font-weight:bold; color:#2d3436;">' + item.word + '</div>';
       prompt.textContent = 'What letter does it start with?';
-      const opts = makeOptions(letter, alphabet, 4);
-      buildOptions(opts);
+      buildOptions(makeOptions(letter, alphabet, 4));
 
     } else if (gameMode === 'missing') {
-      // Show word with missing letter, pick it
       const item = simpleWords[Math.floor(Math.random() * simpleWords.length)];
       const word = item.word;
       const missingIdx = Math.floor(Math.random() * word.length);
@@ -375,11 +369,135 @@
       const displayWord = word.split('').map((l, i) =>
         i === missingIdx ? '<span class="missing-slot">?</span>' : l
       ).join(' ');
-      qArea.innerHTML = `<div class="sound-emoji">${item.emoji}</div><div class="word-display">${displayWord}</div>`;
+      qArea.innerHTML = '<div class="sound-emoji">' + item.emoji + '</div><div class="word-display">' + displayWord + '</div>';
       prompt.textContent = 'Which letter is missing?';
       optionsDiv.className = 'options-grid four-col';
-      const opts = makeOptions(currentAnswer, alphabet, 4);
-      buildOptions(opts);
+      buildOptions(makeOptions(currentAnswer, alphabet, 4));
     }
 
-    document​​​​​​​​​​​​​​​​
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+  }
+
+  function makeOptions(correct, pool, count) {
+    const opts = new Set([correct]);
+    while (opts.size < count) {
+      opts.add(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    return Array.from(opts).sort(() => Math.random() - 0.5);
+  }
+
+  function buildOptions(opts) {
+    const optionsDiv = document.getElementById('options');
+    opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.addEventListener('click', function() { checkAnswer(opt, btn); });
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selected, btn) {
+    const feedback = document.getElementById('feedback');
+    attempts++;
+
+    if (selected.toUpperCase() === currentAnswer.toUpperCase()) {
+      btn.classList.add('correct');
+      document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+      } else {
+        streak = 0;
+        feedback.textContent = 'Yes! ' + currentAnswer + ' is correct! 🌟';
+      }
+      feedback.className = 'feedback correct-text';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1500);
+    } else {
+      btn.classList.add('wrong');
+      btn.disabled = true;
+      streak = 0;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
+      feedback.className = 'feedback wrong-text';
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
+    }
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    let hint = '';
+    if (gameMode === 'letters') {
+      hint = '💡 Look carefully at the shape of the letter ' + currentHintData.letter + '!';
+    } else if (gameMode === 'case') {
+      hint = '💡 Big ' + currentHintData.letter + ' and small ' + currentHintData.letter.toLowerCase() + ' are the same letter!';
+    } else if (gameMode === 'sounds') {
+      hint = '💡 ' + currentHintData.word + ' starts with the sound "' + currentHintData.letter + '"!';
+    } else if (gameMode === 'missing') {
+      const before = currentHintData.word.slice(0, currentHintData.missingIdx);
+      const after = currentHintData.word.slice(currentHintData.missingIdx + 1);
+      hint = '💡 The word is "' + currentHintData.word + '". Say it slowly: ' + before + '-?-' + after;
+    }
+    feedback.innerHTML = hint;
+    feedback.className = 'feedback hint-text';
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are an ABC MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'Your letter skills are great!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Keep practicing those letters!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Every reader started here. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  // Set up all button listeners after page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#start-screen .level-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        startGame(this.dataset.mode);
+      });
+    });
+    document.getElementById('hint-btn').addEventListener('click', showHint);
+    document.getElementById('play-again-btn').addEventListener('click', goHome);
+  });
+</script>
+</body>
+</html>
