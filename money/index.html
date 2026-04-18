@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マネーマスター 💰 Money Master!</title>
+    <title>Money Master - Marulearn</title>
     <style>
-        /* Reusing your Time Master style for consistency */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+            font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
             background: linear-gradient(135deg, #11998e, #38ef7d);
             min-height: 100vh;
             display: flex;
@@ -25,7 +24,7 @@
             width: 100%;
             text-align: center;
         }
-        h1 { color: #2d3436; font-size: 2.2em; margin-bottom: 10px; }
+        h1 { color: #1e3799; font-size: 2.2em; margin-bottom: 10px; }
         .screen { display: none; }
         .screen.active { display: block; }
         
@@ -34,98 +33,113 @@
             display: block; width: 100%; padding: 18px 20px; margin: 10px 0;
             border: none; border-radius: 20px; font-size: 1.15em; font-weight: bold;
             cursor: pointer; color: white; text-align: left;
+            font-family: inherit;
         }
-        .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; }
-        .easy { background: #00b894; }
-        .medium { background: #0984e3; }
-        .hard { background: #6c5ce7; }
-        .expert { background: #d63031; }
+        .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
+        .easy { background: #60a5fa; }
+        .medium { background: #3b82f6; }
+        .hard { background: #1d4ed8; }
+        .expert { background: #1e3a8a; }
 
         /* Game Elements */
         .problem-box {
-            background: #f1f2f6; border-radius: 20px; padding: 20px;
-            margin: 20px 0; border: 4px dashed #27ae60;
+            background: #f1f2f6; border-radius: 20px; padding: 25px;
+            margin: 20px 0; border: 4px dashed #3b82f6;
         }
-        .item-emoji { font-size: 4em; display: block; }
-        .price-tag { font-size: 2.5em; font-weight: bold; color: #27ae60; }
+        .item-emoji { font-size: 4.5em; display: block; margin-bottom: 5px; }
+        .price-tag { font-size: 2.8em; font-weight: bold; color: #1d4ed8; }
         
         .wallet {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0;
         }
         .coin-btn {
             cursor: pointer; background: white; border: 3px solid #dfe6e9;
-            border-radius: 15px; padding: 15px; font-weight: bold;
+            border-radius: 20px; padding: 15px; font-weight: bold;
             display: flex; flex-direction: column; align-items: center;
+            font-family: inherit; transition: 0.2s;
         }
+        .coin-btn:hover { border-color: #3b82f6; }
         .coin-btn:active { transform: scale(0.95); }
         .coin-img {
-            width: 50px; height: 50px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; margin-bottom: 5px;
-            box-shadow: 0 3px 0 #ccc;
+            width: 55px; height: 55px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; margin-bottom: 8px;
+            font-size: 1.1em; color: white; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
         }
-        .c500 { background: #d4af37; color: white; }
-        .c100 { background: #b2bec3; color: white; }
-        .c50 { background: #636e72; color: white; }
-        .c10 { background: #cd7f32; color: white; }
+        .c500 { background: #d4af37; } /* Gold */
+        .c100 { background: #a5b1c2; } /* Silver */
+        .c50 { background: #778ca3; }  /* Dark Silver */
+        .c10 { background: #cd7f32; }  /* Bronze */
 
         .total-box {
-            background: #2d3436; color: white; padding: 15px;
-            border-radius: 15px; font-size: 1.5em; margin-bottom: 10px;
+            background: #1e3a8a; color: white; padding: 15px;
+            border-radius: 15px; font-size: 1.6em; margin-bottom: 15px;
         }
-        .btn-clear { background: #ff7675; color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; }
-        .home-link { display: block; margin-top: 20px; color: #636e72; text-decoration: none; font-size: 0.9em; }
+        .input-style {
+            font-size: 1.5em; width: 120px; text-align: center; 
+            border-radius: 15px; border: 3px solid #3b82f6; padding: 5px;
+            font-family: 'Courier New', monospace; outline: none;
+        }
+        .btn-action {
+            background: #1d4ed8; color: white; border: none; padding: 15px;
+            border-radius: 15px; width: 100%; cursor: pointer;
+            font-size: 1.1em; font-weight: bold; font-family: inherit;
+        }
+        .btn-reset { background: #ff7675; margin-top: 10px; }
+        .home-link { display: block; margin-top: 25px; color: #747d8c; text-decoration: none; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="start-screen" class="screen active">
-        <h1>マネーマスター 💰</h1>
-        <p>Choose your level!</p>
+        <h1>Money Master 💰</h1>
+        <p style="color:#1e3a8a; margin-bottom:20px;">Master the Japanese Yen!</p>
         <button class="level-btn easy" onclick="startGame('easy')">
-            🌱 100円ショップ (Easy)
-            <small>Prices like 100, 200... Use 100円 coins.</small>
+            🌱 Beginner
+            <small>Prices: ¥100 - ¥500 · Use 100 Yen coins</small>
         </button>
         <button class="level-btn medium" onclick="startGame('medium')">
-            🌟 おかし屋さん (Medium)
-            <small>Prices like 150, 280... Use all coins.</small>
+            🌟 Intermediate
+            <small>Prices: ¥50 - ¥950 · Use all coins</small>
         </button>
         <button class="level-btn hard" onclick="startGame('hard')">
-            🔥 スーパー (Hard)
-            <small>Prices like 840, 990... Complex counting.</small>
+            🔥 Advanced
+            <small>Complex prices · Exact counting required</small>
         </button>
         <button class="level-btn expert" onclick="startGame('expert')">
-            🏆 おつり名人 (Change Master)
-            <small>Pay more and calculate the CHANGE! 24-hour style.</small>
+            🏆 Change Master
+            <small>Pay ¥1000 and calculate the CHANGE!</small>
         </button>
-        <a href="../" class="home-link">← Back to Home</a>
+        <a href="../" class="home-link">← Back to Marulearn</a>
     </div>
 
     <div id="game-screen" class="screen">
         <div class="problem-box">
             <span id="item-emoji" class="item-emoji">🍎</span>
             <div id="target-price" class="price-tag">¥0</div>
-            <p id="instruction">Exactly pay the amount!</p>
+            <p id="instruction" style="font-weight:bold; color:#1e3a8a; margin-top:10px;">Pay the exact amount!</p>
         </div>
 
         <div class="total-box">
-            <span id="total-label">はらったお金:</span> ¥<span id="current-total">0</span>
+            <span id="total-label">Total Paid:</span> ¥<span id="current-total">0</span>
         </div>
 
-        <div id="change-input-area" style="display:none; margin-bottom:15px;">
-            <p>おつりは いくら？ (Change?)</p>
-            <input type="number" id="change-input" style="font-size: 1.5em; width: 100px; text-align: center; border-radius: 10px; border: 2px solid #27ae60;">
+        <div id="change-input-area" style="display:none; margin-bottom:20px;">
+            <p style="font-weight:bold; margin-bottom:10px;">How much change do you get back?</p>
+            <input type="number" id="change-input" class="input-style" placeholder="¥¥¥">
         </div>
 
-        <div class="wallet">
-            <button class="coin-btn" onclick="addMoney(500)"><div class="coin-img c500">500</div>500円</button>
-            <button class="coin-btn" onclick="addMoney(100)"><div class="coin-img c100">100</div>100円</button>
-            <button class="coin-btn" onclick="addMoney(50)"><div class="coin-img c50">50</div>50円</button>
-            <button class="coin-btn" onclick="addMoney(10)"><div class="coin-img c10">10</div>10円</button>
+        <div class="wallet" id="coin-wallet">
+            <button class="coin-btn" onclick="addMoney(500)"><div class="coin-img c500">500</div>500 Yen</button>
+            <button class="coin-btn" onclick="addMoney(100)"><div class="coin-img c100">100</div>100 Yen</button>
+            <button class="coin-btn" onclick="addMoney(50)"><div class="coin-img c50">50</div>50 Yen</button>
+            <button class="coin-btn" onclick="addMoney(10)"><div class="coin-img c10">10</div>10 Yen</button>
         </div>
 
-        <button class="btn-clear" onclick="resetTotal()">やりなおす (Reset)</button>
-        <button id="submit-btn" style="display:none; margin-top:10px; padding:10px; background:#27ae60; color:white; border:none; border-radius:10px; width:100%; font-weight:bold;" onclick="checkChange()">Check Change!</button>
+        <button id="submit-btn" class="btn-action" style="display:none;" onclick="checkChange()">Check My Change! ✓</button>
+        <button id="reset-btn" class="btn-action btn-reset" onclick="resetTotal()">Clear Money</button>
+        
+        <a href="javascript:void(0)" onclick="location.reload()" class="home-link">← Change Level</a>
     </div>
 </div>
 
@@ -137,7 +151,8 @@
 
     const items = [
         {e:'🍎', p:150}, {e:'🍦', p:300}, {e:'🍩', p:210}, 
-        {e:'🧸', p:850}, {e:'🍰', p:450}, {e:'🥤', p:120}
+        {e:'🧸', p:850}, {e:'🍰', p:450}, {e:'🥤', p:120},
+        {e:'🍔', p:680}, {e:'🍌', p:90}, {e:'🍫', p:110}
     ];
 
     function startGame(m) {
@@ -151,23 +166,29 @@
         currentTotal = 0;
         document.getElementById('change-input-area').style.display = 'none';
         document.getElementById('submit-btn').style.display = 'none';
-        document.getElementById('instruction').textContent = "ちょうどのお金をはらってね！";
+        document.getElementById('coin-wallet').style.display = 'grid';
+        document.getElementById('reset-btn').style.display = 'block';
+        document.getElementById('instruction').textContent = "Pay the exact amount!";
+        document.getElementById('total-label').textContent = "Total Paid:";
         
         let item = items[Math.floor(Math.random()*items.length)];
         
         if (mode === 'easy') {
             targetPrice = (Math.floor(Math.random()*5)+1) * 100;
         } else if (mode === 'medium') {
-            targetPrice = (Math.floor(Math.random()*10)+1) * 50;
+            targetPrice = (Math.floor(Math.random()*15)+1) * 50;
         } else if (mode === 'hard') {
             targetPrice = Math.floor(Math.random()*90 + 10) * 10;
         } else if (mode === 'expert') {
             targetPrice = Math.floor(Math.random()*40 + 10) * 10;
-            document.getElementById('instruction').textContent = "1000円をはらって、おつりを計算してね！";
+            document.getElementById('instruction').textContent = "You pay with a ¥1000 bill...";
+            document.getElementById('total-label').textContent = "You Handed:";
             currentTotal = 1000;
             expectedChange = 1000 - targetPrice;
             document.getElementById('change-input-area').style.display = 'block';
             document.getElementById('submit-btn').style.display = 'block';
+            document.getElementById('coin-wallet').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
         }
 
         document.getElementById('item-emoji').textContent = item.e;
@@ -176,26 +197,29 @@
     }
 
     function addMoney(amt) {
-        if(mode === 'expert') return; // Cannot add coins in change mode
         currentTotal += amt;
         updateUI();
         if (currentTotal === targetPrice) {
-            alert("せいかい！ 🎉");
-            nextQuestion();
+            setTimeout(() => {
+                alert("Perfect! You bought the item! 🎉");
+                nextQuestion();
+            }, 100);
         } else if (currentTotal > targetPrice) {
-            alert("おおすぎたよ！");
-            resetTotal();
+            setTimeout(() => {
+                alert("Oops! That's too much money. Try again!");
+                resetTotal();
+            }, 100);
         }
     }
 
     function checkChange() {
         let userChange = parseInt(document.getElementById('change-input').value);
         if (userChange === expectedChange) {
-            alert("天才！おつりもバッチリ！ 🎉");
+            alert("Correct! You are a Change Master! 🎊");
             document.getElementById('change-input').value = "";
             nextQuestion();
         } else {
-            alert("おつりがちがうよ、もう一回考えてみて！");
+            alert("Not quite! Subtract ¥" + targetPrice + " from ¥1000 and try again.");
         }
     }
 
@@ -204,7 +228,6 @@
     }
 
     function resetTotal() {
-        if(mode === 'expert') return;
         currentTotal = 0;
         updateUI();
     }
