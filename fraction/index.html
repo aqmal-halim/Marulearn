@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍕 Fraction Hero!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #c2e9fb 100%);
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .container {
+    background: white; border-radius: 30px; padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 500px; width: 100%; text-align: center;
+  }
+  h1 { color: #6c5ce7; font-size: 2.2em; margin-bottom: 10px; text-shadow: 3px 3px 0 #dff9fb; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  
+  .level-btn {
+    display: block; width: 100%; padding: 18px; margin: 10px 0;
+    border: none; border-radius: 20px; font-size: 1.2em; font-weight: bold;
+    cursor: pointer; transition: transform 0.2s; font-family: inherit; color: white; text-align: left;
+  }
+  .level-btn:hover { transform: scale(1.05); }
+  .level-btn small { display: block; font-size: 0.7em; opacity: 0.9; font-weight: normal; }
+  
+  .easy { background: #a29bfe; }
+  .medium { background: #6c5ce7; }
+  .hard { background: #4834d4; }
+  .mixed { background: #192a56; }
+
+  .stats { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 1.1em; }
+  .stat { background: #f1f2f6; padding: 10px 20px; border-radius: 15px; font-weight: bold; }
+  .score { color: #6c5ce7; }
+  .streak { color: #e17055; }
+
+  .progress-bar { background: #dfe4ea; border-radius: 10px; height: 15px; overflow: hidden; margin-bottom: 20px; }
+  .progress-fill { background: linear-gradient(90deg, #a29bfe, #6c5ce7); height: 100%; transition: width 0.3s; width: 0%; }
+
+  .problem-box {
+    background: #f1f2f6; border-radius: 20px; padding: 25px; margin: 20px 0;
+    border: 3px dashed #6c5ce7;
+  }
+
+  /* Fraction Visuals */
+  .fraction-container { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; }
+  .fraction-visual {
+    width: 200px; height: 40px; border: 3px solid #2d3436;
+    display: flex; border-radius: 8px; overflow: hidden; background: white;
+  }
+  .fraction-part { border-right: 1px solid #2d3436; height: 100%; flex: 1; }
+  .fraction-part.shaded { background: #fab1a0; }
+  .fraction-part:last-child { border-right: none; }
+
+  /* Fraction Text Style */
+  .fraction-text { display: inline-flex; flex-direction: column; vertical-align: middle; font-size: 1.5em; font-weight: bold; }
+  .numerator { border-bottom: 3px solid #2d3436; padding: 0 5px; }
+  .denominator { padding: 0 5px; }
+
+  .input-group { margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .qty-input {
+    width: 70px; font-size: 1.8em; padding: 10px; text-align: center;
+    border: 4px solid #6c5ce7; border-radius: 15px; outline: none; font-family: inherit;
+  }
+
+  .submit-btn {
+    display: block; width: 100%; padding: 15px; background: #6c5ce7;
+    color: white; border: none; border-radius: 20px; font-size: 1.3em;
+    font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 10px;
+  }
+
+  .feedback { font-size: 1.3em; margin-top: 15px; min-height: 40px; font-weight: bold; }
+  .correct { color: #00b894; }
+  .wrong { color: #d63031; }
+
+  .shake { animation: shake 0.4s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+  .home-link { display: block; margin-top: 20px; color: #747d8c; text-decoration: none; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="start-screen" class="screen active">
+    <h1>🍕 Fraction Hero!</h1>
+    <p style="color:#636e72; margin-bottom:20px;">Become a master of parts! 🍰</p>
+    <button class="level-btn easy" onclick="startGame('easy')">🌱 Beginner <small>Identify the fraction from a shape</small></button>
+    <button class="level-btn medium" onclick="startGame('medium')">🌟 Intermediate <small>Numerator vs Denominator</small></button>
+    <button class="level-btn hard" onclick="startGame('hard')">🔥 Advanced <small>Simple Addition of Fractions</small></button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+
+    <div class="problem-box">
+      <div class="fraction-container" id="visual-area">
+        <div class="fraction-visual" id="fraction-bar"></div>
+      </div>
+      <div id="problem-text" style="font-size: 1.2em; font-weight: bold; margin-top:10px;">What fraction is shaded?</div>
+    </div>
+
+    <div class="input-group">
+      <div class="fraction-text">
+        <input type="number" id="ans-num" class="qty-input numerator" placeholder="?">
+        <input type="number" id="ans-den" class="qty-input denominator" placeholder="?">
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <div style="font-size:5em; margin:20px 0;" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div style="font-size:2em; color:#6c5ce7; margin:20px 0; font-weight:bold;">Score: <span id="final-score">0</span>/10</div>
+    <p id="end-message" style="margin-bottom:20px;"></p>
+    <button class="level-btn easy" onclick="location.reload()" style="text-align:center;">🏠 Play Again</button>
+  </div>
+
+</div>
+
+<script>
+  let score = 0, streak = 0, questionNum = 0, mode = 'easy';
+  let targetNum = 0, targetDen = 0;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Fantastic! 🌟', 'Super! 🎊'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Almost! Try once more! ✨'];
+
+  function startGame(m) {
+    mode = m; score = 0; streak = 0; questionNum = 0;
+    document.getElementById('start-screen').classList.remove('active');
+    document.getElementById('game-screen').classList.add('active');
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    if (questionNum > 10) { endGame(); return; }
+    
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('progress').style.width = ((questionNum - 1) / 10 * 100) + '%';
+    document.getElementById('ans-num').value = '';
+    document.getElementById('ans-den').value = '';
+    
+    const bar = document.getElementById('fraction-bar');
+    bar.innerHTML = '';
+    
+    if (mode === 'easy') {
+      targetDen = Math.floor(Math.random() * 5) + 2; // 2 to 6
+      targetNum = Math.floor(Math.random() * (targetDen - 1)) + 1;
+      document.getElementById('problem-text').textContent = "What fraction is shaded?";
+      
+      for(let i=0; i<targetDen; i++) {
+        let part = document.createElement('div');
+        part.className = i < targetNum ? 'fraction-part shaded' : 'fraction-part';
+        bar.appendChild(part);
+      }
+    } 
+    else if (mode === 'medium') {
+      targetDen = Math.floor(Math.random() * 8) + 2;
+      targetNum = Math.floor(Math.random() * (targetDen - 1)) + 1;
+      bar.style.display = 'none';
+      document.getElementById('problem-text').innerHTML = `Fill in the fraction for:<br><span style="color:#6c5ce7">${targetNum} out of ${targetDen} pieces</span>`;
+    }
+    else if (mode === 'hard') {
+      bar.style.display = 'none';
+      let den = Math.floor(Math.random() * 6) + 2;
+      let n1 = Math.floor(Math.random() * 2) + 1;
+      let n2 = Math.floor(Math.random() * 2) + 1;
+      targetNum = n1 + n2;
+      targetDen = den;
+      document.getElementById('problem-text').innerHTML = `Solve: <br> ${n1}/${den} + ${n2}/${den} = ?`;
+    }
+  }
+
+  function checkAnswer() {
+    const feedback = document.getElementById('feedback');
+    const userNum = parseInt(document.getElementById('ans-num').value);
+    const userDen = parseInt(document.getElementById('ans-den').value);
+
+    if (userNum === targetNum && userDen === targetDen) {
+        score++; streak++;
+        feedback.textContent = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.className = 'feedback correct';
+        document.getElementById('score').textContent = score;
+        document.getElementById('streak').textContent = streak;
+        setTimeout(nextQuestion, 1500);
+    } else {
+        streak = 0;
+        document.getElementById('streak').textContent = streak;
+        feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+        feedback.className = 'feedback wrong';
+        document.getElementById('game-screen').classList.add('shake');
+        setTimeout(() => document.getElementById('game-screen').classList.remove('shake'), 400);
+    }
+  }
+
+  function endGame() {
+    document.getElementById('game-screen').classList.remove('active');
+    document.getElementById('end-screen').classList.add('active');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    if (score === 10) { trophy.textContent = '🏆'; title.textContent = 'FRACTION HERO! 🎊'; }
+    else if (score >= 7) { trophy.textContent = '🥇'; title.textContent = 'Great Work!'; }
+    else { trophy.textContent = '🌱'; title.textContent = 'Keep Learning!'; }
+  }
+</script>
+</body>
+</html>
