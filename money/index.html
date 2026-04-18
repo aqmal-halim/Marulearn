@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Master - Marulearn</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #2d3436;
+        }
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: rgba(0,0,0,0.4); }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        .item-card {
+            background: #f1f2f6;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 4px dashed #27ae60;
+        }
+        .item-emoji { font-size: 5em; margin: 10px 0; display: block; }
+        .price-tag {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 10px;
+        }
+        .wallet {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .coin-btn {
+            cursor: pointer;
+            background: white;
+            border: 3px solid #dfe6e9;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: transform 0.1s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .coin-btn:hover { border-color: #27ae60; }
+        .coin-btn:active { transform: scale(0.95); }
+        .coin-icon { font-size: 2em; margin-bottom: 5px; }
+
+        .total-box {
+            background: #2d3436;
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .btn-clear {
+            background: #ff7675;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1em;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../" class="back-btn">🏠 Back to Marulearn</a>
+
+    <div class="game-container">
+        <h1>Money Master 💰</h1>
+        <p>Pick the coins to pay for the item!</p>
+        
+        <div class="item-card">
+            <span id="item-emoji" class="item-emoji">🍎</span>
+            <div id="target-price" class="price-tag">$0.35</div>
+        </div>
+
+        <div class="total-box">
+            Total Paid: <strong>$<span id="current-total">0.00</span></strong>
+        </div>
+
+        <div class="wallet">
+            <button class="coin-btn" onclick="addMoney(0.25)">
+                <span class="coin-icon">🪙</span> 25¢ Quarter
+            </button>
+            <button class="coin-btn" onclick="addMoney(0.10)">
+                <span class="coin-icon">🪙</span> 10¢ Dime
+            </button>
+            <button class="coin-btn" onclick="addMoney(0.05)">
+                <span class="coin-icon">🪙</span> 5¢ Nickel
+            </button>
+            <button class="coin-btn" onclick="addMoney(0.01)">
+                <span class="coin-icon">🪙</span> 1¢ Penny
+            </button>
+        </div>
+
+        <button class="btn-clear" onclick="resetTotal()">Clear Money</button>
+    </div>
+
+    <script>
+        let targetPrice = 0;
+        let currentTotal = 0;
+
+        const shopItems = [
+            { emoji: '🍎', price: 0.35 },
+            { emoji: '🍦', price: 0.80 },
+            { emoji: '🧸', price: 1.50 },
+            { emoji: '🍩', price: 0.65 },
+            { emoji: '🍪', price: 0.25 },
+            { emoji: '🥛', price: 0.40 }
+        ];
+
+        function initGame() {
+            const item = shopItems[Math.floor(Math.random() * shopItems.length)];
+            targetPrice = item.price;
+            currentTotal = 0;
+            document.getElementById('item-emoji').textContent = item.emoji;
+            document.getElementById('target-price').textContent = `$${targetPrice.toFixed(2)}`;
+            updateDisplay();
+        }
+
+        function addMoney(amount) {
+            currentTotal += amount;
+            updateDisplay();
+            checkWin();
+        }
+
+        function updateDisplay() {
+            // Using toFixed(2) to handle floating point math (e.g., 0.1 + 0.2 = 0.3000004)
+            document.getElementById('current-total').textContent = currentTotal.toFixed(2);
+        }
+
+        function checkWin() {
+            const currentFormatted = currentTotal.toFixed(2);
+            const targetFormatted = targetPrice.toFixed(2);
+
+            if (currentFormatted === targetFormatted) {
+                setTimeout(() => {
+                    alert("Excellent! You paid the exact amount! 🎉");
+                    initGame();
+                }, 100);
+            } else if (currentTotal > targetPrice) {
+                setTimeout(() => {
+                    alert("Oh no! That's a bit too much. Let's try again!");
+                    resetTotal();
+                }, 100);
+            }
+        }
+
+        function resetTotal() {
+            currentTotal = 0;
+            updateDisplay();
+        }
+
+        // Start the game on load
+        initGame();
+    </script>
+</body>
+</html>
