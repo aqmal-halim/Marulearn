@@ -38,13 +38,27 @@
             display: flex; flex-direction: column; align-items: center;
         }
         
-        #hero { position: absolute; bottom: 20px; left: 30px; font-size: 65px; transition: 0.3s; z-index: 2; }
+        /* Mascot Styling */
+        #hero-wrap { 
+            position: absolute; bottom: 10px; left: 10px; 
+            width: 100px; height: 125px; transition: 0.3s; z-index: 2;
+            animation: mascot-hover 3s ease-in-out infinite;
+        }
+
         #enemy { position: absolute; bottom: 40px; right: 30px; font-size: 85px; transition: 0.3s; z-index: 2; }
         
         .goal-bubble {
             margin-top: 15px; background: white; border: 3px solid #FF784E; 
             border-radius: 50px; padding: 5px 20px; font-weight: 900; 
             font-size: 1.3rem; box-shadow: 0 4px 0 #FF784E22; z-index: 3;
+        }
+
+        /* Hero Speech Bubble */
+        .hero-speech {
+            position: absolute; top: -20px; left: 0;
+            background: white; padding: 5px 10px; border-radius: 12px 12px 12px 2px;
+            font-size: 0.65rem; font-weight: 900; color: #FF784E;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1); white-space: nowrap;
         }
 
         .hp-meta { margin-top: 10px; width: 120px; text-align: center; z-index: 3; }
@@ -62,14 +76,9 @@
             margin-bottom: 20px; box-shadow: 0 6px 0 #E66A45;
         }
 
-        /* 4-Card Balanced Grid */
         .hand { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; 
-            justify-items: center;
-            width: 80%;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; justify-items: center; width: 80%; margin: 0 auto;
         }
         
         .card {
@@ -80,7 +89,12 @@
         }
         .card:active { transform: translateY(4px); box-shadow: 0 2px 0 #2563EB; }
 
-        /* ── FX ── */
+        /* ── ANIMATIONS ── */
+        @keyframes mascot-hover {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50%       { transform: translateY(-8px) rotate(2deg); }
+        }
+
         .pop-fx { position: absolute; font-weight: 900; font-size: 2.2rem; pointer-events: none; animation: pop-up 0.8s forwards; z-index: 10; }
         @keyframes pop-up { 0% { transform: translateY(0); opacity: 1; scale: 1; } 100% { transform: translateY(-80px); opacity: 0; scale: 1.3; } }
         .shake { animation: shake-screen 0.3s; }
@@ -102,11 +116,46 @@
             <div class="enemy-hp-container"><div id="enemy-hp-fill"></div></div>
         </div>
         <div id="enemy">👾</div>
-        <div id="hero">🧙‍♂️</div>
+        
+        <div id="hero-wrap">
+            <div class="hero-speech" id="hero-bubble">Let's play! 👋</div>
+            <svg viewBox="0 0 130 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+                <defs>
+                  <radialGradient id="bg2" cx="38%" cy="32%" r="65%">
+                    <stop offset="0%" stop-color="#FFD4A1"/>
+                    <stop offset="100%" stop-color="#FFB15E"/>
+                  </radialGradient>
+                  <radialGradient id="cap2" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#4A4A4A"/>
+                    <stop offset="100%" stop-color="#2D2D2D"/>
+                  </radialGradient>
+                </defs>
+                <ellipse cx="65" cy="150" rx="28" ry="5" fill="rgba(0,0,0,0.1)"/>
+                <ellipse cx="52" cy="128" rx="9" ry="7" fill="#E8872A"/>
+                <ellipse cx="78" cy="128" rx="9" ry="7" fill="#E8872A"/>
+                <rect x="40" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
+                <rect x="66" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
+                <circle cx="65" cy="82" r="42" fill="url(#bg2)"/>
+                <path d="M26 87 Q20 100 22 112" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
+                <circle cx="22" cy="116" r="10" fill="white"/>
+                <path d="M104 77 Q114 62 112 50" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
+                <circle cx="112" cy="46" r="10" fill="white"/>
+                <ellipse cx="55" cy="78" rx="9" ry="11" fill="white"/>
+                <ellipse cx="75" cy="78" rx="9" ry="11" fill="white"/>
+                <circle cx="57" cy="80" r="5.5" fill="#333"/>
+                <circle cx="77" cy="80" r="5.5" fill="#333"/>
+                <path d="M48 67 Q55 62 62 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M68 67 Q75 62 82 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M52 97 Q65 109 78 97" fill="none" stroke="#333" stroke-width="2.8" stroke-linecap="round"/>
+                <rect x="38" y="38" width="54" height="8" rx="3.5" fill="url(#cap2)"/>
+                <rect x="47" y="22" width="36" height="18" rx="4" fill="url(#cap2)"/>
+                <line x1="87" y1="38" x2="97" y2="52" stroke="#FFD700" stroke-width="2"/>
+                <circle cx="97" cy="55" r="4.5" fill="#FFD700"/>
+            </svg>
+        </div>
     </div>
 
     <div id="equation-box">? + 5</div>
-
     <div class="hand" id="card-hand"></div>
 </div>
 
@@ -121,6 +170,7 @@
         document.getElementById('enemy').innerText = (floor % 5 === 0) ? "👹" : "👾";
         document.getElementById('floor').innerText = floor;
         document.getElementById('p-hp').innerText = playerHP;
+        document.getElementById('hero-bubble').innerText = "Let's fight! ⚔️";
         
         newRound();
         updateHPBar();
@@ -137,7 +187,7 @@
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
         let cards = [correctCardValue];
-        while(cards.length < 4) { // 4 options
+        while(cards.length < 4) {
             let r = Math.floor(Math.random() * 12) + 1;
             if(!cards.includes(r)) cards.push(r);
         }
@@ -157,16 +207,18 @@
         el.style.visibility = 'hidden';
 
         if ((n + currentConstant) === currentGoal) {
-            fx("PERFECT!!", "#FFD700");
+            fx("GREAT!!", "#FFD700");
+            document.getElementById('hero-bubble').innerText = "Take that! 💥";
             enemyHP--;
             updateHPBar();
             if(enemyHP <= 0) {
-                setTimeout(() => { alert("Floor Defeated!"); floor++; init(); }, 600);
+                setTimeout(() => { alert("Floor Cleared!"); floor++; init(); }, 600);
             } else {
                 setTimeout(() => { newRound(); isBusy = false; }, 800);
             }
         } else {
-            fx("MISS!", "#EF4444");
+            fx("Ouch!", "#EF4444");
+            document.getElementById('hero-bubble').innerText = "Oh no! 😰";
             monsterHit();
         }
     }
