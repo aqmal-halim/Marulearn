@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>➗ Division Quest!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #d299c2 0%, #a55eea 50%, #786fa6 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    color: #a55eea;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #ffeaa7;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .level-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: inherit;
+    color: white;
+  }
+  .level-btn:hover { transform: scale(1.05); }
+  .easy { background: #d980fa; }
+  .medium { background: #a55eea; }
+  .hard { background: #8e44ad; }
+  .mixed { background: #6c5ce7; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+  .stat {
+    background: #f1f2f6;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  .score { color: #a55eea; }
+  .streak { color: #e17055; }
+  .question {
+    font-size: 3.5em;
+    margin: 30px 0;
+    color: #2d3436;
+    font-weight: bold;
+  }
+  .visual-dots {
+    font-size: 1.3em;
+    margin: 10px 0 20px;
+    color: #636e72;
+    min-height: 30px;
+    line-height: 1.6;
+  }
+  .group {
+    display: inline-block;
+    padding: 5px 8px;
+    margin: 3px;
+    background: #f3e5ff;
+    border-radius: 10px;
+    border: 2px dashed #a55eea;
+  }
+  .answer-input {
+    font-size: 2em;
+    padding: 15px;
+    width: 150px;
+    text-align: center;
+    border: 4px solid #d980fa;
+    border-radius: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  .answer-input:focus { border-color: #a55eea; }
+  .answer-input.shake {
+    animation: shake 0.4s;
+    border-color: #d63031;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+  .submit-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 40px;
+    background: #a55eea;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .hint-btn {
+    background: #fdcb6e;
+    color: #2d3436;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  .feedback {
+    font-size: 1.3em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct { color: #00b894; }
+  .wrong { color: #d63031; }
+  .hint { color: #a55eea; font-size: 1.1em; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #a55eea;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .progress-bar {
+    background: #dfe4ea;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #d980fa, #6c5ce7);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="start-screen" class="screen active">
+    <h1>➗ Division Quest!</h1>
+    <p style="color:#636e72; margin-bottom:20px;">Share numbers into groups and become a division wizard! 🧙‍♂️</p>
+    <button class="level-btn easy" onclick="startGame('easy')">🌱 Easy (÷2, ÷3, ÷5)</button>
+    <button class="level-btn medium" onclick="startGame('medium')">🌟 Medium (÷2 to ÷6)</button>
+    <button class="level-btn hard" onclick="startGame('hard')">🔥 Hard (÷2 to ÷12)</button>
+    <button class="level-btn mixed" onclick="startGame('mixed')">🎲 Surprise Me!</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+    <div class="question" id="question">6 ÷ 2 = ?</div>
+    <div class="visual-dots" id="visual-dots"></div>
+    <input type="number" id="answer" class="answer-input" autocomplete="off">
+    <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+    <div class="feedback" id="feedback"></div>
+    <button class="hint-btn" id="hint-btn" onclick="showHint()" style="display:none;">💡 Need a hint?</button>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button class="level-btn easy" onclick="goHome()">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+</div>
+
+<script>
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let currentAnswer = 0;
+  let currentA = 0;
+  let currentB = 0;
+  let attempts = 0;
+  let level = 'easy';
+  const totalQuestions = 10;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fantastic! 🌟', 'Super! 🎊'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Give it another shot! 🎯', 'Keep going! You got this! 🌟', 'Almost! Try once more! ✨'];
+
+  function startGame(lvl) {
+    level = lvl;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
+
+  function getDivisorRange() {
+    if (level === 'easy') return [2, 3, 5];
+    if (level === 'medium') return [2, 3, 4, 5, 6];
+    if (level === 'hard') return [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const ranges = [[2, 3, 5], [2, 3, 4, 5, 6], [2, 3, 4, 5, 6, 7, 8, 9, 10]];
+    return ranges[Math.floor(Math.random() * ranges.length)];
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    attempts = 0;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+    const divisors = getDivisorRange();
+    currentB = divisors[Math.floor(Math.random() * divisors.length)];
+    // Generate a clean answer (no remainders) between 1 and 12
+    const quotient = Math.floor(Math.random() * 12) + 1;
+    currentA = currentB * quotient;
+    currentAnswer = quotient;
+    document.getElementById('question').textContent = `${currentA} ÷ ${currentB} = ?`;
+
+    const dots = document.getElementById('visual-dots');
+    // Show visual groups if small enough
+    if (currentA <= 24 && currentB <= 6) {
+      let visual = '<div style="margin-bottom:5px; font-size:0.9em;">Share ' + currentA + ' 🍬 into ' + currentB + ' groups:</div>';
+      for (let g = 0; g < currentB; g++) {
+        visual += '<span class="group">';
+        for (let i = 0; i < quotient; i++) {
+          visual += '🍬';
+        }
+        visual += '</span>';
+      }
+      dots.innerHTML = visual;
+    } else {
+      dots.textContent = '';
+    }
+
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('answer').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+    document.getElementById('answer').focus();
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById('answer');
+    const feedback = document.getElementById('feedback');
+    const userAnswer = parseInt(input.value);
+
+    if (isNaN(userAnswer)) {
+      feedback.textContent = 'Type a number! 🔢';
+      feedback.className = 'feedback wrong';
+      return;
+    }
+
+    attempts++;
+
+    if (userAnswer === currentAnswer) {
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      } else {
+        streak = 0;
+        feedback.textContent = `Yes! ${currentAnswer} is correct! 🌟 Moving on...`;
+      }
+      feedback.className = 'feedback correct';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
+      setTimeout(nextQuestion, 1500);
+    } else {
+      streak = 0;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
+      feedback.className = 'feedback wrong';
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 400);
+      input.value = '';
+      input.focus();
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
+    }
+  }
+
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    feedback.innerHTML = `💡 Hint: Think backwards! What number times ${currentB} equals ${currentA}?<br>Try: ${currentB} × ? = ${currentA}`;
+    feedback.className = 'feedback hint';
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are a division MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'You did great! Keep it up!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Good job — practice makes perfect!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Every champion started here. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  document.getElementById('answer').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+</script>
+</body>
+</html>
