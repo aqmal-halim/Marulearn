@@ -44,7 +44,7 @@
   .section-title {
     color: white;
     font-size: 1.5em;
-    margin: 20px 10px 15px;
+    margin: 25px 10px 15px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
   .games-grid {
@@ -88,6 +88,7 @@
   .game-card.addition { border-left: 8px solid #00b894; }
   .game-card.subtraction { border-left: 8px solid #e17055; }
   .game-card.division { border-left: 8px solid #a55eea; }
+  .game-card.clock { border-left: 8px solid #2980b9; }
   .badge {
     position: absolute;
     top: 10px;
@@ -100,7 +101,6 @@
     font-weight: bold;
   }
   .badge.new { background: #2ed573; }
-  .badge.complete { background: #5352ed; }
   footer {
     text-align: center;
     padding: 30px 20px;
@@ -120,12 +120,11 @@
     <p class="tagline">Fun learning adventures for curious kids!</p>
   </header>
 
-  <h2 class="section-title">🎮 Math Games</h2>
+  <h2 class="section-title">🔢 Math Games</h2>
 
   <div class="games-grid">
 
     <a href="addition/" class="game-card addition">
-      <span class="badge new">NEW</span>
       <div class="game-icon">➕</div>
       <div class="game-info">
         <div class="game-title">Addition Adventure</div>
@@ -134,7 +133,6 @@
     </a>
 
     <a href="subtraction/" class="game-card subtraction">
-      <span class="badge new">NEW</span>
       <div class="game-icon">➖</div>
       <div class="game-info">
         <div class="game-title">Subtraction Safari</div>
@@ -143,7 +141,6 @@
     </a>
 
     <a href="multiplication/" class="game-card multiplication">
-      <span class="badge new">NEW</span>
       <div class="game-icon">✖️</div>
       <div class="game-info">
         <div class="game-title">Multiplication Star</div>
@@ -152,7 +149,6 @@
     </a>
 
     <a href="division/" class="game-card division">
-      <span class="badge new">NEW</span>
       <div class="game-icon">➗</div>
       <div class="game-info">
         <div class="game-title">Division Quest</div>
@@ -162,9 +158,24 @@
 
   </div>
 
+  <h2 class="section-title">⏰ Life Skills</h2>
+
+  <div class="games-grid">
+
+    <a href="clock/" class="game-card clock">
+      <span class="badge new">NEW</span>
+      <div class="game-icon">🕐</div>
+      <div class="game-info">
+        <div class="game-title">Clock Champion</div>
+        <div class="game-desc">Learn to tell time with real clocks! 4 levels.</div>
+      </div>
+    </a>
+
+  </div>
+
   <footer>
     Made with ❤️ by <strong>Maru</strong><br>
-    🎉 All 4 math games unlocked! More coming soon! 🚀
+    5 games and growing! 🚀
   </footer>
 
 </div>
