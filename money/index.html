@@ -1,191 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Money Master - Marulearn</title>
+    <title>マネーマスター 💰 Money Master!</title>
     <style>
+        /* Reusing your Time Master style for consistency */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
             background: linear-gradient(135deg, #11998e, #38ef7d);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             min-height: 100vh;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            color: #2d3436;
         }
-        .back-btn {
-            text-decoration: none;
-            color: white;
-            background: rgba(0,0,0,0.2);
-            padding: 10px 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .back-btn:hover { background: rgba(0,0,0,0.4); }
-        .game-container {
+        .container {
             background: white;
-            padding: 30px;
             border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 450px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 500px;
             width: 100%;
+            text-align: center;
         }
-        .item-card {
-            background: #f1f2f6;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 4px dashed #27ae60;
+        h1 { color: #2d3436; font-size: 2.2em; margin-bottom: 10px; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Level Buttons */
+        .level-btn {
+            display: block; width: 100%; padding: 18px 20px; margin: 10px 0;
+            border: none; border-radius: 20px; font-size: 1.15em; font-weight: bold;
+            cursor: pointer; color: white; text-align: left;
         }
-        .item-emoji { font-size: 5em; margin: 10px 0; display: block; }
-        .price-tag {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #27ae60;
-            margin-top: 10px;
+        .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; }
+        .easy { background: #00b894; }
+        .medium { background: #0984e3; }
+        .hard { background: #6c5ce7; }
+        .expert { background: #d63031; }
+
+        /* Game Elements */
+        .problem-box {
+            background: #f1f2f6; border-radius: 20px; padding: 20px;
+            margin: 20px 0; border: 4px dashed #27ae60;
         }
+        .item-emoji { font-size: 4em; display: block; }
+        .price-tag { font-size: 2.5em; font-weight: bold; color: #27ae60; }
+        
         .wallet {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 25px 0;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;
         }
         .coin-btn {
-            cursor: pointer;
-            background: white;
-            border: 3px solid #dfe6e9;
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: transform 0.1s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            cursor: pointer; background: white; border: 3px solid #dfe6e9;
+            border-radius: 15px; padding: 15px; font-weight: bold;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .coin-btn:hover { border-color: #27ae60; }
         .coin-btn:active { transform: scale(0.95); }
-        .coin-icon { font-size: 2em; margin-bottom: 5px; }
+        .coin-img {
+            width: 50px; height: 50px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; margin-bottom: 5px;
+            box-shadow: 0 3px 0 #ccc;
+        }
+        .c500 { background: #d4af37; color: white; }
+        .c100 { background: #b2bec3; color: white; }
+        .c50 { background: #636e72; color: white; }
+        .c10 { background: #cd7f32; color: white; }
 
         .total-box {
-            background: #2d3436;
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 1.4em;
-            margin-bottom: 15px;
+            background: #2d3436; color: white; padding: 15px;
+            border-radius: 15px; font-size: 1.5em; margin-bottom: 10px;
         }
-        .btn-clear {
-            background: #ff7675;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1em;
-            cursor: pointer;
-            width: 100%;
-        }
+        .btn-clear { background: #ff7675; color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; }
+        .home-link { display: block; margin-top: 20px; color: #636e72; text-decoration: none; font-size: 0.9em; }
     </style>
 </head>
 <body>
 
-    <a href="../" class="back-btn">🏠 Back to Marulearn</a>
+<div class="container">
+    <div id="start-screen" class="screen active">
+        <h1>マネーマスター 💰</h1>
+        <p>Choose your level!</p>
+        <button class="level-btn easy" onclick="startGame('easy')">
+            🌱 100円ショップ (Easy)
+            <small>Prices like 100, 200... Use 100円 coins.</small>
+        </button>
+        <button class="level-btn medium" onclick="startGame('medium')">
+            🌟 おかし屋さん (Medium)
+            <small>Prices like 150, 280... Use all coins.</small>
+        </button>
+        <button class="level-btn hard" onclick="startGame('hard')">
+            🔥 スーパー (Hard)
+            <small>Prices like 840, 990... Complex counting.</small>
+        </button>
+        <button class="level-btn expert" onclick="startGame('expert')">
+            🏆 おつり名人 (Change Master)
+            <small>Pay more and calculate the CHANGE! 24-hour style.</small>
+        </button>
+        <a href="../" class="home-link">← Back to Home</a>
+    </div>
 
-    <div class="game-container">
-        <h1>Money Master 💰</h1>
-        <p>Pick the coins to pay for the item!</p>
-        
-        <div class="item-card">
+    <div id="game-screen" class="screen">
+        <div class="problem-box">
             <span id="item-emoji" class="item-emoji">🍎</span>
-            <div id="target-price" class="price-tag">$0.35</div>
+            <div id="target-price" class="price-tag">¥0</div>
+            <p id="instruction">Exactly pay the amount!</p>
         </div>
 
         <div class="total-box">
-            Total Paid: <strong>$<span id="current-total">0.00</span></strong>
+            <span id="total-label">はらったお金:</span> ¥<span id="current-total">0</span>
+        </div>
+
+        <div id="change-input-area" style="display:none; margin-bottom:15px;">
+            <p>おつりは いくら？ (Change?)</p>
+            <input type="number" id="change-input" style="font-size: 1.5em; width: 100px; text-align: center; border-radius: 10px; border: 2px solid #27ae60;">
         </div>
 
         <div class="wallet">
-            <button class="coin-btn" onclick="addMoney(0.25)">
-                <span class="coin-icon">🪙</span> 25¢ Quarter
-            </button>
-            <button class="coin-btn" onclick="addMoney(0.10)">
-                <span class="coin-icon">🪙</span> 10¢ Dime
-            </button>
-            <button class="coin-btn" onclick="addMoney(0.05)">
-                <span class="coin-icon">🪙</span> 5¢ Nickel
-            </button>
-            <button class="coin-btn" onclick="addMoney(0.01)">
-                <span class="coin-icon">🪙</span> 1¢ Penny
-            </button>
+            <button class="coin-btn" onclick="addMoney(500)"><div class="coin-img c500">500</div>500円</button>
+            <button class="coin-btn" onclick="addMoney(100)"><div class="coin-img c100">100</div>100円</button>
+            <button class="coin-btn" onclick="addMoney(50)"><div class="coin-img c50">50</div>50円</button>
+            <button class="coin-btn" onclick="addMoney(10)"><div class="coin-img c10">10</div>10円</button>
         </div>
 
-        <button class="btn-clear" onclick="resetTotal()">Clear Money</button>
+        <button class="btn-clear" onclick="resetTotal()">やりなおす (Reset)</button>
+        <button id="submit-btn" style="display:none; margin-top:10px; padding:10px; background:#27ae60; color:white; border:none; border-radius:10px; width:100%; font-weight:bold;" onclick="checkChange()">Check Change!</button>
     </div>
+</div>
 
-    <script>
-        let targetPrice = 0;
-        let currentTotal = 0;
+<script>
+    let mode = 'easy';
+    let targetPrice = 0;
+    let currentTotal = 0;
+    let expectedChange = 0;
 
-        const shopItems = [
-            { emoji: '🍎', price: 0.35 },
-            { emoji: '🍦', price: 0.80 },
-            { emoji: '🧸', price: 1.50 },
-            { emoji: '🍩', price: 0.65 },
-            { emoji: '🍪', price: 0.25 },
-            { emoji: '🥛', price: 0.40 }
-        ];
+    const items = [
+        {e:'🍎', p:150}, {e:'🍦', p:300}, {e:'🍩', p:210}, 
+        {e:'🧸', p:850}, {e:'🍰', p:450}, {e:'🥤', p:120}
+    ];
 
-        function initGame() {
-            const item = shopItems[Math.floor(Math.random() * shopItems.length)];
-            targetPrice = item.price;
-            currentTotal = 0;
-            document.getElementById('item-emoji').textContent = item.emoji;
-            document.getElementById('target-price').textContent = `$${targetPrice.toFixed(2)}`;
-            updateDisplay();
+    function startGame(m) {
+        mode = m;
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        currentTotal = 0;
+        document.getElementById('change-input-area').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('instruction').textContent = "ちょうどのお金をはらってね！";
+        
+        let item = items[Math.floor(Math.random()*items.length)];
+        
+        if (mode === 'easy') {
+            targetPrice = (Math.floor(Math.random()*5)+1) * 100;
+        } else if (mode === 'medium') {
+            targetPrice = (Math.floor(Math.random()*10)+1) * 50;
+        } else if (mode === 'hard') {
+            targetPrice = Math.floor(Math.random()*90 + 10) * 10;
+        } else if (mode === 'expert') {
+            targetPrice = Math.floor(Math.random()*40 + 10) * 10;
+            document.getElementById('instruction').textContent = "1000円をはらって、おつりを計算してね！";
+            currentTotal = 1000;
+            expectedChange = 1000 - targetPrice;
+            document.getElementById('change-input-area').style.display = 'block';
+            document.getElementById('submit-btn').style.display = 'block';
         }
 
-        function addMoney(amount) {
-            currentTotal += amount;
-            updateDisplay();
-            checkWin();
+        document.getElementById('item-emoji').textContent = item.e;
+        document.getElementById('target-price').textContent = `¥${targetPrice}`;
+        updateUI();
+    }
+
+    function addMoney(amt) {
+        if(mode === 'expert') return; // Cannot add coins in change mode
+        currentTotal += amt;
+        updateUI();
+        if (currentTotal === targetPrice) {
+            alert("せいかい！ 🎉");
+            nextQuestion();
+        } else if (currentTotal > targetPrice) {
+            alert("おおすぎたよ！");
+            resetTotal();
         }
+    }
 
-        function updateDisplay() {
-            // Using toFixed(2) to handle floating point math (e.g., 0.1 + 0.2 = 0.3000004)
-            document.getElementById('current-total').textContent = currentTotal.toFixed(2);
+    function checkChange() {
+        let userChange = parseInt(document.getElementById('change-input').value);
+        if (userChange === expectedChange) {
+            alert("天才！おつりもバッチリ！ 🎉");
+            document.getElementById('change-input').value = "";
+            nextQuestion();
+        } else {
+            alert("おつりがちがうよ、もう一回考えてみて！");
         }
+    }
 
-        function checkWin() {
-            const currentFormatted = currentTotal.toFixed(2);
-            const targetFormatted = targetPrice.toFixed(2);
+    function updateUI() {
+        document.getElementById('current-total').textContent = currentTotal;
+    }
 
-            if (currentFormatted === targetFormatted) {
-                setTimeout(() => {
-                    alert("Excellent! You paid the exact amount! 🎉");
-                    initGame();
-                }, 100);
-            } else if (currentTotal > targetPrice) {
-                setTimeout(() => {
-                    alert("Oh no! That's a bit too much. Let's try again!");
-                    resetTotal();
-                }, 100);
-            }
-        }
-
-        function resetTotal() {
-            currentTotal = 0;
-            updateDisplay();
-        }
-
-        // Start the game on load
-        initGame();
-    </script>
+    function resetTotal() {
+        if(mode === 'expert') return;
+        currentTotal = 0;
+        updateUI();
+    }
+</script>
 </body>
 </html>
