@@ -10,74 +10,222 @@
     font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
     background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #c2e9fb 100%);
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
   }
   .container {
-    background: white; border-radius: 30px; padding: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-width: 500px; width: 100%; text-align: center;
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
   }
-  h1 { color: #6c5ce7; font-size: 2.2em; margin-bottom: 10px; text-shadow: 3px 3px 0 #dff9fb; }
+  h1 {
+    color: #6c5ce7;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #dff9fb;
+  }
   .screen { display: none; }
   .screen.active { display: block; }
-  
   .level-btn {
-    display: block; width: 100%; padding: 18px; margin: 10px 0;
-    border: none; border-radius: 20px; font-size: 1.2em; font-weight: bold;
-    cursor: pointer; transition: transform 0.2s; font-family: inherit; color: white; text-align: left;
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    color: white;
+    text-align: left;
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .level-btn:hover { transform: scale(1.05); }
-  .level-btn small { display: block; font-size: 0.7em; opacity: 0.9; font-weight: normal; }
-  
+  .level-btn * { pointer-events: none; }
+  .level-btn small { display: block; font-size: 0.75em; opacity: 0.9; font-weight: normal; margin-top: 3px; }
   .easy { background: #a29bfe; }
   .medium { background: #6c5ce7; }
   .hard { background: #4834d4; }
-
-  .stats { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 1.1em; }
-  .stat { background: #f1f2f6; padding: 10px 20px; border-radius: 15px; font-weight: bold; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.05em;
+  }
+  .stat {
+    background: #f1f2f6;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
   .score { color: #6c5ce7; }
   .streak { color: #e17055; }
-
-  .progress-bar { background: #dfe4ea; border-radius: 10px; height: 15px; overflow: hidden; margin-bottom: 20px; }
-  .progress-fill { background: linear-gradient(90deg, #a29bfe, #6c5ce7); height: 100%; transition: width 0.3s; width: 0%; }
-
+  .progress-bar {
+    background: #dfe4ea;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #a29bfe, #6c5ce7);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
   .problem-box {
-    background: #f1f2f6; border-radius: 20px; padding: 20px; margin: 20px 0;
-    border: 3px dashed #6c5ce7; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: #f1f2f6;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 3px dashed #6c5ce7;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
-
-  .visual-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 15px; width: 100%; }
+  .visual-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+  }
   .fraction-visual {
-    width: 280px; height: 35px; border: 3px solid #2d3436;
-    display: flex; border-radius: 8px; overflow: hidden; background: white;
+    width: 280px;
+    height: 35px;
+    border: 3px solid #2d3436;
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
   }
-  .fraction-part { border-right: 1px solid #2d3436; height: 100%; flex: 1; }
+  .fraction-part {
+    border-right: 1px solid #2d3436;
+    height: 100%;
+    flex: 1;
+  }
   .fraction-part.shaded { background: #fab1a0; }
   .fraction-part.shaded-b { background: #74b9ff; }
   .fraction-part:last-child { border-right: none; }
-
-  .math-text { font-size: 1.8em; font-weight: bold; color: #2d3436; margin-bottom: 10px; }
-
-  .input-group { margin: 20px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
-  .fraction-input-container { display: inline-flex; flex-direction: column; }
+  .math-text {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #2d3436;
+    margin-bottom: 10px;
+  }
+  .problem-prompt {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #2d3436;
+  }
+  .input-group {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .fraction-input-container {
+    display: inline-flex;
+    flex-direction: column;
+  }
   .qty-input {
-    width: 80px; font-size: 1.8em; padding: 8px; text-align: center;
-    border: 4px solid #6c5ce7; border-radius: 15px; outline: none; font-family: inherit;
+    width: 80px;
+    font-size: 1.8em;
+    padding: 8px;
+    text-align: center;
+    border: 4px solid #6c5ce7;
+    outline: none;
+    font-family: inherit;
+    font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .numerator { border-bottom: 4px solid #2d3436; border-radius: 15px 15px 0 0; }
-  .denominator { border-top: none; border-radius: 0 0 15px 15px; }
-
+  .numerator {
+    border-bottom: 4px solid #2d3436;
+    border-radius: 15px 15px 0 0;
+  }
+  .denominator {
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+  }
+  .qty-input.shake {
+    animation: shake 0.4s;
+    border-color: #d63031;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
   .submit-btn {
-    display: block; width: 100%; padding: 15px; background: #6c5ce7;
-    color: white; border: none; border-radius: 20px; font-size: 1.3em;
-    font-weight: bold; cursor: pointer; font-family: inherit; margin-top: 10px;
+    display: block;
+    margin: 20px auto 0;
+    padding: 15px 40px;
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
   }
-
-  .feedback { font-size: 1.3em; margin-top: 15px; min-height: 40px; font-weight: bold; }
-  .correct { color: #00b894; }
-  .wrong { color: #d63031; }
-
-  .shake { animation: shake 0.4s; }
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+  .hint-btn {
+    background: #fdcb6e;
+    color: #2d3436;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 15px;
+    font-family: inherit;
+    font-size: 0.95em;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .feedback {
+    font-size: 1.3em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct-text { color: #00b894; }
+  .wrong-text { color: #d63031; }
+  .hint-text { color: #d97706; font-size: 1.05em; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #6c5ce7;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
 </style>
 </head>
 <body>
@@ -85,19 +233,33 @@
 
   <div id="start-screen" class="screen active">
     <h1>🍕 Fraction Hero!</h1>
-    <button class="level-btn easy" onclick="startGame('easy')">🌱 Beginner <small>Identify visual fractions</small></button>
-    <button class="level-btn medium" onclick="startGame('medium')">🌟 Intermediate <small>Add & Subtract (Same Bottom #)</small></button>
-    <button class="level-btn hard" onclick="startGame('hard')">🔥 Advanced <small>Different Denominators!</small></button>
-    <a href="../" style="display:block; margin-top:20px; color:#747d8c; text-decoration:none;">← Back</a>
+    <p style="color:#636e72; margin-bottom:20px;">Master parts of a whole! Pick your level:</p>
+    <button type="button" class="level-btn easy" data-mode="easy">
+      🌱 Beginner
+      <small>Identify visual fractions (shaded parts)</small>
+    </button>
+    <button type="button" class="level-btn medium" data-mode="medium">
+      🌟 Intermediate
+      <small>Add & subtract (same denominator)</small>
+    </button>
+    <button type="button" class="level-btn hard" data-mode="hard">
+      🔥 Advanced
+      <small>Different denominators! (simplify answer)</small>
+    </button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
 
   <div id="game-screen" class="screen">
     <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-    <div class="stats"><div class="stat score">⭐ <span id="score">0</span></div><div class="stat streak">🔥 <span id="streak">0</span></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
     <div class="problem-box">
       <div class="visual-container" id="visual-container"></div>
       <div id="math-display" class="math-text"></div>
-      <div id="problem-text" style="font-size: 1.1em; font-weight: bold;"></div>
+      <div id="problem-text" class="problem-prompt"></div>
     </div>
     <div class="input-group">
       <div class="fraction-input-container">
@@ -105,105 +267,237 @@
         <input type="number" id="ans-den" class="qty-input denominator" placeholder="?">
       </div>
     </div>
-    <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+    <button type="button" class="submit-btn" id="submit-btn">Check! ✓</button>
     <div class="feedback" id="feedback"></div>
+    <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
   </div>
 
   <div id="end-screen" class="screen">
-    <h1 id="end-title">Score: <span id="final-score">0</span>/10</h1>
-    <button class="level-btn easy" onclick="location.reload()">🏠 Home</button>
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button type="button" class="level-btn easy" id="play-again-btn" style="text-align:center;">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
   </div>
 
 </div>
 
 <script>
-  let score = 0, streak = 0, questionNum = 0, mode = 'easy';
-  let targetNum = 0, targetDen = 0;
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let attempts = 0;
+  let mode = 'easy';
+  let targetNum = 0;
+  let targetDen = 0;
+  let currentHint = '';
+  const totalQuestions = 10;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fraction master! 🌟'];
+  const tryAgain = ['Not quite! Try again! 💪', 'Oops! Look again! 👀', 'Keep going! ✨', 'Almost! Try once more! 🎯'];
 
-  function startGame(m) {
-    mode = m; score = 0; streak = 0; questionNum = 0;
-    document.getElementById('start-screen').classList.remove('active');
-    document.getElementById('game-screen').classList.add('active');
-    nextQuestion();
-  }
+  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
 
-  function createBar(total, shaded, colorClass = 'shaded') {
+  function createBar(total, shaded, colorClass) {
     const bar = document.createElement('div');
     bar.className = 'fraction-visual';
     for (let i = 0; i < total; i++) {
-      let part = document.createElement('div');
-      part.className = 'fraction-part' + (i < shaded ? ' ' + colorClass : '');
+      const part = document.createElement('div');
+      part.className = 'fraction-part' + (i < shaded ? ' ' + (colorClass || 'shaded') : '');
       bar.appendChild(part);
     }
     return bar;
   }
 
-  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+  function startGame(m) {
+    mode = m;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
 
   function nextQuestion() {
     questionNum++;
-    if (questionNum > 10) { endGame(); return; }
-    document.getElementById('ans-num').value = ''; document.getElementById('ans-den').value = '';
+    attempts = 0;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+
+    document.getElementById('ans-num').value = '';
+    document.getElementById('ans-den').value = '';
     const container = document.getElementById('visual-container');
     const mathDisplay = document.getElementById('math-display');
     const problemText = document.getElementById('problem-text');
-    container.innerHTML = ''; mathDisplay.textContent = '';
+    container.innerHTML = '';
+    mathDisplay.textContent = '';
+    problemText.textContent = '';
 
     if (mode === 'easy') {
       targetDen = Math.floor(Math.random() * 5) + 2;
       targetNum = Math.floor(Math.random() * (targetDen - 1)) + 1;
-      container.appendChild(createBar(targetDen, targetNum));
-      problemText.textContent = "What is this fraction?";
-    } 
-    else if (mode === 'medium') {
-      let den = Math.floor(Math.random() * 5) + 4;
-      let isAdd = Math.random() > 0.5;
-      let n1 = Math.floor(Math.random() * 2) + 1;
-      let n2 = Math.floor(Math.random() * 2) + 1;
-      if (isAdd) { targetNum = n1 + n2; mathDisplay.textContent = `${n1}/${den} + ${n2}/${den} = ?`; }
-      else { n1 = 4; n2 = Math.floor(Math.random() * 2) + 1; targetNum = n1 - n2; mathDisplay.textContent = `${n1}/${den} - ${n2}/${den} = ?`; }
+      container.appendChild(createBar(targetDen, targetNum, 'shaded'));
+      problemText.textContent = 'What is this fraction?';
+      currentHint = 'Count the total boxes — that\'s the bottom (denominator: ' + targetDen + '). Then count the colored boxes — that\'s the top (numerator: ' + targetNum + ').';
+
+    } else if (mode === 'medium') {
+      const den = Math.floor(Math.random() * 5) + 4;
+      const isAdd = Math.random() > 0.5;
+      let n1, n2;
+      if (isAdd) {
+        n1 = Math.floor(Math.random() * Math.floor(den/2)) + 1;
+        n2 = Math.floor(Math.random() * (den - n1)) + 1;
+        targetNum = n1 + n2;
+        mathDisplay.textContent = n1 + '/' + den + ' + ' + n2 + '/' + den + ' = ?';
+        currentHint = 'Same bottom number! Just add the tops: ' + n1 + ' + ' + n2 + ' = ' + (n1 + n2) + '. Bottom stays ' + den + '.';
+      } else {
+        n1 = Math.floor(Math.random() * (den - 2)) + 2;
+        n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+        targetNum = n1 - n2;
+        mathDisplay.textContent = n1 + '/' + den + ' - ' + n2 + '/' + den + ' = ?';
+        currentHint = 'Same bottom number! Just subtract the tops: ' + n1 + ' - ' + n2 + ' = ' + (n1 - n2) + '. Bottom stays ' + den + '.';
+      }
       targetDen = den;
       container.appendChild(createBar(den, n1, 'shaded'));
       container.appendChild(createBar(den, n2, 'shaded-b'));
-    }
-    else if (mode === 'hard') {
-      // Different Denominators
-      let d1 = [2, 3, 4][Math.floor(Math.random()*3)];
-      let d2 = [5, 6][Math.floor(Math.random()*2)];
-      let n1 = 1, n2 = 1;
-      mathDisplay.textContent = `${n1}/${d1} + ${n2}/${d2} = ?`;
-      targetNum = (n1 * d2) + (n2 * d1);
-      targetDen = d1 * d2;
-      // Simplify if possible
-      let common = gcd(targetNum, targetDen);
-      targetNum /= common; targetDen /= common;
-      
+
+    } else if (mode === 'hard') {
+      const d1 = [2, 3, 4][Math.floor(Math.random() * 3)];
+      const d2 = [5, 6][Math.floor(Math.random() * 2)];
+      const n1 = 1;
+      const n2 = 1;
+      mathDisplay.textContent = n1 + '/' + d1 + ' + ' + n2 + '/' + d2 + ' = ?';
+      let rawNum = (n1 * d2) + (n2 * d1);
+      let rawDen = d1 * d2;
+      const common = gcd(rawNum, rawDen);
+      targetNum = rawNum / common;
+      targetDen = rawDen / common;
       container.appendChild(createBar(d1, n1, 'shaded'));
       container.appendChild(createBar(d2, n2, 'shaded-b'));
-      problemText.textContent = "Tip: Find a common bottom number!";
+      problemText.textContent = 'Find a common bottom, then simplify!';
+      currentHint = 'Common bottom = ' + d1 + ' × ' + d2 + ' = ' + rawDen + '. Convert: ' + n1 + '/' + d1 + ' = ' + (n1*d2) + '/' + rawDen + ' and ' + n2 + '/' + d2 + ' = ' + (n2*d1) + '/' + rawDen + '. Add tops = ' + rawNum + '/' + rawDen + '. ' + (common > 1 ? 'Then simplify by dividing both by ' + common + '!' : 'Already simplified!');
     }
+
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('hint-btn').style.display = 'none';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
   }
 
   function checkAnswer() {
-    const uNum = parseInt(document.getElementById('ans-num').value);
-    const uDen = parseInt(document.getElementById('ans-den').value);
+    const numInput = document.getElementById('ans-num');
+    const denInput = document.getElementById('ans-den');
     const feedback = document.getElementById('feedback');
-    
-    if (uNum === targetNum && uDen === targetDen) {
-      score++; streak++; feedback.textContent = "Correct! 🎉"; feedback.className = "feedback correct";
+    const uNum = parseInt(numInput.value);
+    const uDen = parseInt(denInput.value);
+
+    if (isNaN(uNum) || isNaN(uDen)) {
+      feedback.textContent = 'Fill in both the top and bottom! 🔢';
+      feedback.className = 'feedback wrong-text';
+      return;
+    }
+
+    attempts++;
+
+    // Accept equivalent fractions for easy/medium, require simplified for hard
+    let correct = false;
+    if (mode === 'hard') {
+      correct = (uNum === targetNum && uDen === targetDen);
+    } else {
+      // Accept equivalent forms (e.g., 2/4 = 1/2)
+      correct = (uNum * targetDen === targetNum * uDen) && uDen !== 0;
+    }
+
+    if (correct) {
+      if (attempts === 1) {
+        score++;
+        streak++;
+        const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+        feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+      } else {
+        streak = 0;
+        feedback.textContent = 'Yes! ' + targetNum + '/' + targetDen + ' is correct! 🌟';
+      }
+      feedback.className = 'feedback correct-text';
+      document.getElementById('score').textContent = score;
+      document.getElementById('streak').textContent = streak;
       setTimeout(nextQuestion, 1500);
     } else {
-      streak = 0; feedback.textContent = "Try again! 💪"; feedback.className = "feedback wrong";
-      document.getElementById('game-screen').classList.add('shake');
-      setTimeout(() => document.getElementById('game-screen').classList.remove('shake'), 400);
+      streak = 0;
+      document.getElementById('streak').textContent = streak;
+      const msg = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+      feedback.textContent = msg;
+      feedback.className = 'feedback wrong-text';
+      numInput.classList.add('shake');
+      denInput.classList.add('shake');
+      setTimeout(() => {
+        numInput.classList.remove('shake');
+        denInput.classList.remove('shake');
+      }, 400);
+      if (attempts >= 2) {
+        document.getElementById('hint-btn').style.display = 'inline-block';
+      }
     }
   }
 
-  function endGame() {
-    document.getElementById('game-screen').classList.remove('active');
-    document.getElementById('end-screen').classList.add('active');
-    document.getElementById('final-score').textContent = score;
+  function showHint() {
+    const feedback = document.getElementById('feedback');
+    feedback.innerHTML = '💡 ' + currentHint;
+    feedback.className = 'feedback hint-text';
   }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are a Fraction MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'Great fraction skills!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Fractions are tricky — keep practicing!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Every master started here. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#start-screen .level-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        startGame(this.dataset.mode);
+      });
+    });
+    document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+    document.getElementById('hint-btn').addEventListener('click', showHint);
+    document.getElementById('play-again-btn').addEventListener('click', goHome);
+
+    ['ans-num', 'ans-den'].forEach(id => {
+      document.getElementById(id).addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') checkAnswer();
+      });
+    });
+  });
 </script>
 </body>
 </html>
