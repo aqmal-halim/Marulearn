@@ -88,10 +88,6 @@
   .game-card.addition { border-left: 8px solid #00b894; }
   .game-card.subtraction { border-left: 8px solid #e17055; }
   .game-card.division { border-left: 8px solid #a55eea; }
-  .game-card.coming-soon {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
   .badge {
     position: absolute;
     top: 10px;
@@ -104,6 +100,7 @@
     font-weight: bold;
   }
   .badge.new { background: #2ed573; }
+  .badge.complete { background: #5352ed; }
   footer {
     text-align: center;
     padding: 30px 20px;
@@ -111,11 +108,7 @@
     font-size: 0.9em;
     margin-top: 20px;
   }
-  footer a {
-    color: #ffe66d;
-    text-decoration: none;
-    font-weight: bold;
-  }
+  footer strong { color: #ffe66d; }
 </style>
 </head>
 <body>
@@ -127,18 +120,9 @@
     <p class="tagline">Fun learning adventures for curious kids!</p>
   </header>
 
-  <h2 class="section-title">🎮 Choose a Game</h2>
+  <h2 class="section-title">🎮 Math Games</h2>
 
   <div class="games-grid">
-
-    <a href="multiplication/" class="game-card multiplication">
-      <span class="badge new">NEW</span>
-      <div class="game-icon">✖️</div>
-      <div class="game-info">
-        <div class="game-title">Multiplication Star</div>
-        <div class="game-desc">Practice times tables with 4 fun levels!</div>
-      </div>
-    </a>
 
     <a href="addition/" class="game-card addition">
       <span class="badge new">NEW</span>
@@ -158,20 +142,29 @@
       </div>
     </a>
 
-    <div class="game-card division coming-soon">
-      <span class="badge">SOON</span>
+    <a href="multiplication/" class="game-card multiplication">
+      <span class="badge new">NEW</span>
+      <div class="game-icon">✖️</div>
+      <div class="game-info">
+        <div class="game-title">Multiplication Star</div>
+        <div class="game-desc">Practice times tables with 4 fun levels!</div>
+      </div>
+    </a>
+
+    <a href="division/" class="game-card division">
+      <span class="badge new">NEW</span>
       <div class="game-icon">➗</div>
       <div class="game-info">
         <div class="game-title">Division Quest</div>
-        <div class="game-desc">Coming soon!</div>
+        <div class="game-desc">Share numbers into groups with visual candies! 🍬</div>
       </div>
-    </div>
+    </a>
 
   </div>
 
   <footer>
     Made with ❤️ by <strong>Maru</strong><br>
-    More games coming soon! 🚀
+    🎉 All 4 math games unlocked! More coming soon! 🚀
   </footer>
 
 </div>
