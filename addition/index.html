@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>➕ Addition Adventure!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #c2e9fb 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    color: #00b894;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 0 #ffeaa7;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .level-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+    font-family: inherit;
+    color: white;
+  }
+  .level-btn:hover { transform: scale(1.05); }
+  .easy { background: #55efc4; }
+  .medium { background: #00cec9; }
+  .hard { background: #0984e3; }
+  .mixed { background: #6c5ce7; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+  .stat {
+    background: #f1f2f6;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  .score { color: #00b894; }
+  .streak { color: #e17055; }
+  .question {
+    font-size: 3.5em;
+    margin: 30px 0;
+    color: #2d3436;
+    font-weight: bold;
+  }
+  .visual-dots {
+    font-size: 1.3em;
+    margin: 10px 0 20px;
+    color: #636e72;
+    min-height: 30px;
+  }
+  .answer-input {
+    font-size: 2em;
+    padding: 15px;
+    width: 150px;
+    text-align: center;
+    border: 4px solid #74b9ff;
+    border-radius: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  .answer-input:focus { border-color: #00b894; }
+  .submit-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 15px 40px;
+    background: #00b894;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .feedback {
+    font-size: 1.5em;
+    margin-top: 15px;
+    min-height: 40px;
+    font-weight: bold;
+  }
+  .correct { color: #00b894; }
+  .wrong { color: #d63031; }
+  .trophy { font-size: 5em; margin: 20px 0; }
+  .final-score {
+    font-size: 2em;
+    color: #00b894;
+    margin: 20px 0;
+    font-weight: bold;
+  }
+  .message {
+    font-size: 1.2em;
+    color: #2d3436;
+    margin: 15px 0;
+  }
+  .progress-bar {
+    background: #dfe4ea;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #55efc4, #0984e3);
+    height: 100%;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .home-link {
+    display: block;
+    margin-top: 20px;
+    color: #747d8c;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="start-screen" class="screen active">
+    <h1>➕ Addition Adventure!</h1>
+    <p style="color:#636e72; margin-bottom:20px;">Add numbers and become an addition hero!</p>
+    <button class="level-btn easy" onclick="startGame('easy')">🌱 Easy (1-10)</button>
+    <button class="level-btn medium" onclick="startGame('medium')">🌟 Medium (1-25)</button>
+    <button class="level-btn hard" onclick="startGame('hard')">🔥 Hard (1-100)</button>
+    <button class="level-btn mixed" onclick="startGame('mixed')">🎲 Surprise Me!</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+  <div id="game-screen" class="screen">
+    <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+    <div class="stats">
+      <div class="stat score">⭐ <span id="score">0</span></div>
+      <div class="stat">❓ <span id="q-num">1</span>/10</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+    </div>
+    <div class="question" id="question">2 + 3 = ?</div>
+    <div class="visual-dots" id="visual-dots"></div>
+    <input type="number" id="answer" class="answer-input" autocomplete="off">
+    <button class="submit-btn" onclick="checkAnswer()">Check! ✓</button>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <div class="trophy" id="trophy">🏆</div>
+    <h1 id="end-title">Amazing!</h1>
+    <div class="final-score">You scored <span id="final-score">0</span>/10!</div>
+    <div class="message" id="end-message"></div>
+    <button class="level-btn easy" onclick="goHome()">🏠 Play Again</button>
+    <a href="../" class="home-link">← Back to Marulearn</a>
+  </div>
+
+</div>
+
+<script>
+  let score = 0;
+  let streak = 0;
+  let questionNum = 0;
+  let currentAnswer = 0;
+  let level = 'easy';
+  const totalQuestions = 10;
+  const encouragement = ['Awesome! 🎉', 'Great job! ⭐', 'You rock! 🚀', 'Brilliant! 💫', 'Fantastic! 🌟', 'Super! 🎊'];
+
+  function startGame(lvl) {
+    level = lvl;
+    score = 0;
+    streak = 0;
+    questionNum = 0;
+    showScreen('game-screen');
+    nextQuestion();
+  }
+
+  function getRange() {
+    if (level === 'easy') return [1, 10];
+    if (level === 'medium') return [1, 25];
+    if (level === 'hard') return [1, 100];
+    const ranges = [[1, 10], [1, 25], [1, 100]];
+    return ranges[Math.floor(Math.random() * ranges.length)];
+  }
+
+  function nextQuestion() {
+    questionNum++;
+    if (questionNum > totalQuestions) {
+      endGame();
+      return;
+    }
+    const [min, max] = getRange();
+    const a = Math.floor(Math.random() * (max - min + 1)) + min;
+    const b = Math.floor(Math.random() * (max - min + 1)) + min;
+    currentAnswer = a + b;
+    document.getElementById('question').textContent = `${a} + ${b} = ?`;
+    
+    const dots = document.getElementById('visual-dots');
+    if (level === 'easy' && a <= 10 && b <= 10) {
+      dots.textContent = '🔵'.repeat(a) + ' + ' + '🟢'.repeat(b);
+    } else {
+      dots.textContent = '';
+    }
+    
+    document.getElementById('q-num').textContent = questionNum;
+    document.getElementById('answer').value = '';
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('progress').style.width = ((questionNum - 1) / totalQuestions * 100) + '%';
+    document.getElementById('answer').focus();
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById('answer');
+    const feedback = document.getElementById('feedback');
+    const userAnswer = parseInt(input.value);
+    if (isNaN(userAnswer)) {
+      feedback.textContent = 'Type a number! 🔢';
+      feedback.className = 'feedback wrong';
+      return;
+    }
+    if (userAnswer === currentAnswer) {
+      score++;
+      streak++;
+      const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+      feedback.textContent = streak >= 3 ? `${msg} 🔥 ${streak} in a row!` : msg;
+      feedback.className = 'feedback correct';
+    } else {
+      streak = 0;
+      feedback.textContent = `Oops! The answer was ${currentAnswer} 💪 Keep going!`;
+      feedback.className = 'feedback wrong';
+    }
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+    setTimeout(nextQuestion, 1300);
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').textContent = score;
+    const trophy = document.getElementById('trophy');
+    const title = document.getElementById('end-title');
+    const msg = document.getElementById('end-message');
+    if (score === 10) {
+      trophy.textContent = '🏆';
+      title.textContent = 'PERFECT! 🎊';
+      msg.textContent = 'You are an addition MASTER!';
+    } else if (score >= 7) {
+      trophy.textContent = '🥇';
+      title.textContent = 'Awesome Work!';
+      msg.textContent = 'You did great! Keep it up!';
+    } else if (score >= 4) {
+      trophy.textContent = '🥈';
+      title.textContent = 'Nice Try!';
+      msg.textContent = 'Good job — practice makes perfect!';
+    } else {
+      trophy.textContent = '🌱';
+      title.textContent = 'Keep Practicing!';
+      msg.textContent = 'Every champion started here. Try again!';
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goHome() {
+    showScreen('start-screen');
+  }
+
+  document.getElementById('answer').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+</script>
+</body>
+</html>
