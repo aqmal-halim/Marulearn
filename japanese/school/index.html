@@ -65,9 +65,9 @@ font-family: inherit; text-align: left; -webkit-appearance: none; appearance: no
 background: white; border-radius: 25px; padding: 30px 20px;
 box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px; text-align: center;
 }
-.word-emoji   { font-size: 5em; margin-bottom: 10px; line-height: 1; }
-.word-jp      { font-size: 2.5em; font-weight: 700; color: #2d3436; margin-bottom: 5px; }
-.word-reading { font-size: 1.3em; font-weight: 900; color: #f77f00; margin-bottom: 5px; }
+.word-banner  { background: linear-gradient(135deg, #fff8e6, #fff3d6); border-radius: 16px; padding: 22px 15px; margin-bottom: 14px; }
+.word-banner-cat { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #f77f00; margin-bottom: 6px; }
+.word-banner-jp  { font-size: 3em; font-weight: 700; color: #2d3436; line-height: 1; }
 .word-romaji  { font-size: 1em; color: #aaa; font-weight: 700; margin-bottom: 12px; }
 .word-en      { font-size: 1.3em; font-weight: 900; color: #118ab2; margin-bottom: 10px; }
 .word-example { background: #fff8e6; border-radius: 12px; padding: 12px 15px; margin-top: 10px; font-size: 0.88em; color: #555; line-height: 1.7; text-align: left; }
@@ -113,7 +113,6 @@ display: flex; flex-direction: column; align-items: center; justify-content: cen
 }
 .q-type-badge { position: absolute; top: 12px; right: 12px; background: #fff8e6; color: #f77f00; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
 .q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.q-emoji { font-size: 5em; line-height: 1; }
 .q-jp    { font-size: 2.5em; color: #2d3436; font-weight: 700; }
 .q-en    { font-size: 1.5em; font-weight: 900; color: #2d3436; }
 .q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
@@ -126,7 +125,6 @@ font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
 box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
 }
 .option-btn * { pointer-events: none; }
-.option-btn .opt-emoji { font-size: 2em; display: block; margin-bottom: 4px; }
 .option-btn .opt-jp    { font-size: 1.1em; display: block; color: #2d3436; font-weight: 900; }
 .option-btn .opt-en    { font-size: 0.85em; display: block; color: #aaa; margin-top: 2px; }
 .option-btn:active:not(:disabled) { transform: scale(0.97); }
@@ -217,9 +215,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
     <h2 id="learn-title">Classroom Objects</h2>
   </div>
   <div class="learn-card">
-    <div class="word-emoji"   id="learn-emoji"></div>
-    <div class="word-jp"      id="learn-jp"></div>
-    <div class="word-reading" id="learn-reading"></div>
+    <div class="word-banner"><div class="word-banner-cat" id="learn-cat-label"></div><div class="word-banner-jp" id="learn-banner-jp"></div></div>
     <div class="word-romaji"  id="learn-romaji"></div>
     <div class="word-en"      id="learn-en"></div>
     <div class="word-example" id="learn-example" style="display:none;"></div>
@@ -255,7 +251,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <div class="question-card">
     <div class="q-type-badge" id="q-type-badge">JP → EN</div>
     <div class="q-label"      id="q-label">What is this?</div>
-    <div class="q-emoji" id="q-emoji" style="display:none;"></div>
     <div class="q-jp"    id="q-jp"    style="display:none;"></div>
     <div class="q-en"    id="q-en"    style="display:none;"></div>
     <div class="q-hint"  id="q-hint"></div>
@@ -289,28 +284,28 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 // ══════════════════════════════════════════
 const WORDS = {
   objects: [
-    { id:'tsukue',      jp:'つくえ',       r:'つくえ',       ro:'tsukue',      en:'desk',          emoji:'🪑', ex:'せんせいのつくえ = teacher\'s desk', tip:'つくえ = your desk at school!' },
+    { id:'tsukue',      jp:'つくえ',       r:'つくえ',       ro:'tsukue',      en:'desk',          emoji:'🗃️', ex:'せんせいのつくえ = teacher\'s desk', tip:'つくえ = your desk at school!' },
     { id:'isu',         jp:'いす',          r:'いす',          ro:'isu',          en:'chair',         emoji:'🪑', ex:'いすにすわってください = Please sit on the chair', tip:null },
-    { id:'kokuban',     jp:'こくばん',      r:'こくばん',      ro:'kokuban',      en:'blackboard',    emoji:'🖊️', ex:'こくばんをみてください = Please look at the blackboard', tip:'こく = black, ばん = board' },
+    { id:'kokuban',     jp:'こくばん',      r:'こくばん',      ro:'kokuban',      en:'blackboard',    emoji:'📝', ex:'こくばんをみてください = Please look at the blackboard', tip:'こく = black, ばん = board' },
     { id:'kyoukasho',   jp:'きょうかしょ',  r:'きょうかしょ',  ro:'kyoukasho',    en:'textbook',      emoji:'📖', ex:'きょうかしょをあけてください = Please open your textbook', tip:'きょうか = subject, しょ = book' },
     { id:'nooto',       jp:'ノート',        r:'ノート',        ro:'no-to',        en:'notebook',      emoji:'📓', ex:'ノートにかいてください = Please write in your notebook', tip:'From English "note"! Written in katakana' },
     { id:'enpitsu',     jp:'えんぴつ',      r:'えんぴつ',      ro:'enpitsu',      en:'pencil',        emoji:'✏️', ex:'えんぴつをだしてください = Please take out your pencil', tip:'えん = lead, ぴつ = writing brush (old word)' },
-    { id:'keshigomu',   jp:'けしごむ',      r:'けしごむ',      ro:'keshigomu',    en:'eraser',        emoji:'🩹', ex:'けしごむをかしてください = Please lend me your eraser', tip:'けす = to erase, ごむ = rubber (from Portuguese "goma")' },
+    { id:'keshigomu',   jp:'けしごむ',      r:'けしごむ',      ro:'keshigomu',    en:'eraser',        emoji:'🧽', ex:'けしごむをかしてください = Please lend me your eraser', tip:'けす = to erase, ごむ = rubber (from Portuguese "goma")' },
     { id:'monoashi',    jp:'ものさし',      r:'ものさし',      ro:'monosashi',    en:'ruler',         emoji:'📏', ex:'ものさしをつかってください = Please use a ruler', tip:null },
-    { id:'fudebako',    jp:'ふでばこ',      r:'ふでばこ',      ro:'fudebako',     en:'pencil case',   emoji:'🖊️', ex:'ふでばこのなかにえんぴつがあります = There is a pencil in the pencil case', tip:'ふで = brush, はこ = box' },
+    { id:'fudebako',    jp:'ふでばこ',      r:'ふでばこ',      ro:'fudebako',     en:'pencil case',   emoji:'🗂️', ex:'ふでばこのなかにえんぴつがあります = There is a pencil in the pencil case', tip:'ふで = brush, はこ = box' },
     { id:'randoseru',   jp:'ランドセル',    r:'ランドセル',    ro:'randoseru',    en:'school backpack', emoji:'🎒', ex:'ランドセルをせおってください = Please put on your school bag', tip:'From Dutch "ransel"! The iconic Japanese school bag' },
     { id:'taiso',       jp:'たいそうふく',  r:'たいそうふく',  ro:'taisoufuku',   en:'gym clothes',   emoji:'👕', ex:'たいそうふくにきがえてください = Please change into gym clothes', tip:'たいそう = exercise, ふく = clothes' },
     { id:'kyushoku',    jp:'きゅうしょく',  r:'きゅうしょく',  ro:'kyuushoku',    en:'school lunch',  emoji:'🍱', ex:'きゅうしょくのじかんです = It\'s lunch time!', tip:'きゅう = serve, しょく = food. School lunch in Japan is special!' },
   ],
 
   subjects: [
-    { id:'kokugo',   jp:'こくご',        r:'こくご',        ro:'kokugo',      en:'Japanese language', emoji:'📝', ex:'こくごのじゅぎょう = Japanese class', tip:'こく = country, ご = language. Your daughter\'s hardest subject!' },
+    { id:'kokugo',   jp:'こくご',        r:'こくご',        ro:'kokugo',      en:'Japanese language', emoji:'🗒️', ex:'こくごのじゅぎょう = Japanese class', tip:'こく = country, ご = language. Your daughter\'s hardest subject!' },
     { id:'sansu',    jp:'さんすう',      r:'さんすう',      ro:'sansuu',      en:'math / arithmetic', emoji:'🔢', ex:'さんすうはすきですか？ = Do you like math?', tip:'Elementary school math. 算数 becomes 数学 in middle school' },
     { id:'rika',     jp:'りか',          r:'りか',          ro:'rika',        en:'science',           emoji:'🔬', ex:'りかのじっけん = science experiment', tip:'り = reason/logic, か = subject' },
     { id:'shakai',   jp:'しゃかい',      r:'しゃかい',      ro:'shakai',      en:'social studies',    emoji:'🌍', ex:'しゃかいのべんきょう = studying social studies', tip:'しゃかい also means "society" in everyday Japanese' },
     { id:'ongaku',   jp:'おんがく',      r:'おんがく',      ro:'ongaku',      en:'music',             emoji:'🎵', ex:'おんがくのじかん！= Time for music!', tip:'おん = sound, がく = music/enjoyment' },
     { id:'zukou',    jp:'ずこう',        r:'ずこう',        ro:'zukou',       en:'art',               emoji:'🎨', ex:'ずこうでえをかきます = We draw pictures in art', tip:'ず = drawing, こう = craft' },
-    { id:'taiiku',   jp:'たいいく',      r:'たいいく',      ro:'taiiku',      en:'physical education / PE', emoji:'⚽', ex:'たいいくのじゅぎょうがすきです = I like PE class', tip:'たい = body, いく = nurture/education' },
+    { id:'taiiku',   jp:'たいいく',      r:'たいいく',      ro:'taiiku',      en:'physical education / PE', emoji:'🤸', ex:'たいいくのじゅぎょうがすきです = I like PE class', tip:'たい = body, いく = nurture/education' },
     { id:'seikatsu', jp:'せいかつ',      r:'せいかつ',      ro:'seikatsu',    en:'life studies',      emoji:'🌱', ex:'せいかつのじゅぎょう = life studies class (Grade 1-2 only)', tip:'Grade 1-2 subject combining science & social studies' },
     { id:'doutoku',  jp:'どうとく',      r:'どうとく',      ro:'doutoku',     en:'moral education',   emoji:'💛', ex:'どうとくのじかん = moral education time', tip:'Unique to Japanese schools! Lessons about kindness and values' },
     { id:'gaikokugo', jp:'がいこくご',   r:'がいこくご',    ro:'gaikokugo',   en:'foreign language (English)', emoji:'🇬🇧', ex:'がいこくごのじゅぎょう = foreign language class', tip:'がいこく = foreign country, ご = language' },
@@ -318,13 +313,13 @@ const WORDS = {
 
   routines: [
     { id:'chorei',    jp:'ちょうれい',    r:'ちょうれい',    ro:'choorei',     en:'morning assembly',  emoji:'🌅', ex:'まいあさちょうれいがあります = There is morning assembly every day', tip:'Happens outside every morning! Everyone stands in rows' },
-    { id:'jugyou',    jp:'じゅぎょう',    r:'じゅぎょう',    ro:'jugyou',      en:'lesson / class',    emoji:'📚', ex:'じゅぎょうちゅうです = We are in class', tip:'じゅぎょうがはじまります = Class is starting!' },
-    { id:'kyuukei',   jp:'きゅうけい',    r:'きゅうけい',    ro:'kyuukei',     en:'break / recess',    emoji:'⏸️', ex:'きゅうけいじかんです = It\'s break time!', tip:'Usually 10 minutes between lessons' },
-    { id:'hiruyasumi', jp:'ひるやすみ',   r:'ひるやすみ',    ro:'hiruyasumi',  en:'lunch break',       emoji:'🍱', ex:'ひるやすみにそとであそびます = We play outside during lunch break', tip:'ひる = noon, やすみ = rest' },
+    { id:'jugyou',    jp:'じゅぎょう',    r:'じゅぎょう',    ro:'jugyou',      en:'lesson / class',    emoji:'📒', ex:'じゅぎょうちゅうです = We are in class', tip:'じゅぎょうがはじまります = Class is starting!' },
+    { id:'kyuukei',   jp:'きゅうけい',    r:'きゅうけい',    ro:'kyuukei',     en:'break / recess',    emoji:'☕', ex:'きゅうけいじかんです = It\'s break time!', tip:'Usually 10 minutes between lessons' },
+    { id:'hiruyasumi', jp:'ひるやすみ',   r:'ひるやすみ',    ro:'hiruyasumi',  en:'lunch break',       emoji:'🌤️', ex:'ひるやすみにそとであそびます = We play outside during lunch break', tip:'ひる = noon, やすみ = rest' },
     { id:'soujijikan', jp:'そうじのじかん', r:'そうじのじかん', ro:'souji no jikan', en:'cleaning time', emoji:'🧹', ex:'そうじのじかんです！= It\'s cleaning time!', tip:'Students clean the school themselves — no janitors in Japanese schools!' },
     { id:'kioritsu',  jp:'きりつ',        r:'きりつ',        ro:'kiritsu',     en:'stand up (command)', emoji:'🧍', ex:'きりつ！れい！ちゃくせき！= Stand! Bow! Sit!', tip:'You hear this at the start and end of EVERY class!' },
     { id:'rei',       jp:'れい',          r:'れい',          ro:'rei',         en:'bow (command)',     emoji:'🙇', ex:'きりつ → れい → ちゃくせき', tip:'Bowing shows respect to the teacher' },
-    { id:'chakuseki', jp:'ちゃくせき',    r:'ちゃくせき',    ro:'chakuseki',   en:'sit down (command)', emoji:'🪑', ex:'ちゃくせき！= Sit down!', tip:'The 3rd command after きりつ and れい' },
+    { id:'chakuseki', jp:'ちゃくせき',    r:'ちゃくせき',    ro:'chakuseki',   en:'sit down (command)', emoji:'🧎', ex:'ちゃくせき！= Sit down!', tip:'The 3rd command after きりつ and れい' },
     { id:'taiiku_kai', jp:'たいいくかい', r:'たいいくかい',  ro:'taiikukai',   en:'sports day',        emoji:'🏃', ex:'たいいくかいがたのしみです = I\'m looking forward to sports day!', tip:'One of the biggest events of the Japanese school year!' },
     { id:'gakkou_gyoji', jp:'がっこうぎょうじ', r:'がっこうぎょうじ', ro:'gakkou gyouji', en:'school event', emoji:'🎉', ex:'がっこうぎょうじがおおいです = There are many school events', tip:'Japanese schools have lots of special events throughout the year' },
   ],
@@ -342,12 +337,12 @@ const WORDS = {
 
   places: [
     { id:'kyoushitsu', jp:'きょうしつ',   r:'きょうしつ',    ro:'kyoushitsu',  en:'classroom',         emoji:'🏫', ex:'きょうしつにいます = I am in the classroom', tip:'きょう = teaching, しつ = room' },
-    { id:'taiikukan',  jp:'たいいくかん', r:'たいいくかん',  ro:'taiikukan',   en:'gymnasium / gym',   emoji:'🏃', ex:'たいいくかんでたいいくをします = We do PE in the gym', tip:'たいいく = PE, かん = building/hall' },
+    { id:'taiikukan',  jp:'たいいくかん', r:'たいいくかん',  ro:'taiikukan',   en:'gymnasium / gym',   emoji:'🏋️', ex:'たいいくかんでたいいくをします = We do PE in the gym', tip:'たいいく = PE, かん = building/hall' },
     { id:'toshokan',   jp:'としょかん',   r:'としょかん',    ro:'toshokan',     en:'library',           emoji:'📚', ex:'としょかんでほんをよみます = I read books in the library', tip:'と = books (old), しょ = books, かん = hall' },
     { id:'toire',      jp:'トイレ',       r:'トイレ',        ro:'toire',        en:'toilet / bathroom', emoji:'🚻', ex:'トイレにいっていいですか？ = May I go to the toilet?', tip:'The most important word! From English "toilet". Written in katakana' },
     { id:'shokudou',   jp:'しょくどう',   r:'しょくどう',    ro:'shokudou',     en:'school cafeteria',  emoji:'🍽️', ex:'しょくどうできゅうしょくをたべます = We eat school lunch in the cafeteria', tip:'しょく = food, どう = hall' },
     { id:'hokenshitsu', jp:'ほけんしつ',  r:'ほけんしつ',    ro:'hokenshitsu',  en:'nurse\'s office',   emoji:'🏥', ex:'ほけんしつにいってもいいですか？ = May I go to the nurse\'s office?', tip:'When sick or hurt — go here! ほけん = health care' },
-    { id:'undoujo',    jp:'うんどうじょう', r:'うんどうじょう', ro:'undoujou',  en:'school ground / field', emoji:'⛳', ex:'うんどうじょうでそとあそびをします = We play outside on the school ground', tip:'うんどう = exercise, じょう = ground/place' },
+    { id:'undoujo',    jp:'うんどうじょう', r:'うんどうじょう', ro:'undoujou',  en:'school ground / field', emoji:'🏟️', ex:'うんどうじょうでそとあそびをします = We play outside on the school ground', tip:'うんどう = exercise, じょう = ground/place' },
     { id:'roka',       jp:'ろうか',       r:'ろうか',        ro:'rouka',        en:'corridor / hallway', emoji:'🚶', ex:'ろうかをはしらないでください = Please don\'t run in the corridor', tip:'A key rule in Japanese schools — no running in corridors!' },
     { id:'shokkaki',   jp:'げたばこ',     r:'げたばこ',      ro:'getabako',     en:'shoe locker',       emoji:'👟', ex:'げたばこでくつをはきかえます = We change shoes at the shoe locker', tip:'Japanese schools require changing from outdoor to indoor shoes at the entrance!' },
     { id:'staffroom',  jp:'しょくいんしつ', r:'しょくいんしつ', ro:'shokuinshitsu', en:'staff room',    emoji:'🏢', ex:'しょくいんしつにせんせいがいます = The teachers are in the staff room', tip:'しょくいん = staff, しつ = room. Knock before entering!' },
@@ -400,12 +395,18 @@ function startCat(cat) {
   setTimeout(() => speak(learnData[0].r), 600);
 }
 
+
+// Category label for learn banner
+function catLabel() {
+  const labels = { objects:'✏️ Classroom Objects', subjects:'📐 School Subjects', routines:'📅 Daily Routines', people:'👩‍🏫 School People', places:'🚪 School Places', mix:'🎲 Mixed' };
+  return labels[currentCat] || '';
+}
+
 // ── LEARN ──
 function showLearnCard() {
   const w = learnData[learnIdx];
-  document.getElementById('learn-emoji').textContent   = w.emoji;
-  document.getElementById('learn-jp').textContent      = w.jp;
-  document.getElementById('learn-reading').textContent = w.r;
+  document.getElementById('learn-cat-label').textContent = catLabel();
+  document.getElementById('learn-banner-jp').textContent  = w.jp;
   document.getElementById('learn-romaji').textContent  = w.ro;
   document.getElementById('learn-en').textContent      = w.en;
   document.getElementById('learn-counter').textContent = (learnIdx+1)+' / '+learnData.length;
@@ -444,23 +445,23 @@ function showQuizQ() {
   document.getElementById('feedback').textContent  = '';
   document.getElementById('hint-btn').style.display='none';
 
-  const emojiEl = document.getElementById('q-emoji');
   const jpEl    = document.getElementById('q-jp');
   const enEl    = document.getElementById('q-en');
   const hintEl  = document.getElementById('q-hint');
 
-  emojiEl.style.display='none'; jpEl.style.display='none'; enEl.style.display='none';
+  jpEl.style.display='none'; enEl.style.display='none';
 
   // Alternate 3 question types randomly
   const qType = Math.floor(Math.random() * 3);
 
   if (qType === 0) {
-    // Show emoji → pick Japanese word
-    document.getElementById('q-type-badge').textContent = 'Picture → Japanese';
-    document.getElementById('q-label').textContent = 'What is this in Japanese?';
-    emojiEl.textContent=w.emoji; emojiEl.style.display='block';
+    // Show reading (hiragana) → pick English meaning
+    document.getElementById('q-type-badge').textContent = 'Reading → English';
+    document.getElementById('q-label').textContent = 'What does this mean?';
+    jpEl.textContent=w.r; jpEl.style.display='block';
     hintEl.textContent = '';
-    buildOptions(w, 'jp');
+    setTimeout(()=>speak(w.r), 300);
+    buildOptions(w, 'en');
 
   } else if (qType === 1) {
     // Show Japanese → pick English meaning
@@ -494,7 +495,7 @@ function buildOptions(correct, type) {
     btn.type='button'; btn.className='option-btn';
     if (type==='jp') {
       // Show Japanese + emoji — no English hint
-      btn.innerHTML = '<span class="opt-emoji">'+opt.emoji+'</span><span class="opt-jp">'+opt.jp+'</span>';
+      btn.innerHTML = '<span class="opt-jp">'+opt.jp+'</span>';
     } else {
       // Show English meaning only — no Japanese hint
       btn.innerHTML = '<span class="opt-en">'+opt.en+'</span>';
@@ -531,7 +532,7 @@ function checkAnswer(isCorrect, btn, word) {
 
 function showHint() {
   const w=quizData[quizIdx];
-  document.getElementById('feedback').textContent='💡 '+w.emoji+' '+w.jp+' ('+w.r+') = '+w.en+(w.tip?' · '+w.tip:'');
+  document.getElementById('feedback').textContent='💡 '+w.jp+' ('+w.r+') = '+w.en+(w.tip?' · '+w.tip:'');
   document.getElementById('feedback').className='feedback hint-text';
   speak(w.r);
 }
