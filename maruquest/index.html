@@ -26,77 +26,80 @@
             font-weight: 900; color: #475569; cursor: pointer; text-decoration: none; font-size: 0.9rem;
             display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 0 #CBD5E1;
         }
-        .home-btn:active { transform: translateY(2px); box-shadow: none; }
 
         .stats { font-weight: 900; color: #64748B; font-size: 0.95rem; }
 
         /* ── BATTLE ZONE ── */
         #stage { 
-            height: 240px; position: relative; 
+            height: 220px; position: relative; 
             background: #ffffff; border-radius: 25px; 
             border: 2px solid #F1F5F9; margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
+            overflow: hidden;
         }
         
-        /* Mascot Styling */
         #hero-wrap { 
-            position: absolute; bottom: 10px; left: 10px; 
-            width: 100px; height: 125px; transition: 0.3s; z-index: 2;
-            animation: mascot-hover 3s ease-in-out infinite;
+            position: absolute; bottom: 10px; left: 15px; 
+            width: 90px; height: 110px; transition: transform 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
+            z-index: 2;
         }
 
-        #enemy { position: absolute; bottom: 40px; right: 30px; font-size: 85px; transition: 0.3s; z-index: 2; }
+        #enemy { 
+            position: absolute; bottom: 30px; right: 30px; 
+            font-size: 80px; transition: transform 0.2s ease-in; 
+            z-index: 2; 
+        }
+
+        /* Attack Classes */
+        .hero-attack { transform: translateX(180px) scale(1.1); }
+        .enemy-attack { transform: translateX(-180px) scale(1.2); }
         
-        .goal-bubble {
-            margin-top: 15px; background: white; border: 3px solid #FF784E; 
-            border-radius: 50px; padding: 5px 20px; font-weight: 900; 
-            font-size: 1.3rem; box-shadow: 0 4px 0 #FF784E22; z-index: 3;
-        }
-
-        /* Hero Speech Bubble */
         .hero-speech {
-            position: absolute; top: -20px; left: 0;
+            position: absolute; top: -25px; left: 0;
             background: white; padding: 5px 10px; border-radius: 12px 12px 12px 2px;
             font-size: 0.65rem; font-weight: 900; color: #FF784E;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1); white-space: nowrap;
         }
 
-        .hp-meta { margin-top: 10px; width: 120px; text-align: center; z-index: 3; }
-        .hp-label { font-size: 0.65rem; font-weight: 900; color: #FF5E5E; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 1px; }
+        .hp-meta { margin-top: 15px; width: 140px; text-align: center; z-index: 3; }
+        .hp-label { font-size: 0.65rem; font-weight: 900; color: #FF5E5E; text-transform: uppercase; margin-bottom: 4px; }
         .enemy-hp-container {
             width: 100%; height: 10px; background: #E2E8F0; 
             border-radius: 10px; border: 2.5px solid #475569; overflow: hidden;
         }
         #enemy-hp-fill { background: linear-gradient(to right, #FF5E5E, #EF4444); width: 100%; height: 100%; transition: 0.4s; }
 
-        /* ── INTERFACE ── */
+        /* ── UPDATED EQUATION BOX ── */
         #equation-box {
             background: #FF784E; color: white; border-radius: 25px;
-            padding: 18px; font-size: 2.2rem; font-weight: 900; text-align: center;
+            padding: 20px; font-size: 2rem; font-weight: 900; text-align: center;
             margin-bottom: 20px; box-shadow: 0 6px 0 #E66A45;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
+        .card-slot {
+            background: rgba(255,255,255,0.2); border: 3px dashed white;
+            width: 50px; height: 55px; border-radius: 10px; display: inline-flex;
+            align-items: center; justify-content: center;
+        }
+
+        /* ── INTERFACE ── */
         .hand { 
-            display: grid; grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; justify-items: center; width: 80%; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(3, 1fr); 
+            gap: 12px; justify-items: center; width: 100%;
         }
         
         .card {
-            width: 80px; height: 75px; background: #60A5FA; color: white;
-            border-radius: 22px; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 900; cursor: pointer;
-            border: 4px solid white; box-shadow: 0 6px 0 #2563EB; transition: 0.1s;
+            width: 75px; height: 70px; background: #60A5FA; color: white;
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 900; cursor: pointer;
+            border: 4px solid white; box-shadow: 0 5px 0 #2563EB; transition: 0.1s;
         }
         .card:active { transform: translateY(4px); box-shadow: 0 2px 0 #2563EB; }
 
-        /* ── ANIMATIONS ── */
-        @keyframes mascot-hover {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50%       { transform: translateY(-8px) rotate(2deg); }
-        }
-
-        .pop-fx { position: absolute; font-weight: 900; font-size: 2.2rem; pointer-events: none; animation: pop-up 0.8s forwards; z-index: 10; }
-        @keyframes pop-up { 0% { transform: translateY(0); opacity: 1; scale: 1; } 100% { transform: translateY(-80px); opacity: 0; scale: 1.3; } }
+        /* ── FX ── */
+        .pop-fx { position: absolute; font-weight: 900; font-size: 1.8rem; pointer-events: none; animation: pop-up 0.8s forwards; z-index: 10; }
+        @keyframes pop-up { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-60px); opacity: 0; } }
         .shake { animation: shake-screen 0.3s; }
         @keyframes shake-screen { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
     </style>
@@ -110,7 +113,6 @@
     </div>
 
     <div id="stage">
-        <div class="goal-bubble">🎯 Goal: <span id="goal-val">10</span></div>
         <div class="hp-meta">
             <div class="hp-label">Monster HP</div>
             <div class="enemy-hp-container"><div id="enemy-hp-fill"></div></div>
@@ -118,44 +120,32 @@
         <div id="enemy">👾</div>
         
         <div id="hero-wrap">
-            <div class="hero-speech" id="hero-bubble">Let's play! 👋</div>
+            <div class="hero-speech" id="hero-bubble">Let's fight! ⚔️</div>
             <svg viewBox="0 0 130 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
                 <defs>
                   <radialGradient id="bg2" cx="38%" cy="32%" r="65%">
-                    <stop offset="0%" stop-color="#FFD4A1"/>
-                    <stop offset="100%" stop-color="#FFB15E"/>
+                    <stop offset="0%" stop-color="#FFD4A1"/><stop offset="100%" stop-color="#FFB15E"/>
                   </radialGradient>
                   <radialGradient id="cap2" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#4A4A4A"/>
-                    <stop offset="100%" stop-color="#2D2D2D"/>
+                    <stop offset="0%" stop-color="#4A4A4A"/><stop offset="100%" stop-color="#2D2D2D"/>
                   </radialGradient>
                 </defs>
-                <ellipse cx="65" cy="150" rx="28" ry="5" fill="rgba(0,0,0,0.1)"/>
-                <ellipse cx="52" cy="128" rx="9" ry="7" fill="#E8872A"/>
-                <ellipse cx="78" cy="128" rx="9" ry="7" fill="#E8872A"/>
-                <rect x="40" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
-                <rect x="66" y="133" width="24" height="12" rx="6" fill="#FF5E5E"/>
                 <circle cx="65" cy="82" r="42" fill="url(#bg2)"/>
-                <path d="M26 87 Q20 100 22 112" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
-                <circle cx="22" cy="116" r="10" fill="white"/>
-                <path d="M104 77 Q114 62 112 50" fill="none" stroke="#FFB15E" stroke-width="13" stroke-linecap="round"/>
-                <circle cx="112" cy="46" r="10" fill="white"/>
                 <ellipse cx="55" cy="78" rx="9" ry="11" fill="white"/>
                 <ellipse cx="75" cy="78" rx="9" ry="11" fill="white"/>
                 <circle cx="57" cy="80" r="5.5" fill="#333"/>
                 <circle cx="77" cy="80" r="5.5" fill="#333"/>
-                <path d="M48 67 Q55 62 62 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
-                <path d="M68 67 Q75 62 82 67" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>
                 <path d="M52 97 Q65 109 78 97" fill="none" stroke="#333" stroke-width="2.8" stroke-linecap="round"/>
                 <rect x="38" y="38" width="54" height="8" rx="3.5" fill="url(#cap2)"/>
                 <rect x="47" y="22" width="36" height="18" rx="4" fill="url(#cap2)"/>
-                <line x1="87" y1="38" x2="97" y2="52" stroke="#FFD700" stroke-width="2"/>
-                <circle cx="97" cy="55" r="4.5" fill="#FFD700"/>
             </svg>
         </div>
     </div>
 
-    <div id="equation-box">? + 5</div>
+    <div id="equation-box">
+        <div class="card-slot">?</div> <span>+</span> <span id="const-val">5</span> <span>=</span> <span id="goal-val">10</span>
+    </div>
+
     <div class="hand" id="card-hand"></div>
 </div>
 
@@ -170,7 +160,7 @@
         document.getElementById('enemy').innerText = (floor % 5 === 0) ? "👹" : "👾";
         document.getElementById('floor').innerText = floor;
         document.getElementById('p-hp').innerText = playerHP;
-        document.getElementById('hero-bubble').innerText = "Let's fight! ⚔️";
+        document.getElementById('hero-bubble').innerText = "Ready? 🚀";
         
         newRound();
         updateHPBar();
@@ -181,13 +171,13 @@
         correctCardValue = Math.floor(Math.random() * 9) + 1;
         currentGoal = currentConstant + correctCardValue;
         
+        document.getElementById('const-val').innerText = currentConstant;
         document.getElementById('goal-val').innerText = currentGoal;
-        document.getElementById('equation-box').innerText = `? + ${currentConstant}`;
         
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
         let cards = [correctCardValue];
-        while(cards.length < 4) {
+        while(cards.length < 6) { // Added more options for a 3-column layout
             let r = Math.floor(Math.random() * 12) + 1;
             if(!cards.includes(r)) cards.push(r);
         }
@@ -207,42 +197,63 @@
         el.style.visibility = 'hidden';
 
         if ((n + currentConstant) === currentGoal) {
-            fx("GREAT!!", "#FFD700");
-            document.getElementById('hero-bubble').innerText = "Take that! 💥";
-            enemyHP--;
-            updateHPBar();
-            if(enemyHP <= 0) {
-                setTimeout(() => { alert("Floor Cleared!"); floor++; init(); }, 600);
-            } else {
-                setTimeout(() => { newRound(); isBusy = false; }, 800);
-            }
+            const hero = document.getElementById('hero-wrap');
+            hero.classList.add('hero-attack');
+            
+            setTimeout(() => {
+                fx("HIT! 💥", "#FFD700", "right");
+                document.getElementById('hero-bubble').innerText = "Take that! ⚡";
+                enemyHP--;
+                updateHPBar();
+                
+                setTimeout(() => {
+                    hero.classList.remove('hero-attack');
+                    if(enemyHP <= 0) {
+                        alert("Floor " + floor + " Cleared!");
+                        floor++;
+                        init();
+                    } else {
+                        newRound();
+                        isBusy = false;
+                    }
+                }, 200);
+            }, 200);
+
         } else {
-            fx("Ouch!", "#EF4444");
-            document.getElementById('hero-bubble').innerText = "Oh no! 😰";
-            monsterHit();
+            document.getElementById('hero-bubble').innerText = "Watch out! 😱";
+            const enemy = document.getElementById('enemy');
+            
+            setTimeout(() => {
+                enemy.classList.add('enemy-attack');
+                
+                setTimeout(() => {
+                    fx("OUCH! 💢", "#EF4444", "left");
+                    playerHP--;
+                    document.getElementById('p-hp').innerText = playerHP;
+                    document.getElementById('game-container').classList.add('shake');
+                    
+                    setTimeout(() => {
+                        document.getElementById('game-container').classList.remove('shake');
+                        enemy.classList.remove('enemy-attack');
+                        if(playerHP <= 0) {
+                            alert("Game Over! Restarting...");
+                            location.reload();
+                        } else {
+                            isBusy = false;
+                        }
+                    }, 200);
+                }, 200);
+            }, 300);
         }
     }
 
-    function monsterHit() {
-        setTimeout(() => {
-            const e = document.getElementById('enemy');
-            e.style.transform = "translate(-160px, 40px) scale(1.3)";
-            setTimeout(() => {
-                playerHP--;
-                document.getElementById('p-hp').innerText = playerHP;
-                document.getElementById('game-container').classList.add('shake');
-                setTimeout(() => document.getElementById('game-container').classList.remove('shake'), 300);
-                e.style.transform = "translate(0,0) scale(1)";
-                if(playerHP <= 0) { alert("Game Over!"); location.reload(); }
-                else { isBusy = false; }
-            }, 200);
-        }, 400);
-    }
-
-    function fx(t, c) {
+    function fx(t, color, side) {
         let f = document.createElement('div');
-        f.className = 'pop-fx'; f.innerText = t; f.style.color = c;
-        f.style.left = "35%"; f.style.top = "100px";
+        f.className = 'pop-fx'; 
+        f.innerText = t; 
+        f.style.color = color;
+        f.style.top = "100px";
+        f.style[side === "left" ? "left" : "right"] = "40px";
         document.getElementById('stage').appendChild(f);
         setTimeout(() => f.remove(), 800);
     }
