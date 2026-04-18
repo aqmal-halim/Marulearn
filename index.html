@@ -13,10 +13,7 @@
     padding: 20px;
     color: #2f3542;
   }
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  .container { max-width: 600px; margin: 0 auto; }
   header {
     text-align: center;
     padding: 30px 20px;
@@ -25,10 +22,7 @@
     box-shadow: 0 20px 60px rgba(0,0,0,0.2);
     margin-bottom: 25px;
   }
-  .logo {
-    font-size: 4em;
-    margin-bottom: 10px;
-  }
+  .logo { font-size: 4em; margin-bottom: 10px; }
   h1 {
     font-size: 2.5em;
     background: linear-gradient(135deg, #667eea, #f093fb);
@@ -37,20 +31,14 @@
     background-clip: text;
     margin-bottom: 10px;
   }
-  .tagline {
-    color: #57606f;
-    font-size: 1.1em;
-  }
+  .tagline { color: #57606f; font-size: 1.1em; }
   .section-title {
     color: white;
     font-size: 1.5em;
     margin: 25px 10px 15px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
-  .games-grid {
-    display: grid;
-    gap: 15px;
-  }
+  .games-grid { display: grid; gap: 15px; }
   .game-card {
     background: white;
     border-radius: 25px;
@@ -65,31 +53,18 @@
     position: relative;
     overflow: hidden;
   }
-  .game-card:hover, .game-card:active {
-    transform: scale(1.03);
-  }
-  .game-icon {
-    font-size: 3.5em;
-    min-width: 70px;
-    text-align: center;
-  }
+  .game-card:hover, .game-card:active { transform: scale(1.03); }
+  .game-icon { font-size: 3.5em; min-width: 70px; text-align: center; }
   .game-info { flex: 1; }
-  .game-title {
-    font-size: 1.4em;
-    font-weight: bold;
-    color: #2f3542;
-    margin-bottom: 5px;
-  }
-  .game-desc {
-    color: #747d8c;
-    font-size: 0.95em;
-  }
+  .game-title { font-size: 1.4em; font-weight: bold; color: #2f3542; margin-bottom: 5px; }
+  .game-desc { color: #747d8c; font-size: 0.95em; }
   .game-card.multiplication { border-left: 8px solid #ff6b6b; }
   .game-card.addition { border-left: 8px solid #00b894; }
   .game-card.subtraction { border-left: 8px solid #e17055; }
   .game-card.division { border-left: 8px solid #a55eea; }
   .game-card.clock { border-left: 8px solid #2980b9; }
   .game-card.abc { border-left: 8px solid #e67e22; }
+  .game-card.spelling { border-left: 8px solid #d97706; }
   .badge {
     position: absolute;
     top: 10px;
@@ -126,11 +101,19 @@
   <div class="games-grid">
 
     <a href="abc/" class="game-card abc">
-      <span class="badge new">NEW</span>
       <div class="game-icon">🔤</div>
       <div class="game-info">
         <div class="game-title">ABC Adventure</div>
         <div class="game-desc">Learn letters, sounds & build words! 4 levels.</div>
+      </div>
+    </a>
+
+    <a href="spelling/" class="game-card spelling">
+      <span class="badge new">NEW</span>
+      <div class="game-icon">🐝</div>
+      <div class="game-info">
+        <div class="game-title">Spelling Bee</div>
+        <div class="game-desc">Listen and spell! 64 words with audio. 🔊</div>
       </div>
     </a>
 
@@ -190,7 +173,7 @@
 
   <footer>
     Made with ❤️ by <strong>Maru</strong><br>
-    6 games and growing! 🚀
+    7 games and growing! 🚀
   </footer>
 
 </div>
