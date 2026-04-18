@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marulearn 🌟 Adventure Awaits!</title>
+<title>Marulearn 🌟 Let's Play!</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #FF784E;
-    --secondary: #5BBAFF;
-    --accent: #FFD93D;
-    --bg: #FFF8F0;
-    --text: #454D55;
+    --primary: #FF784E; /* Mascot Orange */
+    --secondary: #5BBAFF; /* Sky Blue */
+    --accent: #FFD93D; /* Sun Yellow */
+    --bg: #FFD9C6; /* Soft Peach Background */
+    --card: #FFFFFF;
+    --text: #2D3436;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -19,249 +20,236 @@
   body {
     font-family: 'Fredoka', sans-serif;
     background-color: var(--bg);
+    background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4) 0%, transparent 20%),
+                      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.4) 0%, transparent 20%);
     color: var(--text);
-    padding: 20px;
+    padding: 15px;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
   }
 
-  .app-wrapper { width: 100%; max-width: 600px; }
+  .app-frame { width: 100%; max-width: 550px; }
 
-  /* ── PREMIUM HERO CARD ── */
-  .hero {
+  /* ── INTERACTIVE HERO ── */
+  .hero-panel {
     background: white;
-    border-radius: 45px;
+    border-radius: 50px;
     padding: 30px;
-    position: relative;
-    box-shadow: 0 20px 40px rgba(255, 120, 78, 0.1);
     margin-bottom: 30px;
-    border: 3px solid #FFF1E6;
+    position: relative;
+    box-shadow: 0 15px 0 rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
     overflow: hidden;
   }
 
-  .hero::after {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 250px; height: 250px; background: #E8F4FF;
-    border-radius: 50%; z-index: 0;
+  .hero-panel::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 240px; height: 100%; background: #D9EDFF;
+    border-radius: 0 50px 100px 50px; z-index: 0;
   }
 
-  .hero-content { display: flex; align-items: center; position: relative; z-index: 1; }
-  
-  .hero-info h1 { font-size: 2.8rem; font-weight: 700; color: var(--primary); line-height: 1; letter-spacing: -1px; }
-  .hero-info h1 span { color: var(--secondary); }
-  .hero-info p { font-size: 1.1rem; color: #88929B; margin-top: 10px; font-weight: 600; }
+  .hero-text { flex: 1; position: relative; z-index: 2; }
+  .hero-text h1 { font-size: 3rem; font-weight: 700; color: var(--primary); line-height: 0.9; }
+  .hero-text h1 span { color: var(--secondary); font-size: 2.5rem; }
+  .hero-text p { margin-top: 10px; font-weight: 600; color: #717171; font-size: 1.1rem; }
 
-  /* ── PROFESSIONAL MASCOT SVG ── */
-  .mascot-box { width: 160px; height: 160px; position: relative; cursor: pointer; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.1)); }
-  .mascot-box:hover { animation: bounce 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate; }
+  /* ── MARU-KUN 4.0 (PRO VECTOR STYLE) ── */
+  .mascot-wrap {
+    width: 170px; height: 170px; position: relative;
+    z-index: 2; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+    animation: floaty 4s ease-in-out infinite;
+  }
+  @keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-12px) rotate(2deg); } }
 
-  @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.05) translateY(-5px); } }
-
-  .bubble {
-    position: absolute; top: -15px; left: -10px; background: var(--primary);
-    color: white; padding: 8px 15px; border-radius: 20px 20px 20px 5px;
-    font-size: 0.85rem; font-weight: 700; z-index: 10;
-    box-shadow: 0 10px 20px rgba(255, 120, 78, 0.3);
+  .speech {
+    position: absolute; top: 0; left: -20px; background: white;
+    padding: 8px 15px; border-radius: 20px 20px 20px 5px;
+    font-weight: 700; font-size: 0.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   }
 
-  /* ── SECTION STYLING ── */
-  .section-label {
-    display: inline-block; background: white; padding: 8px 20px;
-    border-radius: 50px; font-weight: 700; color: #A0A9B2;
-    font-size: 0.9rem; margin: 25px 0 15px 5px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+  /* ── GAME CARDS (PHYSICAL FEEL) ── */
+  .category-pill {
+    display: inline-block; background: rgba(255,255,255,0.5);
+    padding: 6px 20px; border-radius: 50px; font-weight: 700;
+    font-size: 0.9rem; color: #888; margin: 20px 0 15px 10px;
+    text-transform: uppercase; letter-spacing: 1px;
   }
 
-  /* ── GAME CARDS ── */
-  .grid { display: grid; gap: 18px; }
+  .game-grid { display: grid; gap: 20px; }
 
-  .card {
-    background: white; border-radius: 32px; padding: 22px;
-    text-decoration: none; display: flex; align-items: center; gap: 20px;
-    border: 2px solid #F8F9FA;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 8px 0 #F1F3F5;
+  .btn-game {
+    background: white; border-radius: 35px; padding: 20px;
+    text-decoration: none; display: flex; align-items: center; gap: 18px;
+    position: relative; transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 0 #E0E0E0;
+    border: 2px solid #F1F1F1;
   }
 
-  .card:hover { transform: translateY(-5px); border-color: var(--secondary); box-shadow: 0 15px 25px rgba(91, 186, 255, 0.2); }
-  .card:active { transform: translateY(4px); box-shadow: 0 2px 0 #F1F3F5; }
+  .btn-game:hover { transform: translateY(-3px); box-shadow: 0 11px 0 #E0E0E0; }
+  .btn-game:active { transform: translateY(6px); box-shadow: 0 2px 0 #E0E0E0; }
 
-  .icon-circle {
-    width: 70px; height: 70px; border-radius: 24px;
+  .icon-blob {
+    width: 70px; height: 70px; border-radius: 25px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 2.2rem; flex-shrink: 0;
-    background: #F8F9FA;
+    font-size: 2.3rem; flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .btn-game:hover .icon-blob { transform: scale(1.1) rotate(5deg); }
+
+  .game-meta h3 { font-size: 1.3rem; color: var(--text); font-weight: 700; }
+  .game-meta p { font-size: 0.95rem; color: #888; font-weight: 500; margin-top: 2px; }
+
+  /* Section Colors */
+  .jp-theme .icon-blob { background: #D9EDFF; color: #2D3436; }
+  .read-theme .icon-blob { background: #FFF3E1; color: #2D3436; }
+  .math-theme .icon-blob { background: #DEFFE6; color: #2D3436; }
+  .life-theme .icon-blob { background: #E8F4FF; color: #2D3436; }
+
+  .hot-badge {
+    position: absolute; top: -10px; right: 20px; background: #FF5E5E;
+    color: white; padding: 5px 15px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; box-shadow: 0 5px 10px rgba(255,94,94,0.3);
   }
 
-  .card-body h3 { font-size: 1.2rem; font-weight: 700; color: #2D3436; }
-  .card-body p { font-size: 0.9rem; color: #95A5A6; line-height: 1.4; margin-top: 2px; }
+  .sub-labels { display: flex; gap: 6px; margin-top: 8px; }
+  .label { background: #F3F3F3; font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; font-weight: 700; color: #666; }
 
-  /* Dynamic Accents */
-  .card.jp { border-left: 8px solid var(--primary); }
-  .card.read { border-left: 8px solid var(--accent); }
-  .card.math { border-left: 8px solid #2ED573; }
-  .card.life { border-left: 8px solid var(--secondary); }
+  footer { text-align: center; padding: 50px 0; color: #A88676; font-weight: 700; font-size: 1rem; }
 
-  .badge {
-    position: absolute; top: -10px; right: 20px; background: var(--primary);
-    color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: 700;
-  }
-
-  .tags { display: flex; gap: 6px; margin-top: 10px; }
-  .tag { background: #FFF1E6; color: var(--primary); font-size: 0.7rem; padding: 4px 10px; border-radius: 8px; font-weight: 700; }
-
-  footer { text-align: center; padding: 50px 0; color: #BDC3C7; font-weight: 600; }
 </style>
 </head>
 <body>
 
-<div class="app-wrapper">
+<div class="app-frame">
   
-  <div class="hero">
-    <div class="hero-content">
-      <div class="hero-info">
-        <div style="font-weight: 700; color: #D1D8DD; font-size: 0.9rem; margin-bottom: 5px;">TIME TO LEARN!</div>
-        <h1>MARU<span>LEARN</span></h1>
-        <p>Your fun learning sidekick! ✨</p>
-      </div>
+  <div class="hero-panel">
+    <div class="hero-text">
+      <div style="font-weight: 700; color: #AFAFAF; font-size: 0.8rem; margin-bottom: 5px;">HELLO FRIENDS!</div>
+      <h1>MARU<br><span>LEARN</span></h1>
+      <p>Play, Learn, Grow! ✨</p>
+    </div>
 
-      <div class="mascot-box">
-        <div class="bubble">Hi! I'm Maru!</div>
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="bodyGrad" cx="40%" cy="40%" r="60%">
-              <stop offset="0%" stop-color="#FFBD71"/>
-              <stop offset="100%" stop-color="#FF784E"/>
-            </radialGradient>
-            <linearGradient id="gloveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#FFFFFF"/>
-              <stop offset="100%" stop-color="#F2F2F2"/>
-            </linearGradient>
-          </defs>
-          <circle cx="100" cy="100" r="55" fill="url(#bodyGrad)"/>
-          
-          <ellipse cx="85" cy="90" rx="12" ry="15" fill="white"/>
-          <ellipse cx="115" cy="90" rx="12" ry="15" fill="white"/>
-          <circle cx="88" cy="94" r="6" fill="#333"/>
-          <circle cx="118" cy="94" r="6" fill="#333"/>
-          <circle cx="85" cy="88" r="3" fill="white"/> <circle cx="115" cy="88" r="3" fill="white"/>
-          
-          <path d="M85 115 q15 15 30 0" stroke="#333" stroke-width="5" fill="none" stroke-linecap="round"/>
-          
-          <path d="M60 60 L100 45 L140 60 L100 75 Z" fill="#333"/>
-          <path d="M75 65 q0 15 25 15 q25 0 25 -15" fill="#333"/>
-          <circle cx="140" cy="60" r="4" fill="#FFD93D"/> <g filter="drop-shadow(0 5px 5px rgba(0,0,0,0.1))">
-            <circle cx="35" cy="110" r="15" fill="url(#gloveGrad)"/> <circle cx="165" cy="80" r="15" fill="url(#gloveGrad)"/> <rect x="155" y="65" width="20" height="15" rx="5" fill="url(#gloveGrad)"/> </g>
+    <div class="mascot-wrap">
+      <div class="speech">Let's learn! 👋</div>
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="maruBody" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#FFCC80"/>
+            <stop offset="100%" stop-color="#FF784E"/>
+          </radialGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+            <feOffset dx="0" dy="4" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
+            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        
+        <rect x="75" y="150" width="22" height="15" rx="7" fill="#333"/>
+        <rect x="105" y="150" width="22" height="15" rx="7" fill="#333"/>
 
-          <rect x="70" y="145" width="25" height="15" rx="8" fill="#E63946"/>
-          <rect x="105" y="145" width="25" height="15" rx="8" fill="#E63946"/>
-          <rect x="70" y="155" width="25" height="5" rx="2" fill="white"/>
-          <rect x="105" y="155" width="25" height="5" rx="2" fill="white"/>
-        </svg>
-      </div>
+        <circle cx="100" cy="100" r="58" fill="url(#maruBody)" filter="url(#shadow)"/>
+        
+        <path d="M55 55 L100 40 L145 55 L100 70 Z" fill="#2D3436"/>
+        <rect x="75" y="60" width="50" height="10" rx="2" fill="#2D3436"/>
+        <circle cx="145" cy="55" r="4" fill="#FFD93D"/>
+
+        <ellipse cx="82" cy="95" rx="10" ry="14" fill="white"/>
+        <ellipse cx="118" cy="95" rx="10" ry="14" fill="white"/>
+        <circle cx="85" cy="100" r="5" fill="#2D3436"/>
+        <circle cx="121" cy="100" r="5" fill="#2D3436"/>
+        <circle cx="82" cy="94" r="3" fill="white"/> <circle cx="118" cy="94" r="3" fill="white"/>
+
+        <path d="M85 122 q15 15 30 0" stroke="#2D3436" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+        <circle cx="35" cy="105" r="14" fill="white" stroke="#EEE" stroke-width="2"/> <circle cx="165" cy="75" r="14" fill="white" stroke="#EEE" stroke-width="2"/> <path d="M165 65 q5 -10 10 -10 q5 5 0 10 q10 0 10 10 q-5 5 -10 0 q0 10 -10 10" fill="white"/> </svg>
     </div>
   </div>
 
-  <div class="section-label">🎌 LANGUAGES</div>
-  <div class="grid">
-    <a href="japanese/" class="card jp">
-      <span class="badge">HOT!</span>
-      <div class="icon-circle">🎌</div>
-      <div class="card-body">
+  <div class="category-pill">Languages</div>
+  <div class="game-grid">
+    <a href="japanese/" class="btn-game jp-theme">
+      <span class="hot-badge">NEW ADVENTURE</span>
+      <div class="icon-blob">🎌</div>
+      <div class="game-meta">
         <h3>Japanese Quest</h3>
-        <p>Fun Hiragana, Katakana, and N5 words!</p>
-        <div class="tags">
-          <span class="tag">Beginner</span><span class="tag">Writing</span>
+        <p>Hiragana, Katakana & Survival phrases!</p>
+        <div class="sub-labels">
+          <span class="label">JLPT N5</span><span class="label">Audio</span>
         </div>
       </div>
     </a>
   </div>
 
-  <div class="section-label">📚 READING FUN</div>
-  <div class="grid">
-    <a href="abc/" class="card read">
-      <div class="icon-circle">🔤</div>
-      <div class="card-body">
+  <div class="category-pill">Reading & Writing</div>
+  <div class="game-grid" style="grid-template-columns: 1fr;">
+    <a href="abc/" class="btn-game read-theme">
+      <div class="icon-blob">🔤</div>
+      <div class="game-meta">
         <h3>ABC Explorer</h3>
-        <p>Master the alphabet with cute pictures!</p>
+        <p>Learn letters and sounds with cute art!</p>
       </div>
     </a>
-    <a href="spelling/" class="card read">
-      <div class="icon-circle">🐝</div>
-      <div class="card-body">
-        <h3>Spelling Hero</h3>
-        <p>Listen and spell! Can you get a high score?</p>
-      </div>
-    </a>
-  </div>
-
-  <div class="section-label">🔢 MATH MAGIC</div>
-  <div class="grid">
-    <a href="addition/" class="card math">
-      <div class="icon-circle">➕</div>
-      <div class="card-body">
-        <h3>Addition Island</h3>
-        <p>Add numbers with visual block friends!</p>
-      </div>
-    </a>
-    <a href="subtraction/" class="card math">
-      <div class="icon-circle">➖</div>
-      <div class="card-body">
-        <h3>Subtraction Safari</h3>
-        <p>Learn to take away numbers easily.</p>
-      </div>
-    </a>
-    <a href="multiplication/" class="card math">
-      <div class="icon-circle">✖️</div>
-      <div class="card-body">
-        <h3>Times Table Star</h3>
-        <p>Practice multiplication the fun way!</p>
-      </div>
-    </a>
-    <a href="division/" class="card math">
-      <div class="icon-circle">➗</div>
-      <div class="card-body">
-        <h3>Division Quest</h3>
-        <p>Share candies into equal groups!</p>
-      </div>
-    </a>
-    <a href="fraction/" class="card math">
-      <div class="icon-circle">🍕</div>
-      <div class="card-body">
-        <h3>Fraction Hero</h3>
-        <p>Learn slices and parts of a whole!</p>
-      </div>
-    </a>
-    <a href="money/" class="card math">
-      <div class="icon-circle">💴</div>
-      <div class="card-body">
-        <h3>Money Master</h3>
-        <p>Learn to count Yen and get change!</p>
+    <a href="spelling/" class="btn-game read-theme">
+      <div class="icon-blob">🐝</div>
+      <div class="game-meta">
+        <h3>Spelling Bee</h3>
+        <p>Challenge yourself with 60+ words!</p>
       </div>
     </a>
   </div>
 
-  <div class="section-label">🕐 LIFE SKILLS</div>
-  <div class="grid">
-    <a href="clock/" class="card life">
-      <div class="icon-circle">🕐</div>
-      <div class="card-body">
-        <h3>Clock Champion</h3>
-        <p>Learn to tell time on analog clocks!</p>
+  <div class="category-pill">Math Magic</div>
+  <div class="game-grid">
+    <a href="addition/" class="btn-game math-theme">
+      <div class="icon-blob">➕</div>
+      <div class="game-meta"><h3>Addition</h3><p>Blocks & Numbers!</p></div>
+    </a>
+    <a href="subtraction/" class="btn-game math-theme">
+      <div class="icon-blob">➖</div>
+      <div class="game-meta"><h3>Subtraction</h3><p>Apple Safari!</p></div>
+    </a>
+    <a href="multiplication/" class="btn-game math-theme">
+      <div class="icon-blob">✖️</div>
+      <div class="game-meta"><h3>Multiplication</h3><p>Times Tables!</p></div>
+    </a>
+    <a href="division/" class="btn-game math-theme">
+      <div class="icon-blob">➗</div>
+      <div class="game-meta"><h3>Division</h3><p>Candy Sharing!</p></div>
+    </a>
+    <a href="fraction/" class="btn-game math-theme">
+      <div class="icon-blob">🍕</div>
+      <div class="game-meta"><h3>Fractions</h3><p>Pizza Slices!</p></div>
+    </a>
+    <a href="money/" class="btn-game math-theme">
+      <div class="icon-blob">💴</div>
+      <div class="game-meta"><h3>Money</h3><p>Japanese Yen!</p></div>
+    </a>
+  </div>
+
+  <div class="category-pill">Life Skills</div>
+  <div class="game-grid">
+    <a href="clock/" class="btn-game life-theme">
+      <div class="icon-blob">🕐</div>
+      <div class="game-meta">
+        <h3>Clock Hero</h3>
+        <p>Learn to tell the time!</p>
       </div>
     </a>
-    <a href="time/" class="card life">
-      <div class="icon-circle">⏱️</div>
-      <div class="card-body">
-        <h3>Time Traveler</h3>
-        <p>Solve elapsed time word problems!</p>
+    <a href="time/" class="btn-game life-theme">
+      <div class="icon-blob">⏱️</div>
+      <div class="game-meta">
+        <h3>Elapsed Time</h3>
+        <p>Solve time puzzles!</p>
       </div>
     </a>
   </div>
 
   <footer>
-    Made with ❤️ for curious kids everywhere!<br>
-    <strong>MARULEARN 2026</strong>
+    Made with ❤️ for young adventurers!<br>
+    <strong>MARULEARN © 2026</strong>
   </footer>
 
 </div>
