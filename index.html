@@ -58,18 +58,50 @@
   .game-info { flex: 1; }
   .game-title { font-size: 1.4em; font-weight: bold; color: #2f3542; margin-bottom: 5px; }
   .game-desc { color: #747d8c; font-size: 0.95em; }
-  
-  /* Color Borders */
-  .game-card.multiplication { border-left: 8px solid #ff6b6b; }
+
+  /* Subject colors */
   .game-card.addition { border-left: 8px solid #00b894; }
   .game-card.subtraction { border-left: 8px solid #e17055; }
+  .game-card.multiplication { border-left: 8px solid #ff6b6b; }
   .game-card.division { border-left: 8px solid #a55eea; }
   .game-card.fraction { border-left: 8px solid #6c5ce7; }
   .game-card.clock { border-left: 8px solid #2980b9; }
+  .game-card.time { border-left: 8px solid #1d4ed8; }
+  .game-card.money { border-left: 8px solid #00b894; }
   .game-card.abc { border-left: 8px solid #e67e22; }
   .game-card.spelling { border-left: 8px solid #d97706; }
-  .game-card.time { border-left: 8px solid #1d4ed8; }
-  .game-card.money { border-left: 8px solid #27ae60; }
+
+  /* Japanese cards — special styling */
+  .game-card.jp-survival { border-left: 8px solid #e63946; }
+  .game-card.jp-hiragana { border-left: 8px solid #c1121f; }
+  .game-card.jp-katakana { border-left: 8px solid #e63946; }
+  .game-card.jp-numbers { border-left: 8px solid #f77f00; }
+  .game-card.jp-school { border-left: 8px solid #fcbf49; }
+  .game-card.jp-coming { border-left: 8px solid #ddd; opacity: 0.6; cursor: not-allowed; }
+
+  /* Japan section header special style */
+  .japan-header {
+    background: white;
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+  .japan-header .flag { font-size: 2.5em; }
+  .japan-header .info { flex: 1; }
+  .japan-header .title { font-size: 1.2em; font-weight: bold; color: #2f3542; }
+  .japan-header .subtitle { font-size: 0.85em; color: #747d8c; margin-top: 3px; }
+  .jlpt-badge {
+    background: #e63946;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: bold;
+  }
 
   .badge {
     position: absolute;
@@ -83,7 +115,14 @@
     font-weight: bold;
   }
   .badge.new { background: #2ed573; }
-  
+  .badge.soon { background: #b2bec3; }
+  .badge.urgent { background: #e63946; animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
   footer {
     text-align: center;
     padding: 30px 20px;
@@ -103,40 +142,111 @@
     <p class="tagline">Fun learning adventures for curious kids!</p>
   </header>
 
-  <h2 class="section-title">📚 Reading & Language</h2>
+  <!-- ══════════════════ JAPANESE ══════════════════ -->
+  <h2 class="section-title">🇯🇵 Learn Japanese</h2>
+
+  <div class="japan-header">
+    <div class="flag">🎌</div>
+    <div class="info">
+      <div class="title">Japanese for the Whole Family</div>
+      <div class="subtitle">From complete beginner → JLPT N5</div>
+    </div>
+    <div class="jlpt-badge">JLPT N5</div>
+  </div>
+
   <div class="games-grid">
+
+    <a href="japanese/survival/" class="game-card jp-survival">
+      <span class="badge urgent">URGENT</span>
+      <div class="game-icon">🆘</div>
+      <div class="game-info">
+        <div class="game-title">Survival Japanese</div>
+        <div class="game-desc">School phrases, shopping, emergency & daily life. 4 profiles!</div>
+      </div>
+    </a>
+
+    <div class="game-card jp-hiragana">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🎌</div>
+      <div class="game-info">
+        <div class="game-title">Hiragana Hero</div>
+        <div class="game-desc">Learn all 46 hiragana characters with audio</div>
+      </div>
+    </div>
+
+    <div class="game-card jp-katakana">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🔷</div>
+      <div class="game-info">
+        <div class="game-title">Katakana Quest</div>
+        <div class="game-desc">Master katakana — menus, names & foreign words</div>
+      </div>
+    </div>
+
+    <div class="game-card jp-numbers">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🔢</div>
+      <div class="game-info">
+        <div class="game-title">Japanese Numbers</div>
+        <div class="game-desc">Count to 10,000 + Japanese counters</div>
+      </div>
+    </div>
+
+    <div class="game-card jp-school">
+      <span class="badge soon">SOON</span>
+      <div class="game-icon">🏫</div>
+      <div class="game-info">
+        <div class="game-title">School Life Words</div>
+        <div class="game-desc">Classroom vocab aligned to Japanese elementary school</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════ READING ══════════════════ -->
+  <h2 class="section-title">📚 Reading & Language</h2>
+
+  <div class="games-grid">
+
     <a href="abc/" class="game-card abc">
       <div class="game-icon">🔤</div>
       <div class="game-info">
         <div class="game-title">ABC Adventure</div>
-        <div class="game-desc">Learn letters, sounds & build words!</div>
+        <div class="game-desc">Learn letters, sounds & build words! 4 levels.</div>
       </div>
     </a>
+
     <a href="spelling/" class="game-card spelling">
       <div class="game-icon">🐝</div>
       <div class="game-info">
         <div class="game-title">Spelling Bee</div>
-        <div class="game-desc">Listen and spell! 64 words with audio.</div>
+        <div class="game-desc">Listen and spell! 64 words with audio. 🔊</div>
       </div>
     </a>
+
   </div>
 
+  <!-- ══════════════════ MATH ══════════════════ -->
   <h2 class="section-title">🔢 Math Games</h2>
+
   <div class="games-grid">
+
     <a href="addition/" class="game-card addition">
       <div class="game-icon">➕</div>
       <div class="game-info">
         <div class="game-title">Addition Adventure</div>
-        <div class="game-desc">Add numbers with visual helpers!</div>
+        <div class="game-desc">Add numbers with visual helpers for beginners!</div>
       </div>
     </a>
+
     <a href="subtraction/" class="game-card subtraction">
       <div class="game-icon">➖</div>
       <div class="game-info">
         <div class="game-title">Subtraction Safari</div>
-        <div class="game-desc">Take away numbers with visual apples!</div>
+        <div class="game-desc">Take away numbers with visual apples! 🍎</div>
       </div>
     </a>
+
     <a href="multiplication/" class="game-card multiplication">
       <div class="game-icon">✖️</div>
       <div class="game-info">
@@ -144,52 +254,59 @@
         <div class="game-desc">Practice times tables with 4 fun levels!</div>
       </div>
     </a>
+
     <a href="division/" class="game-card division">
       <div class="game-icon">➗</div>
       <div class="game-info">
         <div class="game-title">Division Quest</div>
-        <div class="game-desc">Share numbers into groups with candies!</div>
+        <div class="game-desc">Share numbers into groups with visual candies! 🍬</div>
       </div>
     </a>
+
     <a href="fraction/" class="game-card fraction">
-      <span class="badge new">NEW</span>
       <div class="game-icon">🍕</div>
       <div class="game-info">
         <div class="game-title">Fraction Hero</div>
-        <div class="game-desc">Learn parts of a whole with pizza slices!</div>
+        <div class="game-desc">Learn parts of a whole with visual bars!</div>
       </div>
     </a>
+
   </div>
 
+  <!-- ══════════════════ LIFE SKILLS ══════════════════ -->
   <h2 class="section-title">⏰ Life Skills</h2>
+
   <div class="games-grid">
+
     <a href="clock/" class="game-card clock">
       <div class="game-icon">🕐</div>
       <div class="game-info">
         <div class="game-title">Clock Champion</div>
-        <div class="game-desc">Learn to tell time with real clocks!</div>
+        <div class="game-desc">Learn to tell time with real clocks! 4 levels.</div>
       </div>
     </a>
+
     <a href="time/" class="game-card time">
       <div class="game-icon">⏱️</div>
       <div class="game-info">
         <div class="game-title">Time Master</div>
-        <div class="game-desc">Calculate elapsed time & word problems!</div>
+        <div class="game-desc">Calculate elapsed time & word problems! 4 levels.</div>
       </div>
     </a>
+
     <a href="money/" class="game-card money">
-      <span class="badge new">NEW</span>
       <div class="game-icon">💰</div>
       <div class="game-info">
         <div class="game-title">Money Master</div>
-        <div class="game-desc">Buy snacks and learn to count coins!</div>
+        <div class="game-desc">Count Japanese yen coins & calculate change! 💴</div>
       </div>
     </a>
+
   </div>
 
   <footer>
     Made with ❤️ by <strong>Maru</strong><br>
-    10 games and growing! 🚀
+    11 games · Japanese module launching! 🇯🇵🚀
   </footer>
 
 </div>
