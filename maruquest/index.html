@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruQuest: Achievement Edition</title>
+    <title>MaruQuest: Master Speed</title>
     <style>
         :root { --primary: #FF784E; --secondary: #60A5FA; --boss: #EF4444; }
         body { font-family: 'Comic Sans MS', sans-serif; background-color: #F8FAFC; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
@@ -11,7 +11,9 @@
         #game-container { width: 90%; max-width: 400px; background: white; border: 8px solid var(--primary); border-radius: 40px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; }
 
         .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        /* Home button fix */
         .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; }
+        
         .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
         #best-stat { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
 
@@ -22,7 +24,6 @@
         
         #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
         
-        /* HP Bar for Bosses */
         #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         #hp-fill { height: 100%; width: 100%; background: var(--boss); border-radius: 10px; transition: 0.3s; }
 
@@ -37,7 +38,7 @@
         .hero-attack { transform: translateX(140px) rotate(15deg); }
         .enemy-hit { transform: translateX(-140px); }
 
-        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; }
         .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 
         .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -48,7 +49,7 @@
 
 <div id="game-container">
     <div class="nav-bar">
-        <a href="#" class="home-btn">🏠 Home</a>
+        <a href="https://aqmal-halim.github.io/Marulearn" class="home-btn">🏠 Home</a>
         <div class="stats-col">
             <div>❤️ <span id="p-hp">3</span> | 🏰 F: <span id="floor">1</span></div>
             <div id="best-stat">🏆 Best: F1</div>
@@ -102,13 +103,12 @@
         const isBoss = (floor % 5 === 0);
         enemyHP = isBoss ? 3 : 1;
         
-        // UI Setup for Boss vs Normal
         const hpBar = document.getElementById('hp-bar-container');
         hpBar.style.display = isBoss ? 'block' : 'none';
         document.getElementById('hp-fill').style.width = "100%";
         
         const m = monsters[Math.floor(Math.random() * monsters.length)];
-        document.getElementById('monster-label').innerText = isBoss ? "BOSS: Big Gloop" : m.name;
+        document.getElementById('monster-label').innerText = isBoss ? "BOSS CHALLENGE" : m.name;
         document.getElementById('enemy').innerText = isBoss ? "👹" : m.icon;
         
         newRound();
@@ -123,7 +123,7 @@
     function newRound() {
         let op = "+", ans, cVal, goal;
         
-        // Difficulty Logic
+        // Adaptive Logic
         if (floor >= 16) op = ["+", "-", "×", "÷"][Math.floor(Math.random()*4)];
         else if (floor >= 11) op = ["+", "-", "×"][Math.floor(Math.random()*3)];
         else if (floor >= 6) op = Math.random() > 0.5 ? "-" : "+";
@@ -156,8 +156,18 @@
     function startTimer() {
         clearInterval(timerInterval);
         let timeLeft = 100;
+        
+        // Base speed calculation
+        let baseSpeed = 0.4 + (floor * 0.04);
+        
+        // Master Speed: After Floor 20, timer gets significantly shorter bit by bit
+        if (floor > 20) {
+            let masterLevels = Math.floor((floor - 20) / 5); 
+            baseSpeed += (masterLevels * 0.15); // Add a speed jump after every master boss
+        }
+
         timerInterval = setInterval(() => {
-            timeLeft -= (0.4 + (floor * 0.04));
+            timeLeft -= baseSpeed;
             document.getElementById('timer-fill').style.width = timeLeft + "%";
             if(timeLeft <= 0) { clearInterval(timerInterval); play(-1, 0); }
         }, 100);
@@ -175,11 +185,7 @@
             setTimeout(() => {
                 document.getElementById('hero-wrap').classList.remove('hero-attack');
                 enemyHP--;
-                
-                // Update HP Bar for Bosses
-                if (floor % 5 === 0) {
-                    document.getElementById('hp-fill').style.width = (enemyHP / 3 * 100) + "%";
-                }
+                if (floor % 5 === 0) document.getElementById('hp-fill').style.width = (enemyHP / 3 * 100) + "%";
 
                 if (enemyHP <= 0) {
                     floor++;
