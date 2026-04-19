@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💬 Sentence Builder</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #1a252f 0%, #2c3e50 50%, #1a252f 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+/* SHARED */
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.back-btn {
+background: white; border: 2px solid #eee; border-radius: 12px;
+padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
+cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+
+/* MENU */
+.menu-header {
+background: white; border-radius: 25px; padding: 22px 20px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+.menu-header .big-title { font-size: 2em; font-weight: 900; color: #2c3e50; margin-bottom: 4px; }
+.menu-header .subtitle  { font-size: 0.9em; color: #888; }
+
+.tip-box {
+background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25);
+border-radius: 15px; padding: 12px 16px; margin-bottom: 15px;
+color: white; font-size: 0.82em; font-weight: 600; line-height: 1.5;
+}
+.tip-box strong { color: #f9ca24; }
+
+.section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.7); margin: 16px 0 8px 2px; }
+.menu-grid { display: grid; gap: 10px; }
+
+.level-card {
+width: 100%; background: white; border-radius: 18px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px; cursor: pointer;
+border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+}
+.level-card:active { transform: scale(0.98); }
+.level-card * { pointer-events: none; }
+.level-icon { font-size: 2em; min-width: 55px; text-align: center; }
+.level-info { flex: 1; }
+.level-name  { font-weight: 900; font-size: 1em; color: #2d3436; }
+.level-desc  { font-size: 0.8em; color: #888; margin-top: 2px; }
+.level-badge { padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
+
+/* GAME SCREEN */
+.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-wrap { flex: 1; background: rgba(255,255,255,0.2); border-radius: 10px; height: 10px; overflow: hidden; }
+.progress-fill { background: #f9ca24; height: 100%; transition: width 0.4s; border-radius: 10px; }
+.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.stat-pill.score  { color: #2c3e50; }
+.stat-pill.streak { color: #e63946; }
+
+/* ENGLISH PROMPT */
+.english-prompt {
+background: white; border-radius: 18px; padding: 18px 18px 14px;
+box-shadow: 0 6px 25px rgba(0,0,0,0.2); margin-bottom: 14px;
+}
+.prompt-label { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin-bottom: 8px; }
+.prompt-text  { font-size: 1.2em; font-weight: 900; color: #2d3436; line-height: 1.4; }
+.prompt-hint  { font-size: 0.78em; color: #aaa; margin-top: 6px; font-weight: 700; }
+
+/* ANSWER ZONE */
+.answer-zone {
+background: rgba(255,255,255,0.08); border: 2px dashed rgba(255,255,255,0.3);
+border-radius: 18px; padding: 16px; margin-bottom: 14px; min-height: 80px;
+display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; align-items: flex-start;
+}
+.answer-zone .empty-hint {
+color: rgba(255,255,255,0.4); font-size: 0.9em; font-weight: 700; width: 100%; text-align: center; padding: 8px 0;
+}
+
+/* WORD TILES */
+.tile {
+background: white; border: 2px solid #eee; border-radius: 12px;
+padding: 10px 14px; font-family: inherit; font-weight: 900;
+cursor: pointer; color: #2d3436; font-size: 1.1em;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+transition: all 0.15s; box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+user-select: none;
+}
+.tile:active { transform: scale(0.95); }
+.tile.particle-tile { color: #6c3483; border-color: #d7bde2; background: #f5eef8; }
+.tile.placed        { background: #eaf4ff; border-color: #aed6f1; }
+.tile.correct-tile  { background: #e8fff5; border-color: #06d6a0; color: #06d6a0; }
+.tile.wrong-tile    { background: #fff0f0; border-color: #e63946; color: #e63946; }
+.tile.used          { opacity: 0.3; pointer-events: none; }
+
+/* TILES BANK */
+.tiles-label { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+.tiles-bank  { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+
+/* ACTION BUTTONS */
+.action-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.check-btn {
+flex: 2; background: #f9ca24; color: #2d3436; border: none; border-radius: 14px;
+padding: 14px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.check-btn:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.4); }
+.clear-btn {
+flex: 1; background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3);
+border-radius: 14px; padding: 14px; font-family: inherit; font-weight: 800; font-size: 0.9em;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+
+.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; line-height: 1.5; }
+.feedback.correct-text { color: #f9ca24; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.feedback.wrong-text   { color: #fab1a0; }
+.feedback.hint-text    { color: white; background: rgba(0,0,0,0.25); padding: 10px 15px; border-radius: 12px; font-size: 0.85em; }
+
+.hint-btn {
+background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3);
+border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* CORRECT ANSWER REVEAL */
+.answer-reveal {
+background: rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 16px;
+margin-bottom: 12px; display: none;
+}
+.ar-label { font-size: 0.72em; font-weight: 800; text-transform: uppercase; color: rgba(255,255,255,0.6); letter-spacing: 1px; margin-bottom: 6px; }
+.ar-jp    { font-size: 1.3em; font-weight: 900; color: #f9ca24; margin-bottom: 4px; }
+.ar-en    { font-size: 0.85em; color: rgba(255,255,255,0.7); }
+
+/* END */
+.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+.trophy    { font-size: 5em; margin: 20px 0; }
+.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+.end-score { font-size: 1.8em; font-weight: 900; color: #f9ca24; margin: 12px 0; }
+.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
+.end-btns  { display: grid; gap: 10px; }
+.end-btn {
+background: white; color: #2c3e50; border: none; border-radius: 15px; padding: 16px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.end-btn.secondary { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); }
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- MENU -->
+
+<div id="menu-screen" class="screen active">
+  <div class="menu-header">
+    <div style="font-size:2.5em;margin-bottom:5px;">💬</div>
+    <div class="big-title">Sentence Builder</div>
+    <div class="subtitle">Tap words to build correct Japanese sentences!</div>
+  </div>
+
+  <div class="tip-box">
+    💬 <strong>How it works:</strong> You'll see an English sentence. Tap the Japanese word tiles in the correct order to build the sentence. Japanese word order is different from English — <strong>verb comes LAST!</strong> Subject → Object → Verb.
+  </div>
+
+  <div class="section-lbl">🎯 Choose a Level</div>
+  <div class="menu-grid">
+    <button type="button" class="level-card" style="border-color:#27ae60;" data-level="beginner">
+      <div class="level-icon">🌱</div>
+      <div class="level-info">
+        <div class="level-name">Level 1 — Beginner</div>
+        <div class="level-desc">Simple 3-4 word sentences · は、を、です</div>
+        <div class="level-badge" style="background:#f0fff4;color:#27ae60;">8 sentences</div>
+      </div>
+    </button>
+    <button type="button" class="level-card" style="border-color:#2980b9;" data-level="elementary">
+      <div class="level-icon">🏫</div>
+      <div class="level-info">
+        <div class="level-name">Level 2 — Elementary</div>
+        <div class="level-desc">4-5 words · に、で、と particles included</div>
+        <div class="level-badge" style="background:#eaf2ff;color:#2980b9;">8 sentences</div>
+      </div>
+    </button>
+    <button type="button" class="level-card" style="border-color:#8e44ad;" data-level="intermediate">
+      <div class="level-icon">⛩️</div>
+      <div class="level-info">
+        <div class="level-name">Level 3 — Intermediate</div>
+        <div class="level-desc">5-6 words · Time expressions, adjectives, て-form</div>
+        <div class="level-badge" style="background:#f5eef8;color:#8e44ad;">8 sentences</div>
+      </div>
+    </button>
+    <button type="button" class="level-card" style="border-color:#e67e22;" data-level="school">
+      <div class="level-icon">🎒</div>
+      <div class="level-info">
+        <div class="level-name">Level 4 — School Life</div>
+        <div class="level-desc">Sentences your kids hear and say every day!</div>
+        <div class="level-badge" style="background:#fef9e7;color:#e67e22;">8 sentences</div>
+      </div>
+    </button>
+    <button type="button" class="level-card" style="border-color:#e74c3c;" data-level="mixed">
+      <div class="level-icon">🎲</div>
+      <div class="level-info">
+        <div class="level-name">Mixed Challenge</div>
+        <div class="level-desc">Random sentences from all levels!</div>
+        <div class="level-badge" style="background:#fff5f5;color:#e74c3c;">All levels</div>
+      </div>
+    </button>
+  </div>
+  <a href="../" class="home-link">← Back to Japanese Hub</a>
+</div>
+
+<!-- GAME -->
+
+<div id="game-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-game">← Back</button>
+    <h2 id="game-title">Sentence Builder</h2>
+  </div>
+
+  <div class="game-header">
+    <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+    <div class="q-count" id="q-count">1/8</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="score">0</span></div>
+    <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+  </div>
+
+  <div class="english-prompt">
+    <div class="prompt-label">🇬🇧 Build this sentence in Japanese</div>
+    <div class="prompt-text" id="prompt-text"></div>
+    <div class="prompt-hint" id="prompt-hint"></div>
+  </div>
+
+  <div class="answer-zone" id="answer-zone">
+    <div class="empty-hint">Tap words below to build your sentence ↓</div>
+  </div>
+
+  <div class="answer-reveal" id="answer-reveal">
+    <div class="ar-label">✅ Correct answer</div>
+    <div class="ar-jp" id="ar-jp"></div>
+    <div class="ar-en" id="ar-en"></div>
+  </div>
+
+  <div class="tiles-label">💡 Tap a word to add it:</div>
+  <div class="tiles-bank" id="tiles-bank"></div>
+
+  <div class="action-row">
+    <button type="button" class="check-btn" id="check-btn" disabled>✅ Check Answer</button>
+    <button type="button" class="clear-btn" id="clear-btn">🔄 Clear</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+</div>
+
+<!-- END -->
+
+<div id="end-screen" class="screen">
+  <div class="end-inner">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">すごい！</div>
+    <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
+    <div class="end-msg"   id="end-msg"></div>
+    <div class="end-btns">
+      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Levels</button>
+    </div>
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+</div>
+<script>
+// ══════════════════════════════════════════
+// SENTENCE DATA
+// correct: array of words in correct order
+// tiles: correct words + distractors shuffled
+// en: English translation
+// hint: grammar hint
+// particle: which tiles are particles (for styling)
+// ══════════════════════════════════════════
+const SENTENCES = {
+
+beginner: [
+{ correct:[‘わたし’,‘は’,‘がくせい’,‘です’,’。’],
+tiles:[‘わたし’,‘は’,‘がくせい’,‘です’,’。’,‘せんせい’,‘あなた’],
+en:‘I am a student.’,
+hint:‘Japanese: Topic は [what it is] です。’,
+particles:[‘は’] },
+{ correct:[‘これ’,‘は’,‘ほん’,‘です’,’。’],
+tiles:[‘これ’,‘は’,‘ほん’,‘です’,’。’,‘あれ’,‘えんぴつ’],
+en:‘This is a book.’,
+hint:‘これ = this · は = topic marker · です = is’,
+particles:[‘は’] },
+{ correct:[‘ねこ’,‘は’,‘かわいい’,‘です’,’。’],
+tiles:[‘ねこ’,‘は’,‘かわいい’,‘です’,’。’,‘いぬ’,‘おおきい’],
+en:‘Cats are cute.’,
+hint:‘ねこ = cat · かわいい = cute · です = are’,
+particles:[‘は’] },
+{ correct:[‘わたし’,‘は’,‘ごはん’,‘を’,‘たべます’,’。’],
+tiles:[‘わたし’,‘は’,‘ごはん’,‘を’,‘たべます’,’。’,‘のみます’,‘パン’],
+en:‘I eat rice/a meal.’,
+hint:‘を marks the direct object. Verb comes LAST!’,
+particles:[‘は’,‘を’] },
+{ correct:[‘かれ’,‘は’,‘にほんじん’,‘です’,’。’],
+tiles:[‘かれ’,‘は’,‘にほんじん’,‘です’,’。’,‘かのじょ’,‘マレーシアじん’],
+en:‘He is Japanese.’,
+hint:‘かれ = he · にほんじん = Japanese person’,
+particles:[‘は’] },
+{ correct:[‘わたし’,‘は’,‘みず’,‘を’,‘のみます’,’。’],
+tiles:[‘わたし’,‘は’,‘みず’,‘を’,‘のみます’,’。’,‘たべます’,‘おちゃ’],
+en:‘I drink water.’,
+hint:‘のむ = to drink · を marks what you drink’,
+particles:[‘は’,‘を’] },
+{ correct:[‘これ’,‘は’,‘なん’,‘です’,‘か’,’？’],
+tiles:[‘これ’,‘は’,‘なん’,‘です’,‘か’,’？’,‘あれ’,‘それ’],
+en:‘What is this?’,
+hint:‘か at the END makes a question in Japanese!’,
+particles:[‘は’] },
+{ correct:[‘あなた’,‘は’,‘だれ’,‘です’,‘か’,’？’],
+tiles:[‘あなた’,‘は’,‘だれ’,‘です’,‘か’,’？’,‘わたし’,‘なに’],
+en:‘Who are you?’,
+hint:‘だれ = who · か turns it into a question’,
+particles:[‘は’] },
+],
+
+elementary: [
+{ correct:[‘わたし’,‘は’,‘がっこう’,‘に’,‘いきます’,’。’],
+tiles:[‘わたし’,‘は’,‘がっこう’,‘に’,‘いきます’,’。’,‘で’,‘きます’,‘うち’],
+en:‘I go to school.’,
+hint:‘に marks DESTINATION (where you're going TO)’,
+particles:[‘は’,‘に’] },
+{ correct:[‘ともだち’,‘と’,‘こうえん’,‘で’,‘あそびます’,’。’],
+tiles:[‘ともだち’,‘と’,‘こうえん’,‘で’,‘あそびます’,’。’,‘に’,‘かぞく’,‘うち’],
+en:‘I play at the park with my friend.’,
+hint:‘と = with · で = place where action happens’,
+particles:[‘と’,‘で’] },
+{ correct:[‘でんしゃ’,‘で’,‘がっこう’,‘に’,‘いきます’,’。’],
+tiles:[‘でんしゃ’,‘で’,‘がっこう’,‘に’,‘いきます’,’。’,‘バス’,‘と’,‘を’],
+en:‘I go to school by train.’,
+hint:‘で = by means of (transport) · に = destination’,
+particles:[‘で’,‘に’] },
+{ correct:[‘わたし’,‘は’,‘にほんご’,‘が’,‘すき’,‘です’,’。’],
+tiles:[‘わたし’,‘は’,‘にほんご’,‘が’,‘すき’,‘です’,’。’,‘を’,‘えいご’,‘きらい’],
+en:‘I like Japanese.’,
+hint:‘すき (like) always uses が, not を!’,
+particles:[‘は’,‘が’] },
+{ correct:[‘おかあさん’,‘は’,‘りょうり’,‘を’,‘つくります’,’。’],
+tiles:[‘おかあさん’,‘は’,‘りょうり’,‘を’,‘つくります’,’。’,‘が’,‘おとうさん’,‘たべます’],
+en:‘Mum makes food.’,
+hint:‘を marks what is being made. Verb at the end!’,
+particles:[‘は’,‘を’] },
+{ correct:[‘わたし’,‘も’,‘にほん’,‘に’,‘きました’,’。’],
+tiles:[‘わたし’,‘も’,‘にほん’,‘に’,‘きました’,’。’,‘は’,‘で’,‘いきました’,‘マレーシア’],
+en:‘I also came to Japan.’,
+hint:‘も = also/too · に = direction/destination’,
+particles:[‘も’,‘に’] },
+{ correct:[‘きょう’,‘は’,‘てんき’,‘が’,‘いい’,‘です’,’。’],
+tiles:[‘きょう’,‘は’,‘てんき’,‘が’,‘いい’,‘です’,’。’,‘を’,‘わるい’,‘あした’],
+en:‘Today the weather is good.’,
+hint:‘Time words like きょう often come first in Japanese!’,
+particles:[‘は’,‘が’] },
+{ correct:[‘としょかん’,‘で’,‘ほん’,‘を’,‘よみます’,’。’],
+tiles:[‘としょかん’,‘で’,‘ほん’,‘を’,‘よみます’,’。’,‘に’,‘かきます’,‘えんぴつ’],
+en:‘I read books at the library.’,
+hint:‘で = place of action · を = direct object’,
+particles:[‘で’,‘を’] },
+],
+
+intermediate: [
+{ correct:[‘まいあさ’,‘わたし’,‘は’,‘はやく’,‘おきます’,’。’],
+tiles:[‘まいあさ’,‘わたし’,‘は’,‘はやく’,‘おきます’,’。’,‘が’,‘ゆっくり’,‘まいばん’],
+en:‘Every morning I wake up early.’,
+hint:‘Time expressions (まいあさ) come at the very start!’,
+particles:[‘は’] },
+{ correct:[‘おとうと’,‘は’,‘サッカー’,‘が’,‘できます’,’。’],
+tiles:[‘おとうと’,‘は’,‘サッカー’,‘が’,‘できます’,’。’,‘を’,‘あに’,‘バスケット’],
+en:‘My younger brother can play football.’,
+hint:‘できる (can do) always uses が, not を!’,
+particles:[‘は’,‘が’] },
+{ correct:[‘がっこう’,‘の’,‘あと’,‘で’,‘ともだち’,‘と’,‘あそびます’,’。’],
+tiles:[‘がっこう’,‘の’,‘あと’,‘で’,‘ともだち’,‘と’,‘あそびます’,’。’,‘に’,‘かぞく’,‘まえ’],
+en:‘After school I play with friends.’,
+hint:‘の connects nouns · で = after (location in time) · と = with’,
+particles:[‘の’,‘で’,‘と’] },
+{ correct:[‘むすめ’,‘は’,‘にほんご’,‘を’,‘べんきょう’,‘して’,‘います’,’。’],
+tiles:[‘むすめ’,‘は’,‘にほんご’,‘を’,‘べんきょう’,‘して’,‘います’,’。’,‘が’,‘えいご’,‘して’],
+en:‘My daughter is studying Japanese.’,
+hint:’〜しています = is doing (ongoing action)’,
+particles:[‘は’,‘を’] },
+{ correct:[‘きのう’,‘かぞく’,‘と’,‘レストラン’,‘に’,‘いきました’,’。’],
+tiles:[‘きのう’,‘かぞく’,‘と’,‘レストラン’,‘に’,‘いきました’,’。’,‘で’,‘ともだち’,‘こうえん’],
+en:‘Yesterday I went to a restaurant with my family.’,
+hint:‘きのう (yesterday) at the start · に = destination’,
+particles:[‘と’,‘に’] },
+{ correct:[‘この’,‘えいが’,‘は’,‘とても’,‘おもしろい’,‘です’,’。’],
+tiles:[‘この’,‘えいが’,‘は’,‘とても’,‘おもしろい’,‘です’,’。’,‘が’,‘あの’,‘つまらない’],
+en:‘This movie is very interesting.’,
+hint:‘この = this (adjective form) · とても = very’,
+particles:[‘は’] },
+{ correct:[‘はは’,‘は’,‘まいにち’,‘りょうり’,‘を’,‘つくって’,‘くれます’,’。’],
+tiles:[‘はは’,‘は’,‘まいにち’,‘りょうり’,‘を’,‘つくって’,‘くれます’,’。’,‘が’,‘ちち’,‘たべて’],
+en:‘Mum makes food for me every day.’,
+hint:’〜てくれます = does something for you · まいにち = every day’,
+particles:[‘は’,‘を’] },
+{ correct:[‘にほん’,‘に’,‘きて’,‘から’,‘にほんご’,‘が’,‘じょうずに’,‘なりました’,’。’],
+tiles:[‘にほん’,‘に’,‘きて’,‘から’,‘にほんご’,‘が’,‘じょうずに’,‘なりました’,’。’,‘で’,‘は’,‘へただ’],
+en:‘Since coming to Japan, I have become good at Japanese.’,
+hint:’〜てから = since/after doing · なりました = became’,
+particles:[‘に’,‘が’] },
+],
+
+school: [
+{ correct:[‘せんせい’,‘は’,‘やさしい’,‘です’,’。’],
+tiles:[‘せんせい’,‘は’,‘やさしい’,‘です’,’。’,‘が’,‘こわい’,‘こうちょう’],
+en:‘The teacher is kind.’,
+hint:‘Simple XはYです sentence — topic + adjective!’,
+particles:[‘は’] },
+{ correct:[‘きゅうしょく’,‘は’,‘おいしかった’,‘です’,’。’],
+tiles:[‘きゅうしょく’,‘は’,‘おいしかった’,‘です’,’。’,‘が’,‘まずかった’,‘やさい’],
+en:‘The school lunch was delicious.’,
+hint:‘おいしかった = was delicious (past tense of おいしい)’,
+particles:[‘は’] },
+{ correct:[‘わたし’,‘は’,‘さんすう’,‘が’,‘とくい’,‘です’,’。’],
+tiles:[‘わたし’,‘は’,‘さんすう’,‘が’,‘とくい’,‘です’,’。’,‘を’,‘にがて’,‘こくご’],
+en:‘I am good at maths.’,
+hint:‘とくい (good at) uses が · にがて (bad at) also uses が!’,
+particles:[‘は’,‘が’] },
+{ correct:[‘はやく’,‘うち’,‘に’,‘かえりたい’,‘です’,’。’],
+tiles:[‘はやく’,‘うち’,‘に’,‘かえりたい’,‘です’,’。’,‘で’,‘がっこう’,‘いきたい’],
+en:‘I want to go home quickly.’,
+hint:’〜たい = want to do · に = destination’,
+particles:[‘に’] },
+{ correct:[‘ともだち’,‘と’,‘おひるごはん’,‘を’,‘たべました’,’。’],
+tiles:[‘ともだち’,‘と’,‘おひるごはん’,‘を’,‘たべました’,’。’,‘に’,‘かぞく’,‘のみました’],
+en:‘I ate lunch with my friend.’,
+hint:‘と = with · を = direct object (what was eaten)’,
+particles:[‘と’,‘を’] },
+{ correct:[‘きょう’,‘は’,‘たいいく’,‘が’,‘あります’,’。’],
+tiles:[‘きょう’,‘は’,‘たいいく’,‘が’,‘あります’,’。’,‘を’,‘もじ’,‘ありません’],
+en:‘Today there is PE (physical education).’,
+hint:’〜があります = there is / there are · Event + があります for schedule’,
+particles:[‘は’,‘が’] },
+{ correct:[‘さくら’,‘ちゃん’,‘は’,‘わたし’,‘の’,‘しんゆう’,‘です’,’。’],
+tiles:[‘さくら’,‘ちゃん’,‘は’,‘わたし’,‘の’,‘しんゆう’,‘です’,’。’,‘が’,‘くん’,‘ともだち’],
+en:‘Sakura-chan is my best friend.’,
+hint:‘の connects possessives: わたしの = my · しんゆう = best friend’,
+particles:[‘は’,‘の’] },
+{ correct:[‘あした’,‘てすと’,‘が’,‘ある’,‘から’,‘べんきょう’,‘します’,’。’],
+tiles:[‘あした’,‘てすと’,‘が’,‘ある’,‘から’,‘べんきょう’,‘します’,’。’,‘は’,‘を’,‘やすみ’],
+en:‘Because there's a test tomorrow, I will study.’,
+hint:’〜から = because · あした = tomorrow · verb at end!’,
+particles:[‘が’,‘から’] },
+],
+};
+
+// ── STATE ──
+let currentLevel = ‘beginner’;
+let questions    = [];
+let qIdx         = 0;
+let qTotal       = 0;
+let score        = 0;
+let streak       = 0;
+let attempts     = 0;
+let answered     = false;
+let placed       = []; // words placed in answer zone in order
+let available    = []; // tile objects: {word, idx, used}
+
+function speak(text) {
+if (!window.speechSynthesis) return;
+window.speechSynthesis.cancel();
+const u = new SpeechSynthesisUtterance(text);
+u.lang = ‘ja-JP’; u.rate = 0.75; u.pitch = 1.1;
+window.speechSynthesis.speak(u);
+}
+
+function showScreen(id) {
+document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
+document.getElementById(id).classList.add(‘active’);
+window.scrollTo(0, 0);
+}
+
+function startLevel(level) {
+currentLevel = level;
+if (level === ‘mixed’) {
+const all = Object.values(SENTENCES).flat();
+questions = all.sort(() => Math.random() - 0.5).slice(0, 10);
+} else {
+questions = […SENTENCES[level]].sort(() => Math.random() - 0.5);
+}
+score = 0; streak = 0; qIdx = 0;
+qTotal = questions.length;
+const titles = { beginner:‘Level 1 — Beginner’, elementary:‘Level 2 — Elementary’, intermediate:‘Level 3 — Intermediate’, school:‘Level 4 — School Life’, mixed:‘Mixed Challenge’ };
+document.getElementById(‘game-title’).textContent = titles[level] || ‘Sentence Builder’;
+document.getElementById(‘score’).textContent  = 0;
+document.getElementById(‘streak’).textContent = 0;
+showScreen(‘game-screen’);
+loadQuestion();
+}
+
+function loadQuestion() {
+if (qIdx >= qTotal) { endGame(); return; }
+answered = false;
+attempts = 0;
+placed   = [];
+const q = questions[qIdx];
+
+document.getElementById(‘q-count’).textContent  = (qIdx + 1) + ‘/’ + qTotal;
+document.getElementById(‘progress’).style.width = (qIdx / qTotal * 100) + ‘%’;
+document.getElementById(‘feedback’).textContent  = ‘’;
+document.getElementById(‘feedback’).className    = ‘feedback’;
+document.getElementById(‘hint-btn’).style.display = ‘none’;
+document.getElementById(‘check-btn’).disabled    = true;
+const reveal = document.getElementById(‘answer-reveal’);
+reveal.style.display = ‘none’;
+
+document.getElementById(‘prompt-text’).textContent = q.en;
+document.getElementById(‘prompt-hint’).textContent = ’💡 ’ + q.hint;
+
+// Answer zone — reset
+const az = document.getElementById(‘answer-zone’);
+az.innerHTML = ‘<div class="empty-hint">Tap words below to build your sentence ↓</div>’;
+
+// Build tiles bank — shuffle q.tiles
+available = q.tiles
+.sort(() => Math.random() - 0.5)
+.map((word, i) => ({ word, idx: i, used: false }));
+
+renderTilesBank();
+}
+
+function renderTilesBank() {
+const bank = document.getElementById(‘tiles-bank’);
+bank.innerHTML = ‘’;
+const q = questions[qIdx];
+available.forEach(tile => {
+const btn = document.createElement(‘button’);
+btn.type = ‘button’;
+btn.className = ‘tile’ + (q.particles && q.particles.includes(tile.word) ? ’ particle-tile’ : ‘’) + (tile.used ? ’ used’ : ‘’);
+btn.textContent = tile.word;
+btn.dataset.tileIdx = tile.idx;
+if (!tile.used) {
+btn.addEventListener(‘click’, () => addTile(tile));
+}
+bank.appendChild(btn);
+});
+}
+
+function renderAnswerZone() {
+const az = document.getElementById(‘answer-zone’);
+az.innerHTML = ‘’;
+if (placed.length === 0) {
+az.innerHTML = ‘<div class="empty-hint">Tap words below to build your sentence ↓</div>’;
+return;
+}
+const q = questions[qIdx];
+placed.forEach((tile, i) => {
+const btn = document.createElement(‘button’);
+btn.type = ‘button’;
+btn.className = ‘tile placed’ + (q.particles && q.particles.includes(tile.word) ? ’ particle-tile’ : ‘’);
+btn.textContent = tile.word;
+btn.addEventListener(‘click’, () => removeTile(i, tile));
+az.appendChild(btn);
+});
+document.getElementById(‘check-btn’).disabled = placed.length === 0;
+}
+
+function addTile(tile) {
+if (answered) return;
+tile.used = true;
+placed.push(tile);
+renderAnswerZone();
+renderTilesBank();
+document.getElementById(‘check-btn’).disabled = false;
+// Clear feedback when they start building
+document.getElementById(‘feedback’).textContent = ‘’;
+}
+
+function removeTile(placedIdx, tile) {
+if (answered) return;
+placed.splice(placedIdx, 1);
+tile.used = false;
+renderAnswerZone();
+renderTilesBank();
+if (placed.length === 0) document.getElementById(‘check-btn’).disabled = true;
+}
+
+function clearAnswer() {
+if (answered) return;
+placed.forEach(t => t.used = false);
+placed = [];
+renderAnswerZone();
+renderTilesBank();
+document.getElementById(‘check-btn’).disabled = true;
+document.getElementById(‘feedback’).textContent = ‘’;
+}
+
+function checkAnswer() {
+if (answered || placed.length === 0) return;
+attempts++;
+const q = questions[qIdx];
+const userAnswer = placed.map(t => t.word).join(’’);
+const correct    = q.correct.join(’’);
+const isCorrect  = userAnswer === correct;
+const feedback   = document.getElementById(‘feedback’);
+
+if (isCorrect) {
+answered = true;
+// Style placed tiles green
+document.querySelectorAll(’.answer-zone .tile’).forEach(t => {
+t.classList.add(‘correct-tile’);
+t.classList.remove(‘placed’, ‘particle-tile’);
+});
+document.getElementById(‘check-btn’).disabled = true;
+speak(correct.replace(’。’,’’).replace(’？’,’’));
+
+```
+if (attempts === 1) {
+  score++; streak++;
+  const msg = ['すごい！ Sugoi! 🎉','よくできました！ ⭐','パーフェクト！ 🌟','さいこう！ 💫','がんばれ！ 🚀'][Math.floor(Math.random()*5)];
+  feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
+} else {
+  streak = 0;
+  feedback.textContent = '正解！ Correct! Well done for getting there! ✅';
+}
+feedback.className = 'feedback correct-text';
+document.getElementById('score').textContent  = score;
+document.getElementById('streak').textContent = streak;
+
+setTimeout(() => { qIdx++; loadQuestion(); }, 2000);
+```
+
+} else {
+streak = 0;
+document.getElementById(‘streak’).textContent = 0;
+// Flash tiles red then reset
+document.querySelectorAll(’.answer-zone .tile’).forEach(t => {
+t.classList.add(‘wrong-tile’);
+setTimeout(() => t.classList.remove(‘wrong-tile’), 600);
+});
+const msgs = [‘もう一度！ Try again! 💪’,‘ちがいます！ Not quite! 🎯’,‘がんばって！ ✨’,‘じゅんばんをかえてみて！ Try a different order!’];
+feedback.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+feedback.className = ‘feedback wrong-text’;
+if (attempts >= 2) {
+document.getElementById(‘hint-btn’).style.display = ‘block’;
+}
+if (attempts >= 3) {
+// Show correct answer after 3 failed attempts
+showCorrectAnswer();
+}
+}
+}
+
+function showCorrectAnswer() {
+const q = questions[qIdx];
+answered = true;
+const reveal = document.getElementById(‘answer-reveal’);
+document.getElementById(‘ar-jp’).textContent = q.correct.join(’’);
+document.getElementById(‘ar-en’).textContent = q.en;
+reveal.style.display = ‘block’;
+document.getElementById(‘hint-btn’).style.display = ‘none’;
+document.getElementById(‘check-btn’).disabled = true;
+speak(q.correct.join(’’).replace(’。’,’’).replace(’？’,’’));
+const feedback = document.getElementById(‘feedback’);
+feedback.textContent = ‘💡 Study the correct order above!’;
+feedback.className = ‘feedback hint-text’;
+setTimeout(() => { qIdx++; loadQuestion(); }, 3000);
+}
+
+function showHint() {
+const q = questions[qIdx];
+const feedback = document.getElementById(‘feedback’);
+feedback.textContent = ’💡 ’ + q.hint + ’ · Answer starts with: ’ + q.correct[0];
+feedback.className = ‘feedback hint-text’;
+}
+
+function endGame() {
+showScreen(‘end-screen’);
+document.getElementById(‘final-score’).textContent = score;
+document.getElementById(‘final-total’).textContent = qTotal;
+const pct = score / qTotal;
+const trophy = document.getElementById(‘trophy’);
+const title  = document.getElementById(‘end-title’);
+const msg    = document.getElementById(‘end-msg’);
+if (pct === 1)       { trophy.textContent=‘🏆’; title.textContent=‘パーフェクト！’; msg.textContent=‘Perfect sentences! Your Japanese word order is flawless! 💬’; }
+else if (pct >= 0.8) { trophy.textContent=‘🥇’; title.textContent=‘すごい！’;       msg.textContent=‘Excellent! Try the next level up!’; }
+else if (pct >= 0.6) { trophy.textContent=‘🥈’; title.textContent=‘よくできました！’; msg.textContent=‘Good job! Remember: Subject → Object → Verb in Japanese!’; }
+else                 { trophy.textContent=‘🌱’; title.textContent=‘がんばれ！’;     msg.textContent=‘Keep practising! Japanese word order takes time. You've got this! 💪’; }
+}
+
+document.addEventListener(‘DOMContentLoaded’, function() {
+// Level cards
+document.querySelectorAll(’.level-card’).forEach(card => {
+card.addEventListener(‘click’, function() { startLevel(this.dataset.level); });
+});
+
+document.getElementById(‘back-to-menu-game’).addEventListener(‘click’, () => showScreen(‘menu-screen’));
+document.getElementById(‘back-to-menu-end’).addEventListener(‘click’,  () => showScreen(‘menu-screen’));
+document.getElementById(‘check-btn’).addEventListener(‘click’, checkAnswer);
+document.getElementById(‘clear-btn’).addEventListener(‘click’, clearAnswer);
+document.getElementById(‘hint-btn’).addEventListener(‘click’,  showHint);
+document.getElementById(‘try-again-btn’).addEventListener(‘click’, () => startLevel(currentLevel));
+});
+</script>
+
+</body>
+</html>
