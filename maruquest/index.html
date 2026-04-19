@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,101 +8,103 @@
         :root { --primary: #FF784E; --secondary: #60A5FA; --boss: #EF4444; }
         body { font-family: 'Comic Sans MS', sans-serif; background-color: #F8FAFC; margin: 0; padding: 12px; }
 
-```
-    #game-container { width: 100%; max-width: 400px; background: white; border: 8px solid var(--primary); border-radius: 40px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; margin: 0 auto; }
+        #game-container { width: 100%; max-width: 400px; background: white; border: 8px solid var(--primary); border-radius: 40px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; margin: 0 auto; }
 
-    .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; font-family: inherit; cursor: pointer; -webkit-appearance: none; }
-    .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
-    #best-stat { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; font-family: inherit; cursor: pointer; -webkit-appearance: none; }
+        .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
+        #best-stat { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
 
-    #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-    #timer-fill { width: 100%; height: 100%; background: #4ADE80; transition: width 0.1s linear; }
-    #timer-fill.warning { background: #FB923C; }
-    #timer-fill.danger  { background: #EF4444; }
+        #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        #timer-fill { width: 100%; height: 100%; background: #4ADE80; transition: width 0.1s linear; }
+        #timer-fill.warning { background: #FB923C; }
+        #timer-fill.danger  { background: #EF4444; }
 
-    /* Combo — only new layout element, very small */
-    #combo-strip { text-align: center; height: 16px; margin-bottom: 3px; font-size: 0.73rem; font-weight: 900; color: #F59E0B; }
+        #combo-strip { text-align: center; height: 16px; margin-bottom: 3px; font-size: 0.73rem; font-weight: 900; color: #F59E0B; }
 
-    #stage { height: 230px; position: relative; border-radius: 25px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; border: 4px solid rgba(0,0,0,0.05); overflow: hidden; background: #F1F5F9; }
-    
-    #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
-    #monster-label.boss-label { background: var(--boss); color: white; animation: boss-glow 1s ease-in-out infinite alternate; }
-    @keyframes boss-glow { from{box-shadow:0 0 5px var(--boss)} to{box-shadow:0 0 15px var(--boss), 0 0 25px var(--boss)} }
-    
-    #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    #hp-fill { height: 100%; width: 100%; background: var(--boss); border-radius: 10px; transition: 0.3s; }
+        #stage { height: 230px; position: relative; border-radius: 25px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; border: 4px solid rgba(0,0,0,0.05); overflow: hidden; background: #F1F5F9; }
+        
+        #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
+        #monster-label.boss-label { background: var(--boss); color: white; animation: boss-glow 1s ease-in-out infinite alternate; }
+        @keyframes boss-glow { from{box-shadow:0 0 5px var(--boss)} to{box-shadow:0 0 15px var(--boss), 0 0 25px var(--boss)} }
+        
+        #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #hp-fill { height: 100%; width: 100%; background: var(--boss); border-radius: 10px; transition: 0.3s; }
 
-    .bubble { position: absolute; background: white; border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; font-weight: 900; color: #1E293B; box-shadow: 0 4px 0 rgba(0,0,0,0.05); opacity: 0; transition: 0.2s; z-index: 20; border: 2px solid #E2E8F0; pointer-events: none; white-space: nowrap; }
-    .bubble::after { content: ''; position: absolute; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid white; bottom: -6px; left: 50%; transform: translateX(-50%); }
-    #hero-bubble { bottom: 125px; left: 20px; }
-    #enemy-bubble { bottom: 125px; right: 20px; }
+        .bubble { position: absolute; background: white; border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; font-weight: 900; color: #1E293B; box-shadow: 0 4px 0 rgba(0,0,0,0.05); opacity: 0; transition: 0.2s; z-index: 20; border: 2px solid #E2E8F0; pointer-events: none; white-space: nowrap; }
+        .bubble::after { content: ''; position: absolute; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid white; bottom: -6px; left: 50%; transform: translateX(-50%); }
+        #hero-bubble { bottom: 125px; left: 20px; }
+        #enemy-bubble { bottom: 125px; right: 20px; }
 
-    #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.12s; border-radius: 20px; }
+        #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.12s; border-radius: 20px; }
 
-    .pop-num { position: absolute; font-size: 1.4em; font-weight: 900; pointer-events: none; z-index: 30; animation: pop-rise 0.8s ease-out forwards; }
-    .pop-num.good { color: #EF4444; }
-    .pop-num.bad  { color: #94A3B8; }
-    @keyframes pop-rise { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-50px);opacity:0} }
+        .pop-num { position: absolute; font-size: 1.4em; font-weight: 900; pointer-events: none; z-index: 30; animation: pop-rise 0.8s ease-out forwards; }
+        .pop-num.good { color: #EF4444; }
+        .pop-num.bad  { color: #94A3B8; }
+        @keyframes pop-rise { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-50px);opacity:0} }
 
-    .star-pop { position: absolute; pointer-events: none; z-index: 25; font-size: 1.2em; animation: s-pop 0.7s ease-out forwards; }
-    @keyframes s-pop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.2) rotate(180deg);opacity:0} }
+        .star-pop { position: absolute; pointer-events: none; z-index: 25; font-size: 1.2em; animation: s-pop 0.7s ease-out forwards; }
+        @keyframes s-pop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.2) rotate(180deg);opacity:0} }
 
-    #hero-wrap { position: absolute; bottom: 15px; left: 25px; width: 85px; transition: 0.3s; }
-    #enemy { position: absolute; bottom: 30px; right: 30px; font-size: 80px; transition: 0.3s; }
+        #hero-wrap { position: absolute; bottom: 15px; left: 25px; width: 85px; transition: 0.3s; }
+        #enemy { position: absolute; bottom: 30px; right: 30px; font-size: 80px; transition: 0.3s; }
 
-    .hero-attack { transform: translateX(140px) rotate(15deg); }
-    .enemy-hit   { transform: translateX(-140px); }
-    .enemy-shake { animation: e-shake 0.4s; }
-    .hero-hurt   { animation: h-hurt 0.35s; }
-    @keyframes e-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-12px) rotate(-5deg)} 75%{transform:translateX(12px) rotate(5deg)} }
-    @keyframes h-hurt  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+        .hero-attack { transform: translateX(140px) rotate(15deg); }
+        .enemy-hit   { transform: translateX(-140px); }
+        .enemy-shake { animation: e-shake 0.4s; }
+        .hero-hurt   { animation: h-hurt 0.35s; }
+        @keyframes e-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-12px) rotate(-5deg)} 75%{transform:translateX(12px) rotate(5deg)} }
+        @keyframes h-hurt  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
 
-    #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; }
-    .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-    .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; }
+        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; }
+        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; }
 
-    .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .card { height: 65px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; font-family: inherit; -webkit-appearance: none; transition: 0.1s; }
-    .card:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #2563EB; }
-    .card.correct { background: #4ADE80; box-shadow: 0 5px 0 #16A34A; animation: c-pop 0.3s; }
-    .card.wrong   { background: #F87171; box-shadow: 0 5px 0 #DC2626; animation: c-shake 0.3s; }
-    .card:disabled { cursor: not-allowed; opacity: 0.8; }
-    @keyframes c-pop   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1) translateY(-3px)} }
-    @keyframes c-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+        .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .card { height: 65px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; font-family: inherit; -webkit-appearance: none; transition: 0.1s; }
+        .card:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #2563EB; }
+        .card.correct { background: #4ADE80; box-shadow: 0 5px 0 #16A34A; animation: c-pop 0.3s; }
+        .card.wrong   { background: #F87171; box-shadow: 0 5px 0 #DC2626; animation: c-shake 0.3s; }
+        .card:disabled { cursor: not-allowed; opacity: 0.8; }
 
-    /* Confetti */
-    .confetti { position: fixed; width: 9px; height: 9px; pointer-events: none; z-index: 999; border-radius: 2px; animation: c-fall linear forwards; }
-    @keyframes c-fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+        .confetti { position: fixed; width: 9px; height: 9px; pointer-events: none; z-index: 999; border-radius: 2px; animation: c-fall linear forwards; }
+        @keyframes c-fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
 
-    /* Level up banner */
-    #lvl-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); color: white; padding: 16px 32px; border-radius: 22px; font-size: 1.25em; font-weight: 900; z-index: 999; pointer-events: none; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); text-align: center; border: 3px solid rgba(255,255,255,0.4); }
-    #lvl-banner.type-boss    { background: #EF4444; box-shadow: 0 10px 30px rgba(239,68,68,0.5); }
-    #lvl-banner.type-unlock  { background: #6366F1; box-shadow: 0 10px 30px rgba(99,102,241,0.5); }
-    #lvl-banner.type-floor   { background: #F59E0B; box-shadow: 0 10px 30px rgba(245,158,11,0.5); }
-    #lvl-banner.show { transform: translate(-50%,-50%) scale(1); }
+        #go-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 990; justify-content: center; align-items: center; }
+        #go-overlay.show { display: flex; }
+        #go-card { background: white; border-radius: 30px; padding: 26px 22px; width: 86%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 6px solid var(--primary); animation: go-pop 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes go-pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
+        .go-emoji { font-size: 4em; margin: 5px 0 8px; }
+        .go-title { font-size: 1.6em; font-weight: 900; color: #1E293B; margin-bottom: 4px; }
+        .go-sub   { font-size: 0.85em; color: #94A3B8; margin-bottom: 16px; }
+        .go-stats { background: #F8FAFC; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; }
+        .go-row   { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.88em; border-bottom: 1px solid #E2E8F0; }
+        .go-row:last-child { border: none; }
+        .go-row .lbl { color: #94A3B8; font-weight: 700; }
+        .go-row .val { color: #1E293B; font-weight: 900; }
+        .new-best-tag { background: #FEF3C7; color: #D97706; padding: 4px 12px; border-radius: 20px; font-size: 0.78em; font-weight: 900; display: inline-block; margin-bottom: 12px; }
+        .go-btn { width: 100%; padding: 13px; border: none; border-radius: 15px; font-family: inherit; font-weight: 900; font-size: 1em; cursor: pointer; margin-bottom: 8px; -webkit-appearance: none; }
+        .go-btn.primary   { background: var(--primary); color: white; box-shadow: 0 5px 0 #D4623A; }
+        .go-btn.primary:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4623A; }
+        .go-btn.secondary { background: white; color: #64748B; border: 2px solid #E2E8F0; }
 
-    /* Game over overlay */
-    #go-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 990; justify-content: center; align-items: center; }
-    #go-overlay.show { display: flex; }
-    #go-card { background: white; border-radius: 30px; padding: 26px 22px; width: 86%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 6px solid var(--primary); animation: go-pop 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-    @keyframes go-pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
-    .go-emoji { font-size: 4em; margin: 5px 0 8px; }
-    .go-title { font-size: 1.6em; font-weight: 900; color: #1E293B; margin-bottom: 4px; }
-    .go-sub   { font-size: 0.85em; color: #94A3B8; margin-bottom: 16px; }
-    .go-stats { background: #F8FAFC; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; }
-    .go-row   { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.88em; border-bottom: 1px solid #E2E8F0; }
-    .go-row:last-child { border: none; }
-    .go-row .lbl { color: #94A3B8; font-weight: 700; }
-    .go-row .val { color: #1E293B; font-weight: 900; }
-    .new-best-tag { background: #FEF3C7; color: #D97706; padding: 4px 12px; border-radius: 20px; font-size: 0.78em; font-weight: 900; display: inline-block; margin-bottom: 12px; }
-    .go-btn { width: 100%; padding: 13px; border: none; border-radius: 15px; font-family: inherit; font-weight: 900; font-size: 1em; cursor: pointer; margin-bottom: 8px; -webkit-appearance: none; }
-    .go-btn.primary   { background: var(--primary); color: white; box-shadow: 0 5px 0 #D4623A; }
-    .go-btn.primary:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4623A; }
-    .go-btn.secondary { background: white; color: #64748B; border: 2px solid #E2E8F0; }
-</style>
-```
+        #interstitial {
+            display: none;
+            position: fixed; inset: 0; z-index: 998;
+            justify-content: center; align-items: center;
+            flex-direction: column;
+            transition: opacity 0.3s;
+        }
+        #interstitial.show { display: flex; }
+        #interstitial.hiding { opacity: 0; }
 
+        .int-icon  { font-size: 5em; margin-bottom: 10px; animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .int-title { font-size: 2em; font-weight: 900; color: white; text-align: center; text-shadow: 0 3px 10px rgba(0,0,0,0.25); animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+        .int-sub   { font-size: 1em; color: rgba(255,255,255,0.8); margin-top: 8px; font-weight: 700; text-align: center; animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+        .inter-bar   { width: 200px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-top: 30px; overflow: hidden; }
+        .inter-progress { height: 100%; width: 0%; background: white; border-radius: 10px; }
+        @keyframes inter-pop  { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+    </style>
 </head>
 <body>
 
@@ -116,73 +117,60 @@
         </div>
     </div>
 
-```
-<div id="timer-container"><div id="timer-fill"></div></div>
-<div id="combo-strip"></div>
+    <div id="timer-container"><div id="timer-fill"></div></div>
+    <div id="combo-strip"></div>
 
-<div id="stage">
-    <div id="monster-label">Zappy</div>
-    <div id="hp-bar-container"><div id="hp-fill"></div></div>
-    <div id="hero-bubble" class="bubble"></div>
-    <div id="enemy-bubble" class="bubble"></div>
-    <div id="flash"></div>
-    <div id="enemy">👾</div>
-    <div id="hero-wrap">
-        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(5deg)">
-            <defs>
-                <radialGradient id="grad_maru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
-                    <stop offset="0%" style="stop-color:#FFD4A1"/>
-                    <stop offset="100%" style="stop-color:#FFB15E"/>
-                </radialGradient>
-            </defs>
-            <circle cx="80" cy="85" r="45" fill="url(#grad_maru)"/>
-            <g>
-                <path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
-                <path d="M46 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
-                <path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
-                <path d="M90 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
-            </g>
-            <g>
-                <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                <ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/>
-                <ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
-                <circle cx="71" cy="79" r="1.5" fill="white"/>
-                <circle cx="95" cy="79" r="1.5" fill="white"/>
-            </g>
-            <path d="M65 102 q15 12 30 0" stroke="#333333" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <g>
-                <path d="M50 40 L80 30 L110 40 L80 50 Z" fill="#333"/>
-                <path d="M65 43 h30 q0 12-15 12 q-15 0-15-12" fill="#333"/>
-                <line x1="110" y1="40" x2="116" y2="56" stroke="#FCD34D" stroke-width="2.5"/>
-                <circle cx="116" cy="58" r="4" fill="#FCD34D"/>
-            </g>
-            <g>
-                <circle cx="28" cy="95" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
-                <circle cx="132" cy="70" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
-            </g>
-        </svg>
+    <div id="stage">
+        <div id="monster-label">Zappy</div>
+        <div id="hp-bar-container"><div id="hp-fill"></div></div>
+        <div id="hero-bubble" class="bubble"></div>
+        <div id="enemy-bubble" class="bubble"></div>
+        <div id="flash"></div>
+        <div id="enemy">👾</div>
+        <div id="hero-wrap">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(5deg)">
+                <defs>
+                    <radialGradient id="grad_maru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+                        <stop offset="0%" style="stop-color:#FFD4A1"/>
+                        <stop offset="100%" style="stop-color:#FFB15E"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="80" cy="85" r="45" fill="url(#grad_maru)"/>
+                <g>
+                    <path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+                    <path d="M46 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
+                    <path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+                    <path d="M90 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
+                </g>
+                <g>
+                    <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
+                    <ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
+                    <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/>
+                    <ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
+                    <circle cx="71" cy="79" r="1.5" fill="white"/>
+                    <circle cx="95" cy="79" r="1.5" fill="white"/>
+                </g>
+                <path d="M65 102 q15 12 30 0" stroke="#333333" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <g>
+                    <path d="M50 40 L80 30 L110 40 L80 50 Z" fill="#333"/>
+                    <path d="M65 43 h30 q0 12-15 12 q-15 0-15-12" fill="#333"/>
+                    <line x1="110" y1="40" x2="116" y2="56" stroke="#FCD34D" stroke-width="2.5"/>
+                    <circle cx="116" cy="58" r="4" fill="#FCD34D"/>
+                </g>
+            </svg>
+        </div>
     </div>
+
+    <div id="equation-box">
+        <div class="slot" id="slot">?</div>
+        <span id="op">+</span>
+        <span id="const-val">0</span>
+        <span>=</span>
+        <span id="goal-val">0</span>
+    </div>
+
+    <div class="hand" id="card-hand"></div>
 </div>
-
-<div id="equation-box">
-    <div class="slot" id="slot">?</div>
-    <span id="op">+</span>
-    <span id="const-val">0</span>
-    <span>=</span>
-    <span id="goal-val">0</span>
-</div>
-
-<div class="hand" id="card-hand"></div>
-```
-
-</div>
-
-<!-- Level up banner -->
-
-<div id="lvl-banner"></div>
-
-<!-- Game over — replaces alert() -->
 
 <div id="go-overlay">
     <div id="go-card">
@@ -198,6 +186,13 @@
         <button type="button" class="go-btn primary"   id="go-retry">⚔️ Try Again!</button>
         <button type="button" class="go-btn secondary" id="go-home">🏠 Home</button>
     </div>
+</div>
+
+<div id="interstitial">
+    <div class="int-icon"  id="int-icon"></div>
+    <div class="int-title" id="int-title"></div>
+    <div class="int-sub"   id="int-sub"></div>
+    <div class="inter-bar"><div class="inter-progress" id="int-progress"></div></div>
 </div>
 
 <script>
@@ -283,14 +278,39 @@
             s.appendChild(el); setTimeout(()=>el.remove(), 700+i*90);
         });
     }
+
     function showBanner(text, type='floor') {
-        const b=document.getElementById('lvl-banner');
-        b.innerText=text;
-        b.className='';  // clear all classes
-        b.classList.add('show', 'type-'+type);
-        clearTimeout(b._t);
-        b._t=setTimeout(()=>{ b.classList.remove('show'); }, 1600);
+        const COLORS = { boss:'#DC2626', unlock:'#4F46E5', floor:'#D97706' };
+        const ICONS  = { boss:'⚠️', unlock:'🔓', floor:'🏆' };
+        const SUBS   = { boss:'Defeat it to advance!', unlock:'New operation unlocked!', floor:"You're unstoppable!" };
+
+        const overlay = document.getElementById('interstitial');
+        const bar     = document.getElementById('int-progress');
+
+        document.getElementById('int-icon').innerText  = ICONS[type]  || '🌟';
+        document.getElementById('int-title').innerText = text;
+        document.getElementById('int-sub').innerText   = SUBS[type]   || '';
+        overlay.style.backgroundColor = COLORS[type] || '#D97706';
+
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        overlay.classList.add('show');
+        overlay.classList.remove('hiding');
+
+        requestAnimationFrame(()=>{
+            requestAnimationFrame(()=>{
+                bar.style.transition = 'width 1.4s linear';
+                bar.style.width = '100%';
+            });
+        });
+
+        clearTimeout(overlay._t);
+        overlay._t = setTimeout(()=>{
+            overlay.classList.add('hiding');
+            setTimeout(() => overlay.classList.remove('show'), 300);
+        }, 1600);
     }
+
     function confetti(n=40) {
         const cols=['#FF784E','#FCD34D','#4ADE80','#60A5FA','#F472B6','#FB923C'];
         for(let i=0;i<n;i++){
@@ -335,7 +355,7 @@
             document.getElementById('monster-label').innerText = monster.name;
             document.getElementById('monster-label').className = '';
             document.getElementById('enemy').innerText = monster.icon;
-            if(floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!', 'floor'); }
+            if(floor > 1 && floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!', 'floor'); }
             else if(floor===6)  showBanner('➖ Subtraction unlocked!', 'unlock');
             else if(floor===11) showBanner('✖️ Multiplication unlocked!', 'unlock');
             else if(floor===16) showBanner('➗ Division unlocked!', 'unlock');
@@ -375,7 +395,6 @@
         });
 
         startTimer();
-        if(Math.random()<0.2) say('enemy', pick(monster.taunts));
     }
 
     // ══ TIMER ══
@@ -389,7 +408,7 @@
             timeLeft-=speed;
             const fill=document.getElementById('timer-fill');
             fill.style.width=timeLeft+'%';
-            fill.className='timer-fill'+(timeLeft<25?' danger':timeLeft<50?' warning':'');
+            fill.className=timeLeft<25?'danger':timeLeft<50?'warning':'';
             if(timeLeft<=0){ clearInterval(timerInterval); play(-999,0); }
         },100);
     }
@@ -423,7 +442,6 @@
                     document.getElementById('hp-fill').style.width=(enemyHP/3*100)+'%';
                     document.getElementById('enemy').classList.add('enemy-shake');
                     popNum('💥 HIT!','good');
-                    say('enemy', pick(monster.taunts));
                     setTimeout(()=>{
                         document.getElementById('enemy').classList.remove('enemy-shake');
                         isBusy=false; newRound();
@@ -432,12 +450,10 @@
                     document.getElementById('enemy').classList.add('enemy-hit');
                     popNum('⚡ KO!','good');
                     if(combo>=4) popStars();
-                    say('enemy', pick(monster.deaths));
                     if(floor%5===0){ SFX.bossKill(); confetti(65); } else SFX.levelup();
                     setTimeout(()=>{
                         const e=document.getElementById('enemy');
-                        e.className=''; e.style.transform=''; e.style.opacity='';
-                        floor++; isBusy=false; init();
+                        e.className=''; floor++; isBusy=false; init();
                     },650);
                 }
             },450);
@@ -445,34 +461,21 @@
         } else {
             const isTimeout=(n===-999);
             combo=0; updateCombo();
-
-            if(isTimeout){
-                SFX.timeout(); flash('#EF444430');
-                say('enemy','⏰ TOO SLOW!'); popNum('TIME!','bad');
-            } else {
-                SFX.wrong(); flash('#EF444448');
-                document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===n) c.classList.add('wrong'); });
-                say('enemy', pick(monster.taunts)); popNum('✗ MISS','bad');
-            }
+            if(isTimeout){ SFX.timeout(); popNum('TIME!','bad'); } 
+            else { SFX.wrong(); document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===n) c.classList.add('wrong'); }); popNum('✗ MISS','bad'); }
 
             document.getElementById('hero-wrap').classList.add('hero-hurt');
-            setTimeout(()=>document.getElementById('hero-wrap').classList.remove('hero-hurt'),380);
-
             playerHP--;
             document.getElementById('p-hp').innerText=playerHP;
 
             if(playerHP<=0){ SFX.over(); setTimeout(gameOver,650); }
-            else { setTimeout(()=>{ isBusy=false; newRound(); },650); }
+            else { setTimeout(()=>{ document.getElementById('hero-wrap').classList.remove('hero-hurt'); isBusy=false; newRound(); },650); }
         }
     }
 
-    // ══ GAME OVER ══
     function gameOver() {
         const best=getBest(), isNew=floor>best;
         if(isNew) setBest(floor);
-        document.getElementById('go-emoji').innerText = floor>15?'🏆':floor>8?'⭐':'💀';
-        document.getElementById('go-title').innerText = floor>15?'Legendary Run!':floor>8?'Great Fight!':'Tower Broken!';
-        document.getElementById('go-sub').innerText   = floor>8?'You\'re getting stronger!':'Keep practising!';
         document.getElementById('go-floor').innerText = 'Floor '+floor;
         document.getElementById('go-score').innerText = score;
         document.getElementById('go-best').innerText  = 'F'+(isNew?floor:best);
@@ -486,14 +489,12 @@
         floor=1; playerHP=3; combo=0; score=0; init();
     }
 
-    // ══ EVENTS ══
     document.addEventListener('DOMContentLoaded', ()=>{
         init();
-        document.getElementById('home-btn').addEventListener('click',()=>{ clearInterval(timerInterval); window.location.href='../'; });
         document.getElementById('go-retry').addEventListener('click', restartGame);
+        document.getElementById('home-btn').addEventListener('click',()=>{ window.location.href='../'; });
         document.getElementById('go-home').addEventListener('click',()=>{ window.location.href='../'; });
     });
 </script>
-
 </body>
 </html>
