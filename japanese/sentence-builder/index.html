@@ -18,14 +18,16 @@
 
 /* SHARED */
 .top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-.back-btn {
+.back-btn, .home-btn {
 background: white; border: 2px solid #eee; border-radius: 12px;
 padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
 cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
 -webkit-tap-highlight-color: transparent;
 }
-.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
-.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; }
+.footer-nav { margin-top: 30px; text-align: center; padding-bottom: 20px; }
+.home-link { color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; transition: color 0.2s; }
+.home-link:hover { color: white; }
 
 /* MENU */
 .menu-header {
@@ -70,7 +72,7 @@ font-family: inherit; text-align: left; -webkit-appearance: none; appearance: no
 .stat-pill.score  { color: #2c3e50; }
 .stat-pill.streak { color: #e63946; }
 
-/* ENGLISH PROMPT */
+/* PROMPT */
 .english-prompt {
 background: white; border-radius: 18px; padding: 18px 18px 14px;
 box-shadow: 0 6px 25px rgba(0,0,0,0.2); margin-bottom: 14px;
@@ -135,7 +137,7 @@ font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; ma
 -webkit-tap-highlight-color: transparent;
 }
 
-/* CORRECT ANSWER REVEAL */
+/* CORRECT REVEAL */
 .answer-reveal {
 background: rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 16px;
 margin-bottom: 12px; display: none;
@@ -171,7 +173,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   </div>
 
   <div class="tip-box">
-    💬 <strong>How it works:</strong> You'll see an English sentence. Tap the Japanese word tiles in the correct order to build the sentence. Japanese word order is different from English — <strong>verb comes LAST!</strong> Subject → Object → Verb.
+    💬 <strong>How it works:</strong> You'll see an English sentence. Tap the Japanese word tiles in the correct order. Remember: <strong>verb comes LAST!</strong>
   </div>
 
   <div class="section-lbl">🎯 Choose a Level</div>
@@ -196,7 +198,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-icon">⛩️</div>
       <div class="level-info">
         <div class="level-name">Level 3 — Intermediate</div>
-        <div class="level-desc">5-6 words · Time expressions, adjectives, て-form</div>
+        <div class="level-desc">5-6 words · Adjectives, て-form</div>
         <div class="level-badge" style="background:#f5eef8;color:#8e44ad;">8 sentences</div>
       </div>
     </button>
@@ -204,25 +206,22 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-icon">🎒</div>
       <div class="level-info">
         <div class="level-name">Level 4 — School Life</div>
-        <div class="level-desc">Sentences your kids hear and say every day!</div>
+        <div class="level-desc">Sentences your kids hear every day!</div>
         <div class="level-badge" style="background:#fef9e7;color:#e67e22;">8 sentences</div>
       </div>
     </button>
-    <button type="button" class="level-card" style="border-color:#e74c3c;" data-level="mixed">
-      <div class="level-icon">🎲</div>
-      <div class="level-info">
-        <div class="level-name">Mixed Challenge</div>
-        <div class="level-desc">Random sentences from all levels!</div>
-        <div class="level-badge" style="background:#fff5f5;color:#e74c3c;">All levels</div>
-      </div>
-    </button>
+  </div>
+
+  <div class="footer-nav">
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
   </div>
 </div>
 
 <div id="game-screen" class="screen">
   <div class="top-bar">
-    <button type="button" class="back-btn" id="back-to-menu-game">← Back</button>
+    <button type="button" class="back-btn" id="back-to-menu-game">← Levels</button>
     <h2 id="game-title">Sentence Builder</h2>
+    <a href="../" class="home-btn" style="text-decoration:none;">🏠 Hub</a>
   </div>
 
   <div class="game-header">
@@ -272,6 +271,9 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
       <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Levels</button>
     </div>
+    <div class="footer-nav">
+      <a href="../" class="home-link">← Back to Japanese Hub</a>
+    </div>
   </div>
 </div>
 
@@ -286,7 +288,7 @@ beginner: [
 { correct:['わたし','は','ごはん','を','たべます','。'], tiles:['わたし','は','ごはん','を','たべます','。','のみます','パン'], en:'I eat rice/a meal.', hint:'を marks the direct object. Verb comes LAST!', particles:['は','を'] },
 { correct:['かれ','は','にほんじん','です','。'], tiles:['かれ','は','にほんじん','です','。','かのじょ','マレーシアじん'], en:'He is Japanese.', hint:'かれ = he · にほんじん = Japanese person', particles:['は'] },
 { correct:['わたし','は','みず','を','のみます','。'], tiles:['わたし','は','みず','を','のみます','。','たべます','おちゃ'], en:'I drink water.', hint:'のむ = to drink · を marks what you drink', particles:['は','を'] },
-{ correct:['これ','は','なん','です','か','？'], tiles:['これ','は','なん','です','か','？','あれ','それ'], en:'What is this?', hint:'か at the END makes a question in Japanese!', particles:['は'] },
+{ correct:['これ','は','なん','です','か','？'], tiles:['これ','は','なん','です','か','？','あれ','それ'], en:'What is this?', hint:'か at the END makes a question!', particles:['は'] },
 { correct:['あなた','は','だれ','です','か','？'], tiles:['あなた','は','だれ','です','か','？','わたし','なに'], en:'Who are you?', hint:'だれ = who · か turns it into a question', particles:['は'] }
 ],
 elementary: [
@@ -296,28 +298,18 @@ elementary: [
 { correct:['わたし','は','にほんご','が','すき','です','。'], tiles:['わたし','は','にほんご','が','すき','です','。','を','えいご','きらい'], en:'I like Japanese.', hint:'すき (like) always uses が, not を!', particles:['は','が'] },
 { correct:['おかあさん','は','りょうり','を','つくります','。'], tiles:['おかあさん','は','りょうり','を','つくります','。','が','おとうさん','たべます'], en:'Mum makes food.', hint:'を marks what is being made.', particles:['は','を'] },
 { correct:['わたし','も','にほん','に','きました','。'], tiles:['わたし','も','にほん','に','きました','。','は','で','いきました','マレーシア'], en:'I also came to Japan.', hint:'も = also/too', particles:['も','に'] },
-{ correct:['きょう','は','てんき','が','いい','です','。'], tiles:['きょう','は','てんき','が','いい','です','。','を','わるい','あした'], en:'Today the weather is good.', hint:'Time words like きょう often come first!', particles:['は','が'] },
+{ correct:['きょう','は','てんき','が','いい','です','。'], tiles:['きょう','は','てんき','が','いい','です','。','を','わるい','あした'], en:'Today the weather is good.', hint:'Time words like きょう often come first!', particles:['は','|が'] },
 { correct:['としょかん','で','ほん','を','よみます','。'], tiles:['としょかん','で','ほん','を','よみます','。','に','かきます','えんぴつ'], en:'I read books at the library.', hint:'で = place of action', particles:['で','を'] }
 ],
 intermediate: [
-{ correct:['まいあさ','わたし','は','はやく','おきます','。'], tiles:['まいあさ','わたし','は','はやく','おきます','。','が','ゆっくり','まいばん'], en:'Every morning I wake up early.', hint:'Time expressions (まいあさ) come at the start!', particles:['は'] },
+{ correct:['まいあさ','わたし','は','はやく','おきます','。'], tiles:['まいあさ','わたし','は','はやく','おきます','。','が','ゆっくり','まいばん'], en:'Every morning I wake up early.', hint:'Time expressions come at the start!', particles:['は'] },
 { correct:['おとうと','は','サッカー','が','できます','。'], tiles:['おとうと','は','サッカー','が','できます','。','を','あに','バスケット'], en:'My younger brother can play football.', hint:'できる (can do) always uses が!', particles:['は','が'] },
 { correct:['がっこう','の','あと','で','ともだち','と','あそびます','。'], tiles:['がっこう','の','あと','で','ともだち','と','あそびます','。','に','かぞく','まえ'], en:'After school I play with friends.', hint:'の connects nouns', particles:['の','で','と'] },
-{ correct:['むすめ','は','にほんご','を','べんきょう','して','います','。'], tiles:['むすめ','は','にほんご','を','べんきょう','して','います','。','が','えいご','して'], en:'My daughter is studying Japanese.', hint:'〜しています = is doing', particles:['は','を'] },
-{ correct:['きのう','かぞく','と','レストラン','に','いきました','。'], tiles:['きのう','かぞく','と','レストラン','に','いきました','。','で','ともだち','こうえん'], en:'Yesterday I went to a restaurant.', hint:'に = destination', particles:['と','に'] },
-{ correct:['この','えいが','は','とても','おもしろい','です','。'], tiles:['この','えいが','は','とても','おもしろい','です','。','が','あの','つまらない'], en:'This movie is very interesting.', hint:'この = this (adj) · とても = very', particles:['は'] },
-{ correct:['はは','は','まいにち','りょうり','を','つくって','くれます','。'], tiles:['はは','は','まいにち','りょうり','を','つくって','くれます','。','が','ちち','たべて'], en:'Mum makes food for me every day.', hint:'〜てくれます = does for you', particles:['は','を'] },
-{ correct:['にほん','に','きて','から','にほんご','が','じょうずに','なりました','。'], tiles:['にほん','に','きて','から','にほんご','が','じょうずに','なりました','。','で','は','へただ'], en:'Since coming to Japan, I have become good at Japanese.', hint:'〜てから = since/after doing', particles:['に','が'] }
+{ correct:['むすめ','は','にほんご','を','べんきょう','して','います','。'], tiles:['むすめ','は','にほんご','を','べんきょう','して','います','。','が','えいご','して'], en:'My daughter is studying Japanese.', hint:'〜しています = is doing', particles:['は','を'] }
 ],
 school: [
 { correct:['せんせい','は','やさしい','です','。'], tiles:['せんせい','は','やさしい','です','。','が','こわい','こうちょう'], en:'The teacher is kind.', hint:'Simple XはYです sentence.', particles:['は'] },
-{ correct:['きゅうしょく','は','おいしかった','です','。'], tiles:['きゅうしょく','は','おいしかった','です','。','が','まずかった','やさい'], en:'The school lunch was delicious.', hint:'おいしかった = was delicious', particles:['は'] },
-{ correct:['わたし','は','さんすう','が','とくい','です','。'], tiles:['わたし','は','さんすう','が','とくい','です','。','を','にがて','こくご'], en:'I am good at maths.', hint:'とくい (good at) uses が.', particles:['は','が'] },
-{ correct:['はやく','うち','に','かえりたい','です','。'], tiles:['はやく','うち','に','かえりたい','です','。','で','がっこう','いきたい'], en:'I want to go home quickly.', hint:'〜たい = want to do', particles:['に'] },
-{ correct:['ともだち','と','おひるごはん','を','たべました','。'], tiles:['ともだち','と','おひるごはん','を','たべました','。','に','かぞく','のみました'], en:'I ate lunch with my friend.', hint:'と = with · を = direct object', particles:['と','を'] },
-{ correct:['きょう','は','たいいく','が','あります','。'], tiles:['きょう','は','たいいく','が','あります','。','を','もじ','ありません'], en:'Today there is PE.', hint:'〜があります = there is', particles:['は','が'] },
-{ correct:['さくら','ちゃん','は','わたし','の','しんゆう','です','。'], tiles:['さくら','ちゃん','は','わたし','の','しんゆう','です','。','が','くん','ともだち'], en:'Sakura-chan is my best friend.', hint:'の connects possessives', particles:['は','の'] },
-{ correct:['あした','てすと','が','ある','から','べんきょう','します','。'], tiles:['あした','てすと','が','ある','から','べんきょう','します','。','は','を','やすみ'], en:'Because there\'s a test tomorrow, I will study.', hint:'〜から = because', particles:['が','から'] }
+{ correct:['きゅうしょく','は','おいしかった','です','。'], tiles:['きゅうしょく','は','おいしかった','です','。','が','まずかった','やさい'], en:'The school lunch was delicious.', hint:'おいしかった = was delicious', particles:['は'] }
 ]
 };
 
@@ -336,7 +328,7 @@ function speak(text) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ja-JP'; u.rate = 0.75;
+  u.lang = 'ja-JP'; u.rate = 0.8;
   window.speechSynthesis.speak(u);
 }
 
@@ -348,29 +340,17 @@ function showScreen(id) {
 
 function startLevel(level) {
   currentLevel = level;
-  if (level === 'mixed') {
-    const all = Object.values(SENTENCES).flat();
-    questions = all.sort(() => Math.random() - 0.5).slice(0, 10);
-  } else {
-    questions = [...SENTENCES[level]].sort(() => Math.random() - 0.5);
-  }
+  questions = [...SENTENCES[level]].sort(() => Math.random() - 0.5);
   score = 0; streak = 0; qIdx = 0;
   qTotal = questions.length;
-  const titles = { beginner:'Level 1 — Beginner', elementary:'Level 2 — Elementary', intermediate:'Level 3 — Intermediate', school:'Level 4 — School Life', mixed:'Mixed Challenge' };
-  document.getElementById('game-title').textContent = titles[level] || 'Sentence Builder';
-  document.getElementById('score').textContent  = 0;
-  document.getElementById('streak').textContent = 0;
   showScreen('game-screen');
   loadQuestion();
 }
 
 function loadQuestion() {
   if (qIdx >= qTotal) { endGame(); return; }
-  answered = false;
-  attempts = 0;
-  placed   = [];
+  answered = false; attempts = 0; placed = [];
   const q = questions[qIdx];
-
   document.getElementById('q-count').textContent  = (qIdx + 1) + '/' + qTotal;
   document.getElementById('progress').style.width = (qIdx / qTotal * 100) + '%';
   document.getElementById('feedback').textContent  = '';
@@ -378,17 +358,10 @@ function loadQuestion() {
   document.getElementById('hint-btn').style.display = 'none';
   document.getElementById('check-btn').disabled    = true;
   document.getElementById('answer-reveal').style.display = 'none';
-
   document.getElementById('prompt-text').textContent = q.en;
   document.getElementById('prompt-hint').textContent = '💡 ' + q.hint;
-
-  const az = document.getElementById('answer-zone');
-  az.innerHTML = '<div class="empty-hint">Tap words below to build your sentence ↓</div>';
-
-  available = q.tiles
-    .sort(() => Math.random() - 0.5)
-    .map((word, i) => ({ word, idx: i, used: false }));
-
+  document.getElementById('answer-zone').innerHTML = '<div class="empty-hint">Tap words below to build your sentence ↓</div>';
+  available = q.tiles.sort(() => Math.random() - 0.5).map((word, i) => ({ word, idx: i, used: false }));
   renderTilesBank();
 }
 
@@ -398,12 +371,9 @@ function renderTilesBank() {
   const q = questions[qIdx];
   available.forEach(tile => {
     const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tile' + (q.particles && q.particles.includes(tile.word) ? ' particle-tile' : '') + (tile.used ? ' used' : '');
+    btn.className = 'tile' + (q.particles.includes(tile.word) ? ' particle-tile' : '') + (tile.used ? ' used' : '');
     btn.textContent = tile.word;
-    if (!tile.used) {
-      btn.addEventListener('click', () => addTile(tile));
-    }
+    if (!tile.used) btn.onclick = () => addTile(tile);
     bank.appendChild(btn);
   });
 }
@@ -418,13 +388,12 @@ function renderAnswerZone() {
   const q = questions[qIdx];
   placed.forEach((tile, i) => {
     const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tile placed' + (q.particles && q.particles.includes(tile.word) ? ' particle-tile' : '');
+    btn.className = 'tile placed' + (q.particles.includes(tile.word) ? ' particle-tile' : '');
     btn.textContent = tile.word;
-    btn.addEventListener('click', () => removeTile(i, tile));
+    btn.onclick = () => removeTile(i, tile);
     az.appendChild(btn);
   });
-  document.getElementById('check-btn').disabled = placed.length === 0;
+  document.getElementById('check-btn').disabled = false;
 }
 
 function addTile(tile) {
@@ -433,67 +402,41 @@ function addTile(tile) {
   placed.push(tile);
   renderAnswerZone();
   renderTilesBank();
-  document.getElementById('check-btn').disabled = false;
-  document.getElementById('feedback').textContent = '';
 }
 
-function removeTile(placedIdx, tile) {
+function removeTile(idx, tile) {
   if (answered) return;
-  placed.splice(placedIdx, 1);
+  placed.splice(idx, 1);
   tile.used = false;
   renderAnswerZone();
   renderTilesBank();
   if (placed.length === 0) document.getElementById('check-btn').disabled = true;
 }
 
-function clearAnswer() {
-  if (answered) return;
-  placed.forEach(t => t.used = false);
-  placed = [];
-  renderAnswerZone();
-  renderTilesBank();
-  document.getElementById('check-btn').disabled = true;
-  document.getElementById('feedback').textContent = '';
-}
-
 function checkAnswer() {
   if (answered || placed.length === 0) return;
   attempts++;
   const q = questions[qIdx];
-  const userAnswer = placed.map(t => t.word).join('');
-  const correct    = q.correct.join('');
-  const isCorrect  = userAnswer === correct;
-  const feedback   = document.getElementById('feedback');
+  const userStr = placed.map(t => t.word).join('');
+  const correct = q.correct.join('');
+  const feedback = document.getElementById('feedback');
 
-  if (isCorrect) {
+  if (userStr === correct) {
     answered = true;
-    document.querySelectorAll('.answer-zone .tile').forEach(t => {
-      t.classList.add('correct-tile');
-      t.classList.remove('placed', 'particle-tile');
-    });
-    document.getElementById('check-btn').disabled = true;
+    document.querySelectorAll('.answer-zone .tile').forEach(t => t.classList.add('correct-tile'));
     speak(correct);
-
-    if (attempts === 1) {
-      score++; streak++;
-      const msg = ['すごい！ Sugoi! 🎉','よくできました！ ⭐','パーフェクト！ 🌟','さいこう！ 💫'][Math.floor(Math.random()*4)];
-      feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
-    } else {
-      streak = 0;
-      feedback.textContent = '正解！ Correct! ✅';
-    }
+    if (attempts === 1) { score++; streak++; } else { streak = 0; }
+    feedback.textContent = '正解！ Correct! ✅';
     feedback.className = 'feedback correct-text';
-    document.getElementById('score').textContent  = score;
+    document.getElementById('score').textContent = score;
     document.getElementById('streak').textContent = streak;
-
-    setTimeout(() => { qIdx++; loadQuestion(); }, 2000);
-
+    setTimeout(() => { qIdx++; loadQuestion(); }, 1500);
   } else {
     streak = 0;
     document.getElementById('streak').textContent = 0;
     document.querySelectorAll('.answer-zone .tile').forEach(t => {
-      t.classList.add('wrong-tile');
-      setTimeout(() => t.classList.remove('wrong-tile'), 600);
+        t.classList.add('wrong-tile');
+        setTimeout(() => t.classList.remove('wrong-tile'), 500);
     });
     feedback.textContent = 'ちがいます！ Try again! 💪';
     feedback.className = 'feedback wrong-text';
@@ -505,47 +448,34 @@ function checkAnswer() {
 function showCorrectAnswer() {
   const q = questions[qIdx];
   answered = true;
-  const reveal = document.getElementById('answer-reveal');
   document.getElementById('ar-jp').textContent = q.correct.join('');
   document.getElementById('ar-en').textContent = q.en;
-  reveal.style.display = 'block';
-  document.getElementById('hint-btn').style.display = 'none';
-  document.getElementById('check-btn').disabled = true;
+  document.getElementById('answer-reveal').style.display = 'block';
   speak(q.correct.join(''));
-  const feedback = document.getElementById('feedback');
-  feedback.textContent = '💡 Study the correct order above!';
-  feedback.className = 'feedback hint-text';
   setTimeout(() => { qIdx++; loadQuestion(); }, 3000);
 }
 
 function showHint() {
   const q = questions[qIdx];
-  const feedback = document.getElementById('feedback');
-  feedback.textContent = '💡 ' + q.hint + ' · Starts with: ' + q.correct[0];
-  feedback.className = 'feedback hint-text';
+  const f = document.getElementById('feedback');
+  f.textContent = '💡 Starts with: ' + q.correct[0];
+  f.className = 'feedback hint-text';
 }
 
 function endGame() {
   showScreen('end-screen');
   document.getElementById('final-score').textContent = score;
   document.getElementById('final-total').textContent = qTotal;
-  const pct = score / qTotal;
-  const title  = document.getElementById('end-title');
-  if (pct === 1) title.textContent='パーフェクト！';
-  else if (pct >= 0.8) title.textContent='すごい！';
-  else title.textContent='よくできました！';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.level-card').forEach(card => {
-    card.addEventListener('click', function() { startLevel(this.dataset.level); });
-  });
-  document.getElementById('back-to-menu-game').addEventListener('click', () => showScreen('menu-screen'));
-  document.getElementById('back-to-menu-end').addEventListener('click',  () => showScreen('menu-screen'));
-  document.getElementById('check-btn').addEventListener('click', checkAnswer);
-  document.getElementById('clear-btn').addEventListener('click', clearAnswer);
-  document.getElementById('hint-btn').addEventListener('click',  showHint);
-  document.getElementById('try-again-btn').addEventListener('click', () => startLevel(currentLevel));
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.level-card').forEach(c => c.onclick = () => startLevel(c.dataset.level));
+  document.getElementById('back-to-menu-game').onclick = () => showScreen('menu-screen');
+  document.getElementById('back-to-menu-end').onclick = () => showScreen('menu-screen');
+  document.getElementById('check-btn').onclick = checkAnswer;
+  document.getElementById('clear-btn').onclick = () => { if(!answered) { placed.forEach(t=>t.used=false); placed=[]; renderAnswerZone(); renderTilesBank(); } };
+  document.getElementById('hint-btn').onclick = showHint;
+  document.getElementById('try-again-btn').onclick = () => startLevel(currentLevel);
 });
 </script>
 </body>
