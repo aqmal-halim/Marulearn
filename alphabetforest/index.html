@@ -299,7 +299,7 @@ const LETTERS = {
   P:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]])],mascot:'🐧',word:'Penguin',color:'#2c3e50'},
   Q:{strokes:[arc(CX,CY,95,100,0,Math.PI*2,36),pts([[CX+55,CY+55],[CX+100,CY+100]])],mascot:'🦆',word:'Quail',color:'#e67e22'},
   R:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]]),pts([[205,135],[300,220]])],mascot:'🐇',word:'Rabbit',color:'#95a5a6'},
-  S:{strokes:[arc(CX+10,CY-40,75,55,Math.PI*0.1,Math.PI*1.1,16).concat(arc(CX-10,CY+40,75,55,Math.PI*1.1,Math.PI*2.05,16))],mascot:'🐍',word:'Snake',color:'#27ae60'},
+  S:{strokes:[arc(CX+5, 100, 65, 50, -0.2, -Math.PI * 1.2, 24).concat(pts([[CX-60, 110], [CX+60, 170]])).concat(arc(CX-5, 180, 65, 55, -0.2, Math.PI, 24))],mascot:'🐍',word:'Snake',color:'#27ae60'},
   T:{strokes:[pts([[150,50],[310,50]]),pts([[CX,50],[CX,220]])],mascot:'🐢',word:'Turtle',color:'#16a085'},
   U:{strokes:[pts([[165,50],[165,185]]).concat(arc(CX,185,65,45,Math.PI,0,18)).concat(pts([[295,185],[295,50]]))],mascot:'🦄',word:'Unicorn',color:'#9b59b6'},
   V:{strokes:[pts([[140,50],[CX,220],[300,50]])],mascot:'🦅',word:'Vulture',color:'#7f8c8d'},
