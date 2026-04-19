@@ -324,7 +324,7 @@ const NUMBERS = {
   '20':{strokes:[arc(CX-50,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-105,220],[CX+5,220]])), arc(CX+65,145,50,85,0,Math.PI*2,24)],mascot:'👑',word:'Twenty',color:'#f39c12'}
 };
 
-// Helper: Fill in remaining numbers (simplified for size)
+// Helper: Fill in remaining numbers up to 20
 for(let i=1; i<=20; i++) {
   let s = i.toString();
   if(!NUMBERS[s]) NUMBERS[s] = {strokes:[pts([[CX,60],[CX,230]])], mascot:'🔢', word:s, color:'#4caf50'};
@@ -544,7 +544,6 @@ function checkCompletion() {
   let totalPathPoints = 0;
   let pointsCovered = 0;
 
-  // STRICTER COMPLETION: 95% + Tighter Proximity
   const THRESHOLD = 0.95;
   const PROXIMITY = 22; 
 
