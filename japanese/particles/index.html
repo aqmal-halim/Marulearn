@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧩 Particles Practice</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    background: linear-gradient(135deg, #6c3483 0%, #9b59b6 50%, #76448a 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 500px; margin: 0 auto; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+/* SHARED */
+.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.back-btn {
+background: white; border: 2px solid #eee; border-radius: 12px;
+padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
+cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+
+/* MENU */
+.menu-header {
+background: white; border-radius: 25px; padding: 22px 20px;
+text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+}
+.menu-header .big-title { font-size: 2em; font-weight: 900; color: #6c3483; margin-bottom: 4px; }
+.menu-header .subtitle  { font-size: 0.9em; color: #888; }
+
+.tip-box {
+background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+border-radius: 15px; padding: 12px 16px; margin-bottom: 15px;
+color: white; font-size: 0.82em; font-weight: 600; line-height: 1.5;
+}
+.tip-box strong { color: #fff9c4; }
+
+.section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin: 16px 0 8px 2px; }
+.menu-grid { display: grid; gap: 10px; }
+
+.menu-card {
+width: 100%; background: white; border-radius: 18px; padding: 16px 18px;
+display: flex; align-items: center; gap: 14px; cursor: pointer;
+border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+}
+.menu-card:active { transform: scale(0.98); }
+.menu-card * { pointer-events: none; }
+.menu-icon { font-size: 2.2em; min-width: 55px; text-align: center; font-weight: 900; color: #6c3483; }
+.menu-info { flex: 1; }
+.menu-name  { font-weight: 900; font-size: 1em; color: #2d3436; }
+.menu-desc  { font-size: 0.8em; color: #888; margin-top: 2px; }
+.menu-count { background: #f5eef8; color: #6c3483; border: 1px solid #d7bde2; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
+
+/* PARTICLE LEARN CARD */
+.learn-card {
+background: white; border-radius: 25px; padding: 20px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px;
+}
+.particle-hero {
+background: linear-gradient(135deg, #f5eef8, #e8daef);
+border-radius: 18px; padding: 22px 15px; text-align: center; margin-bottom: 16px;
+}
+.particle-char { font-size: 5em; font-weight: 700; color: #6c3483; line-height: 1; margin-bottom: 6px; }
+.particle-romaji { font-size: 1em; color: #aaa; font-weight: 700; margin-bottom: 4px; }
+.particle-name   { font-size: 1.3em; font-weight: 900; color: #6c3483; }
+
+.function-box {
+background: #f5eef8; border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+}
+.function-box .fb-title { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #6c3483; margin-bottom: 10px; }
+.function-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.function-row:last-child { margin-bottom: 0; }
+.func-badge { background: #6c3483; color: white; border-radius: 8px; padding: 3px 8px; font-size: 0.72em; font-weight: 800; white-space: nowrap; min-width: 70px; text-align: center; }
+.func-desc  { font-size: 0.85em; color: #555; flex: 1; line-height: 1.4; }
+
+.example-sentences { background: #fff; border: 2px solid #e8daef; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+.ex-sent-title { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #6c3483; margin-bottom: 10px; }
+.ex-sent-row { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0e6f9; }
+.ex-sent-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.ex-sent-jp { font-size: 1.1em; font-weight: 900; color: #2d3436; margin-bottom: 2px; }
+.ex-sent-jp .particle-highlight { color: #6c3483; background: #f5eef8; border-radius: 4px; padding: 0 3px; }
+.ex-sent-en { font-size: 0.82em; color: #888; }
+
+.particle-tip { background: #e8f4ff; border-radius: 10px; padding: 8px 12px; font-size: 0.8em; color: #118ab2; font-weight: 700; }
+.watch-out   { background: #fff3e0; border-radius: 10px; padding: 8px 12px; font-size: 0.8em; color: #e67e22; font-weight: 700; margin-top: 8px; }
+
+.speak-btn {
+background: #6c3483; color: white; border: none; border-radius: 50px;
+padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; display: flex; align-items: center; gap: 8px;
+margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.learn-nav { display: flex; justify-content: space-between; align-items: center; }
+.nav-btn {
+background: #2d3436; color: white; border: none; border-radius: 12px;
+padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
+cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.nav-btn:disabled { background: #ddd; color: #aaa; }
+.learn-counter { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
+.start-quiz-btn {
+display: block; width: 100%; margin-top: 18px; padding: 15px;
+background: #6c3483; color: white; border: none; border-radius: 16px;
+font-family: inherit; font-weight: 800; font-size: 1.1em;
+cursor: pointer; -webkit-appearance: none; text-align: center;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* FILL-IN-BLANK QUIZ */
+.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
+.progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
+.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.stat-pill.score  { color: #6c3483; }
+.stat-pill.streak { color: #e63946; }
+
+.question-card {
+background: white; border-radius: 22px; padding: 22px 18px; text-align: center;
+box-shadow: 0 6px 25px rgba(0,0,0,0.15); margin-bottom: 16px; position: relative;
+}
+.q-type-badge { position: absolute; top: 12px; right: 12px; background: #f5eef8; color: #6c3483; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
+.q-instruction { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+
+/* Sentence with blank */
+.sentence-display {
+font-size: 1.5em; font-weight: 900; color: #2d3436; line-height: 1.8;
+margin-bottom: 8px; word-break: keep-all;
+}
+.blank-slot {
+display: inline-block; min-width: 50px; border-bottom: 3px solid #6c3483;
+color: #6c3483; font-size: 1em; padding: 0 6px; margin: 0 4px;
+vertical-align: bottom;
+}
+.sentence-en { font-size: 0.82em; color: #888; margin-top: 6px; line-height: 1.5; }
+
+/* Particle options */
+.particle-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 14px; }
+.particle-opt-btn {
+background: white; border: 2px solid #d7bde2; border-radius: 14px;
+padding: 12px 20px; font-family: inherit; font-weight: 900; font-size: 1.4em;
+cursor: pointer; color: #6c3483; min-width: 60px; text-align: center;
+-webkit-appearance: none; transition: all 0.15s;
+box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
+}
+.particle-opt-btn * { pointer-events: none; }
+.particle-opt-btn:active:not(:disabled) { transform: scale(0.95); }
+.particle-opt-btn.correct { background: #e8fff5; border-color: #06d6a0; color: #06d6a0; }
+.particle-opt-btn.wrong   { background: #fff0f0; border-color: #e63946; color: #e63946; animation: shake 0.4s; }
+.particle-opt-btn:disabled { cursor: not-allowed; opacity: 0.6; }
+
+@keyframes shake {
+0%, 100% { transform: translateX(0); }
+25%       { transform: translateX(-8px); }
+75%       { transform: translateX(8px); }
+}
+
+.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
+.feedback.correct-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.feedback.wrong-text   { color: #d7bde2; }
+.feedback.hint-text    { color: white; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; font-size: 0.85em; line-height: 1.5; }
+
+.hint-btn {
+background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
+border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* END */
+.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+.trophy    { font-size: 5em; margin: 20px 0; }
+.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+.end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
+.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
+.end-btns  { display: grid; gap: 10px; }
+.end-btn {
+background: white; color: #6c3483; border: none; border-radius: 15px; padding: 16px;
+font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+-webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+}
+.end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+</style>
+
+</head>
+<body>
+<div class="container">
+
+<!-- MENU -->
+
+<div id="menu-screen" class="screen active">
+  <div class="menu-header">
+    <div style="font-size:2.5em;margin-bottom:5px;">🧩</div>
+    <div class="big-title">Particles Practice</div>
+    <div class="subtitle">は・が・を・に・で・と・も — the glue of Japanese!</div>
+  </div>
+
+  <div class="tip-box">
+    🧩 <strong>What are particles?</strong> Particles are tiny words placed AFTER nouns to show their role in a sentence. They have no direct English equivalent — they're the hardest and most important part of Japanese grammar. Master these and sentences click into place!
+  </div>
+
+  <div class="section-lbl">📖 Choose a Particle to Study</div>
+  <div class="menu-grid" id="particle-menu"></div>
+
+  <div class="section-lbl" style="margin-top:20px;">🎯 Quiz Modes</div>
+  <div class="menu-grid">
+    <button type="button" class="menu-card" style="border-color:#6c3483;" id="quiz-all-btn">
+      <div class="menu-icon">🎲</div>
+      <div class="menu-info">
+        <div class="menu-name">Mixed Particle Quiz</div>
+        <div class="menu-desc">Fill in the blank — all 7 particles</div>
+        <div class="menu-count">30 sentences</div>
+      </div>
+    </button>
+    <button type="button" class="menu-card" style="border-color:#e74c3c;" id="quiz-hard-btn">
+      <div class="menu-icon">🔥</div>
+      <div class="menu-info">
+        <div class="menu-name">Hard Mode</div>
+        <div class="menu-desc">Similar particles tested together (は vs が, に vs で)</div>
+        <div class="menu-count">Tricky pairs!</div>
+      </div>
+    </button>
+  </div>
+
+<a href="../" class="home-link">← Back to Japanese Hub</a>
+
+</div>
+
+<!-- LEARN -->
+
+<div id="learn-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-learn">← Back</button>
+    <h2 id="learn-title">は Particle</h2>
+  </div>
+  <div class="learn-card">
+    <div class="particle-hero">
+      <div class="particle-char"   id="learn-char"></div>
+      <div class="particle-romaji" id="learn-romaji"></div>
+      <div class="particle-name"   id="learn-pname"></div>
+    </div>
+    <div class="function-box">
+      <div class="fb-title">📌 Functions</div>
+      <div id="learn-functions"></div>
+    </div>
+    <div class="example-sentences">
+      <div class="ex-sent-title">💬 Example Sentences</div>
+      <div id="learn-examples"></div>
+    </div>
+    <div class="particle-tip" id="learn-tip"></div>
+    <div class="watch-out"    id="learn-watchout" style="display:none;"></div>
+  </div>
+  <div style="text-align:center;margin-bottom:18px;">
+    <button type="button" class="speak-btn" id="learn-speak-btn">🔊 Hear examples</button>
+  </div>
+  <div class="learn-nav">
+    <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+    <span class="learn-counter" id="learn-counter">1 / 7</span>
+    <button type="button" class="nav-btn" id="learn-next">Next →</button>
+  </div>
+  <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">🎯 Quiz This Particle!</button>
+  <a href="#" class="home-link" id="learn-back-link">← Back to particles</a>
+</div>
+
+<!-- QUIZ -->
+
+<div id="quiz-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-quiz">← Back</button>
+    <h2 id="quiz-title">Particles Quiz</h2>
+  </div>
+  <div class="game-header">
+    <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
+    <div class="q-count" id="q-count">1/10</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="score">0</span></div>
+    <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+  </div>
+  <div class="question-card">
+    <div class="q-type-badge" id="q-type-badge">Fill in the blank</div>
+    <div class="q-instruction">Pick the correct particle</div>
+    <div class="sentence-display" id="sentence-display"></div>
+    <div class="sentence-en"      id="sentence-en"></div>
+  </div>
+  <div class="particle-options" id="particle-options"></div>
+  <div class="feedback" id="feedback"></div>
+  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+</div>
+
+<!-- END -->
+
+<div id="end-screen" class="screen">
+  <div class="end-inner">
+    <div class="trophy" id="trophy">🏆</div>
+    <div class="end-title" id="end-title">すごい！</div>
+    <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
+    <div class="end-msg"   id="end-msg"></div>
+    <div class="end-btns">
+      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Particles</button>
+    </div>
+    <a href="../" class="home-link">← Back to Japanese Hub</a>
+  </div>
+</div>
+
+</div>
+<script>
+// ══════════════════════════════════════════
+// PARTICLE DATA
+// ══════════════════════════════════════════
+const PARTICLES = [
+  {
+    id: 'wa',
+    char: 'は',
+    romaji: 'wa',
+    name: 'Topic Marker',
+    color: '#e74c3c',
+    functions: [
+      { badge: 'Topic', desc: 'Marks WHAT the sentence is about. Often translated as "as for..."' },
+      { badge: 'Contrast', desc: 'When comparing things — "A is X, but B is Y"' },
+    ],
+    examples: [
+      { jp: ['わたし','は','がくせいです。'], particle: 1, en: 'I am a student.' },
+      { jp: ['これ','は','なんですか？'], particle: 1, en: 'What is this?' },
+      { jp: ['ねこ','は','かわいいです。'], particle: 1, en: 'Cats are cute.' },
+    ],
+    tip: '💡 は is written as "ha" in hiragana but ALWAYS pronounced "wa" when used as a particle!',
+    watchout: '⚠️ は vs が: は marks the TOPIC (what you\'re talking about). が marks the SUBJECT (who does/is). Very tricky!',
+  },
+  {
+    id: 'ga',
+    char: 'が',
+    romaji: 'ga',
+    name: 'Subject Marker',
+    color: '#e67e22',
+    functions: [
+      { badge: 'Subject', desc: 'Marks WHO or WHAT performs the action or has the state' },
+      { badge: 'Emphasis', desc: 'Emphasises the subject — "IT IS THIS that..."' },
+      { badge: 'Desire/Ability', desc: 'Used with すき (like), できる (can do), ある/いる (exist)' },
+    ],
+    examples: [
+      { jp: ['だれ','が','きましたか？'], particle: 1, en: 'Who came?' },
+      { jp: ['わたし','が','やります！'], particle: 1, en: 'I will do it! (emphasis)' },
+      { jp: ['にほんご','が','すきです。'], particle: 1, en: 'I like Japanese.' },
+    ],
+    tip: '💡 After question words like だれ (who) and なに (what), always use が, never は!',
+    watchout: '⚠️ が is used with すき・きらい (like/dislike), できる (can do), わかる (understand), ある/いる (have/exist). These always use が!',
+  },
+  {
+    id: 'wo',
+    char: 'を',
+    romaji: 'wo/o',
+    name: 'Object Marker',
+    color: '#27ae60',
+    functions: [
+      { badge: 'Object', desc: 'Marks the DIRECT OBJECT — what the action is done TO' },
+      { badge: 'Movement', desc: 'Marks where movement passes THROUGH or along' },
+    ],
+    examples: [
+      { jp: ['ごはん','を','たべます。'], particle: 1, en: 'I eat rice/a meal.' },
+      { jp: ['ほん','を','よみます。'], particle: 1, en: 'I read a book.' },
+      { jp: ['みち','を','あるきます。'], particle: 1, en: 'I walk along the road.' },
+    ],
+    tip: '💡 を is written as "wo" but pronounced just "o"! It ONLY exists as a particle — never appears in other words.',
+    watchout: null,
+  },
+  {
+    id: 'ni',
+    char: 'に',
+    romaji: 'ni',
+    name: 'Direction / Time / Location',
+    color: '#2980b9',
+    functions: [
+      { badge: 'Direction', desc: 'WHERE you\'re going TO, or who you\'re giving TO' },
+      { badge: 'Location', desc: 'Where something EXISTS (with ある/いる)' },
+      { badge: 'Time', desc: 'Specific times — at 3 o\'clock, on Monday, in April' },
+      { badge: 'Purpose', desc: 'Going somewhere FOR a purpose' },
+    ],
+    examples: [
+      { jp: ['がっこう','に','いきます。'], particle: 1, en: 'I go TO school.' },
+      { jp: ['つくえ','に','ほんがあります。'], particle: 1, en: 'There is a book ON the desk.' },
+      { jp: ['さんじ','に','おきます。'], particle: 1, en: 'I wake up AT 3 o\'clock.' },
+    ],
+    tip: '💡 に for DESTINATION and EXISTENCE. Think of に as a pin on a map — pointing at a specific location or time.',
+    watchout: '⚠️ に vs で: に = WHERE something EXISTS or WHERE you\'re GOING. で = WHERE an ACTION HAPPENS. "公園にいる" (at the park) vs "公園でサッカーをする" (play football AT the park).',
+  },
+  {
+    id: 'de',
+    char: 'で',
+    romaji: 'de',
+    name: 'Location of Action / Means',
+    color: '#16a085',
+    functions: [
+      { badge: 'Action Spot', desc: 'WHERE an action takes place' },
+      { badge: 'Means/Tool', desc: 'BY what means, WITH what tool, IN what language' },
+      { badge: 'Reason', desc: 'BECAUSE OF, DUE TO (cause of a state)' },
+    ],
+    examples: [
+      { jp: ['こうえん','で','あそびます。'], particle: 1, en: 'I play AT the park.' },
+      { jp: ['でんしゃ','で','いきます。'], particle: 1, en: 'I go BY train.' },
+      { jp: ['にほんご','で','はなしてください。'], particle: 1, en: 'Please speak IN Japanese.' },
+    ],
+    tip: '💡 で = "by means of" or "at the place of action". バスで (by bus), 英語で (in English), 学校で (at school doing something).',
+    watchout: '⚠️ に vs で again: 図書館に本があります (the book EXISTS IN the library) vs 図書館で本を読みます (I READ at the library). EXISTS = に, ACTION = で!',
+  },
+  {
+    id: 'to',
+    char: 'と',
+    romaji: 'to',
+    name: 'And / Together With / Quotation',
+    color: '#8e44ad',
+    functions: [
+      { badge: 'List (and)', desc: 'Connects nouns: A and B (exhaustive — only these items)' },
+      { badge: 'Together', desc: 'Doing something WITH someone' },
+      { badge: 'Quote', desc: 'Marks what someone said or thought (like quotation marks)' },
+    ],
+    examples: [
+      { jp: ['ねこ','と','いぬがいます。'], particle: 1, en: 'There is a cat AND a dog.' },
+      { jp: ['ともだち','と','いきます。'], particle: 1, en: 'I go WITH my friend.' },
+      { jp: ['「おいしい」','と','いいました。'], particle: 1, en: 'Said "it\'s delicious".' },
+    ],
+    tip: '💡 と for AND between nouns (exhaustive list), WITH for companions, and quotes! と is a very hardworking particle.',
+    watchout: '⚠️ と vs も: と = "A and B specifically". も = "A also/too, and B also/too". Different nuance — と is selective, も is additive!',
+  },
+  {
+    id: 'mo',
+    char: 'も',
+    romaji: 'mo',
+    name: 'Also / Too / Even',
+    color: '#c0392b',
+    functions: [
+      { badge: 'Also/Too', desc: 'X is ALSO Y — adds to something already mentioned' },
+      { badge: 'Both/All', desc: 'BOTH A and B, ALL of them (replaces は and が)' },
+      { badge: 'Even', desc: '"Even X" — something surprising or extreme' },
+    ],
+    examples: [
+      { jp: ['わたし','も','がくせいです。'], particle: 1, en: 'I am ALSO a student.' },
+      { jp: ['ねこ','も','いぬ','も','すきです。'], particle: [1,3], en: 'I like BOTH cats AND dogs.' },
+      { jp: ['だれ','も','いません。'], particle: 1, en: 'There is nobody (not even one person).' },
+    ],
+    tip: '💡 も REPLACES は and が — don\'t add them together! わたしもがくせいです ✅ NOT わたしはもがくせいです ❌',
+    watchout: '⚠️ Negative + も = "not even one": だれもいない (nobody at all), なにもない (nothing at all). Very useful with negatives!',
+  },
+];
+
+// ══════════════════════════════════════════
+// QUIZ SENTENCES
+// Each: { jp (array), particle (index or array of indices), correct, distractors, en, hint }
+// ══════════════════════════════════════════
+const ALL_SENTENCES = [
+// は sentences
+{ jp:[‘わたし’,’***’,‘たなかです。’],       correct:‘は’, distractors:[‘が’,‘を’,‘に’], en:‘I am Tanaka.’, hint:‘は marks the TOPIC of the sentence.’ },
+{ jp:[‘これ’,’***’,‘いくらですか？’],        correct:‘は’, distractors:[‘が’,‘を’,‘で’], en:‘How much is this?’, hint:‘は marks the TOPIC — “as for this, how much?”’ },
+{ jp:[‘やさい’,’***’,‘たべません。’],         correct:‘は’, distractors:[‘が’,‘を’,‘も’], en:‘I don't eat vegetables.’, hint:‘は can show contrast or simply mark the topic.’ },
+{ jp:[‘にほん’,’***’,‘くにのなまえです。’],   correct:‘は’, distractors:[‘が’,‘を’,‘と’], en:‘Japan is the name of a country.’, hint:‘は marks TOPIC — “as for Japan…”’ },
+
+// が sentences
+{ jp:[‘だれ’,’***’,‘きましたか？’],           correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘Who came?’, hint:‘After question words (だれ・なに), always use が.’ },
+{ jp:[‘にほんご’,’***’,‘すきです。’],          correct:‘が’, distractors:[‘は’,‘を’,‘で’], en:‘I like Japanese.’, hint:‘すき (like) and きらい (dislike) always use が.’ },
+{ jp:[‘あそこ’,’***’,‘えきです。’],            correct:‘が’, distractors:[‘は’,‘を’,‘と’], en:‘Over there is the station.’, hint:‘が emphasises WHICH one it is.’ },
+{ jp:[‘わたし’,’***’,‘やります！’],            correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘I will do it! (emphatic)’, hint:‘が is used for emphasis — IT IS ME who will do it.’ },
+
+// を sentences
+{ jp:[‘ごはん’,’***’,‘たべます。’],            correct:‘を’, distractors:[‘は’,‘が’,‘に’], en:‘I eat a meal.’, hint:‘を marks the direct object — what is being eaten.’ },
+{ jp:[‘ほん’,’***’,‘よみます。’],              correct:‘を’, distractors:[‘は’,‘が’,‘で’], en:‘I read a book.’, hint:‘を marks what is being read.’ },
+{ jp:[‘おちゃ’,’***’,‘のみます。’],            correct:‘を’, distractors:[‘が’,‘に’,‘で’], en:‘I drink green tea.’, hint:‘を marks the direct object of drinking.’ },
+{ jp:[‘みち’,’***’,‘あるきます。’],            correct:‘を’, distractors:[‘は’,‘に’,‘で’], en:‘I walk along the road.’, hint:‘を marks movement THROUGH or ALONG a place.’ },
+
+// に sentences
+{ jp:[‘がっこう’,’***’,‘いきます。’],          correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I go TO school.’, hint:‘に marks DESTINATION — where you are going TO.’ },
+{ jp:[‘さんじ’,’***’,‘おきます。’],            correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I wake up AT 3 o'clock.’, hint:‘に marks specific TIME — at, on, in.’ },
+{ jp:[‘いす’,’***’,‘すわります。’],            correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I sit ON the chair.’, hint:‘に marks destination/location of movement.’ },
+{ jp:[‘ともだち’,’***’,‘プレゼントをあげます。’], correct:‘に’, distractors:[‘は’,‘を’,‘と’], en:‘I give a present TO my friend.’, hint:‘に marks who something is given TO.’ },
+
+// で sentences
+{ jp:[‘こうえん’,’***’,‘あそびます。’],        correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I play AT the park.’, hint:‘で marks WHERE an action happens.’ },
+{ jp:[‘でんしゃ’,’***’,‘いきます。’],          correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I go BY train.’, hint:‘で marks the MEANS of transport or tool used.’ },
+{ jp:[‘にほんご’,’***’,‘はなします。’],         correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I speak IN Japanese.’, hint:‘で marks the LANGUAGE or tool being used.’ },
+{ jp:[‘かいぎしつ’,’***’,‘かいぎをします。’],  correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I have a meeting IN the conference room.’, hint:‘で marks the location where an action takes place.’ },
+
+// と sentences
+{ jp:[‘ともだち’,’***’,‘えいがをみます。’],    correct:‘と’, distractors:[‘は’,‘が’,‘を’], en:‘I watch a movie WITH my friend.’, hint:‘と marks who you do something TOGETHER WITH.’ },
+{ jp:[‘ねこ’,’***’,‘いぬがいます。’],          correct:‘と’, distractors:[‘は’,‘が’,‘も’], en:‘There is a cat AND a dog.’, hint:‘と connects nouns as an exhaustive list.’ },
+{ jp:[‘かぞく’,’***’,‘にほんにきました。’],    correct:‘と’, distractors:[‘は’,‘が’,‘で’], en:‘I came to Japan WITH my family.’, hint:‘と marks who you came WITH.’ },
+{ jp:[’「おいしい」’,’***’,‘いいました。’],    correct:‘と’, distractors:[‘は’,‘が’,‘を’], en:‘Said “it's delicious”.’, hint:‘と marks a QUOTATION — what was said or thought.’ },
+
+// も sentences
+{ jp:[‘わたし’,’***’,‘がくせいです。’],        correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘I am ALSO a student.’, hint:‘も means “also/too” — someone else is a student AND so am I.’ },
+{ jp:[‘かれ’,’***’,‘にほんごをはなします。’],  correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘He ALSO speaks Japanese.’, hint:‘も replaces は when saying someone ALSO does something.’ },
+{ jp:[‘ねこ’,’***’,‘いぬ’,’***’,‘すきです。’], correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘I like BOTH cats AND dogs.’, hint:‘A も B も = both A and B.’ },
+{ jp:[‘だれ’,’___’,‘しりません。’],            correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘Nobody knows. (not even one person)’, hint:‘Negative + も = “not even”. だれも + ない = nobody at all.’ },
+
+// HARD pairs — は vs が
+{ jp:[‘あのひと’,’***’,‘せんせいです。’],      correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘That person IS the teacher. (identifying)’, hint:‘が is used when IDENTIFYING who something is (answering “who?”)’, hard:true },
+{ jp:[‘はは’,’***’,‘りょうりがじょうずです。’],correct:‘は’, distractors:[‘が’,‘を’,‘に’], en:‘My mother is good at cooking. (topic)’, hint:‘は sets the topic. We're talking ABOUT mum.’, hard:true },
+
+// HARD pairs — に vs で
+{ jp:[‘としょかん’,’***’,‘べんきょうします。’], correct:‘で’, distractors:[‘に’,‘は’,‘を’], en:‘I study AT the library. (action)’, hint:‘An action (studying) happens here — use で.’, hard:true },
+{ jp:[‘としょかん’,’***’,‘ほんがあります。’],   correct:‘に’, distractors:[‘で’,‘は’,‘を’], en:‘There are books IN the library. (existence)’, hint:‘Something EXISTS here — use に.’, hard:true },
+];
+
+let currentParticle = null;
+let learnIdx   = 0;
+let quizData   = [];
+let quizIdx    = 0;
+let quizTotal  = 0;
+let score      = 0;
+let streak     = 0;
+let attempts   = 0;
+let quizMode   = ‘all’; // ‘all’, ‘single’, ‘hard’
+
+const learnData = PARTICLES;
+
+function speak(text) {
+if (!window.speechSynthesis) return;
+window.speechSynthesis.cancel();
+const u = new SpeechSynthesisUtterance(text);
+u.lang = ‘ja-JP’; u.rate = 0.75; u.pitch = 1.1;
+window.speechSynthesis.speak(u);
+}
+
+function showScreen(id) {
+document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
+document.getElementById(id).classList.add(‘active’);
+window.scrollTo(0, 0);
+}
+
+// BUILD PARTICLE MENU
+function buildMenu() {
+const grid = document.getElementById(‘particle-menu’);
+grid.innerHTML = ‘’;
+PARTICLES.forEach(p => {
+const card = document.createElement(‘button’);
+card.type = ‘button’;
+card.className = ‘menu-card’;
+card.style.borderColor = p.color;
+card.dataset.pid = p.id;
+card.innerHTML = ` <div class="menu-icon" style="color:${p.color};font-size:2.5em;">${p.char}</div> <div class="menu-info"> <div class="menu-name">${p.char} (${p.romaji}) — ${p.name}</div> <div class="menu-desc">${p.functions.map(f=>f.badge).join(' · ')}</div> <div class="menu-count">${ALL_SENTENCES.filter(s=>s.correct===p.char && !s.hard).length} practice sentences</div> </div>`;
+card.addEventListener(‘click’, () => startLearn(p.id));
+grid.appendChild(card);
+});
+}
+
+function startLearn(pid) {
+currentParticle = PARTICLES.find(p => p.id === pid);
+learnIdx = PARTICLES.findIndex(p => p.id === pid);
+showLearnCard();
+showScreen(‘learn-screen’);
+setTimeout(() => speak(currentParticle.char), 400);
+}
+
+function showLearnCard() {
+const p = PARTICLES[learnIdx];
+currentParticle = p;
+document.getElementById(‘learn-title’).textContent  = p.char + ’ Particle’;
+document.getElementById(‘learn-char’).textContent   = p.char;
+document.getElementById(‘learn-romaji’).textContent = ‘(’ + p.romaji + ‘)’;
+document.getElementById(‘learn-pname’).textContent  = p.name;
+document.getElementById(‘learn-counter’).textContent = (learnIdx + 1) + ’ / ’ + PARTICLES.length;
+document.getElementById(‘learn-prev’).disabled = learnIdx === 0;
+document.getElementById(‘learn-next’).disabled = learnIdx === PARTICLES.length - 1;
+
+// Functions
+const funcDiv = document.getElementById(‘learn-functions’);
+funcDiv.innerHTML = ‘’;
+p.functions.forEach(f => {
+const row = document.createElement(‘div’);
+row.className = ‘function-row’;
+row.innerHTML = `<span class="func-badge" style="background:${p.color};">${f.badge}</span><span class="func-desc">${f.desc}</span>`;
+funcDiv.appendChild(row);
+});
+
+// Examples
+const exDiv = document.getElementById(‘learn-examples’);
+exDiv.innerHTML = ‘’;
+p.examples.forEach(ex => {
+const indices = Array.isArray(ex.particle) ? ex.particle : [ex.particle];
+const jpHtml = ex.jp.map((part, i) =>
+indices.includes(i)
+? `<span class="particle-highlight">${part}</span>`
+: part
+).join(’’);
+const row = document.createElement(‘div’);
+row.className = ‘ex-sent-row’;
+row.innerHTML = `<div class="ex-sent-jp">${jpHtml}</div><div class="ex-sent-en">${ex.en}</div>`;
+exDiv.appendChild(row);
+});
+
+document.getElementById(‘learn-tip’).textContent = p.tip;
+const wo = document.getElementById(‘learn-watchout’);
+if (p.watchout) { wo.textContent = p.watchout; wo.style.display = ‘block’; }
+else { wo.style.display = ‘none’; }
+}
+
+// QUIZ
+function startQuizMode(mode) {
+quizMode = mode;
+if (mode === ‘single’) {
+quizData = ALL_SENTENCES
+.filter(s => s.correct === currentParticle.char && !s.hard)
+.sort(() => Math.random() - 0.5)
+.slice(0, 8);
+} else if (mode === ‘hard’) {
+quizData = ALL_SENTENCES
+.filter(s => s.hard)
+.concat(ALL_SENTENCES.filter(s => !s.hard).sort(() => Math.random() - 0.5).slice(0, 6))
+.sort(() => Math.random() - 0.5);
+} else {
+quizData = ALL_SENTENCES
+.filter(s => !s.hard)
+.sort(() => Math.random() - 0.5)
+.slice(0, 12);
+}
+score = 0; streak = 0; quizIdx = 0; attempts = 0;
+quizTotal = quizData.length;
+document.getElementById(‘score’).textContent  = 0;
+document.getElementById(‘streak’).textContent = 0;
+const titles = { single: currentParticle?.char + ’ Quiz’, hard: ‘Hard Mode 🔥’, all: ‘Mixed Particle Quiz’ };
+document.getElementById(‘quiz-title’).textContent = titles[mode] || ‘Quiz’;
+showScreen(‘quiz-screen’);
+showQuizQ();
+}
+
+function showQuizQ() {
+if (quizIdx >= quizTotal) { endQuiz(); return; }
+attempts = 0;
+const q = quizData[quizIdx];
+
+document.getElementById(‘q-count’).textContent  = (quizIdx + 1) + ‘/’ + quizTotal;
+document.getElementById(‘progress’).style.width = (quizIdx / quizTotal * 100) + ‘%’;
+document.getElementById(‘feedback’).textContent  = ‘’;
+document.getElementById(‘hint-btn’).style.display = ‘none’;
+document.getElementById(‘q-type-badge’).textContent = q.hard ? ‘🔥 Tricky pair!’ : ‘Fill in the blank’;
+
+// Build sentence display
+const sentDiv = document.getElementById(‘sentence-display’);
+sentDiv.innerHTML = q.jp.map(part =>
+part === ‘___’ ? `<span class="blank-slot">＿</span>` : part
+).join(’’);
+document.getElementById(‘sentence-en’).textContent = q.en;
+
+// Build particle options
+const opts = [q.correct, …q.distractors].sort(() => Math.random() - 0.5);
+const optDiv = document.getElementById(‘particle-options’);
+optDiv.innerHTML = ‘’;
+opts.forEach(opt => {
+const btn = document.createElement(‘button’);
+btn.type = ‘button’; btn.className = ‘particle-opt-btn’;
+btn.textContent = opt;
+btn.addEventListener(‘click’, () => checkAnswer(opt === q.correct, btn, q));
+optDiv.appendChild(btn);
+});
+}
+
+function checkAnswer(isCorrect, btn, q) {
+const feedback = document.getElementById(‘feedback’);
+attempts++;
+const allBtns = document.querySelectorAll(’.particle-opt-btn’);
+if (isCorrect) {
+btn.classList.add(‘correct’);
+allBtns.forEach(b => b.disabled = true);
+// Fill in the blank visually
+const sentDiv = document.getElementById(‘sentence-display’);
+const blank = sentDiv.querySelector(’.blank-slot’);
+if (blank) { blank.textContent = q.correct; blank.style.color = ‘#06d6a0’; blank.style.borderColor = ‘#06d6a0’; }
+speak(q.jp.map(p => p === ‘___’ ? q.correct : p).join(’’));
+const encouragement = [‘すごい！ Sugoi! 🎉’,‘よくできました！ ⭐’,‘がんばれ！ Keep it up! 🚀’,‘さいこう！ 💫’,‘パーフェクト！ 🌟’];
+if (attempts === 1) {
+score++; streak++;
+const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+feedback.textContent = streak >= 3 ? msg + ’ 🔥 ’ + streak + ’ in a row!’ : msg;
+} else {
+streak = 0;
+feedback.textContent = ‘「’ + q.correct + ‘」 ’ + PARTICLES.find(p=>p.char===q.correct)?.name + ’ ✅’;
+}
+feedback.className = ‘feedback correct-text’;
+document.getElementById(‘score’).textContent  = score;
+document.getElementById(‘streak’).textContent = streak;
+setTimeout(() => { quizIdx++; showQuizQ(); }, 1800);
+} else {
+btn.classList.add(‘wrong’); btn.disabled = true;
+streak = 0; document.getElementById(‘streak’).textContent = 0;
+const tryAgain = [‘もう一度！ Try again! 💪’,‘ちがいます。Not quite! 🎯’,‘がんばって！ ✨’];
+feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+feedback.className = ‘feedback wrong-text’;
+if (attempts >= 2) document.getElementById(‘hint-btn’).style.display = ‘block’;
+}
+}
+
+function showHint() {
+const q = quizData[quizIdx];
+const p = PARTICLES.find(p => p.char === q.correct);
+document.getElementById(‘feedback’).textContent = ’💡 Answer: ’ + q.correct + ’ · ’ + (q.hint || p?.name || ‘’);
+document.getElementById(‘feedback’).className = ‘feedback hint-text’;
+}
+
+function endQuiz() {
+showScreen(‘end-screen’);
+document.getElementById(‘final-score’).textContent = score;
+document.getElementById(‘final-total’).textContent = quizTotal;
+const pct = score / quizTotal;
+const trophy = document.getElementById(‘trophy’);
+const title  = document.getElementById(‘end-title’);
+const msg    = document.getElementById(‘end-msg’);
+if (pct === 1)       { trophy.textContent=‘🏆’; title.textContent=‘パーフェクト！’; msg.textContent=‘Perfect! You've mastered Japanese particles! 🧩’; }
+else if (pct >= 0.8) { trophy.textContent=‘🥇’; title.textContent=‘すごい！’;       msg.textContent=‘Excellent! Try Hard Mode to test は vs が and に vs で!’; }
+else if (pct >= 0.6) { trophy.textContent=‘🥈’; title.textContent=‘よくできました！’; msg.textContent=‘Good job! Review the Learn cards for tricky particles!’; }
+else                 { trophy.textContent=‘🌱’; title.textContent=‘がんばれ！’;     msg.textContent=‘Particles are hard — study each one's functions carefully! 💪’; }
+}
+
+document.addEventListener(‘DOMContentLoaded’, function() {
+buildMenu();
+
+document.getElementById(‘quiz-all-btn’).addEventListener(‘click’, () => {
+currentParticle = null; quizMode = ‘all’; startQuizMode(‘all’);
+});
+document.getElementById(‘quiz-hard-btn’).addEventListener(‘click’, () => {
+currentParticle = null; quizMode = ‘hard’; startQuizMode(‘hard’);
+});
+
+document.getElementById(‘back-to-menu-learn’).addEventListener(‘click’, () => showScreen(‘menu-screen’));
+document.getElementById(‘back-to-menu-quiz’).addEventListener(‘click’,  () => showScreen(‘menu-screen’));
+document.getElementById(‘back-to-menu-end’).addEventListener(‘click’,   () => showScreen(‘menu-screen’));
+document.getElementById(‘learn-back-link’).addEventListener(‘click’, function(e) { e.preventDefault(); showScreen(‘menu-screen’); });
+
+document.getElementById(‘learn-speak-btn’).addEventListener(‘click’, function() {
+const p = PARTICLES[learnIdx];
+const texts = p.examples.map(ex => ex.jp.join(’’));
+let i = 0;
+function speakNext() { if (i < texts.length) { speak(texts[i++]); setTimeout(speakNext, 2500); } }
+speakNext();
+});
+
+document.getElementById(‘learn-prev’).addEventListener(‘click’, function() {
+if (learnIdx > 0) { learnIdx–; showLearnCard(); setTimeout(() => speak(PARTICLES[learnIdx].char), 300); }
+});
+document.getElementById(‘learn-next’).addEventListener(‘click’, function() {
+if (learnIdx < PARTICLES.length - 1) { learnIdx++; showLearnCard(); setTimeout(() => speak(PARTICLES[learnIdx].char), 300); }
+});
+
+document.getElementById(‘start-quiz-from-learn’).addEventListener(‘click’, () => startQuizMode(‘single’));
+document.getElementById(‘hint-btn’).addEventListener(‘click’, showHint);
+document.getElementById(‘try-again-btn’).addEventListener(‘click’, () => startQuizMode(quizMode));
+});
+</script>
+
+</body>
+</html>
