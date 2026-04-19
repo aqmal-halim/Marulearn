@@ -58,6 +58,13 @@ font-family: inherit; text-align: left; -webkit-appearance: none; appearance: no
 }
 .menu-card:active { transform: scale(0.98); }
 .menu-card * { pointer-events: none; }
+.menu-card.g1  { border-color: #1a3a5c; }
+.menu-card.g2  { border-color: #2471a3; }
+.menu-card.g3  { border-color: #1a5276; }
+.menu-card.g4  { border-color: #117864; }
+.menu-card.g5  { border-color: #1e8449; }
+.menu-card.g6  { border-color: #7d3c98; }
+.menu-card.mix { border-color: #8e44ad; }
 
 .menu-icon { font-size: 1.5em; min-width: 55px; text-align: center; font-weight: 900; }
 .menu-info { flex: 1; }
@@ -853,7 +860,10 @@ ex:[{w:‘馬’,r:‘うま’,m:‘horse’},{w:‘競馬’,r:‘けいば’
 tip:‘Uma also means delicious in casual speech! Umai! = Yummy! Same pronunciation!’ },
 { id:‘mugi’, k:‘麦’, meaning:‘wheat / barley’, sub:‘grain, cereal’, on:‘バク’, onR:‘baku’, kun:‘むぎ’, kunR:‘mugi’, strokes:7,
 ex:[{w:‘麦’,r:‘むぎ’,m:‘wheat / barley’},{w:‘小麦’,r:‘こむぎ’,m:‘wheat’},{w:‘麦茶’,r:‘むぎちゃ’,m:‘barley tea’}],
-tip:‘Mugicha (barley tea) - the classic Japanese summer drink for kids! Cold and caffeine-free.’ }
+tip:‘Mugicha (barley tea) - the classic Japanese summer drink for kids! Cold and caffeine-free.’ },
+{ id:‘sato’, k:‘里’, meaning:‘village / hometown’, sub:‘native place, hometown’, on:‘リ’, onR:‘ri’, kun:‘さと’, kunR:‘sato’, strokes:7,
+ex:[{w:‘里’,r:‘さと’,m:‘village / hometown’},{w:‘故郷’,r:‘こきょう’,m:‘hometown’},{w:‘里帰り’,r:‘さとがえり’,m:‘returning home’}],
+tip:‘Sato = hometown/village. Satogaeri (returning home) = hometown + return. A nostalgic word.’ }
 ];
 
 const GROUPS = [
@@ -868,7 +878,7 @@ const GROUPS = [
 { id:‘g9’, label:‘頭顔首腹病薬医休’, title:‘Body & Health’, kanji: ALL_KANJI.slice(71, 79) },
 { id:‘g10’, label:‘思考気心楽悲泣笑’, title:‘Feelings’, kanji: ALL_KANJI.slice(79, 87) },
 { id:‘g11’, label:‘引羽園遠何夏家歌’, title:‘More Grade 2’, kanji: ALL_KANJI.slice(87, 112) },
-{ id:‘g12’, label:‘丸弓牛魚京強近形’, title:‘Final Group’, kanji: ALL_KANJI.slice(112) },
+{ id:‘g12’, label:‘丸弓牛魚京強近形’, title:‘Final Group’, kanji: ALL_KANJI.slice(112, 160) },
 ];
 
 const GROUP_COLORS = [’#1a3a5c’,’#2471a3’,’#1a5276’,’#117864’,’#1e8449’,’#7d3c98’,’#922b21’,’#b7950b’,’#784212’,’#2e86c1’,’#e67e22’,’#16a085’];
@@ -1046,7 +1056,7 @@ btn.type = ‘button’; btn.className = ‘option-btn’;
 if (type === ‘meaning’) {
 btn.innerHTML = ‘<span class="opt-en">’ + opt.meaning + ‘</span><span style="font-size:0.72em;color:#bbb;">’ + opt.sub + ‘</span>’;
 } else if (type === ‘reading’) {
-btn.innerHTML = ‘<span class="opt-read">’ + opt.kun.split(’\u3001’)[0] + ‘</span><span class="opt-en">’ + opt.kunR.split(’,’)[0].trim() + ‘</span>’;
+btn.innerHTML = ‘<span class="opt-read">’ + opt.kun.split(’\u3001’)[0].split(’(’)[0].trim() + ‘</span><span class="opt-en">’ + opt.kunR.split(’,’)[0].trim() + ‘</span>’;
 } else {
 btn.innerHTML = ‘<span class="opt-kanji">’ + opt.k + ‘</span><span class="opt-en">’ + opt.strokes + ’ strokes</span>’;
 }
