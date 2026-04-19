@@ -148,7 +148,6 @@ animation: dot-pulse 0.7s ease-in-out infinite;
 }
 @keyframes dot-pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.3)} }
 
-/* ── CELEBRATION FIX ── */
 .celebrate-layer {
 position: absolute; inset: 0; z-index: 20;
 background: rgba(255,248,231,0.98);
@@ -160,19 +159,10 @@ opacity: 0; pointer-events: none;
 transition: opacity 0.3s;
 }
 .celebrate-layer.show { opacity: 1; pointer-events: all; }
-.cel-animal { font-size: 4rem; margin-bottom: 5px; animation: cel-bounce 0.55s ease-in-out infinite alternate; }
+.cel-animal { font-size: 4.5rem; margin-bottom: 10px; animation: cel-bounce 0.55s ease-in-out infinite alternate; }
 @keyframes cel-bounce { from{transform:scale(1) rotate(-6deg)} to{transform:scale(1.15) rotate(6deg)} }
-.cel-msg { font-size: 1.4rem; font-weight: 900; color: #92400e; margin-bottom: 2px; }
-.cel-sub { font-size: 1rem; font-weight: 700; color: #b45309; margin-bottom: 15px; }
-.cel-next {
-background: linear-gradient(135deg, #F59E0B, #D97706);
-color: white; border: none; border-radius: 16px;
-padding: 12px 32px; font-family: 'Baloo 2', cursive;
-font-size: 1.1rem; font-weight: 900; cursor: pointer;
-box-shadow: 0 5px 0 #92400e;
-transition: all 0.1s;
-}
-.cel-next:active { transform: translateY(3px); box-shadow: 0 2px 0 #92400e; }
+.cel-msg { font-size: 1.6rem; font-weight: 900; color: #92400e; margin-bottom: 4px; }
+.cel-sub { font-size: 1.1rem; font-weight: 700; color: #b45309; }
 
 .btn-row { display: flex; gap: 10px; width: 100%; }
 .btn {
@@ -187,7 +177,12 @@ transition: all 0.1s;
 .btn:active { transform: translateY(3px); }
 .btn-watch { background: linear-gradient(135deg, #4caf50, #388e3c); color: white; box-shadow: 0 4px 0 #2e7d32; }
 .btn-try { background: linear-gradient(135deg, #ffcc02, #f9a825); color: #5d4037; box-shadow: 0 4px 0 #e65100; }
-.btn-next { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; box-shadow: 0 4px 0 #92400e; }
+.btn-next { 
+background: linear-gradient(135deg, #F59E0B, #D97706); 
+color: white; box-shadow: 0 4px 0 #92400e; 
+display: none; /* Initially hidden */
+}
+.btn-next.visible { display: flex; }
 
 .spark {
 position: absolute; pointer-events: none; z-index: 30;
@@ -243,14 +238,13 @@ cursor: pointer; text-align: center;
       <div class="cel-animal" id="cel-animal">🦊</div>
       <div class="cel-msg" id="cel-msg">Amazing! 🌟</div>
       <div class="cel-sub" id="cel-sub">A is for Ant!</div>
-      <button class="cel-next" id="success-next-btn" onclick="nextItem()">Next Letter ➡️</button>
     </div>
   </div>
 
   <div class="btn-row">
     <button class="btn btn-watch" id="btn-watch" onclick="startDemo()">👀 Watch</button>
     <button class="btn btn-try" onclick="resetTrace()">🧹 Try Again</button>
-    <button class="btn btn-next" onclick="nextItem()">Next ➡️</button>
+    <button class="btn btn-next" id="main-next-btn" onclick="nextItem()">Next ➡️</button>
   </div>
 </div>
 
@@ -362,6 +356,7 @@ const canvas = document.getElementById('traceCanvas');
 const ctx = canvas.getContext('2d');
 const guideDot = document.getElementById('guide-dot');
 const celebrate = document.getElementById('celebrate');
+const mainNextBtn = document.getElementById('main-next-btn');
 
 function currentData() {
   const keys = mode === 'letters' ? letterKeys : numberKeys;
@@ -404,6 +399,7 @@ function loadItem(idx) {
   currentIdx = idx;
   phase = 'idle';
   celebrate.classList.remove('show');
+  mainNextBtn.classList.remove('visible'); // Hide bottom next button
   guideDot.style.opacity = '0';
   tracePoints = [];
 
@@ -415,7 +411,6 @@ function loadItem(idx) {
   document.getElementById('fh-word').textContent = `${data.mascot} ${data.word}`;
   document.getElementById('cel-animal').textContent = data.mascot;
   document.getElementById('cel-sub').textContent = data.word;
-  document.getElementById('success-next-btn').textContent = mode === 'letters' ? 'Next Letter ➡️' : 'Next Number ➡️';
 
   buildFireflies();
   drawGuide();
@@ -563,6 +558,7 @@ function resetTrace() {
   clearDemo();
   tracePoints = [];
   celebrate.classList.remove('show');
+  mainNextBtn.classList.remove('visible'); // Hide bottom next button on retry
   drawGuide();
   phase = 'trace';
   setInstruction('✏️ Try again! Trace the letter!');
@@ -586,6 +582,7 @@ function showCelebration() {
   const msgs = ['Amazing! 🌟','You did it! 🎉','Super star! ⭐','Wonderful! 🥳'];
   document.getElementById('cel-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
   celebrate.classList.add('show');
+  mainNextBtn.classList.add('visible'); // Show bottom next button
   buildFireflies();
 }
 
