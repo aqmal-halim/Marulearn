@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MaruQuest: Alphabet Forest 🌟</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: none; }
+
+:root {
+--peach: #FFD9C6;
+--orange: #FF784E;
+--blue: #5BBAFF;
+--forest: #3d6b3d;
+--moss: #5a8a3a;
+--glow: #7fff6a;
+--firefly: #ffe066;
+--cream: #fff8e7;
+--dark: #2a1a0a;
+--quest-gold: #F59E0B;
+--quest-bg: #FFFBEB;
+--quest-border: #FDE68A;
+}
+
+body {
+font-family: 'Baloo 2', cursive;
+background: #FFD9C6;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 16px 12px 40px;
+}
+
+/* ── TOP NAV ── */
+.top-nav {
+width: 100%; max-width: 500px;
+display: flex; align-items: center; gap: 10px;
+margin-bottom: 14px;
+}
+.back-btn {
+background: white; border: none; border-radius: 14px;
+padding: 8px 14px; font-family: 'Baloo 2', cursive;
+font-size: 0.85rem; font-weight: 800; color: #FF784E;
+cursor: pointer; box-shadow: 0 4px 0 #e8c4b0;
+display: flex; align-items: center; gap: 5px;
+transition: all 0.1s;
+}
+.back-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #e8c4b0; }
+
+.nav-title {
+font-size: 1rem; font-weight: 900; color: #FF784E;
+display: flex; align-items: center; gap: 7px;
+}
+.logo-ring {
+width: 22px; height: 22px;
+border: 3px solid #FF784E; border-radius: 50%;
+}
+
+/* ── GAME CARD ── */
+.game-card {
+width: 100%; max-width: 500px;
+background: white;
+border-radius: 28px;
+padding: 20px 18px 18px;
+box-shadow: 0 8px 0 rgba(0,0,0,0.07);
+display: flex; flex-direction: column; align-items: center; gap: 14px;
+position: relative;
+}
+
+/* Forest header stripe */
+.forest-header {
+width: 100%;
+background: linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 50%, #1a3a1a 100%);
+border-radius: 18px;
+padding: 12px 16px;
+display: flex; align-items: center; gap: 12px;
+position: relative; overflow: hidden;
+}
+.forest-header::before {
+content: '';
+position: absolute; inset: 0;
+background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 21px);
+}
+.fh-stars { position: absolute; top: 6px; right: 12px; font-size: 0.7rem; opacity: 0.6; letter-spacing: 4px; }
+
+.mascot-box {
+width: 56px; height: 56px; border-radius: 16px;
+background: rgba(255,255,255,0.12);
+display: flex; align-items: center; justify-content: center;
+font-size: 2rem;
+animation: mascot-float 3s ease-in-out infinite;
+flex-shrink: 0;
+}
+@keyframes mascot-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+.fh-info { flex: 1; }
+.fh-subtitle { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 2px; }
+.fh-title { font-size: 1.3rem; font-weight: 900; color: white; line-height: 1; }
+.fh-title span { color: var(--firefly); }
+.fh-word { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
+
+/* Firefly progress */
+.firefly-row {
+display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+width: 100%;
+}
+.ff {
+width: 28px; height: 28px; border-radius: 50%;
+background: #f0f0f0; border: 2.5px solid #ddd;
+display: flex; align-items: center; justify-content: center;
+font-size: 0.6rem; font-weight: 900; color: #bbb;
+transition: all 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+cursor: pointer;
+}
+.ff:hover { transform: scale(1.15); }
+.ff.active { background: #fff3c8; border-color: var(--quest-gold); color: var(--quest-gold); transform: scale(1.1); }
+.ff.done {
+background: var(--firefly); border-color: #d4a000; color: #7a5800;
+box-shadow: 0 0 8px #ffe06688;
+animation: ff-glow 2s ease-in-out infinite;
+}
+@keyframes ff-glow { 0%,100%{box-shadow:0 0 6px #ffe06666} 50%{box-shadow:0 0 14px #ffe066aa} }
+
+/* Instruction pill */
+.instruction-pill {
+background: var(--quest-bg);
+border: 2px solid var(--quest-border);
+border-radius: 20px;
+padding: 8px 18px;
+font-size: 0.88rem; font-weight: 800; color: #92400e;
+text-align: center; width: 100%;
+transition: all 0.3s;
+}
+
+/* Canvas */
+.canvas-wrap {
+width: 100%; position: relative;
+border-radius: 20px; overflow: hidden;
+border: 3px solid var(--quest-border);
+background: #fffef5;
+box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+}
+canvas { display: block; width: 100%; height: auto; }
+
+/* Guide dot */
+.guide-dot {
+position: absolute;
+width: 26px; height: 26px; border-radius: 50%;
+background: radial-gradient(circle, #fff 20%, var(--firefly) 55%, transparent 100%);
+box-shadow: 0 0 14px var(--firefly), 0 0 28px #ffe06655;
+pointer-events: none;
+transform: translate(-50%, -50%);
+opacity: 0;
+transition: opacity 0.2s;
+z-index: 5;
+animation: dot-pulse 0.7s ease-in-out infinite;
+}
+@keyframes dot-pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.3)} }
+
+/* Celebration */
+.celebrate-layer {
+position: absolute; inset: 0; z-index: 20;
+background: rgba(255,248,231,0.95);
+border-radius: 17px;
+display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+opacity: 0; pointer-events: none;
+transition: opacity 0.3s;
+}
+.celebrate-layer.show { opacity: 1; pointer-events: all; }
+.cel-animal { font-size: 4.5rem; animation: cel-bounce 0.55s ease-in-out infinite alternate; }
+@keyframes cel-bounce { from{transform:scale(1) rotate(-6deg)} to{transform:scale(1.15) rotate(6deg)} }
+.cel-msg { font-size: 1.4rem; font-weight: 900; color: #92400e; }
+.cel-sub { font-size: 0.9rem; font-weight: 700; color: #b45309; }
+.cel-next {
+margin-top: 8px;
+background: linear-gradient(135deg, #F59E0B, #D97706);
+color: white; border: none; border-radius: 16px;
+padding: 10px 28px; font-family: 'Baloo 2', cursive;
+font-size: 1rem; font-weight: 900; cursor: pointer;
+box-shadow: 0 4px 0 #92400e;
+transition: all 0.1s;
+}
+.cel-next:active { transform: translateY(3px); box-shadow: 0 1px 0 #92400e; }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; width: 100%; }
+.btn {
+flex: 1; padding: 11px 8px;
+border: none; border-radius: 16px;
+font-family: 'Baloo 2', cursive;
+font-size: 0.92rem; font-weight: 800;
+cursor: pointer;
+display: flex; align-items: center; justify-content: center; gap: 5px;
+transition: all 0.1s;
+}
+.btn:active { transform: translateY(3px); }
+.btn-watch {
+background: linear-gradient(135deg, #4caf50, #388e3c);
+color: white; box-shadow: 0 4px 0 #2e7d32;
+}
+.btn-watch:active { box-shadow: 0 1px 0 #2e7d32; }
+.btn-try {
+background: linear-gradient(135deg, #ffcc02, #f9a825);
+color: #5d4037; box-shadow: 0 4px 0 #e65100;
+}
+.btn-try:active { box-shadow: 0 1px 0 #e65100; }
+.btn-next {
+background: linear-gradient(135deg, #F59E0B, #D97706);
+color: white; box-shadow: 0 4px 0 #92400e;
+}
+.btn-next:active { box-shadow: 0 1px 0 #92400e; }
+
+/* Spark */
+.spark {
+position: absolute; pointer-events: none; z-index: 30;
+width: 7px; height: 7px; border-radius: 50%;
+animation: spark-anim var(--dur,0.7s) ease-out forwards;
+}
+@keyframes spark-anim {
+0%   { transform: translate(0,0) scale(1.2); opacity: 1; }
+100% { transform: translate(var(--tx,0px),var(--ty,-40px)) scale(0); opacity: 0; }
+}
+
+/* Mode tabs */
+.mode-tabs {
+display: flex; gap: 8px; width: 100%;
+}
+.mode-tab {
+flex: 1; padding: 8px;
+border: 2.5px solid #eee; border-radius: 14px;
+background: white; font-family: 'Baloo 2', cursive;
+font-size: 0.8rem; font-weight: 800; color: #aaa;
+cursor: pointer; text-align: center;
+transition: all 0.15s;
+}
+.mode-tab.active {
+background: var(--quest-bg); border-color: var(--quest-gold);
+color: #92400e;
+}
+</style>
+
+</head>
+<body>
+
+<nav class="top-nav">
+  <button class="back-btn" onclick="history.back()">← Back</button>
+  <div class="nav-title"><div class="logo-ring"></div>MARULEARN</div>
+</nav>
+
+<div class="game-card">
+
+  <div class="forest-header">
+    <div class="fh-stars">✦ ✦ ✦</div>
+    <div class="mascot-box" id="mascot-box">🦊</div>
+    <div class="fh-info">
+      <div class="fh-subtitle">MARUQUEST · ALPHABET FOREST</div>
+      <div class="fh-title" id="fh-title">Letter <span id="fh-letter">A</span></div>
+      <div class="fh-word" id="fh-word">🐜 A is for Ant!</div>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tab-letters" onclick="switchMode('letters')">🔤 Letters</button>
+    <button class="mode-tab" id="tab-numbers" onclick="switchMode('numbers')">🔢 Numbers</button>
+  </div>
+
+  <div class="firefly-row" id="firefly-row"></div>
+
+  <div class="instruction-pill" id="instruction">👀 Watch the magic trail first!</div>
+
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="traceCanvas" width="460" height="280"></canvas>
+    <div class="guide-dot" id="guide-dot"></div>
+    <div class="celebrate-layer" id="celebrate">
+      <div class="cel-animal" id="cel-animal">🦊</div>
+      <div class="cel-msg" id="cel-msg">Amazing! 🌟</div>
+      <div class="cel-sub" id="cel-sub">A is for Ant!</div>
+      <button class="cel-next" onclick="nextItem()">Next Letter ➡️</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-watch" id="btn-watch" onclick="startDemo()">👀 Watch</button>
+    <button class="btn btn-try" onclick="resetTrace()">🧹 Try Again</button>
+    <button class="btn btn-next" onclick="nextItem()">Next ➡️</button>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const W = 460, H = 280;
+const CX = W/2, CY = H/2;
+
+function pts(arr) { return arr.map(([x,y])=>({x,y})); }
+
+function arc(cx,cy,rx,ry,a0,a1,steps=28) {
+  return Array.from({length:steps},(_,i)=>{
+    const a = a0 + (i/(steps-1))*(a1-a0);
+    return {x:cx+rx*Math.cos(a), y:cy+ry*Math.sin(a)};
+  });
+}
+
+const LETTERS = {
+  A:{strokes:[pts([[200,50],[140,220]]),pts([[200,50],[260,220]]),pts([[163,155],[237,155]])],mascot:'🐜',word:'Ant',color:'#e74c3c'},
+  B:{strokes:[pts([[140,50],[140,220]]),pts([[140,50],[205,50],[235,70],[235,120],[205,135],[140,135]]),pts([[140,135],[210,135],[242,158],[242,198],[210,220],[140,220]])],mascot:'🐻',word:'Bear',color:'#8B4513'},
+  C:{strokes:[arc(CX,CY,95,100,-0.35,Math.PI*1.62,32)],mascot:'🐱',word:'Cat',color:'#e67e22'},
+  D:{strokes:[pts([[145,50],[145,220]]),pts([[145,50],[210,50],[265,90],[265,180],[210,220],[145,220]])],mascot:'🦆',word:'Duck',color:'#3498db'},
+  E:{strokes:[pts([[150,50],[150,220]]),pts([[150,50],[270,50]]),pts([[150,135],[245,135]]),pts([[150,220],[270,220]])],mascot:'🐘',word:'Elephant',color:'#9b59b6'},
+  F:{strokes:[pts([[150,50],[150,220]]),pts([[150,50],[270,50]]),pts([[150,135],[250,135]])],mascot:'🦊',word:'Fox',color:'#e67e22'},
+  G:{strokes:[arc(CX,CY,95,100,-0.35,Math.PI*1.1,28).concat(pts([[CX+10,CY],[CX+95,CY]]))],mascot:'🐸',word:'Frog',color:'#27ae60'},
+  H:{strokes:[pts([[140,50],[140,220]]),pts([[140,135],[270,135]]),pts([[270,50],[270,220]])],mascot:'🐹',word:'Hamster',color:'#d35400'},
+  I:{strokes:[pts([[CX,50],[CX,220]]),pts([[CX-40,50],[CX+40,50]]),pts([[CX-40,220],[CX+40,220]])],mascot:'🦎',word:'Iguana',color:'#16a085'},
+  J:{strokes:[pts([[CX+50,50],[CX+50,185]]).concat(arc(CX,185,50,35,0,Math.PI,16))],mascot:'🪼',word:'Jellyfish',color:'#8e44ad'},
+  K:{strokes:[pts([[140,50],[140,220]]),pts([[270,50],[140,135]]),pts([[185,100],[270,220]])],mascot:'🦘',word:'Kangaroo',color:'#c0392b'},
+  L:{strokes:[pts([[150,50],[150,220],[280,220]])],mascot:'🦁',word:'Lion',color:'#f39c12'},
+  M:{strokes:[pts([[130,220],[130,50],[205,130],[280,50],[280,220]])],mascot:'🐒',word:'Monkey',color:'#8B4513'},
+  N:{strokes:[pts([[140,220],[140,50],[280,220],[280,50]])],mascot:'🦎',word:'Newt',color:'#27ae60'},
+  O:{strokes:[arc(CX,CY,100,105,0,Math.PI*2,36).concat([{x:CX+100,y:CY}])],mascot:'🦉',word:'Owl',color:'#7f8c8d'},
+  P:{strokes:[pts([[140,50],[140,220]]),pts([[140,50],[210,50],[245,70],[245,120],[210,135],[140,135]])],mascot:'🐧',word:'Penguin',color:'#2c3e50'},
+  Q:{strokes:[arc(CX,CY,95,100,0,Math.PI*2,36),pts([[CX+55,CY+55],[CX+100,CY+100]])],mascot:'🦆',word:'Quail',color:'#e67e22'},
+  R:{strokes:[pts([[140,50],[140,220]]),pts([[140,50],[210,50],[245,70],[245,120],[210,135],[140,135]]),pts([[185,135],[270,220]])],mascot:'🐇',word:'Rabbit',color:'#95a5a6'},
+  S:{strokes:[arc(CX+10,CY-40,75,55,Math.PI*0.1,Math.PI*1.1,16).concat(arc(CX-10,CY+40,75,55,Math.PI*1.1,Math.PI*2.05,16))],mascot:'🐍',word:'Snake',color:'#27ae60'},
+  T:{strokes:[pts([[150,50],[310,50]]),pts([[CX,50],[CX,220]])],mascot:'🐢',word:'Turtle',color:'#16a085'},
+  U:{strokes:[pts([[145,50],[145,185]]).concat(arc(CX,185,85,35,Math.PI,0,18)).concat(pts([[315,185],[315,50]]))],mascot:'🦄',word:'Unicorn',color:'#9b59b6'},
+  V:{strokes:[pts([[140,50],[CX,220],[320,50]])],mascot:'🦅',word:'Vulture',color:'#7f8c8d'},
+  W:{strokes:[pts([[120,50],[165,220],[CX,140],[295,220],[340,50]])],mascot:'🐋',word:'Whale',color:'#3498db'},
+  X:{strokes:[pts([[150,50],[310,220]]),pts([[310,50],[150,220]])],mascot:'🦏',word:'(E)X-plorer',color:'#e74c3c'},
+  Y:{strokes:[pts([[150,50],[CX,145],[CX,220]]),pts([[310,50],[CX,145]])],mascot:'🐂',word:'Yak',color:'#d35400'},
+  Z:{strokes:[pts([[150,50],[310,50],[150,220],[310,220]])],mascot:'🦓',word:'Zebra',color:'#2c3e50'},
+};
+
+const NUMBERS = {
+  '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-30,230],[CX+30,230]])],mascot:'🌟',word:'One — 1 star!',color:'#e74c3c'},
+  '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+70,220]]))],mascot:'🦆',word:'Two — 2 ducks!',color:'#3498db'},
+  '3':{strokes:[arc(CX,120,65,60,-Math.PI*0.85,Math.PI*0.85,20).concat(arc(CX,175,65,58,-Math.PI*0.85,Math.PI*0.9,20))],mascot:'🐝',word:'Three — 3 bees!',color:'#f39c12'},
+  '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+80,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four — 4 flowers!',color:'#9b59b6'},
+  '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*0.9+Math.PI*2,20))],mascot:'🖐️',word:'Five — 5 fingers!',color:'#e67e22'},
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let mode = 'letters';
+let currentIdx = 0;
+let phase = 'idle'; // idle | demo | trace
+let isDrawing = false;
+let lastX = 0, lastY = 0;
+let tracePoints = [];
+let completed = {};
+let demoTimer = null;
+let letterKeys = Object.keys(LETTERS);
+let numberKeys = Object.keys(NUMBERS);
+
+const canvas = document.getElementById('traceCanvas');
+const ctx = canvas.getContext('2d');
+const guideDot = document.getElementById('guide-dot');
+const celebrate = document.getElementById('celebrate');
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+function currentData() {
+  const keys = mode === 'letters' ? letterKeys : numberKeys;
+  const key = keys[currentIdx];
+  return mode === 'letters' ? LETTERS[key] : NUMBERS[key];
+}
+function currentKey() {
+  return (mode === 'letters' ? letterKeys : numberKeys)[currentIdx];
+}
+
+function init() {
+  completed = { letters: new Set(), numbers: new Set() };
+  setupInput();
+  switchMode('letters');
+}
+
+function switchMode(m) {
+  mode = m;
+  currentIdx = 0;
+  document.getElementById('tab-letters').classList.toggle('active', m === 'letters');
+  document.getElementById('tab-numbers').classList.toggle('active', m === 'numbers');
+  clearDemo();
+  buildFireflies();
+  loadItem(0);
+}
+
+function buildFireflies() {
+  const row = document.getElementById('firefly-row');
+  const keys = mode === 'letters' ? letterKeys : numberKeys;
+  row.innerHTML = '';
+  keys.forEach((k, i) => {
+    const f = document.createElement('div');
+    f.className = 'ff' +
+      (i === currentIdx ? ' active' : '') +
+      (completed[mode].has(i) ? ' done' : '');
+    f.textContent = k;
+    f.onclick = () => loadItem(i);
+    row.appendChild(f);
+  });
+}
+
+function loadItem(idx) {
+  clearDemo();
+  currentIdx = idx;
+  phase = 'idle';
+  celebrate.classList.remove('show');
+  guideDot.style.opacity = '0';
+  tracePoints = [];
+
+  const data = currentData();
+  const key = currentKey();
+
+  // Header update
+  document.getElementById('mascot-box').textContent = data.mascot;
+  document.getElementById('fh-letter').textContent = key;
+  document.getElementById('fh-word').textContent = `${data.mascot} ${data.word}`;
+  document.getElementById('cel-animal').textContent = data.mascot;
+  document.getElementById('cel-sub').textContent = data.word;
+  document.getElementById('cel-next').textContent = mode === 'letters' ? 'Next Letter ➡️' : 'Next Number ➡️';
+
+  buildFireflies();
+  drawGuide();
+  setInstruction('👀 Watch the magic trail first!');
+  setTimeout(() => startDemo(), 500);
+}
+
+// ─── GUIDE OUTLINE ───────────────────────────────────────────────────────────
+function drawGuide() {
+  ctx.clearRect(0, 0, W, H);
+  const data = currentData();
+  data.strokes.forEach((stroke, si) => {
+    ctx.save();
+    ctx.setLineDash([9, 11]);
+    ctx.strokeStyle = '#e8e0c8';
+    ctx.lineWidth = 22;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    stroke.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(stroke[0].x, stroke[0].y, 13, 0, Math.PI*2);
+    ctx.fillStyle = '#4caf50';
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(si+1, stroke[0].x, stroke[0].y);
+  });
+}
+
+// ─── DEMO ANIMATION ──────────────────────────────────────────────────────────
+function startDemo() {
+  clearDemo();
+  phase = 'demo';
+  guideDot.style.opacity = '1';
+  const data = currentData();
+  setInstruction('👀 Watch the magic trail...');
+  document.getElementById('btn-watch').disabled = true;
+
+  let si = 0;
+  function doStroke() {
+    if (si >= data.strokes.length) {
+      guideDot.style.opacity = '0';
+      document.getElementById('btn-watch').disabled = false;
+      phase = 'trace';
+      drawGuide();
+      setInstruction('✏️ Now trace it with your finger!');
+      return;
+    }
+    const stroke = data.strokes[si];
+    let pi = 0;
+    const SPEED = 16;
+
+    function step() {
+      if (pi >= stroke.length) {
+        ctx.save();
+        ctx.strokeStyle = data.color + '88';
+        ctx.lineWidth = 18; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        stroke.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+        ctx.stroke();
+        ctx.restore();
+        si++;
+        demoTimer = setTimeout(doStroke, 350);
+        return;
+      }
+      const p = stroke[pi];
+      const rect = canvas.getBoundingClientRect();
+      const sx = rect.width / W;
+      const sy = rect.height / H;
+      guideDot.style.left = (p.x * sx) + 'px';
+      guideDot.style.top  = (p.y * sy) + 'px';
+
+      if (pi > 0) {
+        const pp = stroke[pi-1];
+        ctx.save();
+        ctx.strokeStyle = data.color;
+        ctx.lineWidth = 16; ctx.lineCap = 'round';
+        ctx.shadowColor = data.color; ctx.shadowBlur = 16;
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(pp.x, pp.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+        ctx.restore();
+      }
+      pi++;
+      demoTimer = setTimeout(step, SPEED);
+    }
+    step();
+  }
+  doStroke();
+}
+
+function clearDemo() {
+  if (demoTimer) clearTimeout(demoTimer);
+  demoTimer = null;
+}
+
+// ─── TRACING ─────────────────────────────────────────────────────────────────
+function setupInput() {
+  canvas.addEventListener('mousedown', onDown);
+  canvas.addEventListener('mousemove', onMove);
+  canvas.addEventListener('mouseup', onUp);
+  canvas.addEventListener('mouseleave', onUp);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); onDown(e); }, {passive:false});
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e); }, {passive:false});
+  canvas.addEventListener('touchend',   e => { e.preventDefault(); onUp(e); },   {passive:false});
+}
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const sx = W / rect.width, sy = H / rect.height;
+  const src = e.touches ? e.touches[0] : e;
+  return { x: (src.clientX - rect.left)*sx, y: (src.clientY - rect.top)*sy };
+}
+
+function onDown(e) {
+  if (phase !== 'trace') return;
+  isDrawing = true;
+  const p = getPos(e);
+  lastX = p.x; lastY = p.y;
+  tracePoints.push(p);
+}
+function onMove(e) {
+  if (!isDrawing || phase !== 'trace') return;
+  const p = getPos(e);
+  tracePoints.push(p);
+  ctx.save();
+  ctx.strokeStyle = '#4caf50';
+  ctx.lineWidth = 18; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.shadowColor = '#7fff6a'; ctx.shadowBlur = 14;
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
+  ctx.restore();
+  if (Math.random() < 0.25) spawnSpark(p.x, p.y);
+  lastX = p.x; lastY = p.y;
+}
+function onUp() {
+  if (!isDrawing) return;
+  isDrawing = false;
+  if (tracePoints.length > 30) setTimeout(checkCompletion, 500);
+}
+
+function resetTrace() {
+  clearDemo();
+  tracePoints = [];
+  celebrate.classList.remove('show');
+  drawGuide();
+  phase = 'trace';
+  setInstruction('✏️ Try again! Trace the letter!');
+}
+
+// ─── COMPLETION ───────────────────────────────────────────────────────────────
+function checkCompletion() {
+  const data = currentData();
+  let covered = 0, total = 0;
+  data.strokes.forEach(stroke => {
+    stroke.forEach(sp => {
+      total++;
+      if (tracePoints.some(tp => Math.hypot(tp.x-sp.x, tp.y-sp.y) < 42)) covered++;
+    });
+  });
+  if (covered/total >= 0.5) showCelebration();
+}
+
+function showCelebration() {
+  completed[mode].add(currentIdx);
+  const data = currentData();
+  const msgs = ['Amazing! 🌟','You did it! 🎉','Super star! ⭐','Wonderful! 🥳','Great job! 🌈'];
+  document.getElementById('cel-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+  celebrate.classList.add('show');
+  buildFireflies();
+}
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function nextItem() {
+  const keys = mode === 'letters' ? letterKeys : numberKeys;
+  const next = (currentIdx + 1) % keys.length;
+  celebrate.classList.remove('show');
+  loadItem(next);
+}
+
+// ─── SPARKS ──────────────────────────────────────────────────────────────────
+function spawnSpark(cx, cy) {
+  const wrap = document.getElementById('canvas-wrap');
+  const rect = canvas.getBoundingClientRect();
+  const sx = rect.width/W, sy = rect.height/H;
+  const colors = ['#ffe566','#ff6b6b','#7fff6a','#b3e5fc','#ffb3d1','#ffffff'];
+  for (let i = 0; i < 3; i++) {
+    const sp = document.createElement('div');
+    sp.className = 'spark';
+    const ang = Math.random()*Math.PI*2, dist = 20+Math.random()*45;
+    sp.style.cssText = `left:${cx*sx}px;top:${cy*sy}px;background:${colors[Math.floor(Math.random()*colors.length)]};--tx:${Math.cos(ang)*dist}px;--ty:${Math.sin(ang)*dist-30}px;--dur:${0.5+Math.random()*0.4}s`;
+    wrap.appendChild(sp);
+    setTimeout(()=>sp.remove(), 900);
+  }
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function setInstruction(txt) {
+  document.getElementById('instruction').textContent = txt;
+}
+
+init();
+</script>
+
+</body>
+</html>
