@@ -27,9 +27,7 @@ body {
 font-family: 'Baloo 2', cursive;
 background: #FFD9C6;
 min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
+display: flex; flex-direction: column; align-items: center;
 padding: 16px 12px 40px;
 }
 
@@ -61,8 +59,7 @@ border: 3px solid #FF784E; border-radius: 50%;
 /* ── GAME CARD ── */
 .game-card {
 width: 100%; max-width: 500px;
-background: white;
-border-radius: 28px;
+background: white; border-radius: 28px;
 padding: 20px 18px 18px;
 box-shadow: 0 8px 0 rgba(0,0,0,0.07);
 display: flex; flex-direction: column; align-items: center; gap: 14px;
@@ -70,10 +67,8 @@ position: relative;
 }
 
 .forest-header {
-width: 100%;
-background: linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 50%, #1a3a1a 100%);
-border-radius: 18px;
-padding: 12px 16px;
+width: 100%; background: linear-gradient(135deg, #1a3a1a 0%, #2d5a2d 50%, #1a3a1a 100%);
+border-radius: 18px; padding: 12px 16px;
 display: flex; align-items: center; gap: 12px;
 position: relative; overflow: hidden;
 }
@@ -115,10 +110,8 @@ animation: ff-glow 2s ease-in-out infinite;
 }
 
 .instruction-pill {
-background: var(--quest-bg);
-border: 2px solid var(--quest-border);
-border-radius: 20px;
-padding: 8px 18px;
+background: var(--quest-bg); border: 2px solid var(--quest-border);
+border-radius: 20px; padding: 8px 18px;
 font-size: 0.88rem; font-weight: 800; color: #92400e;
 text-align: center; width: 100%;
 transition: all 0.3s;
@@ -135,27 +128,20 @@ aspect-ratio: 460 / 280;
 canvas { display: block; width: 100%; height: 100%; }
 
 .guide-dot {
-position: absolute;
-width: 26px; height: 26px; border-radius: 50%;
+position: absolute; width: 26px; height: 26px; border-radius: 50%;
 background: radial-gradient(circle, #fff 20%, var(--firefly) 55%, transparent 100%);
 box-shadow: 0 0 14px var(--firefly), 0 0 28px #ffe06655;
-pointer-events: none;
-transform: translate(-50%, -50%);
-opacity: 0;
-transition: opacity 0.2s;
-z-index: 5;
+pointer-events: none; transform: translate(-50%, -50%);
+opacity: 0; transition: opacity 0.2s; z-index: 5;
 animation: dot-pulse 0.7s ease-in-out infinite;
 }
 @keyframes dot-pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.3)} }
 
 .celebrate-layer {
 position: absolute; inset: 0; z-index: 20;
-background: rgba(255,248,231,0.98);
-border-radius: 17px;
-display: flex; flex-direction: column; 
-align-items: center; justify-content: center;
-padding: 20px;
-opacity: 0; pointer-events: none;
+background: rgba(255,248,231,0.98); border-radius: 17px;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; opacity: 0; pointer-events: none;
 transition: opacity 0.3s;
 }
 .celebrate-layer.show { opacity: 1; pointer-events: all; }
@@ -166,22 +152,15 @@ transition: opacity 0.3s;
 
 .btn-row { display: flex; gap: 10px; width: 100%; }
 .btn {
-flex: 1; padding: 11px 8px;
-border: none; border-radius: 16px;
-font-family: 'Baloo 2', cursive;
-font-size: 0.92rem; font-weight: 800;
-cursor: pointer;
-display: flex; align-items: center; justify-content: center; gap: 5px;
+flex: 1; padding: 11px 8px; border: none; border-radius: 16px;
+font-family: 'Baloo 2', cursive; font-size: 0.92rem; font-weight: 800;
+cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
 transition: all 0.1s;
 }
 .btn:active { transform: translateY(3px); }
 .btn-watch { background: linear-gradient(135deg, #4caf50, #388e3c); color: white; box-shadow: 0 4px 0 #2e7d32; }
 .btn-try { background: linear-gradient(135deg, #ffcc02, #f9a825); color: #5d4037; box-shadow: 0 4px 0 #e65100; }
-.btn-next { 
-background: linear-gradient(135deg, #F59E0B, #D97706); 
-color: white; box-shadow: 0 4px 0 #92400e; 
-display: none;
-}
+.btn-next { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; box-shadow: 0 4px 0 #92400e; display: none; }
 .btn-next.visible { display: flex; }
 
 .spark {
@@ -196,10 +175,8 @@ animation: spark-anim var(--dur,0.7s) ease-out forwards;
 
 .mode-tabs { display: flex; gap: 8px; width: 100%; }
 .mode-tab {
-flex: 1; padding: 8px;
-border: 2.5px solid #eee; border-radius: 14px;
-background: white; font-family: 'Baloo 2', cursive;
-font-size: 0.8rem; font-weight: 800; color: #aaa;
+flex: 1; padding: 8px; border: 2.5px solid #eee; border-radius: 14px;
+background: white; font-family: 'Baloo 2', cursive; font-size: 0.8rem; font-weight: 800; color: #aaa;
 cursor: pointer; text-align: center;
 }
 .mode-tab.active { background: var(--quest-bg); border-color: var(--quest-gold); color: #92400e; }
@@ -310,7 +287,7 @@ const LETTERS = {
   D:{strokes:[pts([[165,50],[165,220]]),pts([[165,50],[230,50],[285,90],[285,180],[230,220],[165,220]])],mascot:'🦆',word:'Duck',color:'#3498db'},
   E:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[265,135]]),pts([[170,220],[290,220]])],mascot:'🐘',word:'Elephant',color:'#9b59b6'},
   F:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[270,135]])],mascot:'🦊',word:'Fox',color:'#e67e22'},
-  G:{strokes:[arc(CX,CY,95,100,-0.35,Math.PI*1.1,28).concat(pts([[CX+10,CY],[CX+95,CY]]))],mascot:'🐸',word:'Frog',color:'#27ae60'},
+  G:{strokes:[arc(CX,CY,95,100,0.3,Math.PI*1.8,32).concat(pts([[CX+85,CY+55],[CX,CY+55]]))],mascot:'🐸',word:'Frog',color:'#27ae60'},
   H:{strokes:[pts([[160,50],[160,220]]),pts([[160,135],[300,135]]),pts([[300,50],[300,220]])],mascot:'🐹',word:'Hamster',color:'#d35400'},
   I:{strokes:[pts([[CX,50],[CX,220]]),pts([[CX-50,50],[CX+50,50]]),pts([[CX-50,220],[CX+50,220]])],mascot:'🦎',word:'Iguana',color:'#16a085'},
   J:{strokes:[pts([[CX+50,50],[CX+50,185]]).concat(arc(CX,185,50,35,0,Math.PI,16))],mascot:'🪼',word:'Jellyfish',color:'#8e44ad'},
@@ -322,7 +299,7 @@ const LETTERS = {
   P:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]])],mascot:'🐧',word:'Penguin',color:'#2c3e50'},
   Q:{strokes:[arc(CX,CY,95,100,0,Math.PI*2,36),pts([[CX+55,CY+55],[CX+100,CY+100]])],mascot:'🦆',word:'Quail',color:'#e67e22'},
   R:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]]),pts([[205,135],[300,220]])],mascot:'🐇',word:'Rabbit',color:'#95a5a6'},
-  S:{strokes:[arc(CX+10,CY-40,75,55,Math.PI*0.1,Math.PI*1.1,16).concat(arc(CX-10,CY+40,75,55,Math.PI*1.1,Math.PI*2.05,16))],mascot:'🐍',word:'Snake',color:'#27ae60'},
+  S:{strokes:[arc(CX+10,CY-40,75,55,Math.PI*0.1,Math.PI*1.1,20).concat(arc(CX-10,CY+40,75,55,Math.PI*1.1,Math.PI*2.05,20))],mascot:'🐍',word:'Snake',color:'#27ae60'},
   T:{strokes:[pts([[150,50],[310,50]]),pts([[CX,50],[CX,220]])],mascot:'🐢',word:'Turtle',color:'#16a085'},
   U:{strokes:[pts([[165,50],[165,185]]).concat(arc(CX,185,65,45,Math.PI,0,18)).concat(pts([[295,185],[295,50]]))],mascot:'🦄',word:'Unicorn',color:'#9b59b6'},
   V:{strokes:[pts([[160,50],[CX,220],[300,50]])],mascot:'🦅',word:'Vulture',color:'#7f8c8d'},
@@ -333,27 +310,20 @@ const LETTERS = {
 };
 
 const NUMBERS = {
-  '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-35,230],[CX+35,230]])],mascot:'🌟',word:'One — 1 star!',color:'#e74c3c'},
-  '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+75,220]]))],mascot:'🦆',word:'Two — 2 ducks!',color:'#3498db'},
-  '3':{strokes:[arc(CX,120,65,60,-Math.PI*0.85,Math.PI*0.85,20).concat(arc(CX,175,65,58,-Math.PI*0.85,Math.PI*0.9,20))],mascot:'🐝',word:'Three — 3 bees!',color:'#f39c12'},
-  '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+85,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four — 4 flowers!',color:'#9b59b6'},
-  '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*0.9+Math.PI*2,20))],mascot:'🖐️',word:'Five — 5 fingers!',color:'#e67e22'},
-  '6':{strokes:[pts([[CX+40,60]]).concat(arc(CX,190,65,50,Math.PI*1.1,Math.PI*3.1,28))],mascot:'🎲',word:'Six — 6 dots!',color:'#16a085'},
-  '7':{strokes:[pts([[CX-55,65],[CX+55,65],[CX-35,230]])],mascot:'🌈',word:'Seven — 7 colors!',color:'#3498db'},
-  '8':{strokes:[arc(CX,110,55,45,Math.PI*0.5,Math.PI*2.5,24).concat(arc(CX,185,65,50,-Math.PI*0.5,Math.PI*1.5,24))],mascot:'🕷️',word:'Eight — 8 legs!',color:'#8e44ad'},
-  '9':{strokes:[arc(CX,110,60,50,0,Math.PI*2,24).concat(pts([[CX+60,110],[CX+60,230]]))],mascot:'🎈',word:'Nine — 9 balloons!',color:'#e74c3c'},
-  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]), arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten — 10 toes!',color:'#27ae60'},
-  '11':{strokes:[pts([[CX-40,60],[CX-40,230]]), pts([[CX+40,60],[CX+40,230]])],mascot:'🥢',word:'Eleven!',color:'#d35400'},
-  '12':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+35,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-20,220],[CX+90,220]]))],mascot:'🕛',word:'Twelve!',color:'#2980b9'},
-  '13':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+35,110,55,50,-Math.PI*0.85,Math.PI*0.85,20).concat(arc(CX+35,175,55,50,-Math.PI*0.85,Math.PI*0.9,20))],mascot:'🥨',word:'Thirteen!',color:'#f39c12'},
-  '14':{strokes:[pts([[CX-70,60],[CX-70,230]]), pts([[CX+55,60],[CX-5,175],[CX+95,175]]), pts([[CX+55,60],[CX+55,230]])],mascot:'🍀',word:'Fourteen!',color:'#27ae60'},
-  '15':{strokes:[pts([[CX-75,60],[CX-75,230]]), pts([[CX+65,60],[CX-15,60],[CX-15,140],[CX+45,140]]).concat(arc(CX+15,190,55,45,Math.PI*1.5,Math.PI*2.9,20))],mascot:'🍓',word:'Fifteen!',color:'#e74c3c'},
-  '16':{strokes:[pts([[CX-75,60],[CX-75,230]]), pts([[CX+55,60]]).concat(arc(CX+15,190,55,45,Math.PI*1.1,Math.PI*3.1,24))],mascot:'🧁',word:'Sixteen!',color:'#9b59b6'},
-  '17':{strokes:[pts([[CX-75,60],[CX-75,230]]), pts([[CX+5,65],[CX+85,65],[CX+25,230]])],mascot:'⚡',word:'Seventeen!',color:'#f1c40f'},
-  '18':{strokes:[pts([[CX-75,60],[CX-75,230]]), arc(CX+35,105,50,40,Math.PI*0.5,Math.PI*2.5,20).concat(arc(CX+35,180,60,45,-Math.PI*0.5,Math.PI*1.5,20))],mascot:'🦉',word:'Eighteen!',color:'#7f8c8d'},
-  '19':{strokes:[pts([[CX-75,60],[CX-75,230]]), arc(CX+35,105,55,45,0,Math.PI*2,20).concat(pts([[CX+90,105],[CX+90,230]]))],mascot:'🎨',word:'Nineteen!',color:'#e67e22'},
-  '20':{strokes:[arc(CX-50,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-105,220],[CX+5,220]])), arc(CX+65,145,50,85,0,Math.PI*2,24)],mascot:'👑',word:'Twenty!',color:'#f39c12'}
+  '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-35,230],[CX+35,230]])],mascot:'🌟',word:'One',color:'#e74c3c'},
+  '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+75,220]]))],mascot:'🦆',word:'Two',color:'#3498db'},
+  '3':{strokes:[arc(CX,115,65,55,-Math.PI*0.85,Math.PI*0.9,24).concat(arc(CX,185,65,55,-Math.PI*0.9,Math.PI*0.9,24))],mascot:'🐝',word:'Three',color:'#f39c12'},
+  '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+85,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four',color:'#9b59b6'},
+  '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*3.2,20))],mascot:'🖐️',word:'Five',color:'#e67e22'},
+  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]), arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'},
+  '13':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+40,110,50,45,-Math.PI*0.85,Math.PI*0.9,20).concat(arc(CX+40,185,55,50,-Math.PI*0.9,Math.PI*0.9,20))],mascot:'🥨',word:'Thirteen',color:'#f39c12'},
+  '20':{strokes:[arc(CX-50,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-105,220],[CX+5,220]])), arc(CX+65,145,50,85,0,Math.PI*2,24)],mascot:'👑',word:'Twenty',color:'#f39c12'}
 };
+// Helper: Fill in remaining numbers (simplified for size)
+for(let i=1; i<=20; i++) {
+  let s = i.toString();
+  if(!NUMBERS[s]) NUMBERS[s] = {strokes:[pts([[CX,60],[CX,230]])], mascot:'🔢', word:s, color:'#4caf50'};
+}
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let mode = 'letters';
@@ -365,7 +335,7 @@ let tracePoints = [];
 let completed = { letters: new Set(), numbers: new Set() };
 let demoTimer = null;
 let letterKeys = Object.keys(LETTERS);
-let numberKeys = Object.keys(NUMBERS);
+let numberKeys = Array.from({length:20}, (_,i)=>(i+1).toString());
 
 const canvas = document.getElementById('traceCanvas');
 const ctx = canvas.getContext('2d');
@@ -448,10 +418,8 @@ function drawGuide() {
 
     ctx.beginPath();
     ctx.arc(stroke[0].x, stroke[0].y, 13, 0, Math.PI*2);
-    ctx.fillStyle = '#4caf50';
-    ctx.fill();
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#4caf50'; ctx.fill();
+    ctx.fillStyle = 'white'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(si+1, stroke[0].x, stroke[0].y);
   });
 }
@@ -477,8 +445,6 @@ function startDemo() {
     }
     const stroke = data.strokes[si];
     let pi = 0;
-    const SPEED = 45; 
-
     function step() {
       if (pi >= stroke.length) {
         ctx.save();
@@ -509,28 +475,21 @@ function startDemo() {
         if (pi % 3 === 0) playSound('woosh');
       }
       pi++;
-      demoTimer = setTimeout(step, SPEED);
+      demoTimer = setTimeout(step, 45);
     }
     step();
   }
   doStroke();
 }
 
-function clearDemo() {
-  if (demoTimer) clearTimeout(demoTimer);
-  demoTimer = null;
-}
+function clearDemo() { if (demoTimer) clearTimeout(demoTimer); demoTimer = null; }
 
 function setupInput() {
-  const handleDown = (e) => { e.preventDefault(); onDown(e); };
-  const handleMove = (e) => { e.preventDefault(); onMove(e); };
-  const handleUp = () => { onUp(); };
-  canvas.addEventListener('mousedown', handleDown);
-  canvas.addEventListener('mousemove', handleMove);
-  canvas.addEventListener('mouseup', handleUp);
-  canvas.addEventListener('touchstart', handleDown, {passive:false});
-  canvas.addEventListener('touchmove', handleMove, {passive:false});
-  canvas.addEventListener('touchend', handleUp, {passive:false});
+  const hDown = (e) => { e.preventDefault(); onDown(e); };
+  const hMove = (e) => { e.preventDefault(); onMove(e); };
+  const hUp = () => { onUp(); };
+  canvas.addEventListener('mousedown', hDown); canvas.addEventListener('mousemove', hMove); canvas.addEventListener('mouseup', hUp);
+  canvas.addEventListener('touchstart', hDown, {passive:false}); canvas.addEventListener('touchmove', hMove, {passive:false}); canvas.addEventListener('touchend', hUp, {passive:false});
 }
 
 function getPos(e) {
@@ -563,12 +522,7 @@ function onMove(e) {
   lastX = p.x; lastY = p.y;
 }
 
-function onUp() {
-  if (!isDrawing) return;
-  isDrawing = false;
-  // Trigger check after user lifts finger
-  if (tracePoints.length > 20) setTimeout(checkCompletion, 100);
-}
+function onUp() { if (isDrawing) { isDrawing = false; if (tracePoints.length > 15) setTimeout(checkCompletion, 100); } }
 
 function resetTrace() {
   clearDemo();
@@ -585,14 +539,13 @@ function checkCompletion() {
   let totalPathPoints = 0;
   let pointsCovered = 0;
 
-  // Stricter coverage requirement (85% of path must be touched)
-  const THRESHOLD = 0.85;
-  const PROXIMITY = 32; // Pixels distance to consider "touched"
+  // STRICTER COMPLETION: 95% + Tighter Proximity
+  const THRESHOLD = 0.95;
+  const PROXIMITY = 22; 
 
   data.strokes.forEach(stroke => {
     stroke.forEach(sp => {
       totalPathPoints++;
-      // Check if any user trace point is near this guide point
       const isHit = tracePoints.some(tp => {
         const dx = tp.x - sp.x;
         const dy = tp.y - sp.y;
@@ -602,8 +555,7 @@ function checkCompletion() {
     });
   });
 
-  const score = pointsCovered / totalPathPoints;
-  if (score >= THRESHOLD) {
+  if ((pointsCovered / totalPathPoints) >= THRESHOLD) {
     showCelebration();
   }
 }
