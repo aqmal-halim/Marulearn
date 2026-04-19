@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaruQuest: Master Speed</title>
     <style>
-        /* Ensures padding and borders don't push width past 100% */
-        * { box-sizing: border-box; }
+        /* THE FIX: Ensures padding and borders don't push width past 100% */
+        * { 
+            box-sizing: border-box; 
+        }
 
         :root { --primary: #FF784E; --secondary: #60A5FA; --boss: #EF4444; }
         
@@ -15,7 +17,7 @@
             background-color: #F8FAFC; 
             margin: 0; 
             padding: 12px; 
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevents horizontal scrolling */
             width: 100%;
         }
 
@@ -54,7 +56,7 @@
             border: 4px solid rgba(0,0,0,0.05); 
             overflow: hidden; 
             background: #F1F5F9; 
-            width: 100%;
+            width: 100%; /* Ensure stage doesn't overflow */
         }
 
         #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
@@ -87,9 +89,10 @@
         @keyframes e-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-12px) rotate(-5deg)} 75%{transform:translateX(12px) rotate(5deg)} }
         @keyframes h-hurt  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
 
-        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 85px; }
-        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 60px; height: 65px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; transform: scale(1.05); }
+        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; transition: all 0.3s; }
+        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; }
+        .val-text { min-width: 40px; }
 
         .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card { height: 65px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; font-family: inherit; -webkit-appearance: none; transition: 0.1s; width: 100%; }
@@ -130,6 +133,8 @@
         .inter-bar   { width: 200px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-top: 30px; overflow: hidden; }
         .inter-progress { height: 100%; background: white; border-radius: 10px; }
         @keyframes inter-pop  { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+        @keyframes inter-load { from{width:0%} to{width:100%} }
+        #interstitial.hiding { animation: opacity 0.3s forwards; }
     </style>
 </head>
 <body>
@@ -155,27 +160,41 @@
             <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(5deg)">
                 <defs>
                     <radialGradient id="grad_maru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
-                        <stop offset="0%" style="stop-color:#FFD4A1"/><stop offset="100%" style="stop-color:#FFB15E"/>
+                        <stop offset="0%" style="stop-color:#FFD4A1"/>
+                        <stop offset="100%" style="stop-color:#FFB15E"/>
                     </radialGradient>
                 </defs>
                 <circle cx="80" cy="85" r="45" fill="url(#grad_maru)"/>
                 <g>
                     <path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+                    <path d="M46 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
                     <path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+                    <path d="M90 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
                 </g>
                 <g>
-                    <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/><ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                    <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/><ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
+                    <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
+                    <ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
+                    <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/>
+                    <ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
+                    <circle cx="71" cy="79" r="1.5" fill="white"/>
+                    <circle cx="95" cy="79" r="1.5" fill="white"/>
                 </g>
                 <path d="M65 102 q15 12 30 0" stroke="#333333" stroke-width="4" fill="none" stroke-linecap="round"/>
                 <g>
                     <path d="M50 40 L80 30 L110 40 L80 50 Z" fill="#333"/>
                     <path d="M65 43 h30 q0 12-15 12 q-15 0-15-12" fill="#333"/>
+                    <line x1="110" y1="40" x2="116" y2="56" stroke="#FCD34D" stroke-width="2.5"/>
+                    <circle cx="116" cy="58" r="4" fill="#FCD34D"/>
+                </g>
+                <g>
+                    <circle cx="28" cy="95" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
+                    <circle cx="132" cy="70" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
                 </g>
             </svg>
         </div>
     </div>
-    <div id="equation-box"></div>
+    <div id="equation-box">
+        </div>
     <div class="hand" id="card-hand"></div>
 </div>
 
@@ -227,17 +246,23 @@
     };
 
     const MONSTERS = [
-        { name:'Zappy', icon:'👾', taunts:['Zap!','Too slow!'], deaths:['Zapped!'] },
-        { name:'Dusty', icon:'🐝', taunts:['Bzzz!','Missed!'], deaths:['Ouch!'] },
-        { name:'Gloop', icon:'🐙', taunts:['Glub!','Sticky!'], deaths:['Popped!'] },
-        { name:'Sparky', icon:'🦖', taunts:['ROAR!','Smash!'], deaths:['Fossil!'] }
+        { name:'Zappy',  icon:'👾', taunts:['Zap!','Too slow!','Foolish!'],    deaths:['Zapped out!','Nooo!']        },
+        { name:'Dusty',  icon:'🐝', taunts:['Bzzzzt!','Miss me!','Ha!'],       deaths:['Not the honey!','Ouch!']     },
+        { name:'Gloop',  icon:'🐙', taunts:['Slippery!','Glub!','Got ya!'],    deaths:['Deflated!','Popped!']        },
+        { name:'Sparky', icon:'🦖', taunts:['ROOOAR!','Dino smash!','RAWR!'],  deaths:['Extinct!','Fossilized!']     },
+        { name:'Spooky', icon:'👻', taunts:['Boo!','Ha!','Eek!'],              deaths:['Unghostly!','De-spooked!']   },
+        { name:'Chompy', icon:'🐊', taunts:['Snap!','Hiss!','Chomp!'],         deaths:['So croc-ky!','Unbited!']     },
+        { name:'Glitch', icon:'🤖', taunts:['ERROR!','Bzzt!','Div by 0!'],     deaths:['System crash!','Rebooting...']},
+        { name:'Burny',  icon:'🔥', taunts:['Too hot!','Sizzle!','Burn!'],     deaths:['Extinguished!','Doused!']    },
     ];
     const BOSSES = [
-        { name:'DARK LORD', icon:'💀', taunts:['END NEAR!','DARKNESS!'], deaths:['NOOO!'] },
-        { name:'STORM KING', icon:'🌪️', taunts:['FEEL WRATH!','WIND!'], deaths:['CALMED!'] }
+        { name:'MEGA BOSS',  icon:'👹', taunts:['PUNY HUMAN!','GWAHAHAHA!'],     deaths:['IMPOSSIBLE!','HOW?!']     },
+        { name:'DARK LORD',  icon:'💀', taunts:['YOUR END IS NEAR!','DARKNESS!'],deaths:['THE LIGHT!','NOOOOO!']   },
+        { name:'STORM KING', icon:'🌪️', taunts:['FEEL MY WRATH!','WHIRLWIND!'], deaths:['CALMED!','WEATHERED!']   },
     ];
 
-    let floor=1, playerHP=3, enemyHP=1, isBusy=false, timerInterval, combo=0, score=0, monster=null, currentAns=0;
+    let floor=1, playerHP=3, enemyHP=1, isBusy=false, timerInterval;
+    let combo=0, score=0, monster=null;
 
     function getBest() { return parseInt(localStorage.getItem('mq_best')||'1'); }
     function setBest(f){ if(f>getBest()) localStorage.setItem('mq_best',String(f)); }
@@ -253,13 +278,11 @@
         b.innerText = text; b.style.opacity = '1';
         clearTimeout(b._t); b._t = setTimeout(()=>b.style.opacity='0', 1100);
     }
-    
     function flash(color) {
         const f = document.getElementById('flash');
         f.style.background=color; f.style.opacity='0.4';
         setTimeout(()=>f.style.opacity='0', 130);
     }
-
     function popNum(text, type) {
         const s=document.getElementById('stage'), el=document.createElement('div');
         el.className='pop-num '+type; el.innerText=text;
@@ -267,177 +290,245 @@
         el.style.bottom=(70+Math.random()*40)+'px';
         s.appendChild(el); setTimeout(()=>el.remove(), 800);
     }
+    function popStars() {
+        const s=document.getElementById('stage');
+        ['⭐','✨','💫'].forEach((c,i)=>{
+            const el=document.createElement('div');
+            el.className='star-pop'; el.innerText=c;
+            el.style.right=(25+i*20)+'px'; el.style.bottom=(85+i*15)+'px';
+            el.style.animationDelay=(i*0.09)+'s';
+            s.appendChild(el); setTimeout(()=>el.remove(), 700+i*90);
+        });
+    }
 
     function showBanner(text, type='floor') {
+        const COLORS = { boss:'#DC2626', unlock:'#4F46E5', floor:'#D97706' };
+        const ICONS  = { boss:'⚠️', unlock:'🔓', floor:'🏆' };
+        const SUBS   = { boss:'Defeat it to advance!', unlock:'New operation unlocked!', floor:"You're unstoppable!" };
+
         const overlay = document.getElementById('interstitial');
-        const bar = document.getElementById('int-bar');
-        document.getElementById('int-icon').innerText = type === 'boss' ? '⚠️' : '🌟';
+        const bar     = document.getElementById('int-bar');
+
+        document.getElementById('int-icon').innerText  = ICONS[type]  || '🌟';
         document.getElementById('int-title').innerText = text;
-        overlay.style.background = type === 'boss' ? '#EF4444' : '#FF784E';
-        bar.style.transition = 'none'; bar.style.width = '0%';
+        document.getElementById('int-sub').innerText   = SUBS[type]   || '';
+        overlay.style.background = COLORS[type] || '#D97706';
+
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
         overlay.style.display = 'flex';
-        requestAnimationFrame(()=>{ bar.style.transition = 'width 1.4s linear'; bar.style.width = '100%'; });
-        setTimeout(()=>{ overlay.style.display = 'none'; }, 1600);
+
+        requestAnimationFrame(()=>{
+            requestAnimationFrame(()=>{
+                bar.style.transition = 'width 1.4s linear';
+                bar.style.width = '100%';
+            });
+        });
+
+        clearTimeout(overlay._t);
+        overlay._t = setTimeout(()=>{ overlay.style.display = 'none'; }, 1600);
     }
 
     function confetti(n=40) {
+        const cols=['#FF784E','#FCD34D','#4ADE80','#60A5FA','#F472B6','#FB923C'];
         for(let i=0;i<n;i++){
             const el=document.createElement('div');
             el.className='confetti';
-            el.style.cssText=`left:${Math.random()*100}vw;background:${pick(['#FF784E','#FCD34D','#4ADE80'])};animation-duration:${0.7+Math.random()*1.2}s;transform:rotate(${Math.random()*360}deg)`;
+            el.style.cssText=`left:${Math.random()*100}vw;background:${pick(cols)};animation-duration:${0.7+Math.random()*1.2}s;animation-delay:${Math.random()*0.4}s;transform:rotate(${Math.random()*360}deg)`;
             document.body.appendChild(el); setTimeout(()=>el.remove(), 1900);
         }
+    }
+    function updateCombo() {
+        const el=document.getElementById('combo-strip');
+        if(combo>=2) {
+            el.innerText = combo+'× COMBO! '+(combo>=5?'🔥🔥':'🔥');
+            el.style.color = combo>=5?'#EF4444':'#F59E0B';
+        } else { el.innerText = ''; }
     }
 
     function init() {
         isBusy = false;
-        document.getElementById('floor').innerText = floor;
-        document.getElementById('p-hp').innerText = playerHP;
+        document.getElementById('floor').innerText   = floor;
+        document.getElementById('p-hp').innerText    = playerHP;
         updateBest();
+
         const isBoss = (floor % 5 === 0);
         enemyHP = isBoss ? 3 : 1;
-        document.getElementById('hp-bar-container').style.display = isBoss ? 'block' : 'none';
+
+        const hpBar = document.getElementById('hp-bar-container');
+        hpBar.style.display = isBoss ? 'block' : 'none';
         document.getElementById('hp-fill').style.width = '100%';
-        monster = isBoss ? pick(BOSSES) : pick(MONSTERS);
-        document.getElementById('monster-label').innerText = monster.name;
-        document.getElementById('monster-label').className = isBoss ? 'boss-label' : '';
-        document.getElementById('enemy').innerText = monster.icon;
-        if(isBoss) SFX.boss();
+
+        if(isBoss) {
+            monster = pick(BOSSES);
+            document.getElementById('monster-label').innerText = monster.name;
+            document.getElementById('monster-label').className = 'boss-label';
+            document.getElementById('enemy').innerText = monster.icon;
+            SFX.boss(); showBanner('⚠️ BOSS FIGHT! ⚠️', 'boss');
+        } else {
+            monster = pick(MONSTERS);
+            document.getElementById('monster-label').innerText = monster.name;
+            document.getElementById('monster-label').className = '';
+            document.getElementById('enemy').innerText = monster.icon;
+            if(floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!', 'floor'); }
+            else if(floor===6)  showBanner('➖ Subtraction unlocked!', 'unlock');
+            else if(floor===11) showBanner('✖️ Multiplication unlocked!', 'unlock');
+            else if(floor===16) showBanner('➗ Division unlocked!', 'unlock');
+        }
         newRound();
     }
 
     function newRound() {
-        let op = '+';
-        if (floor >= 16) op = pick(['+', '-', '×', '÷']);
-        else if (floor >= 11) op = pick(['+', '-', '×']);
-        else if (floor >= 6)  op = Math.random() > 0.5 ? '-' : '+';
+        let op='+', ans, valA, valB, result;
+        
+        // Define operator based on floor
+        if (floor>=16) op=['+','-','×','÷'][Math.floor(Math.random()*4)];
+        else if (floor>=11) op=['+','-','×'][Math.floor(Math.random()*3)];
+        else if (floor>=6)  op=Math.random()>0.5?'-':'+';
 
-        let v1, v2, v3;
-        if (op === '+') {
-            v1 = Math.floor(Math.random() * 12) + 1;
-            v2 = Math.floor(Math.random() * 12) + 1;
-            v3 = v1 + v2;
-        } else if (op === '-') {
-            v3 = Math.floor(Math.random() * 10) + 1;
-            v2 = Math.floor(Math.random() * 10) + 1;
-            v1 = v3 + v2;
-        } else if (op === '×') {
-            v1 = pick([2, 3, 4, 5, 10]);
-            v2 = Math.floor(Math.random() * 10) + 1;
-            v3 = v1 * v2;
-        } else { // ÷
-            v2 = pick([2, 3, 4, 5]);
-            v3 = Math.floor(Math.random() * 10) + 1;
-            v1 = v2 * v3;
-            op = '÷';
-        }
+        // Logic to ensure whole numbers and reasonable difficulty
+        if(op==='×'){ valA=Math.floor(Math.random()*5)+1; valB=pick([2,5,10]); result=valA*valB; }
+        else if(op==='÷'){ valB=Math.floor(Math.random()*4)+1; result=Math.floor(Math.random()*5)+1; valA=result*valB; }
+        else if(op==='-'){ valA=Math.floor(Math.random()*10)+5; valB=Math.floor(Math.random()*5)+1; result=valA-valB; }
+        else { valA=Math.floor(Math.random()*10)+1; valB=Math.floor(Math.random()*10)+1; result=valA+valB; }
 
-        const vals = [v1, v2, v3];
-        const targetPos = Math.floor(Math.random() * 3);
-        currentAns = vals[targetPos];
+        // Choose which position is the unknown "?"
+        // 0: valA is ?, 1: valB is ?, 2: result is ?
+        const slotPos = Math.floor(Math.random() * 3);
+        const vals = [valA, valB, result];
+        ans = vals[slotPos];
 
         const box = document.getElementById('equation-box');
         box.innerHTML = '';
-        for (let i = 0; i < 3; i++) {
-            if (i === targetPos) {
-                const slot = document.createElement('div');
-                slot.id = 'slot'; slot.className = 'slot'; slot.innerText = '?';
-                box.appendChild(slot);
+
+        // Helper to create slot or text
+        const makeEl = (i) => {
+            if(i === slotPos) {
+                const s = document.createElement('div');
+                s.className = 'slot'; s.id = 'slot'; s.innerText = '?';
+                return s;
             } else {
-                const s = document.createElement('span');
-                s.innerText = vals[i];
-                box.appendChild(s);
+                const t = document.createElement('span');
+                t.className = 'val-text'; t.innerText = vals[i];
+                return t;
             }
-            if (i === 0) { const o = document.createElement('span'); o.innerText = op; box.appendChild(o); }
-            else if (i === 1) { const e = document.createElement('span'); e.innerText = '='; box.appendChild(e); }
-        }
+        };
+
+        // Assemble equation
+        box.appendChild(makeEl(0));
+        const opSpan = document.createElement('span'); opSpan.innerText = op; box.appendChild(opSpan);
+        box.appendChild(makeEl(1));
+        const eqSpan = document.createElement('span'); eqSpan.innerText = '='; box.appendChild(eqSpan);
+        box.appendChild(makeEl(2));
 
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
-        let cards = [currentAns];
-        while(cards.length < 6) {
-            let offset = Math.floor(Math.random() * 10) - 5;
-            let r = Math.max(1, currentAns + offset + (Math.random() > 0.5 ? 5 : -5));
-            if(!cards.includes(r)) cards.push(r);
+        let cards = [ans];
+        while(cards.length < 6){ 
+            let r = Math.floor(Math.random() * (op === '×' || op === '÷' ? 50 : 25)) + 1; 
+            if(!cards.includes(r)) cards.push(r); 
         }
         cards.sort(() => Math.random() - 0.5).forEach(n => {
-            const btn = document.createElement('button');
-            btn.className = 'card'; btn.innerText = n;
-            btn.onclick = () => play(n);
-            hand.appendChild(btn);
+            const c = document.createElement('button');
+            c.type = 'button'; c.className = 'card'; c.innerText = n;
+            c.addEventListener('click', () => play(n, ans));
+            hand.appendChild(c);
         });
+        
         startTimer();
+        if(Math.random() < 0.2) say('enemy', pick(monster.taunts));
     }
 
     function startTimer() {
         clearInterval(timerInterval);
-        let timeLeft = 100;
-        let speed = 0.4 + (floor * 0.05);
-        timerInterval = setInterval(() => {
-            timeLeft -= speed;
-            const fill = document.getElementById('timer-fill');
-            fill.style.width = timeLeft + '%';
-            fill.className = (timeLeft < 25 ? 'danger' : timeLeft < 50 ? 'warning' : '');
-            if (timeLeft <= 0) { clearInterval(timerInterval); play(-999); }
-        }, 100);
+        let timeLeft=100;
+        let speed=0.4+(floor*0.04);
+        if(floor>20) speed+=Math.floor((floor-20)/5)*0.15;
+        timerInterval=setInterval(()=>{
+            timeLeft-=speed;
+            const fill=document.getElementById('timer-fill');
+            fill.style.width=timeLeft+'%';
+            fill.className=(timeLeft<25?'danger':timeLeft<50?'warning':'');
+            if(timeLeft<=0){ clearInterval(timerInterval); play(-999,0); }
+        },100);
     }
 
-    function play(n) {
+    function play(n, ans) {
         if(isBusy) return;
-        isBusy = true; clearInterval(timerInterval);
-        document.querySelectorAll('.card').forEach(c => c.disabled = true);
+        try{ ac().resume(); }catch(e){}
+        isBusy=true; clearInterval(timerInterval);
+        document.querySelectorAll('.card').forEach(c=>c.disabled=true);
 
-        if (n === currentAns) {
-            combo++; score += 10 * combo;
-            document.getElementById('slot').innerText = currentAns;
-            document.getElementById('slot').classList.add('filled');
-            SFX.hit(); flash('#4ADE8040');
+        if(n===ans) {
+            combo++;
+            score+=10*Math.max(1,combo);
+            updateCombo();
+            const slot=document.getElementById('slot');
+            slot.innerText=ans; slot.className='slot filled';
+            document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===ans) c.classList.add('correct'); });
+            if(combo>=3) SFX.combo(); else SFX.hit();
+            say('hero', combo>=4?'🔥 x'+combo+'!':pick(['Hiyah!','Got you!','Take that!','Nice!']));
+            flash('#4ADE8040');
             document.getElementById('hero-wrap').classList.add('hero-attack');
-            setTimeout(() => {
+            setTimeout(()=>{
                 document.getElementById('hero-wrap').classList.remove('hero-attack');
                 enemyHP--;
-                if (enemyHP > 0) {
-                    document.getElementById('hp-fill').style.width = (enemyHP/3*100)+'%';
-                    isBusy = false; newRound();
+                if(enemyHP>0) {
+                    document.getElementById('hp-fill').style.width=(enemyHP/3*100)+'%';
+                    document.getElementById('enemy').classList.add('enemy-shake');
+                    popNum('💥 HIT!','good');
+                    setTimeout(()=>{ document.getElementById('enemy').classList.remove('enemy-shake'); isBusy=false; newRound(); },420);
                 } else {
-                    if(floor % 5 === 0) { SFX.bossKill(); confetti(60); }
-                    floor++; isBusy = false; init();
+                    document.getElementById('enemy').classList.add('enemy-hit');
+                    popNum('⚡ KO!','good');
+                    if(combo>=4) popStars();
+                    if(floor%5===0){ SFX.bossKill(); confetti(65); } else SFX.levelup();
+                    setTimeout(()=>{
+                        const e=document.getElementById('enemy');
+                        e.className=''; e.style.transform=''; e.style.opacity='';
+                        floor++; isBusy=false; init();
+                    },650);
                 }
-            }, 450);
+            },450);
         } else {
-            combo = 0; playerHP--;
-            document.getElementById('p-hp').innerText = playerHP;
-            SFX.wrong(); flash('#EF444440');
+            const isTimeout=(n===-999);
+            combo=0; updateCombo();
+            if(isTimeout){ SFX.timeout(); flash('#EF444430'); say('enemy','⏰ TOO SLOW!'); popNum('TIME!','bad'); }
+            else { SFX.wrong(); flash('#EF444448'); document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===n) c.classList.add('wrong'); }); say('enemy', pick(monster.taunts)); popNum('✗ MISS','bad'); }
             document.getElementById('hero-wrap').classList.add('hero-hurt');
-            setTimeout(() => {
-                document.getElementById('hero-wrap').classList.remove('hero-hurt');
-                if (playerHP <= 0) gameOver(); else { isBusy = false; newRound(); }
-            }, 500);
+            setTimeout(()=>document.getElementById('hero-wrap').classList.remove('hero-hurt'),380);
+            playerHP--;
+            document.getElementById('p-hp').innerText=playerHP;
+            if(playerHP<=0){ SFX.over(); setTimeout(gameOver,650); }
+            else { setTimeout(()=>{ isBusy=false; newRound(); }, 650); }
         }
     }
 
     function gameOver() {
-        SFX.over();
-        const best = getBest();
-        const isNew = floor > best;
+        const best=getBest(), isNew=floor>best;
         if(isNew) setBest(floor);
-        document.getElementById('go-floor').innerText = 'Floor ' + floor;
+        document.getElementById('go-emoji').innerText = floor>15?'🏆':floor>8?'⭐':'💀';
+        document.getElementById('go-title').innerText = floor>15?'Legendary Run!':floor>8?'Great Fight!':'Tower Broken!';
+        document.getElementById('go-sub').innerText   = floor>8?'You\'re getting stronger!':'Keep practising!';
+        document.getElementById('go-floor').innerText = 'Floor '+floor;
         document.getElementById('go-score').innerText = score;
-        document.getElementById('go-best').innerText = 'F' + (isNew ? floor : best);
-        document.getElementById('new-best-tag').style.display = isNew ? 'inline-block' : 'none';
+        document.getElementById('go-best').innerText  = 'F'+(isNew?floor:best);
+        document.getElementById('new-best-tag').style.display = isNew?'inline-block':'none';
+        if(isNew) confetti(80);
         document.getElementById('go-overlay').classList.add('show');
     }
 
-    document.getElementById('go-retry').onclick = () => {
-        floor = 1; playerHP = 3; score = 0; combo = 0;
+    function restartGame() {
         document.getElementById('go-overlay').classList.remove('show');
+        floor=1; playerHP=3; combo=0; score=0; init();
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
         init();
-    };
-
-    document.getElementById('home-btn').onclick = () => location.reload();
-    document.getElementById('go-home').onclick = () => location.reload();
-
-    window.onload = init;
+        document.getElementById('home-btn').addEventListener('click',()=>{ clearInterval(timerInterval); window.location.href='../'; });
+        document.getElementById('go-retry').addEventListener('click', restartGame);
+        document.getElementById('go-home').addEventListener('click',()=>{ window.location.href='../'; });
+    });
 </script>
 </body>
 </html>
