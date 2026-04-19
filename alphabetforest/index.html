@@ -287,7 +287,7 @@ const LETTERS = {
   D:{strokes:[pts([[165,50],[165,220]]),pts([[165,50],[230,50],[285,90],[285,180],[230,220],[165,220]])],mascot:'🦆',word:'Duck',color:'#3498db'},
   E:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[265,135]]),pts([[170,220],[290,220]])],mascot:'🐘',word:'Elephant',color:'#9b59b6'},
   F:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[270,135]])],mascot:'🦊',word:'Fox',color:'#e67e22'},
-  G:{strokes:[arc(CX,CY,95,100,0.3,Math.PI*1.8,32).concat(pts([[CX+85,CY+55],[CX,CY+55]]))],mascot:'🐸',word:'Frog',color:'#27ae60'},
+  G:{strokes:[arc(CX,CY,95,100,0.3,Math.PI*1.75,32), pts([[CX+85,CY+55],[CX,CY+55]])],mascot:'🐸',word:'Frog',color:'#27ae60'}, // Fix G
   H:{strokes:[pts([[160,50],[160,220]]),pts([[160,135],[300,135]]),pts([[300,50],[300,220]])],mascot:'🐹',word:'Hamster',color:'#d35400'},
   I:{strokes:[pts([[CX,50],[CX,220]]),pts([[CX-50,50],[CX+50,50]]),pts([[CX-50,220],[CX+50,220]])],mascot:'🦎',word:'Iguana',color:'#16a085'},
   J:{strokes:[pts([[CX+50,50],[CX+50,185]]).concat(arc(CX,185,50,35,0,Math.PI,16))],mascot:'🪼',word:'Jellyfish',color:'#8e44ad'},
@@ -312,11 +312,11 @@ const LETTERS = {
 const NUMBERS = {
   '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-35,230],[CX+35,230]])],mascot:'🌟',word:'One',color:'#e74c3c'},
   '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+75,220]]))],mascot:'🦆',word:'Two',color:'#3498db'},
-  '3':{strokes:[arc(CX,115,65,55,-Math.PI*0.85,Math.PI*0.9,24).concat(arc(CX,185,65,55,-Math.PI*0.9,Math.PI*0.9,24))],mascot:'🐝',word:'Three',color:'#f39c12'},
+  '3':{strokes:[arc(CX,115,65,55,-Math.PI*0.85,Math.PI*0.9,24), arc(CX,185,65,55,-Math.PI*0.9,Math.PI*0.9,24)],mascot:'🐝',word:'Three',color:'#f39c12'}, // Split 3 for accuracy
   '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+85,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four',color:'#9b59b6'},
-  '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*3.2,20))],mascot:'🖐️',word:'Five',color:'#e67e22'},
+  '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]), arc(CX,190,65,50,Math.PI*1.5,Math.PI*3.2,20)],mascot:'🖐️',word:'Five',color:'#e67e22'},
   '10':{strokes:[pts([[CX-60,60],[CX-60,230]]), arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'},
-  '13':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+40,110,50,45,-Math.PI*0.85,Math.PI*0.9,20).concat(arc(CX+40,185,55,50,-Math.PI*0.9,Math.PI*0.9,20))],mascot:'🥨',word:'Thirteen',color:'#f39c12'},
+  '13':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+40,110,50,45,-Math.PI*0.85,Math.PI*0.9,20), arc(CX+40,185,55,50,-Math.PI*0.9,Math.PI*0.9,20)],mascot:'🥨',word:'Thirteen',color:'#f39c12'},
   '20':{strokes:[arc(CX-50,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-105,220],[CX+5,220]])), arc(CX+65,145,50,85,0,Math.PI*2,24)],mascot:'👑',word:'Twenty',color:'#f39c12'}
 };
 // Helper: Fill in remaining numbers (simplified for size)
@@ -539,9 +539,9 @@ function checkCompletion() {
   let totalPathPoints = 0;
   let pointsCovered = 0;
 
-  // STRICTER COMPLETION: 95% + Tighter Proximity
-  const THRESHOLD = 0.95;
-  const PROXIMITY = 22; 
+  // STRICTER COMPLETION: 99% + Tighter Proximity
+  const THRESHOLD = 0.99;
+  const PROXIMITY = 20; 
 
   data.strokes.forEach(stroke => {
     stroke.forEach(sp => {
