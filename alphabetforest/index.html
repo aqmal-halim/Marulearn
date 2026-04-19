@@ -180,7 +180,7 @@ transition: all 0.1s;
 .btn-next { 
 background: linear-gradient(135deg, #F59E0B, #D97706); 
 color: white; box-shadow: 0 4px 0 #92400e; 
-display: none; /* Initially hidden */
+display: none;
 }
 .btn-next.visible { display: flex; }
 
@@ -338,6 +338,21 @@ const NUMBERS = {
   '3':{strokes:[arc(CX,120,65,60,-Math.PI*0.85,Math.PI*0.85,20).concat(arc(CX,175,65,58,-Math.PI*0.85,Math.PI*0.9,20))],mascot:'🐝',word:'Three — 3 bees!',color:'#f39c12'},
   '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+80,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four — 4 flowers!',color:'#9b59b6'},
   '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*0.9+Math.PI*2,20))],mascot:'🖐️',word:'Five — 5 fingers!',color:'#e67e22'},
+  '6':{strokes:[pts([[CX+40,60]]).concat(arc(CX,190,65,50,Math.PI*1.1,Math.PI*3.1,28))],mascot:'🎲',word:'Six — 6 dots!',color:'#16a085'},
+  '7':{strokes:[pts([[CX-50,65],[CX+50,65],[CX-30,230]])],mascot:'🌈',word:'Seven — 7 colors!',color:'#3498db'},
+  '8':{strokes:[arc(CX,110,55,45,Math.PI*0.5,Math.PI*2.5,24).concat(arc(CX,185,65,50,-Math.PI*0.5,Math.PI*1.5,24))],mascot:'🕷️',word:'Eight — 8 legs!',color:'#8e44ad'},
+  '9':{strokes:[arc(CX,110,60,50,0,Math.PI*2,24).concat(pts([[CX+60,110],[CX+60,230]]))],mascot:'🎈',word:'Nine — 9 balloons!',color:'#e74c3c'},
+  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]), arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten — 10 toes!',color:'#27ae60'},
+  '11':{strokes:[pts([[CX-40,60],[CX-40,230]]), pts([[CX+40,60],[CX+40,230]])],mascot:'🥢',word:'Eleven!',color:'#d35400'},
+  '12':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+30,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-25,220],[CX+85,220]]))],mascot:'🕛',word:'Twelve!',color:'#2980b9'},
+  '13':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+30,110,55,50,-Math.PI*0.85,Math.PI*0.85,20).concat(arc(CX+30,175,55,50,-Math.PI*0.85,Math.PI*0.9,20))],mascot:'🥨',word:'Thirteen!',color:'#f39c12'},
+  '14':{strokes:[pts([[CX-70,60],[CX-70,230]]), pts([[CX+50,60],[CX-10,175],[CX+90,175]]), pts([[CX+50,60],[CX+50,230]])],mascot:'🍀',word:'Fourteen!',color:'#27ae60'},
+  '15':{strokes:[pts([[CX-70,60],[CX-70,230]]), pts([[CX+60,60],[CX-20,60],[CX-20,140],[CX+40,140]]).concat(arc(CX+10,190,55,45,Math.PI*1.5,Math.PI*2.9,20))],mascot:'🍓',word:'Fifteen!',color:'#e74c3c'},
+  '16':{strokes:[pts([[CX-70,60],[CX-70,230]]), pts([[CX+50,60]]).concat(arc(CX+10,190,55,45,Math.PI*1.1,Math.PI*3.1,24))],mascot:'🧁',word:'Sixteen!',color:'#9b59b6'},
+  '17':{strokes:[pts([[CX-70,60],[CX-70,230]]), pts([[CX,65],[CX+80,65],[CX+20,230]])],mascot:'⚡',word:'Seventeen!',color:'#f1c40f'},
+  '18':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+30,105,50,40,Math.PI*0.5,Math.PI*2.5,20).concat(arc(CX+30,180,60,45,-Math.PI*0.5,Math.PI*1.5,20))],mascot:'🦉',word:'Eighteen!',color:'#7f8c8d'},
+  '19':{strokes:[pts([[CX-70,60],[CX-70,230]]), arc(CX+30,105,55,45,0,Math.PI*2,20).concat(pts([[CX+85,105],[CX+85,230]]))],mascot:'🎨',word:'Nineteen!',color:'#e67e22'},
+  '20':{strokes:[arc(CX-50,115,55,50,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-105,220],[CX+5,220]])), arc(CX+60,145,50,85,0,Math.PI*2,24)],mascot:'👑',word:'Twenty!',color:'#f39c12'}
 };
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -399,7 +414,7 @@ function loadItem(idx) {
   currentIdx = idx;
   phase = 'idle';
   celebrate.classList.remove('show');
-  mainNextBtn.classList.remove('visible'); // Hide bottom next button
+  mainNextBtn.classList.remove('visible'); 
   guideDot.style.opacity = '0';
   tracePoints = [];
 
@@ -408,7 +423,7 @@ function loadItem(idx) {
 
   document.getElementById('mascot-box').textContent = data.mascot;
   document.getElementById('fh-letter').textContent = key;
-  document.getElementById('fh-word').textContent = `${data.mascot} ${data.word}`;
+  document.getElementById('fh-word').textContent = mode === 'letters' ? `${data.mascot} ${key} is for ${data.word}!` : `${data.mascot} ${data.word}`;
   document.getElementById('cel-animal').textContent = data.mascot;
   document.getElementById('cel-sub').textContent = data.word;
 
@@ -558,7 +573,7 @@ function resetTrace() {
   clearDemo();
   tracePoints = [];
   celebrate.classList.remove('show');
-  mainNextBtn.classList.remove('visible'); // Hide bottom next button on retry
+  mainNextBtn.classList.remove('visible'); 
   drawGuide();
   phase = 'trace';
   setInstruction('✏️ Try again! Trace the letter!');
@@ -582,7 +597,7 @@ function showCelebration() {
   const msgs = ['Amazing! 🌟','You did it! 🎉','Super star! ⭐','Wonderful! 🥳'];
   document.getElementById('cel-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
   celebrate.classList.add('show');
-  mainNextBtn.classList.add('visible'); // Show bottom next button
+  mainNextBtn.classList.add('visible'); 
   buildFireflies();
 }
 
