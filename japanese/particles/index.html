@@ -547,9 +547,12 @@ card.type = ‘button’;
 card.className = ‘menu-card’;
 card.style.borderColor = p.color;
 card.dataset.pid = p.id;
-card.innerHTML = ` <div class="menu-icon" style="color:${p.color};font-size:2.5em;">${p.char}</div> <div class="menu-info"> <div class="menu-name">${p.char} (${p.romaji}) — ${p.name}</div> <div class="menu-desc">${p.functions.map(f=>f.badge).join(' · ')}</div> <div class="menu-count">${ALL_SENTENCES.filter(s=>s.correct===p.char && !s.hard).length} practice sentences</div> </div>`;
-card.addEventListener(‘click’, () => startLearn(p.id));
+card.innerHTML = ` <div class="menu-icon" style="color:${p.color};font-size:2.5em;pointer-events:none;">${p.char}</div> <div class="menu-info" style="pointer-events:none;"> <div class="menu-name">${p.char} (${p.romaji}) — ${p.name}</div> <div class="menu-desc">${p.functions.map(f=>f.badge).join(' · ')}</div> <div class="menu-count">${ALL_SENTENCES.filter(s=>s.correct===p.char && !s.hard).length} practice sentences</div> </div>`;
 grid.appendChild(card);
+});
+grid.addEventListener(‘click’, function(e) {
+const card = e.target.closest(‘button[data-pid]’);
+if (card) startLearn(card.dataset.pid);
 });
 }
 
