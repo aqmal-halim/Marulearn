@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,22 +10,22 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: none; }
 
 :root {
---peach: #FFD9C6;
---orange: #FF784E;
---blue: #5BBAFF;
---forest: #3d6b3d;
---moss: #5a8a3a;
---glow: #7fff6a;
---firefly: #ffe066;
---cream: #fff8e7;
---dark: #2a1a0a;
---quest-gold: #F59E0B;
---quest-bg: #FFFBEB;
---quest-border: #FDE68A;
+–peach: #FFD9C6;
+–orange: #FF784E;
+–blue: #5BBAFF;
+–forest: #3d6b3d;
+–moss: #5a8a3a;
+–glow: #7fff6a;
+–firefly: #ffe066;
+–cream: #fff8e7;
+–dark: #2a1a0a;
+–quest-gold: #F59E0B;
+–quest-bg: #FFFBEB;
+–quest-border: #FDE68A;
 }
 
 body {
-font-family: 'Baloo 2', cursive;
+font-family: ‘Baloo 2’, cursive;
 background: #FFD9C6;
 min-height: 100vh;
 display: flex; flex-direction: column; align-items: center;
@@ -39,7 +40,7 @@ margin-bottom: 14px;
 }
 .back-btn {
 background: white; border: none; border-radius: 14px;
-padding: 8px 14px; font-family: 'Baloo 2', cursive;
+padding: 8px 14px; font-family: ‘Baloo 2’, cursive;
 font-size: 0.85rem; font-weight: 800; color: #FF784E;
 cursor: pointer; box-shadow: 0 4px 0 #e8c4b0;
 display: flex; align-items: center; gap: 5px;
@@ -87,7 +88,7 @@ flex-shrink: 0;
 .fh-info { flex: 1; }
 .fh-subtitle { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 2px; }
 .fh-title { font-size: 1.3rem; font-weight: 900; color: white; line-height: 1; }
-.fh-title span { color: var(--firefly); }
+.fh-title span { color: var(–firefly); }
 .fh-word { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
 
 .firefly-row {
@@ -102,15 +103,16 @@ font-size: 0.6rem; font-weight: 900; color: #bbb;
 transition: all 0.4s cubic-bezier(.68,-0.55,.27,1.55);
 cursor: pointer;
 }
-.ff.active { background: #fff3c8; border-color: var(--quest-gold); color: var(--quest-gold); transform: scale(1.1); }
+.ff.active { background: #fff3c8; border-color: var(–quest-gold); color: var(–quest-gold); transform: scale(1.1); }
 .ff.done {
-background: var(--firefly); border-color: #d4a000; color: #7a5800;
+background: var(–firefly); border-color: #d4a000; color: #7a5800;
 box-shadow: 0 0 8px #ffe06688;
 animation: ff-glow 2s ease-in-out infinite;
 }
+@keyframes ff-glow { 0%,100%{box-shadow:0 0 6px #ffe06666} 50%{box-shadow:0 0 14px #ffe066aa} }
 
 .instruction-pill {
-background: var(--quest-bg); border: 2px solid var(--quest-border);
+background: var(–quest-bg); border: 2px solid var(–quest-border);
 border-radius: 20px; padding: 8px 18px;
 font-size: 0.88rem; font-weight: 800; color: #92400e;
 text-align: center; width: 100%;
@@ -120,7 +122,7 @@ transition: all 0.3s;
 .canvas-wrap {
 width: 100%; position: relative;
 border-radius: 20px; overflow: hidden;
-border: 3px solid var(--quest-border);
+border: 3px solid var(–quest-border);
 background: #fffef5;
 box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
 aspect-ratio: 460 / 280;
@@ -129,8 +131,8 @@ canvas { display: block; width: 100%; height: 100%; }
 
 .guide-dot {
 position: absolute; width: 26px; height: 26px; border-radius: 50%;
-background: radial-gradient(circle, #fff 20%, var(--firefly) 55%, transparent 100%);
-box-shadow: 0 0 14px var(--firefly), 0 0 28px #ffe06655;
+background: radial-gradient(circle, #fff 20%, var(–firefly) 55%, transparent 100%);
+box-shadow: 0 0 14px var(–firefly), 0 0 28px #ffe06655;
 pointer-events: none; transform: translate(-50%, -50%);
 opacity: 0; transition: opacity 0.2s; z-index: 5;
 animation: dot-pulse 0.7s ease-in-out infinite;
@@ -153,34 +155,38 @@ transition: opacity 0.3s;
 .btn-row { display: flex; gap: 10px; width: 100%; }
 .btn {
 flex: 1; padding: 11px 8px; border: none; border-radius: 16px;
-font-family: 'Baloo 2', cursive; font-size: 0.92rem; font-weight: 800;
+font-family: ‘Baloo 2’, cursive; font-size: 0.92rem; font-weight: 800;
 cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
 transition: all 0.1s;
 }
 .btn:active { transform: translateY(3px); }
 .btn-watch { background: linear-gradient(135deg, #4caf50, #388e3c); color: white; box-shadow: 0 4px 0 #2e7d32; }
+.btn-watch:active { box-shadow: 0 1px 0 #2e7d32; }
 .btn-try { background: linear-gradient(135deg, #ffcc02, #f9a825); color: #5d4037; box-shadow: 0 4px 0 #e65100; }
+.btn-try:active { box-shadow: 0 1px 0 #e65100; }
 .btn-next { background: linear-gradient(135deg, #F59E0B, #D97706); color: white; box-shadow: 0 4px 0 #92400e; display: none; }
+.btn-next:active { box-shadow: 0 1px 0 #92400e; }
 .btn-next.visible { display: flex; }
 
 .spark {
 position: absolute; pointer-events: none; z-index: 30;
 width: 7px; height: 7px; border-radius: 50%;
-animation: spark-anim var(--dur,0.7s) ease-out forwards;
+animation: spark-anim var(–dur,0.7s) ease-out forwards;
 }
 @keyframes spark-anim {
 0%   { transform: translate(0,0) scale(1.2); opacity: 1; }
-100% { transform: translate(var(--tx,0px),var(--ty,-40px)) scale(0); opacity: 0; }
+100% { transform: translate(var(–tx,0px),var(–ty,-40px)) scale(0); opacity: 0; }
 }
 
 .mode-tabs { display: flex; gap: 8px; width: 100%; }
 .mode-tab {
 flex: 1; padding: 8px; border: 2.5px solid #eee; border-radius: 14px;
-background: white; font-family: 'Baloo 2', cursive; font-size: 0.8rem; font-weight: 800; color: #aaa;
-cursor: pointer; text-align: center;
+background: white; font-family: ‘Baloo 2’, cursive; font-size: 0.8rem; font-weight: 800; color: #aaa;
+cursor: pointer; text-align: center; transition: all 0.15s;
 }
-.mode-tab.active { background: var(--quest-bg); border-color: var(--quest-gold); color: #92400e; }
+.mode-tab.active { background: var(–quest-bg); border-color: var(–quest-gold); color: #92400e; }
 </style>
+
 </head>
 <body>
 
@@ -221,57 +227,100 @@ cursor: pointer; text-align: center;
   <div class="btn-row">
     <button class="btn btn-watch" id="btn-watch" onclick="startDemo()">👀 Watch</button>
     <button class="btn btn-try" onclick="resetTrace()">🧹 Try Again</button>
-    <button class="btn btn-next" id="main-next-btn" onclick="nextItem()">Next ➡️</button>
+    <button class="btn btn-next visible" id="main-next-btn" onclick="nextItem()">Next ➡️</button>
   </div>
 </div>
 
 <script>
 // ─── AUDIO ENGINE ────────────────────────────────────────────────────────────
-const AudioContext = window.AudioContext || window.webkitAudioContext;
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
 function initAudio() {
-  if (!audioCtx) audioCtx = new AudioContext();
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
 function playSound(type) {
   if (!audioCtx) return;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
+  osc.connect(gain); gain.connect(audioCtx.destination);
 
   if (type === 'trace') {
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(800 + Math.random() * 400, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(600 + Math.random()*300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
   } else if (type === 'woosh') {
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
-    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
-    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.18);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.18);
   } else if (type === 'success') {
     [440, 554.37, 659.25, 880].forEach((f, i) => {
       const o = audioCtx.createOscillator();
       const g = audioCtx.createGain();
       o.type = 'sine'; o.connect(g); g.connect(audioCtx.destination);
-      o.frequency.setValueAtTime(f, audioCtx.currentTime + i * 0.1);
-      g.gain.setValueAtTime(0, audioCtx.currentTime + i * 0.1);
-      g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + i * 0.1 + 0.05);
-      g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.4);
-      o.start(audioCtx.currentTime + i * 0.1); o.stop(audioCtx.currentTime + i * 0.1 + 0.5);
+      o.frequency.setValueAtTime(f, audioCtx.currentTime + i*0.1);
+      g.gain.setValueAtTime(0, audioCtx.currentTime + i*0.1);
+      g.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + i*0.1 + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i*0.1 + 0.4);
+      o.start(audioCtx.currentTime + i*0.1); o.stop(audioCtx.currentTime + i*0.1 + 0.5);
     });
   }
+}
+
+// ─── VOICE (Web Speech API) ──────────────────────────────────────────────────
+let voiceReady = false;
+let voices = [];
+
+function loadVoices() {
+  voices = window.speechSynthesis.getVoices();
+  voiceReady = voices.length > 0;
+}
+loadVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function speak(text, delay = 0) {
+  if (!window.speechSynthesis) return;
+  setTimeout(() => {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.rate = 0.85;
+    utt.pitch = 1.2;
+    utt.volume = 1;
+    // Prefer a child-friendly English voice if available
+    const preferred = voices.find(v =>
+      v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Moira') || v.name.includes('Google') || v.name.includes('Female'))
+    ) || voices.find(v => v.lang.startsWith('en')) || null;
+    if (preferred) utt.voice = preferred;
+    window.speechSynthesis.speak(utt);
+  }, delay);
+}
+
+function announceSuccess(key, data) {
+  if (!window.speechSynthesis) return;
+  let phrase;
+  if (mode === 'letters') {
+    phrase = `${key}! ${key} is for ${data.word}! Great job!`;
+  } else {
+    // Spell out number name
+    phrase = `${data.word}! You traced the number ${key}! Amazing!`;
+  }
+  speak(phrase, 600); // slight delay so success sound plays first
 }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const W = 460, H = 280;
 const CX = W/2, CY = H/2;
+
 function pts(arr) { return arr.map(([x,y])=>({x,y})); }
 function arc(cx,cy,rx,ry,a0,a1,steps=28) {
   return Array.from({length:steps},(_,i)=>{
@@ -287,7 +336,14 @@ const LETTERS = {
   D:{strokes:[pts([[165,50],[165,220]]),pts([[165,50],[230,50],[285,90],[285,180],[230,220],[165,220]])],mascot:'🦆',word:'Duck',color:'#3498db'},
   E:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[265,135]]),pts([[170,220],[290,220]])],mascot:'🐘',word:'Elephant',color:'#9b59b6'},
   F:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[270,135]])],mascot:'🦊',word:'Fox',color:'#e67e22'},
-  G:{strokes:[arc(CX,CY,95,100,0.3,Math.PI*1.8,32).concat(pts([[CX+85,CY+55],[CX,CY+55]]))],mascot:'🦒',word:'Giraffe',color:'#27ae60'},
+
+  // ── G FIXED ──
+  // Start upper-right, arc counterclockwise (like C), stop at 3-o'clock, then draw shelf inward
+  G:{strokes:[
+    arc(CX, CY, 95, 100, -Math.PI*0.15, Math.PI*1.62, 34)
+      .concat(pts([[CX+95, CY],[CX+10, CY]]))
+  ],mascot:'🦒',word:'Giraffe',color:'#27ae60'},
+
   H:{strokes:[pts([[160,50],[160,220]]),pts([[160,135],[300,135]]),pts([[300,50],[300,220]])],mascot:'🐹',word:'Hamster',color:'#d35400'},
   I:{strokes:[pts([[CX,50],[CX,220]]),pts([[CX-50,50],[CX+50,50]]),pts([[CX-50,220],[CX+50,220]])],mascot:'🦎',word:'Iguana',color:'#16a085'},
   J:{strokes:[pts([[CX+50,50],[CX+50,185]]).concat(arc(CX,185,50,35,0,Math.PI,16))],mascot:'🪼',word:'Jellyfish',color:'#8e44ad'},
@@ -299,7 +355,7 @@ const LETTERS = {
   P:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]])],mascot:'🐧',word:'Penguin',color:'#2c3e50'},
   Q:{strokes:[arc(CX,CY,95,100,0,Math.PI*2,36),pts([[CX+55,CY+55],[CX+100,CY+100]])],mascot:'🦆',word:'Quail',color:'#e67e22'},
   R:{strokes:[pts([[160,50],[160,220]]),pts([[160,50],[230,50],[265,75],[265,115],[230,135],[160,135]]),pts([[205,135],[300,220]])],mascot:'🐇',word:'Rabbit',color:'#95a5a6'},
-  S:{strokes:[arc(CX+5, 100, 65, 50, -0.2, -Math.PI * 1.2, 24).concat(pts([[CX-60, 110], [CX+60, 170]])).concat(arc(CX-5, 180, 65, 55, -0.2, Math.PI, 24))],mascot:'🐍',word:'Snake',color:'#27ae60'},
+  S:{strokes:[arc(CX+5,100,65,50,-0.2,-Math.PI*1.2,24).concat(pts([[CX-60,110],[CX+60,170]])).concat(arc(CX-5,180,65,55,-0.2,Math.PI,24))],mascot:'🐍',word:'Snake',color:'#27ae60'},
   T:{strokes:[pts([[150,50],[310,50]]),pts([[CX,50],[CX,220]])],mascot:'🐢',word:'Turtle',color:'#16a085'},
   U:{strokes:[pts([[165,50],[165,185]]).concat(arc(CX,185,65,45,Math.PI,0,18)).concat(pts([[295,185],[295,50]]))],mascot:'🦄',word:'Unicorn',color:'#9b59b6'},
   V:{strokes:[pts([[140,50],[CX,220],[300,50]])],mascot:'🦅',word:'Vulture',color:'#7f8c8d'},
@@ -310,16 +366,53 @@ const LETTERS = {
 };
 
 const NUMBERS = {
+  // 1 — straight down with serif base
   '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-35,230],[CX+35,230]])],mascot:'🌟',word:'One',color:'#e74c3c'},
+
+  // 2 — top arc, diagonal, base line
   '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+75,220]]))],mascot:'🦆',word:'Two',color:'#3498db'},
-  '3':{strokes:[arc(CX,115,65,55,-Math.PI*0.85,Math.PI*0.9,24).concat(arc(CX,185,65,55,-Math.PI*0.9,Math.PI*0.9,24))],mascot:'🐝',word:'Three',color:'#f39c12'},
+
+  // ── 3 FIXED ──
+  // Two bumps opening to the RIGHT. Each arc goes from left-ish open ends to right.
+  // We draw top bump first (upper half), then bottom bump (lower half).
+  // arc params: cx, cy, rx, ry, startAngle, endAngle
+  // Angle 0=right, PI/2=down, PI=left, -PI/2=up
+  // Top bump: center at (CX, 108), opens left, goes from top-left round to bottom-left
+  // Bottom bump: center at (CX, 180), same principle but slightly larger
+  '3':{strokes:[
+    arc(CX, 108, 68, 58, -Math.PI*0.75, Math.PI*0.75, 24),
+    arc(CX, 180, 72, 62, -Math.PI*0.8,  Math.PI*0.8,  24)
+  ],mascot:'🐝',word:'Three',color:'#f39c12'},
+
+  // 4 — diagonal arm + vertical
   '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+85,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four',color:'#9b59b6'},
+
+  // 5 — top-left corner, down, curve right
   '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*3.2,20))],mascot:'🖐️',word:'Five',color:'#e67e22'},
-  '6':{strokes:[pts([[CX+45,60],[CX-40,145]]).concat(arc(CX,180,65,65,Math.PI*1.5,Math.PI*3.5,40))],mascot:'🎲',word:'Six',color:'#d35400'},
+
+  // ── 6 FIXED ──
+  // 6 = curved stem from top-right curving LEFT+DOWN, connecting INTO top of the circle
+  // Drawn as ONE continuous stroke: curve down into circle
+  // The stem ends at the top of the circle (12 o'clock), circle goes full around
+  '6':{strokes:[
+    // Stem: start top-right, curve down-left to meet top of circle
+    pts([[CX+55, 52],[CX+30, 80],[CX+5, 108],[CX-20, 130]])
+      // Transition smoothly into the circle — circle center (CX, 188), r=58
+      // Top of circle = (CX, 130), so we connect there and go round clockwise
+      .concat(arc(CX, 188, 58, 58, -Math.PI/2, Math.PI*1.5, 36))
+  ],mascot:'🎲',word:'Six',color:'#d35400'},
+
+  // 7 — top bar, diagonal
   '7':{strokes:[pts([[CX-60,60],[CX+60,60],[CX-30,230]])],mascot:'🌈',word:'Seven',color:'#9b59b6'},
+
+  // 8 — two stacked circles
   '8':{strokes:[arc(CX,105,55,50,Math.PI*0.5,Math.PI*2.5,24).concat(arc(CX,190,65,55,Math.PI*1.5,-Math.PI*0.5,24))],mascot:'🐙',word:'Eight',color:'#3498db'},
-  '9':{strokes:[arc(CX, 100, 65, 55, 0, Math.PI*2.1, 32).concat(pts([[CX+65, 100], [CX+40, 230]]))],mascot:'🎈',word:'Nine',color:'#e74c3c'},
-  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]), arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'}
+
+  // 9 — circle on top, tail hanging down-right
+  '9':{strokes:[arc(CX,100,65,55,0,Math.PI*2.1,32).concat(pts([[CX+65,100],[CX+40,230]]))],mascot:'🎈',word:'Nine',color:'#e74c3c'},
+
+  // 10 — 1 on left, circle on right
+  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]),arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'}
 };
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -332,7 +425,7 @@ let tracePoints = [];
 let completed = { letters: new Set(), numbers: new Set() };
 let demoTimer = null;
 let letterKeys = Object.keys(LETTERS);
-let numberKeys = Array.from({length:10}, (_,i)=>(i+1).toString()); // Removed 11 to 20
+let numberKeys = Object.keys(NUMBERS);
 
 const canvas = document.getElementById('traceCanvas');
 const ctx = canvas.getContext('2d');
@@ -348,6 +441,7 @@ function currentKey() {
   return (mode === 'letters' ? letterKeys : numberKeys)[currentIdx];
 }
 
+// ─── INIT ────────────────────────────────────────────────────────────────────
 function init() {
   setupInput();
   switchMode('letters');
@@ -381,7 +475,7 @@ function loadItem(idx) {
   currentIdx = idx;
   phase = 'idle';
   celebrate.classList.remove('show');
-  mainNextBtn.classList.remove('visible'); 
+  mainNextBtn.classList.remove('visible');
   guideDot.style.opacity = '0';
   tracePoints = [];
 
@@ -390,9 +484,11 @@ function loadItem(idx) {
 
   document.getElementById('mascot-box').textContent = data.mascot;
   document.getElementById('fh-letter').textContent = key;
-  document.getElementById('fh-word').textContent = mode === 'letters' ? `${data.mascot} ${key} is for ${data.word}!` : `${data.mascot} ${data.word}`;
+  document.getElementById('fh-word').textContent = mode === 'letters'
+    ? `${data.mascot} ${key} is for ${data.word}!`
+    : `${data.mascot} ${data.word}`;
   document.getElementById('cel-animal').textContent = data.mascot;
-  document.getElementById('cel-sub').textContent = data.word;
+  document.getElementById('cel-sub').textContent = mode === 'letters' ? `${key} is for ${data.word}!` : data.word;
 
   buildFireflies();
   drawGuide();
@@ -400,6 +496,7 @@ function loadItem(idx) {
   setTimeout(() => startDemo(), 500);
 }
 
+// ─── GUIDE ───────────────────────────────────────────────────────────────────
 function drawGuide() {
   ctx.clearRect(0, 0, W, H);
   const data = currentData();
@@ -416,11 +513,14 @@ function drawGuide() {
     ctx.beginPath();
     ctx.arc(stroke[0].x, stroke[0].y, 13, 0, Math.PI*2);
     ctx.fillStyle = '#4caf50'; ctx.fill();
-    ctx.fillStyle = 'white'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(si+1, stroke[0].x, stroke[0].y);
   });
 }
 
+// ─── DEMO ────────────────────────────────────────────────────────────────────
 function startDemo() {
   initAudio();
   clearDemo();
@@ -467,6 +567,7 @@ function startDemo() {
         ctx.strokeStyle = data.color;
         ctx.lineWidth = 16; ctx.lineCap = 'round';
         ctx.shadowColor = data.color; ctx.shadowBlur = 16;
+        ctx.setLineDash([]);
         ctx.beginPath(); ctx.moveTo(pp.x, pp.y); ctx.lineTo(p.x, p.y); ctx.stroke();
         ctx.restore();
         if (pi % 3 === 0) playSound('woosh');
@@ -479,14 +580,22 @@ function startDemo() {
   doStroke();
 }
 
-function clearDemo() { if (demoTimer) clearTimeout(demoTimer); demoTimer = null; }
+function clearDemo() {
+  if (demoTimer) clearTimeout(demoTimer);
+  demoTimer = null;
+}
 
+// ─── INPUT ───────────────────────────────────────────────────────────────────
 function setupInput() {
   const hDown = (e) => { e.preventDefault(); onDown(e); };
   const hMove = (e) => { e.preventDefault(); onMove(e); };
-  const hUp = () => { onUp(); };
-  canvas.addEventListener('mousedown', hDown); canvas.addEventListener('mousemove', hMove); canvas.addEventListener('mouseup', hUp);
-  canvas.addEventListener('touchstart', hDown, {passive:false}); canvas.addEventListener('touchmove', hMove, {passive:false}); canvas.addEventListener('touchend', hUp, {passive:false});
+  const hUp   = () => { onUp(); };
+  canvas.addEventListener('mousedown', hDown);
+  canvas.addEventListener('mousemove', hMove);
+  canvas.addEventListener('mouseup', hUp);
+  canvas.addEventListener('touchstart', hDown, {passive:false});
+  canvas.addEventListener('touchmove',  hMove, {passive:false});
+  canvas.addEventListener('touchend',   hUp,   {passive:false});
 }
 
 function getPos(e) {
@@ -512,6 +621,7 @@ function onMove(e) {
   ctx.strokeStyle = '#4caf50';
   ctx.lineWidth = 18; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   ctx.shadowColor = '#7fff6a'; ctx.shadowBlur = 14;
+  ctx.setLineDash([]);
   ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.stroke();
   ctx.restore();
   if (tracePoints.length % 5 === 0) playSound('trace');
@@ -519,50 +629,50 @@ function onMove(e) {
   lastX = p.x; lastY = p.y;
 }
 
-function onUp() { if (isDrawing) { isDrawing = false; if (tracePoints.length > 15) setTimeout(checkCompletion, 100); } }
+function onUp() {
+  if (!isDrawing) return;
+  isDrawing = false;
+  if (tracePoints.length > 15) setTimeout(checkCompletion, 100);
+}
 
 function resetTrace() {
   clearDemo();
   tracePoints = [];
   celebrate.classList.remove('show');
-  mainNextBtn.classList.remove('visible'); 
+  mainNextBtn.classList.remove('visible');
   drawGuide();
   phase = 'trace';
   setInstruction('✏️ Try again! Trace the character!');
 }
 
+// ─── COMPLETION ───────────────────────────────────────────────────────────────
 function checkCompletion() {
   const data = currentData();
-  let totalPathPoints = 0;
-  let pointsCovered = 0;
-
-  const THRESHOLD = 0.95;
-  const PROXIMITY = 22; 
+  let total = 0, covered = 0;
+  const PROXIMITY = 24; // generous for small hands
+  const THRESHOLD = 0.90;
 
   data.strokes.forEach(stroke => {
     stroke.forEach(sp => {
-      totalPathPoints++;
-      const isHit = tracePoints.some(tp => {
-        const dx = tp.x - sp.x;
-        const dy = tp.y - sp.y;
-        return (dx*dx + dy*dy) < (PROXIMITY * PROXIMITY);
-      });
-      if (isHit) pointsCovered++;
+      total++;
+      if (tracePoints.some(tp => (tp.x-sp.x)**2 + (tp.y-sp.y)**2 < PROXIMITY*PROXIMITY)) covered++;
     });
   });
 
-  if ((pointsCovered / totalPathPoints) >= THRESHOLD) {
-    showCelebration();
-  }
+  if (covered / total >= THRESHOLD) showCelebration();
 }
 
 function showCelebration() {
   completed[mode].add(currentIdx);
+  const data = currentData();
+  const key = currentKey();
   playSound('success');
-  const msgs = ['Amazing! 🌟','You did it! 🎉','Super star! ⭐','Wonderful! 🥳'];
+  announceSuccess(key, data);
+
+  const msgs = ['Amazing! 🌟','You did it! 🎉','Super star! ⭐','Wonderful! 🥳','Great job! 🌈'];
   document.getElementById('cel-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
   celebrate.classList.add('show');
-  mainNextBtn.classList.add('visible'); 
+  mainNextBtn.classList.add('visible');
   buildFireflies();
 }
 
@@ -571,6 +681,7 @@ function nextItem() {
   loadItem((currentIdx + 1) % keys.length);
 }
 
+// ─── SPARKS ──────────────────────────────────────────────────────────────────
 function spawnSpark(cx, cy) {
   const wrap = document.getElementById('canvas-wrap');
   const rect = canvas.getBoundingClientRect();
