@@ -991,7 +991,7 @@ function startQuiz() {
   quizTotal = quizData.length;
   document.getElementById("score").textContent  = 0;
   document.getElementById("streak").textContent = 0;
-  var modeLabels = { meaning:"Kanji &#x2192; Meaning", reading:"Kanji &#x2192; Reading", writing:"Meaning &#x2192; Kanji" };
+  var modeLabels = { meaning:"Kanji → Meaning", reading:"Kanji → Reading", writing:"Meaning → Kanji" };
   document.getElementById("quiz-title").textContent = modeLabels[currentMode] || "Kanji Quiz";
   showScreen("quiz-screen");
   showQuizQ();
@@ -1010,21 +1010,21 @@ function showQuizQ() {
   kanjiEl.style.display = "none";
   enEl.style.display    = "none";
   if (currentMode === "meaning") {
-    document.getElementById("q-type-badge").textContent = "Kanji &#x2192; Meaning";
+    document.getElementById("q-type-badge").textContent = "Kanji → Meaning";
     document.getElementById("q-label").textContent = "What does this kanji mean?";
     kanjiEl.textContent = w.k; kanjiEl.style.display = "block";
     hintEl.textContent = w.strokes + " strokes";
     setTimeout(function() { speak(w.k); }, 300);
     buildOptions(w, "meaning");
   } else if (currentMode === "reading") {
-    document.getElementById("q-type-badge").textContent = "Kanji &#x2192; Reading";
+    document.getElementById("q-type-badge").textContent = "Kanji → Reading";
     document.getElementById("q-label").textContent = "How do you read this?";
     kanjiEl.textContent = w.k; kanjiEl.style.display = "block";
     hintEl.textContent = "meaning: " + w.meaning;
     setTimeout(function() { speak(w.k); }, 300);
     buildOptions(w, "reading");
   } else {
-    document.getElementById("q-type-badge").textContent = "Meaning &#x2192; Kanji";
+    document.getElementById("q-type-badge").textContent = "Meaning → Kanji";
     document.getElementById("q-label").textContent = "Which kanji means this?";
     enEl.textContent = w.meaning; enEl.style.display = "block";
     hintEl.textContent = w.strokes + " strokes";
