@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -17,165 +16,162 @@
   .screen { display: none; }
   .screen.active { display: block; }
 
-.top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-.back-btn {
-background: white; border: 2px solid #eee; border-radius: 12px;
-padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
-cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
--webkit-tap-highlight-color: transparent;
-}
-.top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
-.home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
+  .top-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .back-btn {
+    background: white; border: 2px solid #eee; border-radius: 12px;
+    padding: 8px 14px; font-family: inherit; font-weight: 700; font-size: 0.9em;
+    cursor: pointer; color: #2d3436; -webkit-appearance: none; white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .top-bar h2 { font-size: 1.2em; font-weight: 900; color: white; flex: 1; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+  .home-link { display: block; margin-top: 20px; color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 700; font-size: 0.9em; text-align: center; }
 
-.menu-header {
-background: white; border-radius: 25px; padding: 22px 20px;
-text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
-}
-.menu-header .big-title { font-size: 2em; font-weight: 900; color: #1e8449; margin-bottom: 4px; }
-.menu-header .subtitle  { font-size: 0.9em; color: #888; }
+  .menu-header {
+    background: white; border-radius: 25px; padding: 22px 20px;
+    text-align: center; margin-bottom: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+  }
+  .menu-header .big-title { font-size: 2em; font-weight: 900; color: #1e8449; margin-bottom: 4px; }
+  .menu-header .subtitle  { font-size: 0.9em; color: #888; }
 
-.tip-box {
-background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
-border-radius: 15px; padding: 12px 16px; margin-bottom: 15px;
-color: white; font-size: 0.82em; font-weight: 600; line-height: 1.5;
-}
-.tip-box strong { color: #fff9c4; }
+  .tip-box {
+    background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 15px; padding: 12px 16px; margin-bottom: 15px;
+    color: white; font-size: 0.82em; font-weight: 600; line-height: 1.5;
+  }
+  .tip-box strong { color: #fff9c4; }
 
-.section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin: 16px 0 8px 2px; }
-.menu-grid { display: grid; gap: 10px; }
+  .section-lbl { font-size: 0.78em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin: 16px 0 8px 2px; }
+  .menu-grid { display: grid; gap: 10px; }
 
-.menu-card {
-width: 100%; background: white; border-radius: 18px; padding: 16px 18px;
-display: flex; align-items: center; gap: 14px; cursor: pointer;
-border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
-font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
-}
-.menu-card:active { transform: scale(0.98); }
-.menu-card * { pointer-events: none; }
-.menu-card.seasons  { border-color: #f9ca24; }
-.menu-card.weather  { border-color: #22a6b3; }
-.menu-card.animals  { border-color: #6ab04c; }
-.menu-card.plants   { border-color: #e84393; }
-.menu-card.sky      { border-color: #4834d4; }
-.menu-card.mix      { border-color: #e55039; }
+  .menu-card {
+    width: 100%; background: white; border-radius: 18px; padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px; cursor: pointer;
+    border: 2px solid transparent; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.15s; -webkit-tap-highlight-color: transparent;
+    font-family: inherit; text-align: left; -webkit-appearance: none; appearance: none;
+  }
+  .menu-card:active { transform: scale(0.98); }
+  .menu-card * { pointer-events: none; }
+  .menu-card.seasons  { border-color: #f9ca24; }
+  .menu-card.weather  { border-color: #22a6b3; }
+  .menu-card.animals  { border-color: #6ab04c; }
+  .menu-card.plants   { border-color: #e84393; }
+  .menu-card.sky      { border-color: #4834d4; }
+  .menu-card.mix      { border-color: #e55039; }
 
-.menu-icon { font-size: 2.5em; min-width: 55px; text-align: center; }
-.menu-info { flex: 1; }
-.menu-name  { font-weight: 900; font-size: 1em; color: #2d3436; }
-.menu-desc  { font-size: 0.8em; color: #888; margin-top: 2px; }
-.menu-count { background: #f0fff4; color: #1e8449; border: 1px solid #a9dfbf; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
+  .menu-icon { font-size: 2.5em; min-width: 55px; text-align: center; }
+  .menu-info { flex: 1; }
+  .menu-name  { font-weight: 900; font-size: 1em; color: #2d3436; }
+  .menu-desc  { font-size: 0.8em; color: #888; margin-top: 2px; }
+  .menu-count { background: #f0fff4; color: #1e8449; border: 1px solid #a9dfbf; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
 
-.learn-card {
-background: white; border-radius: 25px; padding: 25px 20px;
-box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px; text-align: center;
-}
-.word-banner {
-background: linear-gradient(135deg, #f0fff4, #d5f5e3);
-border-radius: 16px; padding: 20px 15px; margin-bottom: 14px;
-}
-.word-banner-cat { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #1e8449; margin-bottom: 6px; }
-.word-banner-jp  { font-size: 3em; font-weight: 700; color: #2d3436; line-height: 1; }
+  .learn-card {
+    background: white; border-radius: 25px; padding: 25px 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px; text-align: center;
+  }
+  .word-banner {
+    background: linear-gradient(135deg, #f0fff4, #d5f5e3);
+    border-radius: 16px; padding: 20px 15px; margin-bottom: 14px;
+  }
+  .word-banner-cat { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #1e8449; margin-bottom: 6px; }
+  .word-banner-jp  { font-size: 3em; font-weight: 700; color: #2d3436; line-height: 1; }
 
-.word-romaji  { font-size: 1em; color: #aaa; font-weight: 700; margin-bottom: 8px; }
-.word-en      { font-size: 1.3em; font-weight: 900; color: #1e8449; margin-bottom: 10px; }
-.word-example { background: #f0fff4; border-radius: 12px; padding: 12px 15px; margin-top: 10px; font-size: 0.88em; color: #555; line-height: 1.7; text-align: left; }
-.word-tip     { background: #e8f4ff; border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: 0.8em; color: #118ab2; font-weight: 700; }
+  .word-romaji  { font-size: 1em; color: #aaa; font-weight: 700; margin-bottom: 8px; }
+  .word-en      { font-size: 1.3em; font-weight: 900; color: #1e8449; margin-bottom: 10px; }
+  .word-example { background: #f0fff4; border-radius: 12px; padding: 12px 15px; margin-top: 10px; font-size: 0.88em; color: #555; line-height: 1.7; text-align: left; }
+  .word-tip     { background: #e8f4ff; border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-size: 0.8em; color: #118ab2; font-weight: 700; }
 
-.speak-btn {
-background: #1e8449; color: white; border: none; border-radius: 50px;
-padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
-cursor: pointer; display: flex; align-items: center; gap: 8px;
-margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
-}
-.learn-nav { display: flex; justify-content: space-between; align-items: center; }
-.nav-btn {
-background: #2d3436; color: white; border: none; border-radius: 12px;
-padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
-cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
-}
-.nav-btn:disabled { background: #ddd; color: #aaa; }
-.learn-counter  { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
-.start-quiz-btn {
-display: block; width: 100%; margin-top: 18px; padding: 15px;
-background: #1e8449; color: white; border: none; border-radius: 16px;
-font-family: inherit; font-weight: 800; font-size: 1.1em;
-cursor: pointer; -webkit-appearance: none; text-align: center;
--webkit-tap-highlight-color: transparent;
-}
+  .speak-btn {
+    background: #1e8449; color: white; border: none; border-radius: 50px;
+    padding: 12px 25px; font-family: inherit; font-weight: 800; font-size: 1em;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    margin: 0 auto 18px; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+  }
+  .learn-nav { display: flex; justify-content: space-between; align-items: center; }
+  .nav-btn {
+    background: #2d3436; color: white; border: none; border-radius: 12px;
+    padding: 12px 20px; font-family: inherit; font-weight: 800; font-size: 1em;
+    cursor: pointer; -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn:disabled { background: #ddd; color: #aaa; }
+  .learn-counter  { font-weight: 800; color: rgba(255,255,255,0.85); font-size: 0.9em; }
+  .start-quiz-btn {
+    display: block; width: 100%; margin-top: 18px; padding: 15px;
+    background: #1e8449; color: white; border: none; border-radius: 16px;
+    font-family: inherit; font-weight: 800; font-size: 1.1em;
+    cursor: pointer; -webkit-appearance: none; text-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-.game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
-.progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
-.q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
-.stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
-.stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.stat-pill.score  { color: #1e8449; }
-.stat-pill.streak { color: #e63946; }
+  .game-header   { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .progress-wrap { flex: 1; background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; overflow: hidden; }
+  .progress-fill { background: white; height: 100%; transition: width 0.4s; border-radius: 10px; }
+  .q-count       { font-weight: 800; font-size: 0.9em; color: white; white-space: nowrap; }
+  .stats-row     { display: flex; gap: 10px; margin-bottom: 15px; }
+  .stat-pill     { background: white; border-radius: 12px; padding: 8px 15px; font-weight: 800; font-size: 0.9em; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .stat-pill.score  { color: #1e8449; }
+  .stat-pill.streak { color: #e63946; }
 
-.question-card {
-background: white; border-radius: 22px; padding: 25px 20px; text-align: center;
-box-shadow: 0 6px 25px rgba(0,0,0,0.15); margin-bottom: 16px; min-height: 160px;
-display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
-}
-.q-type-badge { position: absolute; top: 12px; right: 12px; background: #f0fff4; color: #1e8449; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
-.q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-.q-jp    { font-size: 2.8em; color: #2d3436; font-weight: 700; line-height: 1; }
-.q-en    { font-size: 1.4em; font-weight: 900; color: #2d3436; }
-.q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
+  .question-card {
+    background: white; border-radius: 22px; padding: 25px 20px; text-align: center;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.15); margin-bottom: 16px; min-height: 160px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+  }
+  .q-type-badge { position: absolute; top: 12px; right: 12px; background: #f0fff4; color: #1e8449; padding: 3px 10px; border-radius: 20px; font-size: 0.7em; font-weight: 700; }
+  .q-label { font-size: 0.85em; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .q-jp    { font-size: 2.8em; color: #2d3436; font-weight: 700; line-height: 1; }
+  .q-en    { font-size: 1.4em; font-weight: 900; color: #2d3436; }
+  .q-hint  { font-size: 0.82em; color: #aaa; margin-top: 8px; }
 
-.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.option-btn {
-background: white; border: 2px solid #eee; border-radius: 15px; padding: 14px 10px;
-font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
--webkit-appearance: none; text-align: center; transition: all 0.15s;
-box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
-}
-.option-btn * { pointer-events: none; }
-.option-btn .opt-jp   { font-size: 1.4em; display: block; color: #2d3436; font-weight: 900; }
-.option-btn .opt-en   { font-size: 0.85em; display: block; color: #aaa; margin-top: 2px; }
-.option-btn:active:not(:disabled) { transform: scale(0.97); }
-.option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
-.option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
-.option-btn:disabled { cursor: not-allowed; }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .option-btn {
+    background: white; border: 2px solid #eee; border-radius: 15px; padding: 14px 10px;
+    font-family: inherit; font-weight: 700; cursor: pointer; color: #2d3436;
+    -webkit-appearance: none; text-align: center; transition: all 0.15s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparent;
+  }
+  .option-btn * { pointer-events: none; }
+  .option-btn .opt-jp   { font-size: 1.4em; display: block; color: #2d3436; font-weight: 900; }
+  .option-btn .opt-en   { font-size: 0.85em; display: block; color: #aaa; margin-top: 2px; }
+  .option-btn:active:not(:disabled) { transform: scale(0.97); }
+  .option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
+  .option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
+  .option-btn:disabled { cursor: not-allowed; }
 
-@keyframes shake {
-0%, 100% { transform: translateX(0); }
-25%       { transform: translateX(-8px); }
-75%       { transform: translateX(8px); }
-}
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-8px); }
+    75%       { transform: translateX(8px); }
+  }
 
-.feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
-.feedback.correct-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-.feedback.wrong-text   { color: #c8f7c5; }
-.feedback.hint-text    { color: white; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; font-size: 0.88em; }
+  .feedback { text-align: center; font-weight: 800; font-size: 1em; min-height: 35px; margin-bottom: 10px; }
+  .feedback.correct-text { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .feedback.wrong-text   { color: #c8f7c5; }
+  .feedback.hint-text    { color: white; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; font-size: 0.88em; }
 
-.hint-btn {
-background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
-border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
-font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
--webkit-tap-highlight-color: transparent;
-}
+  .hint-btn {
+    background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 12px; padding: 8px 18px; font-family: inherit; font-weight: 700;
+    font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; margin: 0 auto;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
-.trophy    { font-size: 5em; margin: 20px 0; }
-.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-.end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
-.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
-.end-btns  { display: grid; gap: 10px; }
-.end-btn {
-background: white; color: #1e8449; border: none; border-radius: 15px; padding: 16px;
-font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
--webkit-appearance: none; -webkit-tap-highlight-color: transparent;
-}
-.end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+  .end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
+  .trophy    { font-size: 5em; margin: 20px 0; }
+  .end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+  .end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
+  .end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
+  .end-btns  { display: grid; gap: 10px; }
+  .end-btn {
+    background: white; color: #1e8449; border: none; border-radius: 15px; padding: 16px;
+    font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
+    -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+  }
+  .end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
 </style>
-
 </head>
 <body>
 <div class="container">
-
-<!-- MENU -->
 
 <div id="menu-screen" class="screen active">
   <div class="menu-header">
@@ -215,10 +211,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="menu-info"><div class="menu-name">Mixed Quiz!</div><div class="menu-desc">All categories — the ultimate test!</div><div class="menu-count">All 60 words</div></div>
     </button>
   </div>
-  <a href="../" class="home-link">← Back to Japanese Hub</a>
 </div>
-
-<!-- LEARN -->
 
 <div id="learn-screen" class="screen">
   <div class="top-bar">
@@ -244,10 +237,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
     <button type="button" class="nav-btn" id="learn-next">Next →</button>
   </div>
   <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">🎯 Start Quiz!</button>
-  <a href="#" class="home-link" id="learn-back-link">← Back to categories</a>
 </div>
-
-<!-- QUIZ -->
 
 <div id="quiz-screen" class="screen">
   <div class="top-bar">
@@ -274,8 +264,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
 </div>
 
-<!-- END -->
-
 <div id="end-screen" class="screen">
   <div class="end-inner">
     <div class="trophy" id="trophy">🏆</div>
@@ -286,216 +274,88 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
       <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Categories</button>
     </div>
-    <a href="../" class="home-link">← Back to Japanese Hub</a>
   </div>
 </div>
 
 </div>
+
 <script>
 const WORDS = {
-
-seasons: [
-{ id:‘haru’,     jp:‘はる’,       r:‘haru’,     en:‘spring’,
-ex:‘はるになるとさくらがさきます = When spring comes, cherry blossoms bloom’,
-tip:‘Japan's most celebrated season! School year starts in spring (April) 🌸’ },
-{ id:‘natsu’,    jp:‘なつ’,       r:‘natsu’,    en:‘summer’,
-ex:‘なつはあつくてむしあついです = Summer is hot and humid’,
-tip:‘Japanese summer is extremely humid — たいへん (tough)! Lots of festivals 🎆’ },
-{ id:‘aki’,      jp:‘あき’,       r:‘aki’,      en:‘autumn / fall’,
-ex:‘あきはこうようがきれいです = Autumn coloured leaves are beautiful’,
-tip:‘こうよう (autumn leaves) viewing is as popular as cherry blossoms! 🍁’ },
-{ id:‘fuyu’,     jp:‘ふゆ’,       r:‘fuyu’,     en:‘winter’,
-ex:‘ふゆはゆきがふります = Snow falls in winter’,
-tip:‘Many parts of Japan get heavy snow! こたつ (heated table) is a winter staple ❄️’ },
-{ id:‘shiki’,    jp:‘しき’,       r:‘shiki’,    en:‘four seasons’,
-ex:‘にほんにはうつくしいしきがあります = Japan has beautiful four seasons’,
-tip:‘四季 written in kanji: 四(four) + 季(season). A very important cultural concept! 🌏’ },
-{ id:‘hanamimi’, jp:‘はなみ’,     r:‘hanami’,   en:‘cherry blossom viewing’,
-ex:‘こうえんではなみをします = We do cherry blossom viewing at the park’,
-tip:‘One of the most important Japanese cultural events! Families picnic under sakura 🌸’ },
-{ id:‘natsuyas’, jp:‘なつやすみ’, r:‘natsuyasumi’, en:‘summer holidays’,
-ex:‘なつやすみがたのしみです = I'm looking forward to summer holidays’,
-tip:‘Japanese summer holidays are about 6 weeks, usually late July to early September 🏖️’ },
-{ id:‘atsui’,    jp:‘あつい’,     r:‘atsui’,    en:‘hot (weather)’,
-ex:‘きょうはあついですね = It's hot today, isn't it’,
-tip:‘あつい also means “thick” or “passionate” — same sound, different kanji! 🌡️’ },
-{ id:‘samui’,    jp:‘さむい’,     r:‘samui’,    en:‘cold (weather / feeling cold)’,
-ex:‘ふゆはさむいです = Winter is cold’,
-tip:‘さむい = cold weather. つめたい = cold to the touch (cold drink, cold water) 🥶’ },
-{ id:‘suzushii’, jp:‘すずしい’,   r:‘suzushii’, en:‘cool / refreshing’,
-ex:‘あきはすずしくなります = It becomes cool in autumn’,
-tip:‘The nicest word in Japanese summer — すずしい! Means a refreshing coolness 😌’ },
-{ id:‘atatakaii’,jp:‘あたたかい’, r:‘atatakai’, en:‘warm’,
-ex:‘はるはあたたかいです = Spring is warm’,
-tip:‘あたたかい for warm weather. あたたかい also works for warm people / kind hearts 💛’ },
-{ id:‘kisetsu’,  jp:‘きせつ’,     r:‘kisetsu’,  en:‘season (of the year)’,
-ex:‘すきなきせつはなんですか？ = What is your favourite season?’,
-tip:‘Great conversation starter in Japan! Everyone has a favourite season 🍂’ },
-],
-
-weather: [
-{ id:‘tenki’,    jp:‘てんき’,     r:‘tenki’,    en:‘weather’,
-ex:‘きょうのてんきはいいですね = The weather is nice today, isn't it’,
-tip:‘てんきよほう = weather forecast. Very common on TV and apps! 📱’ },
-{ id:‘hare’,     jp:‘はれ’,       r:‘hare’,     en:‘sunny / clear sky’,
-ex:‘あしたははれるといいですね = I hope it will be sunny tomorrow’,
-tip:‘On weather maps: ☀ = はれ. Japanese school planners use these symbols! ☀️’ },
-{ id:‘kumori’,   jp:‘くもり’,     r:‘kumori’,   en:‘cloudy’,
-ex:‘きょうはくもりです = It is cloudy today’,
-tip:‘くも = cloud. くもり = cloudy sky. Easy to remember! ☁️’ },
-{ id:‘ame’,      jp:‘あめ’,       r:‘ame’,      en:‘rain’,
-ex:‘あめがふっています = It is raining’,
-tip:‘あめ means rain AND candy — same sound, totally different kanji! 雨 vs 飴 🌧️’ },
-{ id:‘yuki’,     jp:‘ゆき’,       r:‘yuki’,     en:‘snow’,
-ex:‘ゆきがつもっています = Snow has piled up’,
-tip:‘ゆき is also a popular girl's name! 雪 is the kanji — one of the first kanji kids learn ⛄’ },
-{ id:‘kaze’,     jp:‘かぜ’,       r:‘kaze’,     en:‘wind’,
-ex:‘つよいかぜがふいています = A strong wind is blowing’,
-tip:‘かぜ also means “cold” (the illness)! 風 = wind/cold. 風邪をひく = catch a cold 🤧’ },
-{ id:‘taifuu’,   jp:‘たいふう’,   r:‘taifuu’,   en:‘typhoon’,
-ex:‘たいふうがきます = A typhoon is coming’,
-tip:‘Japan gets hit by many typhoons each year, especially September. Kids get typhoon days off! 🌀’ },
-{ id:‘jishin’,   jp:‘じしん’,     r:‘jishin’,   en:‘earthquake’,
-ex:‘じしんがありました = There was an earthquake’,
-tip:‘Japan has ~1500 earthquakes per year! Kids learn earthquake drills from age 1 🫨’ },
-{ id:‘niji’,     jp:‘にじ’,       r:‘niji’,     en:‘rainbow’,
-ex:‘あめのあとにじがでました = A rainbow appeared after the rain’,
-tip:‘にじいろ = rainbow colour. にじいろえんぴつ = rainbow-coloured pencils 🌈’ },
-{ id:‘kaminari’, jp:‘かみなり’,   r:‘kaminari’, en:‘thunder / lightning’,
-ex:‘かみなりがこわいです = I'm scared of thunder’,
-tip:‘かみなり literally means “god-thunder” (神+鳴). Ancient Japanese believed gods caused thunder! ⚡’ },
-{ id:‘kiri’,     jp:‘きり’,       r:‘kiri’,     en:‘fog / mist’,
-ex:‘あさきりがこいです = The morning fog is thick’,
-tip:‘Japan has beautiful misty mornings in the mountains! Very poetic in Japanese literature 🌫️’ },
-{ id:‘ondo’,     jp:‘おんど’,     r:‘ondo’,     en:‘temperature’,
-ex:‘きょうのおんどはなんどですか？ = What is today's temperature?’,
-tip:‘おんど is also a traditional dance! Context matters. 気温 (きおん) = air temperature 🌡️’ },
-],
-
-animals: [
-{ id:‘inu’,      jp:‘いぬ’,       r:‘inu’,      en:‘dog’,
-ex:‘いぬをかっています = I have a dog (as a pet)’,
-tip:‘Dogs are very popular in Japan. お犬様 culture — dogs are treated like royalty! 🐕’ },
-{ id:‘neko’,     jp:‘ねこ’,       r:‘neko’,     en:‘cat’,
-ex:‘ねこがすきです = I like cats’,
-tip:‘Japan is famous for ねこカフェ (cat cafes)! 猫 is one of the most-used kanji 🐈’ },
-{ id:‘usagi’,    jp:‘うさぎ’,     r:‘usagi’,    en:‘rabbit’,
-ex:‘うさぎはながいみみをもっています = Rabbits have long ears’,
-tip:‘The moon rabbit (つきのうさぎ) is a famous Japanese legend — kids learn it early! 🐰’ },
-{ id:‘sakana2’,  jp:‘さかな’,     r:‘sakana’,   en:‘fish’,
-ex:‘きんぎょはかわいいさかなです = Goldfish are cute fish’,
-tip:‘きんぎょ (goldfish) scooping at summer festivals is a beloved tradition! 🐟’ },
-{ id:‘tori’,     jp:‘とり’,       r:‘tori’,     en:‘bird’,
-ex:‘とりがそらをとんでいます = A bird is flying in the sky’,
-tip:‘とり also means chicken (as food)! とりにく = chicken meat. Same word! 🐦’ },
-{ id:‘mushi’,    jp:‘むし’,       r:‘mushi’,    en:‘insect / bug’,
-ex:‘なつはむしがたくさんいます = There are lots of bugs in summer’,
-tip:‘Japanese kids LOVE catching bugs! カブトムシ (rhinoceros beetle) is top prize! 🪲’ },
-{ id:‘kuma’,     jp:‘くま’,       r:‘kuma’,     en:‘bear’,
-ex:‘ほっかいどうにひぐまがいます = Brown bears live in Hokkaido’,
-tip:‘くまモン is Japan's most famous bear mascot! Every prefecture has a mascot 🐻’ },
-{ id:‘saru’,     jp:‘さる’,       r:‘saru’,     en:‘monkey’,
-ex:‘にほんざるはゆにつかります = Japanese macaques bathe in hot springs’,
-tip:‘Snow monkeys (にほんざる) soaking in onsen are world-famous! 🐒’ },
-{ id:‘koi’,      jp:‘こい’,       r:‘koi’,      en:‘koi carp’,
-ex:‘こいのぼりをこどものひにかざります = We display koi streamers on Children's Day’,
-tip:‘こいのぼり (koi streamers) on Children's Day (May 5) is essential Japanese culture! 🎏’ },
-{ id:‘karasu’,   jp:‘からす’,     r:‘karasu’,   en:‘crow / raven’,
-ex:‘からすはあたまがいいです = Crows are intelligent’,
-tip:‘Japanese crows are huge and famously clever — they use traffic lights to crack nuts! 🐦‍⬛’ },
-{ id:‘tanuki’,   jp:‘たぬき’,     r:‘tanuki’,   en:‘raccoon dog / tanuki’,
-ex:‘たぬきはむかしばなしにでてきます = Tanuki appear in old folktales’,
-tip:‘Tanuki statues appear outside restaurants and shops for good luck! 🦝’ },
-{ id:‘kitsune’,  jp:‘きつね’,     r:‘kitsune’,  en:‘fox’,
-ex:‘きつねはかしこいどうぶつです = The fox is a clever animal’,
-tip:‘Foxes are magical in Japanese folklore — messengers of the god Inari! ⛩️’ },
-{ id:‘zou’,      jp:‘ぞう’,       r:‘zou’,      en:‘elephant’,
-ex:‘ぞうはおおきいどうぶつです = Elephants are big animals’,
-tip:‘うえのどうぶつえん (Ueno Zoo) in Tokyo has famous elephants! Popular school trip 🐘’ },
-{ id:‘uma’,      jp:‘うま’,       r:‘uma’,      en:‘horse’,
-ex:‘うまにのったことがありますか？ = Have you ever ridden a horse?’,
-tip:‘うま also means “delicious” in casual speech! うまい！= Yummy! 🐴’ },
-],
-
-plants: [
-{ id:‘sakura’,   jp:‘さくら’,     r:‘sakura’,   en:‘cherry blossom’,
-ex:‘さくらがまんかいです = The cherry blossoms are in full bloom’,
-tip:‘さくら is Japan's national flower and the most important nature symbol! 🌸’ },
-{ id:‘ki’,       jp:‘き’,         r:‘ki’,       en:‘tree’,
-ex:‘おおきなきのしたにすわります = I sit under a big tree’,
-tip:‘木 is one of the first kanji kids learn! Simple and beautiful ✏️’ },
-{ id:‘hana’,     jp:‘はな’,       r:‘hana’,     en:‘flower’,
-ex:‘はながきれいにさいています = The flowers are blooming beautifully’,
-tip:‘はな means BOTH flower AND nose! Different kanji: 花 vs 鼻 🌺’ },
-{ id:‘kusa’,     jp:‘くさ’,       r:‘kusa’,     en:‘grass’,
-ex:‘こうえんのくさのうえにすわります = I sit on the grass at the park’,
-tip:‘くさい = smelly! くさ (grass) and くさい (stinky) — don't mix them up 😅’ },
-{ id:‘yama’,     jp:‘やま’,       r:‘yama’,     en:‘mountain’,
-ex:‘ふじさんはにほんでいちばんたかいやまです = Mt Fuji is Japan's tallest mountain’,
-tip:‘山 is one of the simplest and most important kanji. Looks like a mountain! ⛰️’ },
-{ id:‘kawa’,     jp:‘かわ’,       r:‘kawa’,     en:‘river’,
-ex:‘かわでさかなをつります = We fish in the river’,
-tip:‘川 is another very simple kanji that looks like flowing water! 🏞️’ },
-{ id:‘umi’,      jp:‘うみ’,       r:‘umi’,      en:‘sea / ocean’,
-ex:‘なつはうみにいきます = We go to the sea in summer’,
-tip:‘Japan is an island nation — surrounded by umi on all sides! 🌊’ },
-{ id:‘mori’,     jp:‘もり’,       r:‘mori’,     en:‘forest / woods’,
-ex:‘もりのなかをさんぽします = I walk through the forest’,
-tip:‘Many Studio Ghibli films are set in magical Japanese forests! となりのトトロ 🌲’ },
-{ id:‘hoshi’,    jp:‘ほし’,       r:‘hoshi’,    en:‘star’,
-ex:‘よるはほしがきれいです = Stars are beautiful at night’,
-tip:‘たなばた (Star Festival) on July 7 is about two stars meeting! Kids love it ⭐’ },
-{ id:‘ike’,      jp:‘いけ’,       r:‘ike’,      en:‘pond’,
-ex:‘いけにこいがいます = There are koi carp in the pond’,
-tip:‘Japanese gardens are famous for beautiful 池 with koi! Many schools have them 🏯’ },
-{ id:‘taki’,     jp:‘たき’,       r:‘taki’,     en:‘waterfall’,
-ex:‘たきのしたでみそぎをします = People purify themselves under waterfalls’,
-tip:‘Waterfall meditation is real in Japan! Many scenic たき are sacred spots 💦’ },
-{ id:‘niwa’,     jp:‘にわ’,       r:‘niwa’,     en:‘garden’,
-ex:‘おじいちゃんのにわはきれいです = Grandpa's garden is beautiful’,
-tip:‘Japanese gardens (日本庭園) are considered high art — raked gravel, bonsai, koi 🏡’ },
-],
-
-sky: [
-{ id:‘taiyou’,   jp:‘たいよう’,   r:‘taiyou’,   en:‘sun / the Sun’,
-ex:‘たいようがかがやいています = The sun is shining’,
-tip:‘太陽 in kanji: 太(great/fat) + 陽(sun/positive). The kanji itself radiates warmth ☀️’ },
-{ id:‘tsuki’,    jp:‘つき’,       r:‘tsuki’,    en:‘moon’,
-ex:‘まんげつがきれいです = The full moon is beautiful’,
-tip:‘つきみ (moon viewing) in autumn is a traditional Japanese event! 🌕’ },
-{ id:‘hoshi2’,   jp:‘ほし’,       r:‘hoshi’,    en:‘star’,
-ex:‘たなばたはほしのおまつりです = Tanabata is a star festival’,
-tip:‘七夕 (Tanabata): children write wishes on paper and hang them on bamboo! 🎋’ },
-{ id:‘kumo’,     jp:‘くも’,       r:‘kumo’,     en:‘cloud’,
-ex:‘しろいくもがうかんでいます = White clouds are floating’,
-tip:‘くも = cloud AND spider — same pronunciation! 雲 vs 蜘蛛 🕷️’ },
-{ id:‘sora’,     jp:‘そら’,       r:‘sora’,     en:‘sky’,
-ex:‘あおいそらがすきです = I like the blue sky’,
-tip:‘そら is also a popular name for boys and girls! Meaning “sky” 💙’ },
-{ id:‘hi’,       jp:‘ひ’,         r:‘hi’,       en:‘sun / day / fire’,
-ex:‘ひがしずみます = The sun sets’,
-tip:‘ひ can mean sun, day or fire depending on kanji: 日 or 火. Very versatile! 🔥’ },
-{ id:‘kaze2’,    jp:‘かぜ’,       r:‘kaze’,     en:‘wind’,
-ex:‘きもちのいいかぜがふいています = A pleasant wind is blowing’,
-tip:‘Same word for wind (風) — and catching a cold (風邪)! Context matters 💨’ },
-{ id:‘yoru’,     jp:‘よる’,       r:‘yoru’,     en:‘night’,
-ex:‘よるはすずしいです = The night is cool’,
-tip:‘よる vs あさ (morning) vs ひる (daytime/noon). Essential time words! 🌙’ },
-{ id:‘asa’,      jp:‘あさ’,       r:‘asa’,      en:‘morning’,
-ex:‘あさはやくおきます = I wake up early in the morning’,
-tip:‘あさごはん = breakfast (morning rice). Japanese meal names include time of day! 🌅’ },
-{ id:‘yake’,     jp:‘ゆうやけ’,   r:‘yuuyake’,  en:‘sunset / evening glow’,
-ex:‘ゆうやけがきれいです = The sunset is beautiful’,
-tip:‘ゆうやけこやけ is a famous Japanese children's song! Kids sing it at dusk 🌇’ },
-],
-
+  seasons: [
+    { id: 'haru', jp: 'はる', r: 'haru', en: 'spring', ex: 'はるになるとさくらがさきます = When spring comes, cherry blossoms bloom', tip: "Japan's most celebrated season! School year starts in spring (April) 🌸" },
+    { id: 'natsu', jp: 'なつ', r: 'natsu', en: 'summer', ex: 'なつはあつくてむしあついです = Summer is hot and humid', tip: 'Japanese summer is extremely humid — たいへん (tough)! Lots of festivals 🎆' },
+    { id: 'aki', jp: 'あき', r: 'aki', en: 'autumn / fall', ex: 'あきはこうようがきれいです = Autumn coloured leaves are beautiful', tip: 'こうよう (autumn leaves) viewing is as popular as cherry blossoms! 🍁' },
+    { id: 'fuyu', jp: 'ふゆ', r: 'fuyu', en: 'winter', ex: 'ふゆはゆきがふります = Snow falls in winter', tip: 'Many parts of Japan get heavy snow! こたつ (heated table) is a winter staple ❄️' },
+    { id: 'shiki', jp: 'しき', r: 'shiki', en: 'four seasons', ex: 'にほんにはうつくしいしきがあります = Japan has beautiful four seasons', tip: '四季 written in kanji: 四(four) + 季(season). A very important cultural concept! 🌏' },
+    { id: 'hanami', jp: 'はなみ', r: 'hanami', en: 'cherry blossom viewing', ex: 'こうえんではなみをします = We do cherry blossom viewing at the park', tip: 'One of the most important Japanese cultural events! Families picnic under sakura 🌸' },
+    { id: 'natsuyas', jp: 'なつやすみ', r: 'natsuyasumi', en: 'summer holidays', ex: 'なつやすみがたのしみです = I\'m looking forward to summer holidays', tip: 'Japanese summer holidays are about 6 weeks, usually late July to early September 🏖️' },
+    { id: 'atsui', jp: 'あつい', r: 'atsui', en: 'hot (weather)', ex: 'きょうはあついですね = It\'s hot today, isn\'t it', tip: 'あつい also means "thick" or "passionate" — same sound, different kanji! 🌡️' },
+    { id: 'samui', jp: 'さむい', r: 'samui', en: 'cold (weather / feeling cold)', ex: 'ふゆはさむいです = Winter is cold', tip: 'さむい = cold weather. つめたい = cold to the touch (cold drink, cold water) 🥶' },
+    { id: 'suzushii', jp: 'すずしい', r: 'suzushii', en: 'cool / refreshing', ex: 'あきはすずしくなります = It becomes cool in autumn', tip: 'The nicest word in Japanese summer — すずしい! Means a refreshing coolness 😌' },
+    { id: 'atatakai', jp: 'あたたかい', r: 'atatakai', en: 'warm', ex: 'はるはあたたかいです = Spring is warm', tip: 'あたたかい for warm weather. あたたかい also works for warm people / kind hearts 💛' },
+    { id: 'kisetsu', jp: 'きせつ', r: 'kisetsu', en: 'season (of the year)', ex: 'すきなきせつはなんですか？ = What is your favourite season?', tip: 'Great conversation starter in Japan! Everyone has a favourite season 🍂' },
+  ],
+  weather: [
+    { id: 'tenki', jp: 'てんき', r: 'tenki', en: 'weather', ex: 'きょうのてんきはいいですね = The weather is nice today, isn\'t it', tip: 'てんきよほう = weather forecast. Very common on TV and apps! 📱' },
+    { id: 'hare', jp: 'はれ', r: 'hare', en: 'sunny / clear sky', ex: 'あしたははれるといいですね = I hope it will be sunny tomorrow', tip: 'On weather maps: ☀ = はれ. Japanese school planners use these symbols! ☀️' },
+    { id: 'kumori', jp: 'くもり', r: 'kumori', en: 'cloudy', ex: 'きょうはくもりです = It is cloudy today', tip: 'くも = cloud. くもり = cloudy sky. Easy to remember! ☁️' },
+    { id: 'ame', jp: 'あめ', r: 'ame', en: 'rain', ex: 'あめがふっています = It is raining', tip: 'あめ means rain AND candy — same sound, totally different kanji! 雨 vs 飴 🌧️' },
+    { id: 'yuki', jp: 'ゆき', r: 'yuki', en: 'snow', ex: 'ゆきがつもっています = Snow has piled up', tip: 'ゆき is also a popular girl\'s name! 雪 is the kanji — one of the first kanji kids learn ⛄' },
+    { id: 'kaze', jp: 'かぜ', r: 'kaze', en: 'wind', ex: 'つよいかぜがふいています = A strong wind is blowing', tip: 'かぜ also means "cold" (the illness)! 風 = wind/cold. 風邪をひく = catch a cold 🤧' },
+    { id: 'taifuu', jp: 'たいふう', r: 'taifuu', en: 'typhoon', ex: 'たいふうがきます = A typhoon is coming', tip: 'Japan gets hit by many typhoons each year, especially September. Kids get typhoon days off! 🌀' },
+    { id: 'jishin', jp: 'じしん', r: 'じしん', en: 'earthquake', ex: 'じしんがありました = There was an earthquake', tip: 'Japan has ~1500 earthquakes per year! Kids learn earthquake drills from age 1 🫨' },
+    { id: 'niji', jp: 'にじ', r: 'niji', en: 'rainbow', ex: 'あめのあとにじがでました = A rainbow appeared after the rain', tip: 'にじいろ = rainbow colour. にじいろえんぴつ = rainbow-coloured pencils 🌈' },
+    { id: 'kaminari', jp: 'かみなり', r: 'kaminari', en: 'thunder / lightning', ex: 'かみなりがこわいです = I\'m scared of thunder', tip: 'かみなり literally means "god-thunder" (神+鳴). Ancient Japanese believed gods caused thunder! ⚡' },
+    { id: 'kiri', jp: 'きり', r: 'kiri', en: 'fog / mist', ex: 'あさきりがこいです = The morning fog is thick', tip: 'Japan has beautiful misty mornings in the mountains! Very poetic in Japanese literature 🌫️' },
+    { id: 'ondo', jp: 'おんど', r: 'ondo', en: 'temperature', ex: 'きょうのおんどはなんどですか？ = What is today\'s temperature?', tip: 'おんど is also a traditional dance! Context matters. 気温 (きおん) = air temperature 🌡️' },
+  ],
+  animals: [
+    { id: 'inu', jp: 'いぬ', r: 'inu', en: 'dog', ex: 'いぬをかっています = I have a dog (as a pet)', tip: 'Dogs are very popular in Japan. お犬様 culture — dogs are treated like royalty! 🐕' },
+    { id: 'neko', jp: 'ねこ', r: 'neko', en: 'cat', ex: 'ねこがすきです = I like cats', tip: 'Japan is famous for ねこカフェ (cat cafes)! 猫 is one of the most-used kanji 🐈' },
+    { id: 'usagi', jp: 'うさぎ', r: 'usagi', en: 'rabbit', ex: 'うさぎはながいみみをもっています = Rabbits have long ears', tip: 'The moon rabbit (つきのうさぎ) is a famous Japanese legend — kids learn it early! 🐰' },
+    { id: 'sakana', jp: 'さかな', r: 'sakana', en: 'fish', ex: 'きんぎょはかわいいさかなです = Goldfish are cute fish', tip: 'きんぎょ (goldfish) scooping at summer festivals is a beloved tradition! 🐟' },
+    { id: 'tori', jp: 'とり', r: 'tori', en: 'bird', ex: 'とりがそらをとんでいます = A bird is flying in the sky', tip: 'とり also means chicken (as food)! とりにく = chicken meat. Same word! 🐦' },
+    { id: 'mushi', jp: 'むし', r: 'mushi', en: 'insect / bug', ex: 'なつはむしがたくさんいます = There are lots of bugs in summer', tip: 'Japanese kids LOVE catching bugs! カブトムシ (rhinoceros beetle) is top prize! 🪲' },
+    { id: 'kuma', jp: 'くま', r: 'kuma', en: 'bear', ex: 'ほっかいどうにひぐまがいます = Brown bears live in Hokkaido', tip: 'くまモン is Japan\'s most famous bear mascot! Every prefecture has a mascot 🐻' },
+    { id: 'saru', jp: 'さる', r: 'saru', en: 'monkey', ex: 'にほんざるはゆにつかります = Japanese macaques bathe in hot springs', tip: 'Snow monkeys (にほんざる) soaking in onsen are world-famous! 🐒' },
+    { id: 'koi', jp: 'こい', r: 'koi', en: 'koi carp', ex: 'こいのぼりをこどものひにかざります = We display koi streamers on Children\'s Day', tip: 'こいのぼり (koi streamers) on Children\'s Day (May 5) is essential Japanese culture! 🎏' },
+    { id: 'karasu', jp: 'からす', r: 'karasu', en: 'crow / raven', ex: 'からすはあたまがいいです = Crows are intelligent', tip: 'Japanese crows are huge and famously clever — they use traffic lights to crack nuts! 🐦‍⬛' },
+    { id: 'tanuki', jp: 'たぬき', r: 'tanuki', en: 'raccoon dog', ex: 'たぬきはむかしばなしにでてきます = Tanuki appear in old folktales', tip: 'Tanuki statues appear outside restaurants and shops for good luck! 🦝' },
+    { id: 'kitsune', jp: 'きつね', r: 'kitsune', en: 'fox', ex: 'きつねはかしこいどうぶつです = The fox is a clever animal', tip: 'Foxes are magical in Japanese folklore — messengers of the god Inari! ⛩️' },
+    { id: 'zou', jp: 'ぞう', r: 'zou', en: 'elephant', ex: 'ぞうはおおきいどうぶつです = Elephants are big animals', tip: 'うえのどうぶつえん (Ueno Zoo) in Tokyo has famous elephants! Popular school trip 🐘' },
+    { id: 'uma', jp: 'うま', r: 'uma', en: 'horse', ex: 'うまにのったことがありますか？ = Have you ever ridden a horse?', tip: 'うま also means "delicious" in casual speech! うまい！= Yummy! 🐴' },
+  ],
+  plants: [
+    { id: 'sakura', jp: 'さくら', r: 'sakura', en: 'cherry blossom', ex: 'さくらがまんかいです = The cherry blossoms are in full bloom', tip: 'さくら is Japan\'s national flower and the most important nature symbol! 🌸' },
+    { id: 'ki', jp: 'き', r: 'ki', en: 'tree', ex: 'おおきなきのしたにすわります = I sit under a big tree', tip: '木 is one of the first kanji kids learn! Simple and beautiful ✏️' },
+    { id: 'hana', jp: 'はな', r: 'hana', en: 'flower', ex: 'はながきれいにさいています = The flowers are blooming beautifully', tip: 'はな means BOTH flower AND nose! Different kanji: 花 vs 鼻 🌺' },
+    { id: 'kusa', jp: 'くさ', r: 'kusa', en: 'grass', ex: 'こうえんのくさのうえにすわります = I sit on the grass at the park', tip: 'くさい = smelly! くさ (grass) and くさい (stinky) — don\'t mix them up 😅' },
+    { id: 'yama', jp: 'やま', r: 'yama', en: 'mountain', ex: 'ふじさんはにほんでいちばんたかいやまです = Mt Fuji is Japan\'s tallest mountain', tip: '山 is one of the simplest and most important kanji. Looks like a mountain! ⛰️' },
+    { id: 'kawa', jp: 'かわ', r: 'kawa', en: 'river', ex: 'かわでさかなをつります = We fish in the river', tip: '川 is another very simple kanji that looks like flowing water! 🏞️' },
+    { id: 'umi', jp: 'うみ', r: 'umi', en: 'sea / ocean', ex: 'なつはうみにいきます = We go to the sea in summer', tip: 'Japan is an island nation — surrounded by umi on all sides! 🌊' },
+    { id: 'mori', jp: 'もり', r: 'mori', en: 'forest', ex: 'もりのなかをさんぽします = I walk through the forest', tip: 'Many Studio Ghibli films are set in magical Japanese forests! となりのトトロ 🌲' },
+    { id: 'hoshi', jp: 'ほし', r: 'hoshi', en: 'star', ex: 'よるはほしがきれいです = Stars are beautiful at night', tip: 'たなばた (Star Festival) on July 7 is about two stars meeting! Kids love it ⭐' },
+    { id: 'ike', jp: 'いけ', r: 'ike', en: 'pond', ex: 'いけにこいがいます = There are koi carp in the pond', tip: 'Japanese gardens are famous for beautiful 池 with koi! Many schools have them 🏯' },
+    { id: 'taki', jp: 'たき', r: 'taki', en: 'waterfall', ex: 'たきのしたでみそぎをします = People purify themselves under waterfalls', tip: 'Waterfall meditation is real in Japan! Many scenic たき are sacred spots 💦' },
+    { id: 'niwa', jp: 'にわ', r: 'niwa', en: 'garden', ex: 'おじいちゃんのにわはきれいです = Grandpa\'s garden is beautiful', tip: 'Japanese gardens (日本庭園) are considered high art — raked gravel, bonsai, koi 🏡' },
+  ],
+  sky: [
+    { id: 'taiyou', jp: 'たいよう', r: 'taiyou', en: 'sun', ex: 'たいようがかがやいています = The sun is shining', tip: '太陽 in kanji: 太(great) + 陽(sun). The kanji itself radiates warmth ☀️' },
+    { id: 'tsuki', jp: 'つき', r: 'tsuki', en: 'moon', ex: 'まんげつがきれいです = The full moon is beautiful', tip: 'つきみ (moon viewing) in autumn is a traditional Japanese event! 🌕' },
+    { id: 'hoshi2', jp: 'ほし', r: 'hoshi', en: 'star', ex: 'たなばたはほしのおまつりです = Tanabata is a star festival', tip: '七夕 (Tanabata): children write wishes on paper and hang them on bamboo! 🎋' },
+    { id: 'kumo', jp: 'くも', r: 'kumo', en: 'cloud', ex: 'しろいくもがうかんでいます = White clouds are floating', tip: 'くも = cloud AND spider — same pronunciation! 雲 vs 蜘蛛 🕷️' },
+    { id: 'sora', jp: 'そら', r: 'sora', en: 'sky', ex: 'あおいそらがすきです = I like the blue sky', tip: 'そら is also a popular name for boys and girls! Meaning "sky" 💙' },
+    { id: 'hi', jp: 'ひ', r: 'hi', en: 'sun / fire', ex: 'ひがしずみます = The sun sets', tip: 'ひ can mean sun, day or fire depending on kanji: 日 or 火. Very versatile! 🔥' },
+    { id: 'kaze2', jp: 'かぜ', r: 'kaze', en: 'wind', ex: 'きもちのいいかぜがふいています = A pleasant wind is blowing', tip: 'Same word for wind (風) — and catching a cold (風邪)! Context matters 💨' },
+    { id: 'yoru', jp: 'よる', r: 'yoru', en: 'night', ex: 'よるはすずしいです = The night is cool', tip: 'よる vs あさ (morning) vs ひる (daytime). Essential time words! 🌙' },
+    { id: 'asa', jp: 'あさ', r: 'asa', en: 'morning', ex: 'あさはやくおきます = I wake up early in the morning', tip: 'あさごはん = breakfast (morning rice). Japanese meal names include time of day! 🌅' },
+    { id: 'yuuyake', jp: 'ゆうやけ', r: 'yuuyake', en: 'sunset', ex: 'ゆうやけがきれいです = The sunset is beautiful', tip: 'ゆうやけこやけ is a famous Japanese children\'s song! Kids sing it at dusk 🌇' },
+  ],
 };
 
-const ALL_WORDS = Object.entries(WORDS)
-.filter(([k]) => k !== ‘mix’)
-.flatMap(([, arr]) => arr);
+const ALL_WORDS = Object.entries(WORDS).flatMap(([, arr]) => arr);
 
-let currentCat = ‘seasons’;
+let currentCat = 'seasons';
 let learnData  = [];
 let learnIdx   = 0;
 let quizData   = [];
@@ -507,186 +367,190 @@ let streak     = 0;
 let attempts   = 0;
 
 function speak(text) {
-if (!window.speechSynthesis) return;
-window.speechSynthesis.cancel();
-const u = new SpeechSynthesisUtterance(text);
-u.lang=‘ja-JP’; u.rate=0.75; u.pitch=1.1;
-window.speechSynthesis.speak(u);
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP'; u.rate=0.75; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
 }
 
 function showScreen(id) {
-document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
-document.getElementById(id).classList.add(‘active’);
-window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
 const CAT_LABELS = {
-seasons: ‘🌸 Four Seasons’,
-weather: ‘🌦️ Weather’,
-animals: ‘🐾 Animals’,
-plants:  ‘🌺 Plants & Nature’,
-sky:     ‘🌙 Sky & Elements’,
-mix:     ‘🎲 Mixed’,
+  seasons: '🌸 Four Seasons',
+  weather: '🌦️ Weather',
+  animals: '🐾 Animals',
+  plants:  '🌺 Plants & Nature',
+  sky:     '🌙 Sky & Elements',
+  mix:     '🎲 Mixed',
 };
 
 function startCat(cat) {
-currentCat = cat;
-learnData  = cat === ‘mix’ ? […ALL_WORDS].sort(() => Math.random()-0.5).slice(0,15) : WORDS[cat];
-quizPool   = ALL_WORDS;
-learnIdx   = 0;
-const titles = { seasons:‘Four Seasons’, weather:‘Weather’, animals:‘Animals’, plants:‘Plants & Nature’, sky:‘Sky & Elements’, mix:‘Mixed Quiz’ };
-document.getElementById(‘learn-title’).textContent = titles[cat] || cat;
-showLearnCard();
-showScreen(‘learn-screen’);
-setTimeout(() => speak(learnData[0].jp), 600);
+  currentCat = cat;
+  learnData  = cat === 'mix' ? [...ALL_WORDS].sort(() => Math.random()-0.5).slice(0,15) : WORDS[cat];
+  quizPool   = ALL_WORDS;
+  learnIdx   = 0;
+  const titles = { seasons:'Four Seasons', weather:'Weather', animals:'Animals', plants:'Plants & Nature', sky:'Sky & Elements', mix:'Mixed Quiz' };
+  document.getElementById('learn-title').textContent = titles[cat] || cat;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(learnData[0].jp), 600);
 }
 
 function showLearnCard() {
-const w = learnData[learnIdx];
-document.getElementById(‘learn-cat-label’).textContent = CAT_LABELS[currentCat] || ‘’;
-document.getElementById(‘learn-banner-jp’).textContent  = w.jp;
-document.getElementById(‘learn-romaji’).textContent     = w.r;
-document.getElementById(‘learn-en’).textContent         = w.en;
-document.getElementById(‘learn-counter’).textContent    = (learnIdx+1)+’ / ’+learnData.length;
-document.getElementById(‘learn-prev’).disabled = learnIdx === 0;
-document.getElementById(‘learn-next’).disabled = learnIdx === learnData.length-1;
+  const w = learnData[learnIdx];
+  document.getElementById('learn-cat-label').textContent = CAT_LABELS[currentCat] || '';
+  document.getElementById('learn-banner-jp').textContent  = w.jp;
+  document.getElementById('learn-romaji').textContent     = w.r;
+  document.getElementById('learn-en').textContent         = w.en;
+  document.getElementById('learn-counter').textContent    = (learnIdx+1)+' / '+learnData.length;
+  document.getElementById('learn-prev').disabled = learnIdx === 0;
+  document.getElementById('learn-next').disabled = learnIdx === learnData.length-1;
 
-const exEl  = document.getElementById(‘learn-example’);
-const tipEl = document.getElementById(‘learn-tip’);
-if (w.ex)  { exEl.innerHTML  = w.ex.replace(/\n/g,’<br>’); exEl.style.display=‘block’; }
-else        { exEl.style.display=‘none’; }
-if (w.tip) { tipEl.textContent = ’💡 ’+w.tip; tipEl.style.display=‘block’; }
-else        { tipEl.style.display=‘none’; }
+  const exEl  = document.getElementById('learn-example');
+  const tipEl = document.getElementById('learn-tip');
+  if (w.ex)  { exEl.innerHTML  = w.ex.replace(/\n/g,'<br>'); exEl.style.display='block'; }
+  else        { exEl.style.display='none'; }
+  if (w.tip) { tipEl.textContent = '💡 '+w.tip; tipEl.style.display='block'; }
+  else        { tipEl.style.display='none'; }
 }
 
 function startQuiz() {
-score=0; streak=0; quizIdx=0; attempts=0;
-quizData  = […learnData].sort(()=>Math.random()-0.5).slice(0, Math.min(10, learnData.length));
-quizTotal = quizData.length;
-document.getElementById(‘score’).textContent  = 0;
-document.getElementById(‘streak’).textContent = 0;
-const titles = { seasons:‘Seasons Quiz’, weather:‘Weather Quiz’, animals:‘Animals Quiz’, plants:‘Nature Quiz’, sky:‘Sky Quiz’, mix:‘Mixed Nature Quiz!’ };
-document.getElementById(‘quiz-title’).textContent = titles[currentCat] || ‘Quiz’;
-showScreen(‘quiz-screen’);
-showQuizQ();
+  score=0; streak=0; quizIdx=0; attempts=0;
+  quizData  = [...learnData].sort(()=>Math.random()-0.5).slice(0, Math.min(10, learnData.length));
+  quizTotal = quizData.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+  const titles = { seasons:'Seasons Quiz', weather:'Weather Quiz', animals:'Animals Quiz', plants:'Nature Quiz', sky:'Sky Quiz', mix:'Mixed Nature Quiz!' };
+  document.getElementById('quiz-title').textContent = titles[currentCat] || 'Quiz';
+  showScreen('quiz-screen');
+  showQuizQ();
 }
 
 function showQuizQ() {
-if (quizIdx >= quizTotal) { endQuiz(); return; }
-attempts = 0;
-const w = quizData[quizIdx];
+  if (quizIdx >= quizTotal) { endQuiz(); return; }
+  attempts = 0;
+  const w = quizData[quizIdx];
 
-document.getElementById(‘q-count’).textContent  = (quizIdx+1)+’/’+quizTotal;
-document.getElementById(‘progress’).style.width = (quizIdx/quizTotal*100)+’%’;
-document.getElementById(‘feedback’).textContent  = ‘’;
-document.getElementById(‘hint-btn’).style.display=‘none’;
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display='none';
 
-const jpEl   = document.getElementById(‘q-jp’);
-const enEl   = document.getElementById(‘q-en’);
-const hintEl = document.getElementById(‘q-hint’);
-jpEl.style.display=‘none’; enEl.style.display=‘none’;
+  const jpEl   = document.getElementById('q-jp');
+  const enEl   = document.getElementById('q-en');
+  const hintEl = document.getElementById('q-hint');
+  jpEl.style.display='none'; enEl.style.display='none';
 
-const qType = Math.floor(Math.random() * 2);
-if (qType === 0) {
-document.getElementById(‘q-type-badge’).textContent = ‘Japanese → English’;
-document.getElementById(‘q-label’).textContent = ‘What does this mean?’;
-jpEl.textContent=w.jp; jpEl.style.display=‘block’;
-hintEl.textContent = ‘(’ + w.r + ‘)’;
-setTimeout(()=>speak(w.jp), 300);
-buildOptions(w, ‘en’);
-} else {
-document.getElementById(‘q-type-badge’).textContent = ‘English → Japanese’;
-document.getElementById(‘q-label’).textContent = ‘How do you say this?’;
-enEl.textContent=w.en; enEl.style.display=‘block’;
-hintEl.textContent = ‘’;
-buildOptions(w, ‘jp’);
-}
+  const qType = Math.floor(Math.random() * 2);
+  if (qType === 0) {
+    document.getElementById('q-type-badge').textContent = 'Japanese → English';
+    document.getElementById('q-label').textContent = 'What does this mean?';
+    jpEl.textContent=w.jp; jpEl.style.display='block';
+    hintEl.textContent = '(' + w.r + ')';
+    setTimeout(()=>speak(w.jp), 300);
+    buildOptions(w, 'en');
+  } else {
+    document.getElementById('q-type-badge').textContent = 'English → Japanese';
+    document.getElementById('q-label').textContent = 'How do you say this?';
+    enEl.textContent=w.en; enEl.style.display='block';
+    hintEl.textContent = '';
+    buildOptions(w, 'jp');
+  }
 }
 
 function buildOptions(correct, type) {
-const optDiv = document.getElementById(‘options’);
-optDiv.innerHTML=’’;
-const wrong = quizPool.filter(x=>x.id!==correct.id).sort(()=>Math.random()-0.5).slice(0,3);
-const opts  = […wrong, correct].sort(()=>Math.random()-0.5);
-opts.forEach(opt => {
-const btn = document.createElement(‘button’);
-btn.type=‘button’; btn.className=‘option-btn’;
-if (type===‘en’) {
-btn.innerHTML = ‘<span class="opt-en">’+opt.en+’</span>’;
-} else {
-btn.innerHTML = ‘<span class="opt-jp">’+opt.jp+’</span>’;
-}
-btn.addEventListener(‘click’, ()=>checkAnswer(opt.id===correct.id, btn, correct));
-optDiv.appendChild(btn);
-});
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML='';
+  const wrong = quizPool.filter(x=>x.id!==correct.id).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts  = [...wrong, correct].sort(()=>Math.random()-0.5);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    if (type==='en') {
+      btn.innerHTML = '<span class="opt-en">'+opt.en+'</span>';
+    } else {
+      btn.innerHTML = '<span class="opt-jp">'+opt.jp+'</span>';
+    }
+    btn.addEventListener('click', ()=>checkAnswer(opt.id===correct.id, btn, correct));
+    optDiv.appendChild(btn);
+  });
 }
 
-const encouragement=[‘すごい！ Sugoi! 🎉’,‘よくできました！ ⭐’,‘がんばれ！ Keep it up! 🚀’,‘さいこう！ Amazing! 💫’,‘パーフェクト！ 🌟’];
-const tryAgain=[‘もう一度！ Try again! 💪’,‘ちがいます。Not quite! 🎯’,‘がんばって！ ✨’];
+const encouragement=['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ Amazing! 💫','パーフェクト！ 🌟'];
+const tryAgain=['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
 
 function checkAnswer(isCorrect, btn, word) {
-const feedback=document.getElementById(‘feedback’);
-attempts++;
-if (isCorrect) {
-btn.classList.add(‘correct’);
-document.querySelectorAll(’#options .option-btn’).forEach(b=>b.disabled=true);
-speak(word.jp);
-if(attempts===1){score++;streak++;const msg=encouragement[Math.floor(Math.random()*encouragement.length)];feedback.textContent=streak>=3?msg+’ 🔥 ‘+streak+’ in a row!’:msg;}
-else{streak=0;feedback.textContent=‘Yes! ‘+word.jp+’ = ‘+word.en+’ 🌟’;}
-feedback.className=‘feedback correct-text’;
-document.getElementById(‘score’).textContent=score;
-document.getElementById(‘streak’).textContent=streak;
-setTimeout(()=>{quizIdx++;showQuizQ();},1600);
-} else {
-btn.classList.add(‘wrong’); btn.disabled=true;
-streak=0; document.getElementById(‘streak’).textContent=0;
-feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
-feedback.className=‘feedback wrong-text’;
-if(attempts>=2) document.getElementById(‘hint-btn’).style.display=‘block’;
-}
+  const feedback=document.getElementById('feedback');
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
+    speak(word.jp);
+    if(attempts===1){
+      score++; streak++;
+      const msg=encouragement[Math.floor(Math.random()*encouragement.length)];
+      feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg;
+    } else {
+      streak=0;
+      feedback.textContent='Yes! '+word.jp+' = '+word.en+' 🌟';
+    }
+    feedback.className='feedback correct-text';
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    setTimeout(()=>{quizIdx++; showQuizQ();}, 1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
+  }
 }
 
 function showHint() {
-const w=quizData[quizIdx];
-document.getElementById(‘feedback’).textContent=‘💡 ‘+w.jp+’ (’+w.r+’) = ‘+w.en+(w.tip?’ · ‘+w.tip:’’);
-document.getElementById(‘feedback’).className=‘feedback hint-text’;
-speak(w.jp);
+  const w=quizData[quizIdx];
+  document.getElementById('feedback').textContent='💡 '+w.jp+' ('+w.r+') = '+w.en+(w.tip?' · '+w.tip:'');
+  document.getElementById('feedback').className='feedback hint-text';
+  speak(w.jp);
 }
 
 function endQuiz() {
-showScreen(‘end-screen’);
-document.getElementById(‘final-score’).textContent=score;
-document.getElementById(‘final-total’).textContent=quizTotal;
-const pct=score/quizTotal;
-const trophy=document.getElementById(‘trophy’);
-const title=document.getElementById(‘end-title’);
-const msg=document.getElementById(‘end-msg’);
-if(pct===1)      {trophy.textContent=‘🏆’;title.textContent=‘パーフェクト！’;msg.textContent=‘Perfect! You know your Japanese nature words! 🌸’;}
-else if(pct>=0.8){trophy.textContent=‘🥇’;title.textContent=‘すごい！’;      msg.textContent=‘Excellent! Try another nature category!’;}
-else if(pct>=0.6){trophy.textContent=‘🥈’;title.textContent=‘よくできました！’;msg.textContent=‘Good job! Review the Learn cards and try again!’;}
-else             {trophy.textContent=‘🌱’;title.textContent=‘がんばれ！’;    msg.textContent=‘Start with Learn mode — Japan's nature is beautiful! 🌲’;}
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=quizTotal;
+  const pct=score/quizTotal;
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  if(pct===1)      {trophy.textContent='🏆';title.textContent='パーフェクト！';msg.textContent='Perfect! You know your Japanese nature words! 🌸';}
+  else if(pct>=0.8){trophy.textContent='🥇';title.textContent='すごい！';      msg.textContent='Excellent! Try another nature category!';}
+  else if(pct>=0.6){trophy.textContent='🥈';title.textContent='よくできました！';msg.textContent='Good job! Review the Learn cards and try again!';}
+  else             {trophy.textContent='🌱';title.textContent='がんばれ！';    msg.textContent='Start with Learn mode — Japan\'s nature is beautiful! 🌲';}
 }
 
-document.addEventListener(‘DOMContentLoaded’, function() {
-document.querySelectorAll(’.menu-card’).forEach(card=>{
-card.addEventListener(‘click’, function(){ startCat(this.dataset.cat); });
-});
-document.getElementById(‘back-to-menu-learn’).addEventListener(‘click’, ()=>showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-quiz’).addEventListener(‘click’,  ()=>showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-end’).addEventListener(‘click’,   ()=>showScreen(‘menu-screen’));
-document.getElementById(‘learn-back-link’).addEventListener(‘click’,    function(e){e.preventDefault();showScreen(‘menu-screen’);});
-document.getElementById(‘learn-speak-btn’).addEventListener(‘click’,    ()=>speak(learnData[learnIdx].jp));
-document.getElementById(‘learn-prev’).addEventListener(‘click’, function(){
-if(learnIdx>0){learnIdx–;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
-});
-document.getElementById(‘learn-next’).addEventListener(‘click’, function(){
-if(learnIdx<learnData.length-1){learnIdx++;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
-});
-document.getElementById(‘start-quiz-from-learn’).addEventListener(‘click’, startQuiz);
-document.getElementById(‘hint-btn’).addEventListener(‘click’, showHint);
-document.getElementById(‘try-again-btn’).addEventListener(‘click’, startQuiz);
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.menu-card').forEach(card=>{
+    card.addEventListener('click', function(){ startCat(this.dataset.cat); });
+  });
+  document.getElementById('back-to-menu-learn').addEventListener('click', ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-quiz').addEventListener('click',  ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-end').addEventListener('click',   ()=>showScreen('menu-screen'));
+  document.getElementById('learn-speak-btn').addEventListener('click',    ()=>speak(learnData[learnIdx].jp));
+  document.getElementById('learn-prev').addEventListener('click', function(){
+    if(learnIdx>0){learnIdx--; showLearnCard(); setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('learn-next').addEventListener('click', function(){
+    if(learnIdx<learnData.length-1){learnIdx++; showLearnCard(); setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('start-quiz-from-learn').addEventListener('click', startQuiz);
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+  document.getElementById('try-again-btn').addEventListener('click', startQuiz);
 });
 </script>
-
 </body>
 </html>
