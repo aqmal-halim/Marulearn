@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -192,12 +191,9 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 }
 .end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
 </style>
-
 </head>
 <body>
 <div class="container">
-
-<!-- MENU -->
 
 <div id="menu-screen" class="screen active">
   <div class="menu-header">
@@ -232,12 +228,8 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       </div>
     </button>
   </div>
-
-<a href="../" class="home-link">← Back to Japanese Hub</a>
-
+  <a href="../" class="home-link">← Back to Japanese Hub</a>
 </div>
-
-<!-- LEARN -->
 
 <div id="learn-screen" class="screen">
   <div class="top-bar">
@@ -273,8 +265,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <a href="#" class="home-link" id="learn-back-link">← Back to particles</a>
 </div>
 
-<!-- QUIZ -->
-
 <div id="quiz-screen" class="screen">
   <div class="top-bar">
     <button type="button" class="back-btn" id="back-to-menu-quiz">← Back</button>
@@ -299,8 +289,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
 </div>
 
-<!-- END -->
-
 <div id="end-screen" class="screen">
   <div class="end-inner">
     <div class="trophy" id="trophy">🏆</div>
@@ -316,10 +304,8 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 </div>
 
 </div>
+
 <script>
-// ══════════════════════════════════════════
-// PARTICLE DATA
-// ══════════════════════════════════════════
 const PARTICLES = [
   {
     id: 'wa',
@@ -455,60 +441,39 @@ const PARTICLES = [
   },
 ];
 
-// ══════════════════════════════════════════
-// QUIZ SENTENCES
-// Each: { jp (array), particle (index or array of indices), correct, distractors, en, hint }
-// ══════════════════════════════════════════
 const ALL_SENTENCES = [
-// は sentences
-{ jp:[‘わたし’,’***’,‘たなかです。’],       correct:‘は’, distractors:[‘が’,‘を’,‘に’], en:‘I am Tanaka.’, hint:‘は marks the TOPIC of the sentence.’ },
-{ jp:[‘これ’,’***’,‘いくらですか？’],        correct:‘は’, distractors:[‘が’,‘を’,‘で’], en:‘How much is this?’, hint:‘は marks the TOPIC — “as for this, how much?”’ },
-{ jp:[‘やさい’,’***’,‘たべません。’],         correct:‘は’, distractors:[‘が’,‘を’,‘も’], en:‘I don't eat vegetables.’, hint:‘は can show contrast or simply mark the topic.’ },
-{ jp:[‘にほん’,’***’,‘くにのなまえです。’],   correct:‘は’, distractors:[‘が’,‘を’,‘と’], en:‘Japan is the name of a country.’, hint:‘は marks TOPIC — “as for Japan…”’ },
-
-// が sentences
-{ jp:[‘だれ’,’***’,‘きましたか？’],           correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘Who came?’, hint:‘After question words (だれ・なに), always use が.’ },
-{ jp:[‘にほんご’,’***’,‘すきです。’],          correct:‘が’, distractors:[‘は’,‘を’,‘で’], en:‘I like Japanese.’, hint:‘すき (like) and きらい (dislike) always use が.’ },
-{ jp:[‘あそこ’,’***’,‘えきです。’],            correct:‘が’, distractors:[‘は’,‘を’,‘と’], en:‘Over there is the station.’, hint:‘が emphasises WHICH one it is.’ },
-{ jp:[‘わたし’,’***’,‘やります！’],            correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘I will do it! (emphatic)’, hint:‘が is used for emphasis — IT IS ME who will do it.’ },
-
-// を sentences
-{ jp:[‘ごはん’,’***’,‘たべます。’],            correct:‘を’, distractors:[‘は’,‘が’,‘に’], en:‘I eat a meal.’, hint:‘を marks the direct object — what is being eaten.’ },
-{ jp:[‘ほん’,’***’,‘よみます。’],              correct:‘を’, distractors:[‘は’,‘が’,‘で’], en:‘I read a book.’, hint:‘を marks what is being read.’ },
-{ jp:[‘おちゃ’,’***’,‘のみます。’],            correct:‘を’, distractors:[‘が’,‘に’,‘で’], en:‘I drink green tea.’, hint:‘を marks the direct object of drinking.’ },
-{ jp:[‘みち’,’***’,‘あるきます。’],            correct:‘を’, distractors:[‘は’,‘に’,‘で’], en:‘I walk along the road.’, hint:‘を marks movement THROUGH or ALONG a place.’ },
-
-// に sentences
-{ jp:[‘がっこう’,’***’,‘いきます。’],          correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I go TO school.’, hint:‘に marks DESTINATION — where you are going TO.’ },
-{ jp:[‘さんじ’,’***’,‘おきます。’],            correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I wake up AT 3 o'clock.’, hint:‘に marks specific TIME — at, on, in.’ },
-{ jp:[‘いす’,’***’,‘すわります。’],            correct:‘に’, distractors:[‘は’,‘を’,‘で’], en:‘I sit ON the chair.’, hint:‘に marks destination/location of movement.’ },
-{ jp:[‘ともだち’,’***’,‘プレゼントをあげます。’], correct:‘に’, distractors:[‘は’,‘を’,‘と’], en:‘I give a present TO my friend.’, hint:‘に marks who something is given TO.’ },
-
-// で sentences
-{ jp:[‘こうえん’,’***’,‘あそびます。’],        correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I play AT the park.’, hint:‘で marks WHERE an action happens.’ },
-{ jp:[‘でんしゃ’,’***’,‘いきます。’],          correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I go BY train.’, hint:‘で marks the MEANS of transport or tool used.’ },
-{ jp:[‘にほんご’,’***’,‘はなします。’],         correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I speak IN Japanese.’, hint:‘で marks the LANGUAGE or tool being used.’ },
-{ jp:[‘かいぎしつ’,’***’,‘かいぎをします。’],  correct:‘で’, distractors:[‘は’,‘を’,‘に’], en:‘I have a meeting IN the conference room.’, hint:‘で marks the location where an action takes place.’ },
-
-// と sentences
-{ jp:[‘ともだち’,’***’,‘えいがをみます。’],    correct:‘と’, distractors:[‘は’,‘が’,‘を’], en:‘I watch a movie WITH my friend.’, hint:‘と marks who you do something TOGETHER WITH.’ },
-{ jp:[‘ねこ’,’***’,‘いぬがいます。’],          correct:‘と’, distractors:[‘は’,‘が’,‘も’], en:‘There is a cat AND a dog.’, hint:‘と connects nouns as an exhaustive list.’ },
-{ jp:[‘かぞく’,’***’,‘にほんにきました。’],    correct:‘と’, distractors:[‘は’,‘が’,‘で’], en:‘I came to Japan WITH my family.’, hint:‘と marks who you came WITH.’ },
-{ jp:[’「おいしい」’,’***’,‘いいました。’],    correct:‘と’, distractors:[‘は’,‘が’,‘を’], en:‘Said “it's delicious”.’, hint:‘と marks a QUOTATION — what was said or thought.’ },
-
-// も sentences
-{ jp:[‘わたし’,’***’,‘がくせいです。’],        correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘I am ALSO a student.’, hint:‘も means “also/too” — someone else is a student AND so am I.’ },
-{ jp:[‘かれ’,’***’,‘にほんごをはなします。’],  correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘He ALSO speaks Japanese.’, hint:‘も replaces は when saying someone ALSO does something.’ },
-{ jp:[‘ねこ’,’***’,‘いぬ’,’***’,‘すきです。’], correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘I like BOTH cats AND dogs.’, hint:‘A も B も = both A and B.’ },
-{ jp:[‘だれ’,’___’,‘しりません。’],            correct:‘も’, distractors:[‘は’,‘が’,‘と’], en:‘Nobody knows. (not even one person)’, hint:‘Negative + も = “not even”. だれも + ない = nobody at all.’ },
-
-// HARD pairs — は vs が
-{ jp:[‘あのひと’,’***’,‘せんせいです。’],      correct:‘が’, distractors:[‘は’,‘を’,‘に’], en:‘That person IS the teacher. (identifying)’, hint:‘が is used when IDENTIFYING who something is (answering “who?”)’, hard:true },
-{ jp:[‘はは’,’***’,‘りょうりがじょうずです。’],correct:‘は’, distractors:[‘が’,‘を’,‘に’], en:‘My mother is good at cooking. (topic)’, hint:‘は sets the topic. We're talking ABOUT mum.’, hard:true },
-
-// HARD pairs — に vs で
-{ jp:[‘としょかん’,’***’,‘べんきょうします。’], correct:‘で’, distractors:[‘に’,‘は’,‘を’], en:‘I study AT the library. (action)’, hint:‘An action (studying) happens here — use で.’, hard:true },
-{ jp:[‘としょかん’,’***’,‘ほんがあります。’],   correct:‘に’, distractors:[‘で’,‘は’,‘を’], en:‘There are books IN the library. (existence)’, hint:‘Something EXISTS here — use に.’, hard:true },
+{ jp:['わたし','***','たなかです。'], correct:'は', distractors:['が','を','に'], en:'I am Tanaka.', hint:'は marks the TOPIC of the sentence.' },
+{ jp:['これ','***','いくらですか？'], correct:'は', distractors:['が','を','で'], en:'How much is this?', hint:'は marks the TOPIC — "as for this, how much?"' },
+{ jp:['やさい','***','たべません。'], correct:'は', distractors:['が','を','も'], en:'I don\'t eat vegetables.', hint:'は can show contrast or simply mark the topic.' },
+{ jp:['にほん','***','くにのなまえです。'], correct:'は', distractors:['が','を','と'], en:'Japan is the name of a country.', hint:'は marks TOPIC — "as for Japan…"' },
+{ jp:['だれ','***','きましたか？'], correct:'が', distractors:['は','を','に'], en:'Who came?', hint:'After question words (だれ・なに), always use が.' },
+{ jp:['にほんご','***','すきです。'], correct:'が', distractors:['は','を','で'], en:'I like Japanese.', hint:'すき (like) and きらい (dislike) always use が.' },
+{ jp:['あそこ','***','えきです。'], correct:'が', distractors:['は','を','と'], en:'Over there is the station.', hint:'が emphasises WHICH one it is.' },
+{ jp:['わたし','***','やります！'], correct:'が', distractors:['は','を','に'], en:'I will do it! (emphatic)', hint:'が is used for emphasis — IT IS ME who will do it.' },
+{ jp:['ごはん','***','たべます。'], correct:'を', distractors:['は','が','に'], en:'I eat a meal.', hint:'を marks the direct object — what is being eaten.' },
+{ jp:['ほん','***','よみます。'], correct:'を', distractors:['は','が','で'], en:'I read a book.', hint:'を marks what is being read.' },
+{ jp:['おちゃ','***','のみます。'], correct:'を', distractors:['が','に','で'], en:'I drink green tea.', hint:'を marks the direct object of drinking.' },
+{ jp:['みち','***','あるきます。'], correct:'を', distractors:['は','に','で'], en:'I walk along the road.', hint:'を marks movement THROUGH or ALONG a place.' },
+{ jp:['がっこう','***','いきます。'], correct:'に', distractors:['は','を','で'], en:'I go TO school.', hint:'に marks DESTINATION — where you are going TO.' },
+{ jp:['さんじ','***','おきます。'], correct:'に', distractors:['は','を','で'], en:'I wake up AT 3 o\'clock.', hint:'に marks specific TIME — at, on, in.' },
+{ jp:['いす','***','すわります。'], correct:'に', distractors:['は','を','で'], en:'I sit ON the chair.', hint:'に marks destination/location of movement.' },
+{ jp:['ともだち','***','プレゼントをあげます。'], correct:'に', distractors:['は','を','と'], en:'I give a present TO my friend.', hint:'に marks who something is given TO.' },
+{ jp:['こうえん','***','あそびます。'], correct:'で', distractors:['は','を','に'], en:'I play AT the park.', hint:'で marks WHERE an action happens.' },
+{ jp:['でんしゃ','***','いきます。'], correct:'で', distractors:['は','を','に'], en:'I go BY train.', hint:'で marks the MEANS of transport or tool used.' },
+{ jp:['にほんご','***','はなします。'], correct:'で', distractors:['は','を','に'], en:'I speak IN Japanese.', hint:'で marks the LANGUAGE or tool being used.' },
+{ jp:['かいぎしつ','***','かいぎをします。'], correct:'で', distractors:['は','を','に'], en:'I have a meeting IN the conference room.', hint:'で marks the location where an action takes place.' },
+{ jp:['ともだち','***','えいがをみます。'], correct:'と', distractors:['は','が','を'], en:'I watch a movie WITH my friend.', hint:'と marks who you do something TOGETHER WITH.' },
+{ jp:['ねこ','***','いぬがいます。'], correct:'と', distractors:['は','が','も'], en:'There is a cat AND a dog.', hint:'と connects nouns as an exhaustive list.' },
+{ jp:['かぞく','***','にほんにきました。'], correct:'と', distractors:['は','が','で'], en:'I came to Japan WITH my family.', hint:'と marks who you came WITH.' },
+{ jp:['「おいしい」','***','いいました。'], correct:'と', distractors:['は','が','を'], en:'Said "it\'s delicious".', hint:'と marks a QUOTATION — what was said or thought.' },
+{ jp:['わたし','***','がくせいです。'], correct:'も', distractors:['は','が','と'], en:'I am ALSO a student.', hint:'も means "also/too" — someone else is a student AND so am I.' },
+{ jp:['かれ','***','にほんごをはなします。'], correct:'も', distractors:['は','が','と'], en:'He ALSO speaks Japanese.', hint:'も replaces は when saying someone ALSO does something.' },
+{ jp:['ねこ','***','いぬ','***','すきです。'], correct:'も', distractors:['は','が','と'], en:'I like BOTH cats AND dogs.', hint:'A も B も = both A and B.' },
+{ jp:['だれ','***','しりません。'], correct:'も', distractors:['は','が','と'], en:'Nobody knows. (not even one person)', hint:'Negative + も = "not even". だれも + ない = nobody at all.' },
+{ jp:['あのひと','***','せんせいです。'], correct:'が', distractors:['は','を','に'], en:'That person IS the teacher. (identifying)', hint:'が is used when IDENTIFYING who something is (answering "who?")', hard:true },
+{ jp:['はは','***','りょうりがじょうずです。'], correct:'は', distractors:['が','を','に'], en:'My mother is good at cooking. (topic)', hint:'は sets the topic. We\'re talking ABOUT mum.', hard:true },
+{ jp:['としょかん','***','べんきょうします。'], correct:'で', distractors:['に','は','を'], en:'I study AT the library. (action)', hint:'An action (studying) happens here — use で.', hard:true },
+{ jp:['としょかん','***','ほんがあります。'], correct:'に', distractors:['で','は','を'], en:'There are books IN the library. (existence)', hint:'Something EXISTS here — use に.', hard:true }
 ];
 
 let currentParticle = null;
@@ -519,39 +484,36 @@ let quizTotal  = 0;
 let score      = 0;
 let streak     = 0;
 let attempts   = 0;
-let quizMode   = ‘all’; // ‘all’, ‘single’, ‘hard’
-
-const learnData = PARTICLES;
+let quizMode   = 'all';
 
 function speak(text) {
 if (!window.speechSynthesis) return;
 window.speechSynthesis.cancel();
 const u = new SpeechSynthesisUtterance(text);
-u.lang = ‘ja-JP’; u.rate = 0.75; u.pitch = 1.1;
+u.lang = 'ja-JP'; u.rate = 0.75; u.pitch = 1.1;
 window.speechSynthesis.speak(u);
 }
 
 function showScreen(id) {
-document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
-document.getElementById(id).classList.add(‘active’);
+document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 window.scrollTo(0, 0);
 }
 
-// BUILD PARTICLE MENU
 function buildMenu() {
-const grid = document.getElementById(‘particle-menu’);
-grid.innerHTML = ‘’;
+const grid = document.getElementById('particle-menu');
+grid.innerHTML = '';
 PARTICLES.forEach(p => {
-const card = document.createElement(‘button’);
-card.type = ‘button’;
-card.className = ‘menu-card’;
+const card = document.createElement('button');
+card.type = 'button';
+card.className = 'menu-card';
 card.style.borderColor = p.color;
 card.dataset.pid = p.id;
 card.innerHTML = ` <div class="menu-icon" style="color:${p.color};font-size:2.5em;pointer-events:none;">${p.char}</div> <div class="menu-info" style="pointer-events:none;"> <div class="menu-name">${p.char} (${p.romaji}) — ${p.name}</div> <div class="menu-desc">${p.functions.map(f=>f.badge).join(' · ')}</div> <div class="menu-count">${ALL_SENTENCES.filter(s=>s.correct===p.char && !s.hard).length} practice sentences</div> </div>`;
 grid.appendChild(card);
 });
-grid.addEventListener(‘click’, function(e) {
-const card = e.target.closest(‘button[data-pid]’);
+grid.addEventListener('click', function(e) {
+const card = e.target.closest('button[data-pid]');
 if (card) startLearn(card.dataset.pid);
 });
 }
@@ -560,62 +522,59 @@ function startLearn(pid) {
 currentParticle = PARTICLES.find(p => p.id === pid);
 learnIdx = PARTICLES.findIndex(p => p.id === pid);
 showLearnCard();
-showScreen(‘learn-screen’);
+showScreen('learn-screen');
 setTimeout(() => speak(currentParticle.char), 400);
 }
 
 function showLearnCard() {
 const p = PARTICLES[learnIdx];
 currentParticle = p;
-document.getElementById(‘learn-title’).textContent  = p.char + ’ Particle’;
-document.getElementById(‘learn-char’).textContent   = p.char;
-document.getElementById(‘learn-romaji’).textContent = ‘(’ + p.romaji + ‘)’;
-document.getElementById(‘learn-pname’).textContent  = p.name;
-document.getElementById(‘learn-counter’).textContent = (learnIdx + 1) + ’ / ’ + PARTICLES.length;
-document.getElementById(‘learn-prev’).disabled = learnIdx === 0;
-document.getElementById(‘learn-next’).disabled = learnIdx === PARTICLES.length - 1;
+document.getElementById('learn-title').textContent  = p.char + ' Particle';
+document.getElementById('learn-char').textContent   = p.char;
+document.getElementById('learn-romaji').textContent = '(' + p.romaji + ')';
+document.getElementById('learn-pname').textContent  = p.name;
+document.getElementById('learn-counter').textContent = (learnIdx + 1) + ' / ' + PARTICLES.length;
+document.getElementById('learn-prev').disabled = learnIdx === 0;
+document.getElementById('learn-next').disabled = learnIdx === PARTICLES.length - 1;
 
-// Functions
-const funcDiv = document.getElementById(‘learn-functions’);
-funcDiv.innerHTML = ‘’;
+const funcDiv = document.getElementById('learn-functions');
+funcDiv.innerHTML = '';
 p.functions.forEach(f => {
-const row = document.createElement(‘div’);
-row.className = ‘function-row’;
+const row = document.createElement('div');
+row.className = 'function-row';
 row.innerHTML = `<span class="func-badge" style="background:${p.color};">${f.badge}</span><span class="func-desc">${f.desc}</span>`;
 funcDiv.appendChild(row);
 });
 
-// Examples
-const exDiv = document.getElementById(‘learn-examples’);
-exDiv.innerHTML = ‘’;
+const exDiv = document.getElementById('learn-examples');
+exDiv.innerHTML = '';
 p.examples.forEach(ex => {
 const indices = Array.isArray(ex.particle) ? ex.particle : [ex.particle];
 const jpHtml = ex.jp.map((part, i) =>
 indices.includes(i)
 ? `<span class="particle-highlight">${part}</span>`
 : part
-).join(’’);
-const row = document.createElement(‘div’);
-row.className = ‘ex-sent-row’;
+).join('');
+const row = document.createElement('div');
+row.className = 'ex-sent-row';
 row.innerHTML = `<div class="ex-sent-jp">${jpHtml}</div><div class="ex-sent-en">${ex.en}</div>`;
 exDiv.appendChild(row);
 });
 
-document.getElementById(‘learn-tip’).textContent = p.tip;
-const wo = document.getElementById(‘learn-watchout’);
-if (p.watchout) { wo.textContent = p.watchout; wo.style.display = ‘block’; }
-else { wo.style.display = ‘none’; }
+document.getElementById('learn-tip').textContent = p.tip;
+const wo = document.getElementById('learn-watchout');
+if (p.watchout) { wo.textContent = p.watchout; wo.style.display = 'block'; }
+else { wo.style.display = 'none'; }
 }
 
-// QUIZ
 function startQuizMode(mode) {
 quizMode = mode;
-if (mode === ‘single’) {
+if (mode === 'single') {
 quizData = ALL_SENTENCES
 .filter(s => s.correct === currentParticle.char && !s.hard)
 .sort(() => Math.random() - 0.5)
 .slice(0, 8);
-} else if (mode === ‘hard’) {
+} else if (mode === 'hard') {
 quizData = ALL_SENTENCES
 .filter(s => s.hard)
 .concat(ALL_SENTENCES.filter(s => !s.hard).sort(() => Math.random() - 0.5).slice(0, 6))
@@ -628,11 +587,11 @@ quizData = ALL_SENTENCES
 }
 score = 0; streak = 0; quizIdx = 0; attempts = 0;
 quizTotal = quizData.length;
-document.getElementById(‘score’).textContent  = 0;
-document.getElementById(‘streak’).textContent = 0;
-const titles = { single: currentParticle?.char + ’ Quiz’, hard: ‘Hard Mode 🔥’, all: ‘Mixed Particle Quiz’ };
-document.getElementById(‘quiz-title’).textContent = titles[mode] || ‘Quiz’;
-showScreen(‘quiz-screen’);
+document.getElementById('score').textContent  = 0;
+document.getElementById('streak').textContent = 0;
+const titles = { single: currentParticle?.char + ' Quiz', hard: 'Hard Mode 🔥', all: 'Mixed Particle Quiz' };
+document.getElementById('quiz-title').textContent = titles[mode] || 'Quiz';
+showScreen('quiz-screen');
 showQuizQ();
 }
 
@@ -641,123 +600,119 @@ if (quizIdx >= quizTotal) { endQuiz(); return; }
 attempts = 0;
 const q = quizData[quizIdx];
 
-document.getElementById(‘q-count’).textContent  = (quizIdx + 1) + ‘/’ + quizTotal;
-document.getElementById(‘progress’).style.width = (quizIdx / quizTotal * 100) + ‘%’;
-document.getElementById(‘feedback’).textContent  = ‘’;
-document.getElementById(‘hint-btn’).style.display = ‘none’;
-document.getElementById(‘q-type-badge’).textContent = q.hard ? ‘🔥 Tricky pair!’ : ‘Fill in the blank’;
+document.getElementById('q-count').textContent  = (quizIdx + 1) + '/' + quizTotal;
+document.getElementById('progress').style.width = (quizIdx / quizTotal * 100) + '%';
+document.getElementById('feedback').textContent  = '';
+document.getElementById('hint-btn').style.display = 'none';
+document.getElementById('q-type-badge').textContent = q.hard ? '🔥 Tricky pair!' : 'Fill in the blank';
 
-// Build sentence display
-const sentDiv = document.getElementById(‘sentence-display’);
+const sentDiv = document.getElementById('sentence-display');
 sentDiv.innerHTML = q.jp.map(part =>
-part === ‘___’ ? `<span class="blank-slot">＿</span>` : part
-).join(’’);
-document.getElementById(‘sentence-en’).textContent = q.en;
+part === '***' ? `<span class="blank-slot">＿</span>` : part
+).join('');
+document.getElementById('sentence-en').textContent = q.en;
 
-// Build particle options
-const opts = [q.correct, …q.distractors].sort(() => Math.random() - 0.5);
-const optDiv = document.getElementById(‘particle-options’);
-optDiv.innerHTML = ‘’;
+const opts = [q.correct, ...q.distractors].sort(() => Math.random() - 0.5);
+const optDiv = document.getElementById('particle-options');
+optDiv.innerHTML = '';
 opts.forEach(opt => {
-const btn = document.createElement(‘button’);
-btn.type = ‘button’; btn.className = ‘particle-opt-btn’;
+const btn = document.createElement('button');
+btn.type = 'button'; btn.className = 'particle-opt-btn';
 btn.textContent = opt;
-btn.addEventListener(‘click’, () => checkAnswer(opt === q.correct, btn, q));
+btn.addEventListener('click', () => checkAnswer(opt === q.correct, btn, q));
 optDiv.appendChild(btn);
 });
 }
 
 function checkAnswer(isCorrect, btn, q) {
-const feedback = document.getElementById(‘feedback’);
+const feedback = document.getElementById('feedback');
 attempts++;
-const allBtns = document.querySelectorAll(’.particle-opt-btn’);
+const allBtns = document.querySelectorAll('.particle-opt-btn');
 if (isCorrect) {
-btn.classList.add(‘correct’);
+btn.classList.add('correct');
 allBtns.forEach(b => b.disabled = true);
-// Fill in the blank visually
-const sentDiv = document.getElementById(‘sentence-display’);
-const blank = sentDiv.querySelector(’.blank-slot’);
-if (blank) { blank.textContent = q.correct; blank.style.color = ‘#06d6a0’; blank.style.borderColor = ‘#06d6a0’; }
-speak(q.jp.map(p => p === ‘___’ ? q.correct : p).join(’’));
-const encouragement = [‘すごい！ Sugoi! 🎉’,‘よくできました！ ⭐’,‘がんばれ！ Keep it up! 🚀’,‘さいこう！ 💫’,‘パーフェクト！ 🌟’];
+const sentDiv = document.getElementById('sentence-display');
+const blank = sentDiv.querySelector('.blank-slot');
+if (blank) { blank.textContent = q.correct; blank.style.color = '#06d6a0'; blank.style.borderColor = '#06d6a0'; }
+speak(q.jp.map(p => p === '***' ? q.correct : p).join(''));
+const encouragement = ['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ 💫','パーフェクト！ 🌟'];
 if (attempts === 1) {
 score++; streak++;
 const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
-feedback.textContent = streak >= 3 ? msg + ’ 🔥 ’ + streak + ’ in a row!’ : msg;
+feedback.textContent = streak >= 3 ? msg + ' 🔥 ' + streak + ' in a row!' : msg;
 } else {
 streak = 0;
-feedback.textContent = ‘「’ + q.correct + ‘」 ’ + PARTICLES.find(p=>p.char===q.correct)?.name + ’ ✅’;
+feedback.textContent = '「' + q.correct + '」 ' + PARTICLES.find(p=>p.char===q.correct)?.name + ' ✅';
 }
-feedback.className = ‘feedback correct-text’;
-document.getElementById(‘score’).textContent  = score;
-document.getElementById(‘streak’).textContent = streak;
+feedback.className = 'feedback correct-text';
+document.getElementById('score').textContent  = score;
+document.getElementById('streak').textContent = streak;
 setTimeout(() => { quizIdx++; showQuizQ(); }, 1800);
 } else {
-btn.classList.add(‘wrong’); btn.disabled = true;
-streak = 0; document.getElementById(‘streak’).textContent = 0;
-const tryAgain = [‘もう一度！ Try again! 💪’,‘ちがいます。Not quite! 🎯’,‘がんばって！ ✨’];
+btn.classList.add('wrong'); btn.disabled = true;
+streak = 0; document.getElementById('streak').textContent = 0;
+const tryAgain = ['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
 feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
-feedback.className = ‘feedback wrong-text’;
-if (attempts >= 2) document.getElementById(‘hint-btn’).style.display = ‘block’;
+feedback.className = 'feedback wrong-text';
+if (attempts >= 2) document.getElementById('hint-btn').style.display = 'block';
 }
 }
 
 function showHint() {
 const q = quizData[quizIdx];
 const p = PARTICLES.find(p => p.char === q.correct);
-document.getElementById(‘feedback’).textContent = ’💡 Answer: ’ + q.correct + ’ · ’ + (q.hint || p?.name || ‘’);
-document.getElementById(‘feedback’).className = ‘feedback hint-text’;
+document.getElementById('feedback').textContent = '💡 Answer: ' + q.correct + ' · ' + (q.hint || p?.name || '');
+document.getElementById('feedback').className = 'feedback hint-text';
 }
 
 function endQuiz() {
-showScreen(‘end-screen’);
-document.getElementById(‘final-score’).textContent = score;
-document.getElementById(‘final-total’).textContent = quizTotal;
+showScreen('end-screen');
+document.getElementById('final-score').textContent = score;
+document.getElementById('final-total').textContent = quizTotal;
 const pct = score / quizTotal;
-const trophy = document.getElementById(‘trophy’);
-const title  = document.getElementById(‘end-title’);
-const msg    = document.getElementById(‘end-msg’);
-if (pct === 1)       { trophy.textContent=‘🏆’; title.textContent=‘パーフェクト！’; msg.textContent=‘Perfect! You've mastered Japanese particles! 🧩’; }
-else if (pct >= 0.8) { trophy.textContent=‘🥇’; title.textContent=‘すごい！’;       msg.textContent=‘Excellent! Try Hard Mode to test は vs が and に vs で!’; }
-else if (pct >= 0.6) { trophy.textContent=‘🥈’; title.textContent=‘よくできました！’; msg.textContent=‘Good job! Review the Learn cards for tricky particles!’; }
-else                 { trophy.textContent=‘🌱’; title.textContent=‘がんばれ！’;     msg.textContent=‘Particles are hard — study each one's functions carefully! 💪’; }
+const trophy = document.getElementById('trophy');
+const title  = document.getElementById('end-title');
+const msg    = document.getElementById('end-msg');
+if (pct === 1)       { trophy.textContent='🏆'; title.textContent='パーフェクト！'; msg.textContent='Perfect! You\'ve mastered Japanese particles! 🧩'; }
+else if (pct >= 0.8) { trophy.textContent='🥇'; title.textContent='すごい！';       msg.textContent='Excellent! Try Hard Mode to test は vs が and に vs で!'; }
+else if (pct >= 0.6) { trophy.textContent='🥈'; title.textContent='よくできました！'; msg.textContent='Good job! Review the Learn cards for tricky particles!'; }
+else                 { trophy.textContent='🌱'; title.textContent='がんばれ！';     msg.textContent='Particles are hard — study each one\'s functions carefully! 💪'; }
 }
 
-document.addEventListener(‘DOMContentLoaded’, function() {
+document.addEventListener('DOMContentLoaded', function() {
 buildMenu();
 
-document.getElementById(‘quiz-all-btn’).addEventListener(‘click’, () => {
-currentParticle = null; quizMode = ‘all’; startQuizMode(‘all’);
+document.getElementById('quiz-all-btn').addEventListener('click', () => {
+currentParticle = null; quizMode = 'all'; startQuizMode('all');
 });
-document.getElementById(‘quiz-hard-btn’).addEventListener(‘click’, () => {
-currentParticle = null; quizMode = ‘hard’; startQuizMode(‘hard’);
+document.getElementById('quiz-hard-btn').addEventListener('click', () => {
+currentParticle = null; quizMode = 'hard'; startQuizMode('hard');
 });
 
-document.getElementById(‘back-to-menu-learn’).addEventListener(‘click’, () => showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-quiz’).addEventListener(‘click’,  () => showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-end’).addEventListener(‘click’,   () => showScreen(‘menu-screen’));
-document.getElementById(‘learn-back-link’).addEventListener(‘click’, function(e) { e.preventDefault(); showScreen(‘menu-screen’); });
+document.getElementById('back-to-menu-learn').addEventListener('click', () => showScreen('menu-screen'));
+document.getElementById('back-to-menu-quiz').addEventListener('click',  () => showScreen('menu-screen'));
+document.getElementById('back-to-menu-end').addEventListener('click',   () => showScreen('menu-screen'));
+document.getElementById('learn-back-link').addEventListener('click', function(e) { e.preventDefault(); showScreen('menu-screen'); });
 
-document.getElementById(‘learn-speak-btn’).addEventListener(‘click’, function() {
+document.getElementById('learn-speak-btn').addEventListener('click', function() {
 const p = PARTICLES[learnIdx];
-const texts = p.examples.map(ex => ex.jp.join(’’));
+const texts = p.examples.map(ex => ex.jp.join(''));
 let i = 0;
 function speakNext() { if (i < texts.length) { speak(texts[i++]); setTimeout(speakNext, 2500); } }
 speakNext();
 });
 
-document.getElementById(‘learn-prev’).addEventListener(‘click’, function() {
-if (learnIdx > 0) { learnIdx–; showLearnCard(); setTimeout(() => speak(PARTICLES[learnIdx].char), 300); }
+document.getElementById('learn-prev').addEventListener('click', function() {
+if (learnIdx > 0) { learnIdx--; showLearnCard(); setTimeout(() => speak(PARTICLES[learnIdx].char), 300); }
 });
-document.getElementById(‘learn-next’).addEventListener(‘click’, function() {
+document.getElementById('learn-next').addEventListener('click', function() {
 if (learnIdx < PARTICLES.length - 1) { learnIdx++; showLearnCard(); setTimeout(() => speak(PARTICLES[learnIdx].char), 300); }
 });
 
-document.getElementById(‘start-quiz-from-learn’).addEventListener(‘click’, () => startQuizMode(‘single’));
-document.getElementById(‘hint-btn’).addEventListener(‘click’, showHint);
-document.getElementById(‘try-again-btn’).addEventListener(‘click’, () => startQuizMode(quizMode));
+document.getElementById('start-quiz-from-learn').addEventListener('click', () => startQuizMode('single'));
+document.getElementById('hint-btn').addEventListener('click', showHint);
+document.getElementById('try-again-btn').addEventListener('click', () => startQuizMode(quizMode));
 });
 </script>
-
 </body>
 </html>
