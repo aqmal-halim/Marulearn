@@ -428,6 +428,7 @@ function drawGuide() {
   ctx.clearRect(0, 0, W, H);
   const data = currentData();
   data.strokes.forEach((stroke, si) => {
+    // dotted background path
     ctx.save();
     ctx.setLineDash([9, 11]);
     ctx.strokeStyle = '#e8e0c8';
@@ -438,6 +439,7 @@ function drawGuide() {
     ctx.stroke();
     ctx.restore();
 
+    // start dot
     ctx.beginPath();
     ctx.arc(stroke[0].x, stroke[0].y, 13, 0, Math.PI*2);
     ctx.fillStyle = '#4caf50';
@@ -470,10 +472,11 @@ function startDemo() {
     }
     const stroke = data.strokes[si];
     let pi = 0;
-    const SPEED = 16;
+    const SPEED = 45; // Slower speed for magic trail animation
 
     function step() {
       if (pi >= stroke.length) {
+        // draw completed stroke
         ctx.save();
         ctx.strokeStyle = data.color + '88';
         ctx.lineWidth = 18; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -487,6 +490,7 @@ function startDemo() {
         return;
       }
       const p = stroke[pi];
+      // scale guide dot to canvas display ratio
       const rect = canvas.getBoundingClientRect();
       const sx = rect.width / W;
       const sy = rect.height / H;
