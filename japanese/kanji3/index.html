@@ -1013,7 +1013,7 @@ function buildMenu() {
   mixCard.type = "button";
   mixCard.className = "menu-card mix";
   mixCard.dataset.group = "mix";
-  mixCard.innerHTML = "<div class=\"menu-icon\" style=\"pointer-events:none;\">Mix</div><div class=\"menu-info\" style=\"pointer-events:none;\"><div class=\"menu-name\">Mixed Quiz - All 160</div><div class=\"menu-desc\">Random kanji from all groups</div><div class=\"menu-count\">All 160 kanji</div></div>";
+  mixCard.innerHTML = "<div class=\"menu-icon\" style=\"pointer-events:none;\">Mix</div><div class=\"menu-info\" style=\"pointer-events:none;\"><div class=\"menu-name\">Mixed Quiz - All 200</div><div class=\"menu-desc\">Random kanji from all groups</div><div class=\"menu-count\">All 160 kanji</div></div>";
   grid.appendChild(mixCard);
   GROUPS.forEach(function(g, i) {
     var studied = g.kanji.filter(function(k) { return studiedSet.has(k.id); }).length;
