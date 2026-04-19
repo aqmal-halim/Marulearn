@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -157,6 +156,7 @@ font-size: 0.85em; cursor: pointer; -webkit-appearance: none; display: block; ma
 -webkit-tap-highlight-color: transparent;
 }
 
+.end-screen { text-align: center; }
 .end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
 .trophy    { font-size: 5em; margin: 20px 0; }
 .end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
@@ -174,8 +174,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 </head>
 <body>
 <div class="container">
-
-<!-- MENU -->
 
 <div id="menu-screen" class="screen active">
   <div class="menu-header">
@@ -218,8 +216,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <a href="../" class="home-link">← Back to Japanese Hub</a>
 </div>
 
-<!-- LEARN -->
-
 <div id="learn-screen" class="screen">
   <div class="top-bar">
     <button type="button" class="back-btn" id="back-to-menu-learn">← Back</button>
@@ -247,8 +243,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <a href="#" class="home-link" id="learn-back-link">← Back to categories</a>
 </div>
 
-<!-- QUIZ -->
-
 <div id="quiz-screen" class="screen">
   <div class="top-bar">
     <button type="button" class="back-btn" id="back-to-menu-quiz">← Back</button>
@@ -274,8 +268,6 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
 </div>
 
-<!-- END -->
-
 <div id="end-screen" class="screen">
   <div class="end-inner">
     <div class="trophy" id="trophy">🏆</div>
@@ -293,197 +285,195 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 </div>
 <script>
 const WORDS = {
-
 train: [
-{ id:‘eki’,        jp:‘えき’,         r:‘eki’,        en:‘train station’,
-ex:‘えきまでいきます = I'm going to the train station’,
-tip:‘えきいん = station staff. えきべん = station bento. Stations are whole world in Japan! 🚉’ },
-{ id:‘densha’,     jp:‘でんしゃ’,     r:‘densha’,     en:‘train / electric train’,
-ex:‘でんしゃにのります = I ride the train’,
-tip:‘でんしゃ = electric train. しんかんせん = bullet train (Shinkansen) 🚄’ },
-{ id:‘kippu’,      jp:‘きっぷ’,       r:‘kippu’,      en:‘ticket’,
-ex:‘きっぷをかいます = I will buy a ticket’,
-tip:‘IC cards like Suica and PASMO are more common now — tap to enter and exit! 💳’ },
-{ id:‘noriba’,     jp:‘のりば’,       r:‘noriba’,     en:‘platform / boarding area’,
-ex:‘なんばんのりばですか？ = Which platform number is it?’,
-tip:‘のる = to board, ば = place. のりば = boarding place. Great vocabulary building! 🚇’ },
-{ id:‘norikae’,    jp:‘のりかえ’,     r:‘norikae’,    en:‘transfer / change trains’,
-ex:‘しんじゅくでのりかえます = I transfer at Shinjuku’,
-tip:‘Japan's train network is complex but super efficient. Google Maps helps a lot! 🗺️’ },
-{ id:‘basu’,       jp:‘バス’,         r:‘basu’,       en:‘bus’,
-ex:‘バスていはどこですか？ = Where is the bus stop?’,
-tip:‘バスてい = bus stop. Push the button before your stop to request a halt! 🚌’ },
-{ id:‘jitensha’,   jp:‘じてんしゃ’,   r:‘jitensha’,   en:‘bicycle’,
-ex:‘がっこうにじてんしゃでいきます = I go to school by bicycle’,
-tip:‘Japan has strict bicycle laws — park only in designated spots or get fined! 🚲’ },
-{ id:‘kuruma’,     jp:‘くるま’,       r:‘kuruma’,     en:‘car’,
-ex:‘おとうさんはくるまでかいしゃにいきます = Dad goes to work by car’,
-tip:‘くるまやさん = car dealer. 車 kanji looks like a wheel from above! 🚗’ },
-{ id:‘takushii’,   jp:‘タクシー’,     r:‘takushii’,   en:‘taxi’,
-ex:‘タクシーをよびました = I called a taxi’,
-tip:‘Japanese taxis have automatic doors — don't try to open them yourself! 🤚🚕’ },
-{ id:‘deguchi’,    jp:‘でぐち’,       r:‘deguchi’,    en:‘exit’,
-ex:‘きたぐちからでてください = Please exit from the north exit’,
-tip:‘でぐち = exit, いりぐち = entrance. でる = exit, いる = enter. Two key kanji! 🚪’ },
-{ id:‘iriguchi’,   jp:‘いりぐち’,     r:‘iriguchi’,   en:‘entrance’,
-ex:‘いりぐちはどこですか？ = Where is the entrance?’,
-tip:‘Big stations have many exits! 北口(north), 南口(south), 東口(east), 西口(west) 🧭’ },
-{ id:‘jikoku’,     jp:‘じこくひょう’, r:‘jikokuhyou’, en:‘timetable’,
-ex:‘じこくひょうをみてください = Please look at the timetable’,
-tip:‘Japanese trains are famously punctual — even 1 minute late makes the news! ⏱️’ },
+{ id:'eki',        jp:'えき',         r:'eki',        en:'train station',
+ex:'えきまでいきます = I\'m going to the train station',
+tip:'えきいん = station staff. えきべん = station bento. Stations are whole world in Japan! 🚉' },
+{ id:'densha',     jp:'でんしゃ',     r:'densha',     en:'train / electric train',
+ex:'でんしゃにのります = I ride the train',
+tip:'でんしゃ = electric train. しんかんせん = bullet train (Shinkansen) 🚄' },
+{ id:'kippu',      jp:'きっぷ',       r:'kippu',      en:'ticket',
+ex:'きっぷをかいます = I will buy a ticket',
+tip:'IC cards like Suica and PASMO are more common now — tap to enter and exit! 💳' },
+{ id:'noriba',     jp:'のりば',       r:'noriba',     en:'platform / boarding area',
+ex:'なんばんのりばですか？ = Which platform number is it?',
+tip:'のる = to board, ば = place. のりば = boarding place. Great vocabulary building! 🚇' },
+{ id:'norikae',    jp:'のりかえ',     r:'norikae',    en:'transfer / change trains',
+ex:'しんじゅくでのりかえます = I transfer at Shinjuku',
+tip:'Japan\'s train network is complex but super efficient. Google Maps helps a lot! 🗺️' },
+{ id:'basu',       jp:'バス',         r:'basu',       en:'bus',
+ex:'バスていはどこですか？ = Where is the bus stop?',
+tip:'バスてい = bus stop. Push the button before your stop to request a halt! 🚌' },
+{ id:'jitensha',   jp:'じてんしゃ',   r:'jitensha',   en:'bicycle',
+ex:'がっこうにじてんしゃでいきます = I go to school by bicycle',
+tip:'Japan has strict bicycle laws — park only in designated spots or get fined! 🚲' },
+{ id:'kuruma',     jp:'くるま',       r:'kuruma',     en:'car',
+ex:'おとうさんはくるまでかいしゃにいきます = Dad goes to work by car',
+tip:'くるまやさん = car dealer. 車 kanji looks like a wheel from above! 🚗' },
+{ id:'takushii',   jp:'タクシー',     r:'takushii',   en:'taxi',
+ex:'タクシーをよびました = I called a taxi',
+tip:'Japanese taxis have automatic doors — don\'t try to open them yourself! 🤚🚕' },
+{ id:'deguchi',    jp:'でぐち',       r:'deguchi',    en:'exit',
+ex:'きたぐちからでてください = Please exit from the north exit',
+tip:'でぐち = exit, いりぐち = entrance. でる = exit, いる = enter. Two key kanji! 🚪' },
+{ id:'iriguchi',   jp:'いりぐち',     r:'iriguchi',   en:'entrance',
+ex:'いりぐちはどこですか？ = Where is the entrance?',
+tip:'Big stations have many exits! 北口(north), 南口(south), 東口(east), 西口(west) 🧭' },
+{ id:'jikoku',     jp:'じこくひょう', r:'jikokuhyou', en:'timetable',
+ex:'じこくひょうをみてください = Please look at the timetable',
+tip:'Japanese trains are famously punctual — even 1 minute late makes the news! ⏱️' },
 ],
 
 konbini: [
-{ id:‘konbini2’,   jp:‘コンビニ’,     r:‘konbini’,    en:‘convenience store’,
-ex:‘コンビニはにほんのせいかつにかかせません = Konbini is essential to life in Japan’,
-tip:‘Open 24/7, 365 days. Pay bills, print documents, buy food — everything! 🏪’ },
-{ id:‘reji’,       jp:‘レジ’,         r:‘reji’,       en:‘cashier / register’,
-ex:‘レジにならんでください = Please line up at the cashier’,
-tip:‘From English “register”. Japan is very orderly — always line up! 🛒’ },
-{ id:‘fukuro’,     jp:‘ふくろ’,       r:‘fukuro’,     en:‘bag (carrier bag)’,
-ex:‘ふくろはいりますか？ = Do you need a bag?’,
-tip:‘Plastic bags now cost money in Japan (エコバッグ = eco bag is better!) ♻️’ },
-{ id:‘atatameru’,  jp:‘あたためますか’,r:‘atatamemasuka’,en:‘shall I heat it up? (microwave)’,
-ex:‘おべんとうをあたためますか？ = Shall I heat up your bento?’,
-tip:‘Staff always ask this! Just say はい or いいえ. Very common konbini phrase 🎤’ },
-{ id:‘poin’,       jp:‘ポイントカード’,r:‘pointo kaado’,en:‘points card’,
-ex:‘ポイントカードはおもちですか？ = Do you have a points card?’,
-tip:‘Every konbini has a loyalty scheme! T-Point, Nanaco, Ponta are common ones 💰’ },
-{ id:‘ATM’,        jp:‘ATM’,          r:‘eetiiiemu’,  en:‘ATM’,
-ex:‘コンビニのATMをつかいます = I use the konbini ATM’,
-tip:‘Konbini ATMs accept foreign cards! A lifesaver for tourists and expats 💳’ },
-{ id:‘zasshi’,     jp:‘ざっし’,       r:‘zasshi’,     en:‘magazine’,
-ex:‘コンビニでざっしをかいます = I buy magazines at the konbini’,
-tip:‘Konbini manga magazines are iconic — thick, cheap, and everywhere in Japan 📚’ },
-{ id:‘kopii’,      jp:‘コピー’,       r:‘kopii’,      en:‘photocopy / print’,
-ex:‘コピーきがつかえます = I can use the copy machine’,
-tip:‘Konbini printers are amazing — print anything from your phone in seconds! 🖨️’ },
-{ id:‘suica’,      jp:‘スイカ’,       r:‘suica’,      en:‘Suica card (IC transit card)’,
-ex:‘スイカでかいものをします = I shop with my Suica card’,
-tip:‘スイカ also means watermelon! The card logo has a penguin 🐧🍉’ },
-{ id:‘shiharai’,   jp:‘しはらい’,     r:‘shiharai’,   en:‘payment’,
-ex:‘しはらいはげんきんですか？ = Is payment by cash?’,
-tip:‘Japan is moving cashless! PayPay, LINE Pay and IC cards are increasingly popular 📱’ },
+{ id:'konbini2',   jp:'コンビニ',     r:'konbini',    en:'convenience store',
+ex:'コンビニはにほんのせいかつにかかせません = Konbini is essential to life in Japan',
+tip:'Open 24/7, 365 days. Pay bills, print documents, buy food — everything! 🏪' },
+{ id:'reji',       jp:'レジ',         r:'reji',       en:'cashier / register',
+ex:'レジにならんでください = Please line up at the cashier',
+tip:'From English “register”. Japan is very orderly — always line up! 🛒' },
+{ id:'fukuro',     jp:'ふくろ',       r:'fukuro',     en:'bag (carrier bag)',
+ex:'ふくろはいりますか？ = Do you need a bag?',
+tip:'Plastic bags now cost money in Japan (エコバッグ = eco bag is better!) ♻️' },
+{ id:'atatameru',  jp:'あたためますか',r:'atatamemasuka',en:'shall I heat it up? (microwave)',
+ex:'おべんとうをあたためますか？ = Shall I heat up your bento?',
+tip:'Staff always ask this! Just say はい or いいえ. Very common konbini phrase 🎤' },
+{ id:'poin',       jp:'ポイントカード',r:'pointo kaado',en:'points card',
+ex:'ポイントカードはおもちですか？ = Do you have a points card?',
+tip:'Every konbini has a loyalty scheme! T-Point, Nanaco, Ponta are common ones 💰' },
+{ id:'ATM',        jp:'ATM',          r:'eetiiiemu',  en:'ATM',
+ex:'コンビニのATMをつかいます = I use the konbini ATM',
+tip:'Konbini ATMs accept foreign cards! A lifesaver for tourists and expats 💳' },
+{ id:'zasshi',     jp:'ざっし',       r:'zasshi',     en:'magazine',
+ex:'コンビニでざっしをかいます = I buy magazines at the konbini',
+tip:'Konbini manga magazines are iconic — thick, cheap, and everywhere in Japan 📚' },
+{ id:'kopii',      jp:'コピー',       r:'kopii',      en:'photocopy / print',
+ex:'コピーき気がつかえます = I can use the copy machine',
+tip:'Konbini printers are amazing — print anything from your phone in seconds! 🖨️' },
+{ id:'suica',      jp:'スイカ',       r:'suica',      en:'Suica card (IC transit card)',
+ex:'スイカでかいものをします = I shop with my Suica card',
+tip:'スイカ also means watermelon! The card logo has a penguin 🐧🍉' },
+{ id:'shiharai',   jp:'しはらい',     r:'shiharai',   en:'payment',
+ex:'しはらいはげんきんですか？ = Is payment by cash?',
+tip:'Japan is moving cashless! PayPay, LINE Pay and IC cards are increasingly popular 📱' },
 ],
 
 places: [
-{ id:‘kouen’,      jp:‘こうえん’,     r:‘kouen’,      en:‘park’,
-ex:‘こうえんであそびます = I play at the park’,
-tip:‘Japanese parks are beautiful and well-maintained. Cherry blossom parks are magical! 🌸’ },
-{ id:‘byouin’,     jp:‘びょういん’,   r:‘byouin’,     en:‘hospital / clinic’,
-ex:‘びょういんにいきます = I'm going to the hospital’,
-tip:‘びょういん (hospital) vs パン屋 (bakery) — knowing this could be life-saving! 🏥’ },
-{ id:‘yakkyoku’,   jp:‘やっきょく’,   r:‘yakkyoku’,   en:‘pharmacy / chemist’,
-ex:‘くすりをやっきょくでかいます = I buy medicine at the pharmacy’,
-tip:‘ドラッグストア (drug store) is also common in Japan — both sell medicine 💊’ },
-{ id:‘yubinkyoku’, jp:‘ゆうびんきょく’,r:‘yuubinkyoku’,en:‘post office’,
-ex:‘ゆうびんきょくでこづつみをおくります = I send a parcel at the post office’,
-tip:‘Japanese post offices also offer banking services! Very convenient 📮’ },
-{ id:‘ginkou’,     jp:‘ぎんこう’,     r:‘ginkou’,     en:‘bank’,
-ex:‘ぎんこうでおかねをおろします = I withdraw money at the bank’,
-tip:‘Japan Post Bank (ゆうちょ) at post offices is very popular for savings accounts 🏦’ },
-{ id:‘toshokan’,   jp:‘としょかん’,   r:‘toshokan’,   en:‘library’,
-ex:‘としょかんでほんをかります = I borrow books at the library’,
-tip:‘Japanese public libraries are excellent and free! Great for learning Japanese 📚’ },
-{ id:‘shougakkou’, jp:‘しょうがっこう’,r:‘shougakkou’, en:‘elementary school’,
-ex:‘むすめはしょうがっこうにかよっています = My daughter attends elementary school’,
-tip:‘Japanese elementary school (Grade 1-6) is age 6-12. Most important years! ✏️’ },
-{ id:‘supa’,       jp:‘スーパー’,     r:‘suupaa’,     en:‘supermarket’,
-ex:‘スーパーでやさいをかいます = I buy vegetables at the supermarket’,
-tip:‘From English “supermarket”. イオン, ライフ, オーケー are popular chains 🛒’ },
-{ id:‘resutoran’,  jp:‘レストラン’,   r:‘resutoran’,  en:‘restaurant’,
-ex:‘レストランでごはんをたべます = I eat at a restaurant’,
-tip:‘Japan has more restaurants per person than almost anywhere in the world! 🍜’ },
-{ id:‘koen2’,      jp:‘くうこう’,     r:‘kuukou’,     en:‘airport’,
-ex:‘くうこうまでどのくらいかかりますか？ = How long to the airport?’,
-tip:‘成田 (Narita) and 羽田 (Haneda) are Tokyo's main airports. Know their names! ✈️’ },
-{ id:‘hoteru’,     jp:‘ホテル’,       r:‘hoteru’,     en:‘hotel’,
-ex:‘ホテルにチェックインします = I check into the hotel’,
-tip:‘ホテル (Western style) vs りょかん (Japanese inn) — try a ryokan! 🏯’ },
-{ id:‘shiyakusho’, jp:‘しやくしょ’,   r:‘shiyakusho’, en:‘city hall / municipal office’,
-ex:‘しやくしょにとどけをだします = I submit a form at city hall’,
-tip:‘Very important for new residents! Register your address here first 🏛️’ },
+{ id:'kouen',      jp:'こうえん',     r:'kouen',      en:'park',
+ex:'こうえんであそびます = I play at the park',
+tip:'Japanese parks are beautiful and well-maintained. Cherry blossom parks are magical! 🌸' },
+{ id:'byouin',     jp:'びょういん',   r:'byouin',     en:'hospital / clinic',
+ex:'びょういんにいきます = I\'m going to the hospital',
+tip:'びょういん (hospital) vs パン屋 (bakery) — knowing this could be life-saving! 🏥' },
+{ id:'yakkyoku',   jp:'やっきょく',   r:'yakkyoku',   en:'pharmacy / chemist',
+ex:'くすりをやっきょくでかいます = I buy medicine at the pharmacy',
+tip:'ドラッグストア (drug store) is also common in Japan — both sell medicine 💊' },
+{ id:'yubinkyoku', jp:'ゆうびんきょく',r:'yuubinkyoku',en:'post office',
+ex:'ゆうびんきょくでこづつみをおくります = I send a parcel at the post office',
+tip:'Japanese post offices also offer banking services! Very convenient 📮' },
+{ id:'ginkou',     jp:'ぎんこう',     r:'ginkou',     en:'bank',
+ex:'ぎんこうでおかねをおろします = I withdraw money at the bank',
+tip:'Japan Post Bank (ゆうちょ) at post offices is very popular for savings accounts 🏦' },
+{ id:'toshokan',   jp:'としょかん',   r:'toshokan',   en:'library',
+ex:'としょかんでほんをかります = I borrow books at the library',
+tip:'Japanese public libraries are excellent and free! Great for learning Japanese 📚' },
+{ id:'shougakkou', jp:'しょうがっこう',r:'shougakkou', en:'elementary school',
+ex:'むすめはしょうがっこうにかよっています = My daughter attends elementary school',
+tip:'Japanese elementary school (Grade 1-6) is age 6-12. Most important years! ✏️' },
+{ id:'supa',       jp:'スーパー',     r:'suupaa',     en:'supermarket',
+ex:'スーパーでやさいをかいます = I buy vegetables at the supermarket',
+tip:'From English “supermarket”. イオン, ライフ, オーケー are popular chains 🛒' },
+{ id:'resutoran',  jp:'レストラン',   r:'resutoran',  en:'restaurant',
+ex:'レストランでごはんをたべます = I eat at a restaurant',
+tip:'Japan has more restaurants per person than almost anywhere in the world! 🍜' },
+{ id:'koen2',      jp:'くうこう',     r:'kuukou',     en:'airport',
+ex:'くうこうまでどのくらいかかりますか？ = How long to the airport?',
+tip:'成田 (Narita) and 羽田 (Haneda) are Tokyo\'s main airports. Know their names! ✈️' },
+{ id:'hoteru',     jp:'ホテル',       r:'hoteru',     en:'hotel',
+ex:'ホテルにチェックインします = I check into the hotel',
+tip:'ホテル (Western style) vs りょかん (Japanese inn) — try a ryokan! 🏯' },
+{ id:'shiyakusho', jp:'しやくしょ',   r:'shiyakusho', en:'city hall / municipal office',
+ex:'しやくしょにとどけをだします = I submit a form at city hall',
+tip:'Very important for new residents! Register your address here first 🏛️' },
 ],
 
 directions: [
-{ id:‘migi’,       jp:‘みぎ’,         r:‘migi’,       en:‘right’,
-ex:‘みぎにまがってください = Please turn right’,
-tip:‘みぎて = right hand. Remember: みぎ → right, ひだり → left 👉’ },
-{ id:‘hidari’,     jp:‘ひだり’,       r:‘hidari’,     en:‘left’,
-ex:‘ひだりにまがってください = Please turn left’,
-tip:‘ひだりて = left hand. These two are essential for directions! 👈’ },
-{ id:‘massugu’,    jp:‘まっすぐ’,     r:‘massugu’,    en:‘straight ahead’,
-ex:‘まっすぐいってください = Please go straight ahead’,
-tip:‘まっすぐ is one of the most useful direction words you'll use every day! ⬆️’ },
-{ id:‘chikaku’,    jp:‘ちかく’,       r:‘chikaku’,    en:‘nearby / close’,
-ex:‘えきのちかくにあります = It's near the station’,
-tip:‘ちかい = close (adjective), ちかく = nearby (noun). Both very useful! 📍’ },
-{ id:‘tooi’,       jp:‘とおい’,       r:‘tooi’,       en:‘far away’,
-ex:‘ここからとおいですか？ = Is it far from here?’,
-tip:‘とおい = far. ちかい = close. Perfect pair to learn together! 🗺️’ },
-{ id:‘koko’,       jp:‘ここ’,         r:‘koko’,       en:‘here / this place’,
-ex:‘ここはどこですか？ = Where is this place?’,
-tip:‘ここ = here, そこ = there (near you), あそこ = over there. The “ko-so-a” pattern! 📌’ },
-{ id:‘soko’,       jp:‘そこ’,         r:‘soko’,       en:‘there (near you)’,
-ex:‘そこにおいてください = Please put it there’,
-tip:‘そこ refers to a place near the person you're talking to. Useful! 👇’ },
-{ id:‘asoko’,      jp:‘あそこ’,       r:‘asoko’,      en:‘over there’,
-ex:‘あそこにコンビニがあります = There's a konbini over there’,
-tip:‘あそこ = a place away from both speaker and listener. “Over there!” 👉’ },
-{ id:‘magaru’,     jp:‘まがる’,       r:‘magaru’,     en:‘to turn’,
-ex:‘つぎのかどをみぎにまがります = Turn right at the next corner’,
-tip:‘かど = corner. つぎのかどを = at the next corner. Great phrase combo! 🔄’ },
-{ id:‘wataru’,     jp:‘わたる’,       r:‘wataru’,     en:‘to cross (road / bridge)’,
-ex:‘しんごうをわたってください = Please cross at the traffic light’,
-tip:‘しんごう = traffic light. Very important word for crossing safely! 🚦’ },
-{ id:‘doko’,       jp:‘どこ’,         r:‘doko’,       en:‘where?’,
-ex:‘トイレはどこですか？ = Where is the toilet?’,
-tip:‘どこ = where? One of the most useful question words for getting around! ❓’ },
-{ id:‘annai’,      jp:‘あんない’,     r:‘annai’,      en:‘guidance / information’,
-ex:‘あんないじょはどこですか？ = Where is the information centre?’,
-tip:‘あんないじょ = information office. Look for 案内所 signs at stations and malls 📋’ },
+{ id:'migi',       jp:'みぎ',         r:'migi',       en:'right',
+ex:'みぎにまがってください = Please turn right',
+tip:'みぎて = right hand. Remember: みぎ → right, ひだり → left 👉' },
+{ id:'hidari',     jp:'ひだり',       r:'hidari',     en:'left',
+ex:'ひだりにまがってください = Please turn left',
+tip:'ひだりて = left hand. These two are essential for directions! 👈' },
+{ id:'massugu',    jp:'まっすぐ',     r:'massugu',    en:'straight ahead',
+ex:'まっすぐいってください = Please go straight ahead',
+tip:'まっすぐ is one of the most useful direction words you\'ll use every day! ⬆️' },
+{ id:'chikaku',    jp:'ちかく',       r:'chikaku',    en:'nearby / close',
+ex:'えきのちかくにあります = It\'s near the station',
+tip:'ちかい = close (adjective), ちかく = nearby (noun). Both very useful! 📍' },
+{ id:'tooi',       jp:'とおい',       r:'tooi',       en:'far away',
+ex:'ここからとおいですか？ = Is it far from here?',
+tip:'とおい = far. ちかい = close. Perfect pair to learn together! 🗺️' },
+{ id:'koko',       jp:'ここ',         r:'koko',       en:'here / this place',
+ex:'ここはどこですか？ = Where is this place?',
+tip:'ここ = here, そこ = there (near you), あそこ = over there. The “ko-so-a” pattern! 📌' },
+{ id:'soko',       jp:'そこ',         r:'soko',       en:'there (near you)',
+ex:'そこにおいてください = Please put it there',
+tip:'そこ refers to a place near the person you\'re talking to. Useful! 👇' },
+{ id:'asoko',      jp:'あそこ',       r:'asoko',      en:'over there',
+ex:'あそこにコンビニがあります = There\'s a konbini over there',
+tip:'あそこ = a place away from both speaker and listener. “Over there!” 👉' },
+{ id:'magaru',     jp:'まがる',       r:'magaru',     en:'to turn',
+ex:'つぎのかどをみぎにまがります = Turn right at the next corner',
+tip:'かど = corner. つぎのかどを = at the next corner. Great phrase combo! 🔄' },
+{ id:'wataru',     jp:'わたる',       r:'wataru',     en:'to cross (road / bridge)',
+ex:'しんごうをわたってください = Please cross at the traffic light',
+tip:'しんごう = traffic light. Very important word for crossing safely! 🚦' },
+{ id:'doko',       jp:'どこ',         r:'doko',       en:'where?',
+ex:'トイレはどこですか？ = Where is the toilet?',
+tip:'どこ = where? One of the most useful question words for getting around! ❓' },
+{ id:'annai',      jp:'あんない',     r:'annai',      en:'guidance / information',
+ex:'あんないじょはどこですか？ = Where is the information centre?',
+tip:'あんないじょ = information office. Look for 案内所 signs at stations and malls 📋' },
 ],
 
 shopping: [
-{ id:‘ikura’,      jp:‘いくら’,       r:‘ikura’,      en:‘how much?’,
-ex:‘これはいくらですか？ = How much is this?’,
-tip:‘The most essential shopping phrase! いくら also means salmon roe 🐟😄’ },
-{ id:‘takai2’,     jp:‘たかい’,       r:‘takai’,      en:‘expensive’,
-ex:‘これはたかいですね = This is expensive, isn't it’,
-tip:‘たかい = expensive AND tall! ちょっとたかいですね = it's a bit expensive… 😅’ },
-{ id:‘yasui’,      jp:‘やすい’,       r:‘yasui’,      en:‘cheap / inexpensive’,
-ex:‘このみせはやすいです = This shop is cheap’,
-tip:‘やすい = cheap. やすい also means “easy” in certain compound words! 🏷️’ },
-{ id:‘okii’,       jp:‘おおきい’,     r:‘ookii’,      en:‘big / large’,
-ex:‘もっとおおきいサイズはありますか？ = Do you have a bigger size?’,
-tip:‘おおきい vs ちいさい = big vs small. Great pair! 大 kanji means big 📏’ },
-{ id:‘chiisai’,    jp:‘ちいさい’,     r:‘chiisai’,    en:‘small’,
-ex:‘ちいさいサイズをください = Please give me a small size’,
-tip:‘ちいさい = small. 小 is the kanji. Very common in everyday speech! 🤏’ },
-{ id:‘iro’,        jp:‘いろ’,         r:‘iro’,        en:‘colour’,
-ex:‘べつのいろはありますか？ = Is there another colour?’,
-tip:‘いろいろ = various / all sorts. Literally “colour colour”! Very useful word 🌈’ },
-{ id:‘kaimono’,    jp:‘かいもの’,     r:‘kaimono’,    en:‘shopping’,
-ex:‘かいものにいきます = I'm going shopping’,
-tip:‘かう (to buy) + もの (thing) = かいもの (shopping). See the logic! 🛍️’ },
-{ id:‘uriage’,     jp:‘うりば’,       r:‘uriba’,      en:‘sales floor / department’,
-ex:‘くつうりばはなんかいですか？ = What floor is the shoe department?’,
-tip:‘Department stores (デパート) use うりば for each section. Very useful! 🏬’ },
-{ id:‘genkin’,     jp:‘げんきん’,     r:‘genkin’,     en:‘cash’,
-ex:‘げんきんでしはらいます = I pay by cash’,
-tip:‘Japan is still very cash-heavy! Always carry yen when going out 💴’ },
-{ id:‘ryoushuu’,   jp:‘りょうしゅうしょ’,r:‘ryoushuusho’,en:‘receipt’,
-ex:‘りょうしゅうしょをください = Please give me a receipt’,
-tip:‘レシート (reshiito) is also used for receipt — both words are common! 🧾’ },
+{ id:'ikura',      jp:'いくら',       r:'ikura',      en:'how much?',
+ex:'これはいくらですか？ = How much is this?',
+tip:'The most essential shopping phrase! いくら also means salmon roe 🐟😄' },
+{ id:'takai2',     jp:'たかい',       r:'takai',      en:'expensive',
+ex:'これはたかいですね = This is expensive, isn\'t it',
+tip:'たかい = expensive AND tall! ちょっとたかいですね = it\'s a bit expensive… 😅' },
+{ id:'yasui',      jp:'やすい',       r:'yasui',      en:'cheap / inexpensive',
+ex:'このみせはやすいです = This shop is cheap',
+tip:'やすい = cheap. やすい also means “easy” in certain compound words! 🏷️' },
+{ id:'okii',       jp:'おおきい',     r:'ookii',      en:'big / large',
+ex:'もっとおおきいサイズはありますか？ = Do you have a bigger size?',
+tip:'おおきい vs ちいさい = big vs small. Great pair! 大 kanji means big 📏' },
+{ id:'chiisai',    jp:'ちいさい',     r:'chiisai',    en:'small',
+ex:'ちいさいサイズをください = Please give me a small size',
+tip:'ちいさい = small. 小 is the kanji. Very common in everyday speech! 🤏' },
+{ id:'iro',        jp:'いろ',         r:'iro',        en:'colour',
+ex:'べつのいろはありますか？ = Is there another colour?',
+tip:'いろいろ = various / all sorts. Literally “colour colour”! Very useful word 🌈' },
+{ id:'kaimono',    jp:'かいもの',     r:'kaimono',    en:'shopping',
+ex:'かいものにいきます = I\'m going shopping',
+tip:'かう (to buy) + もの (thing) = かいもの (shopping). See the logic! 🛍️' },
+{ id:'uriage',     jp:'うりば',       r:'uriba',      en:'sales floor / department',
+ex:'くつうりばはなんかいですか？ = What floor is the shoe department?',
+tip:'Department stores (デパート) use うりば for each section. Very useful! 🏬' },
+{ id:'genkin',     jp:'げんきん',     r:'genkin',     en:'cash',
+ex:'げんきんでしはらいます = I pay by cash',
+tip:'Japan is still very cash-heavy! Always carry yen when going out 💴' },
+{ id:'ryoushuu',   jp:'りょうしゅうしょ',r:'ryoushuusho',en:'receipt',
+ex:'りょうしゅうしょをください = Please give me a receipt',
+tip:'レシート (reshiito) is also used for receipt — both words are common! 🧾' },
 ],
-
 };
 
+// Flatten words for the random quiz pool
 const ALL_WORDS = Object.entries(WORDS)
-.filter(([k]) => k !== ‘mix’)
-.flatMap(([, arr]) => arr);
+  .flatMap(([, arr]) => arr);
 
-let currentCat = ‘train’;
+let currentCat = 'train';
 let learnData  = [];
 let learnIdx   = 0;
 let quizData   = [];
@@ -495,184 +485,191 @@ let streak     = 0;
 let attempts   = 0;
 
 function speak(text) {
-if (!window.speechSynthesis) return;
-window.speechSynthesis.cancel();
-const u = new SpeechSynthesisUtterance(text);
-u.lang=‘ja-JP’; u.rate=0.75; u.pitch=1.1;
-window.speechSynthesis.speak(u);
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='ja-JP'; u.rate=0.75; u.pitch=1.1;
+  window.speechSynthesis.speak(u);
 }
 
 function showScreen(id) {
-document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
-document.getElementById(id).classList.add(‘active’);
-window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
 const CAT_LABELS = {
-train:      ‘🚃 Train & Transport’,
-konbini:    ‘🏪 Convenience Store’,
-places:     ‘🏯 Places in Town’,
-directions: ‘🗺️ Directions’,
-shopping:   ‘🛍️ Shopping’,
-mix:        ‘🎲 Mixed’,
+  train:      '🚃 Train & Transport',
+  konbini:    '🏪 Convenience Store',
+  places:     '🏯 Places in Town',
+  directions: '🗺️ Directions',
+  shopping:   '🛍️ Shopping',
+  mix:        '🎲 Mixed',
 };
 
 function startCat(cat) {
-currentCat = cat;
-learnData  = cat === ‘mix’ ? […ALL_WORDS].sort(() => Math.random()-0.5).slice(0,15) : WORDS[cat];
-quizPool   = ALL_WORDS;
-learnIdx   = 0;
-const titles = { train:‘Train & Transport’, konbini:‘Convenience Store’, places:‘Places in Town’, directions:‘Directions’, shopping:‘Shopping’, mix:‘Mixed Quiz’ };
-document.getElementById(‘learn-title’).textContent = titles[cat] || cat;
-showLearnCard();
-showScreen(‘learn-screen’);
-setTimeout(() => speak(learnData[0].jp), 600);
+  currentCat = cat;
+  learnData  = cat === 'mix' ? [...ALL_WORDS].sort(() => Math.random()-0.5).slice(0,15) : WORDS[cat];
+  quizPool   = ALL_WORDS;
+  learnIdx   = 0;
+  const titles = { train:'Train & Transport', konbini:'Convenience Store', places:'Places in Town', directions:'Directions', shopping:'Shopping', mix:'Mixed Quiz' };
+  document.getElementById('learn-title').textContent = titles[cat] || cat;
+  showLearnCard();
+  showScreen('learn-screen');
+  setTimeout(() => speak(learnData[0].jp), 600);
 }
 
 function showLearnCard() {
-const w = learnData[learnIdx];
-document.getElementById(‘learn-cat-label’).textContent = CAT_LABELS[currentCat] || ‘’;
-document.getElementById(‘learn-banner-jp’).textContent  = w.jp;
-document.getElementById(‘learn-romaji’).textContent     = w.r;
-document.getElementById(‘learn-en’).textContent         = w.en;
-document.getElementById(‘learn-counter’).textContent    = (learnIdx+1)+’ / ’+learnData.length;
-document.getElementById(‘learn-prev’).disabled = learnIdx === 0;
-document.getElementById(‘learn-next’).disabled = learnIdx === learnData.length-1;
+  const w = learnData[learnIdx];
+  document.getElementById('learn-cat-label').textContent = CAT_LABELS[currentCat] || '';
+  document.getElementById('learn-banner-jp').textContent  = w.jp;
+  document.getElementById('learn-romaji').textContent     = w.r;
+  document.getElementById('learn-en').textContent         = w.en;
+  document.getElementById('learn-counter').textContent    = (learnIdx+1)+' / '+learnData.length;
+  document.getElementById('learn-prev').disabled = learnIdx === 0;
+  document.getElementById('learn-next').disabled = learnIdx === learnData.length-1;
 
-const exEl  = document.getElementById(‘learn-example’);
-const tipEl = document.getElementById(‘learn-tip’);
-if (w.ex)  { exEl.innerHTML  = w.ex.replace(/\n/g,’<br>’); exEl.style.display=‘block’; }
-else        { exEl.style.display=‘none’; }
-if (w.tip) { tipEl.textContent = ’💡 ’+w.tip; tipEl.style.display=‘block’; }
-else        { tipEl.style.display=‘none’; }
+  const exEl  = document.getElementById('learn-example');
+  const tipEl = document.getElementById('learn-tip');
+  if (w.ex)  { exEl.innerHTML  = w.ex.replace(/\n/g,'<br>'); exEl.style.display='block'; }
+  else        { exEl.style.display='none'; }
+  if (w.tip) { tipEl.textContent = '💡 '+w.tip; tipEl.style.display='block'; }
+  else        { tipEl.style.display='none'; }
 }
 
 function startQuiz() {
-score=0; streak=0; quizIdx=0; attempts=0;
-quizData  = […learnData].sort(()=>Math.random()-0.5).slice(0, Math.min(10, learnData.length));
-quizTotal = quizData.length;
-document.getElementById(‘score’).textContent  = 0;
-document.getElementById(‘streak’).textContent = 0;
-const titles = { train:‘Transport Quiz’, konbini:‘Konbini Quiz’, places:‘Places Quiz’, directions:‘Directions Quiz’, shopping:‘Shopping Quiz’, mix:‘Mixed City Quiz!’ };
-document.getElementById(‘quiz-title’).textContent = titles[currentCat] || ‘Quiz’;
-showScreen(‘quiz-screen’);
-showQuizQ();
+  score=0; streak=0; quizIdx=0; attempts=0;
+  quizData  = [...learnData].sort(()=>Math.random()-0.5).slice(0, Math.min(10, learnData.length));
+  quizTotal = quizData.length;
+  document.getElementById('score').textContent  = 0;
+  document.getElementById('streak').textContent = 0;
+  const titles = { train:'Transport Quiz', konbini:'Konbini Quiz', places:'Places Quiz', directions:'Directions Quiz', shopping:'Shopping Quiz', mix:'Mixed City Quiz!' };
+  document.getElementById('quiz-title').textContent = titles[currentCat] || 'Quiz';
+  showScreen('quiz-screen');
+  showQuizQ();
 }
 
 function showQuizQ() {
-if (quizIdx >= quizTotal) { endQuiz(); return; }
-attempts = 0;
-const w = quizData[quizIdx];
+  if (quizIdx >= quizTotal) { endQuiz(); return; }
+  attempts = 0;
+  const w = quizData[quizIdx];
 
-document.getElementById(‘q-count’).textContent  = (quizIdx+1)+’/’+quizTotal;
-document.getElementById(‘progress’).style.width = (quizIdx/quizTotal*100)+’%’;
-document.getElementById(‘feedback’).textContent  = ‘’;
-document.getElementById(‘hint-btn’).style.display=‘none’;
+  document.getElementById('q-count').textContent  = (quizIdx+1)+'/'+quizTotal;
+  document.getElementById('progress').style.width = (quizIdx/quizTotal*100)+'%';
+  document.getElementById('feedback').textContent  = '';
+  document.getElementById('hint-btn').style.display='none';
 
-const jpEl   = document.getElementById(‘q-jp’);
-const enEl   = document.getElementById(‘q-en’);
-const hintEl = document.getElementById(‘q-hint’);
-jpEl.style.display=‘none’; enEl.style.display=‘none’;
+  const jpEl   = document.getElementById('q-jp');
+  const enEl   = document.getElementById('q-en');
+  const hintEl = document.getElementById('q-hint');
+  jpEl.style.display='none'; enEl.style.display='none';
 
-const qType = Math.floor(Math.random() * 2);
-if (qType === 0) {
-document.getElementById(‘q-type-badge’).textContent = ‘Japanese → English’;
-document.getElementById(‘q-label’).textContent = ‘What does this mean?’;
-jpEl.textContent=w.jp; jpEl.style.display=‘block’;
-hintEl.textContent = ‘(’ + w.r + ‘)’;
-setTimeout(()=>speak(w.jp), 300);
-buildOptions(w, ‘en’);
-} else {
-document.getElementById(‘q-type-badge’).textContent = ‘English → Japanese’;
-document.getElementById(‘q-label’).textContent = ‘How do you say this?’;
-enEl.textContent=w.en; enEl.style.display=‘block’;
-hintEl.textContent = ‘’;
-buildOptions(w, ‘jp’);
-}
+  const qType = Math.floor(Math.random() * 2);
+  if (qType === 0) {
+    document.getElementById('q-type-badge').textContent = 'Japanese → English';
+    document.getElementById('q-label').textContent = 'What does this mean?';
+    jpEl.textContent=w.jp; jpEl.style.display='block';
+    hintEl.textContent = '(' + w.r + ')';
+    setTimeout(()=>speak(w.jp), 300);
+    buildOptions(w, 'en');
+  } else {
+    document.getElementById('q-type-badge').textContent = 'English → Japanese';
+    document.getElementById('q-label').textContent = 'How do you say this?';
+    enEl.textContent=w.en; enEl.style.display='block';
+    hintEl.textContent = '';
+    buildOptions(w, 'jp');
+  }
 }
 
 function buildOptions(correct, type) {
-const optDiv = document.getElementById(‘options’);
-optDiv.innerHTML=’’;
-const wrong = quizPool.filter(x=>x.id!==correct.id).sort(()=>Math.random()-0.5).slice(0,3);
-const opts  = […wrong, correct].sort(()=>Math.random()-0.5);
-opts.forEach(opt => {
-const btn = document.createElement(‘button’);
-btn.type=‘button’; btn.className=‘option-btn’;
-if (type===‘en’) {
-btn.innerHTML = ‘<span class="opt-en">’+opt.en+’</span>’;
-} else {
-btn.innerHTML = ‘<span class="opt-jp">’+opt.jp+’</span>’;
-}
-btn.addEventListener(‘click’, ()=>checkAnswer(opt.id===correct.id, btn, correct));
-optDiv.appendChild(btn);
-});
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML='';
+  const wrong = quizPool.filter(x=>x.id!==correct.id).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts  = [...wrong, correct].sort(()=>Math.random()-0.5);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type='button'; btn.className='option-btn';
+    if (type==='en') {
+      btn.innerHTML = '<span class="opt-en">'+opt.en+'</span>';
+    } else {
+      btn.innerHTML = '<span class="opt-jp">'+opt.jp+'</span>';
+    }
+    btn.addEventListener('click', ()=>checkAnswer(opt.id===correct.id, btn, correct));
+    optDiv.appendChild(btn);
+  });
 }
 
-const encouragement=[‘すごい！ Sugoi! 🎉’,‘よくできました！ ⭐’,‘がんばれ！ Keep it up! 🚀’,‘さいこう！ Amazing! 💫’,‘パーフェクト！ 🌟’];
-const tryAgain=[‘もう一度！ Try again! 💪’,‘ちがいます。Not quite! 🎯’,‘がんばって！ ✨’];
+const encouragement=['すごい！ Sugoi! 🎉','よくできました！ ⭐','がんばれ！ Keep it up! 🚀','さいこう！ Amazing! 💫','パーフェクト！ 🌟'];
+const tryAgain=['もう一度！ Try again! 💪','ちがいます。Not quite! 🎯','がんばって！ ✨'];
 
 function checkAnswer(isCorrect, btn, word) {
-const feedback=document.getElementById(‘feedback’);
-attempts++;
-if (isCorrect) {
-btn.classList.add(‘correct’);
-document.querySelectorAll(’#options .option-btn’).forEach(b=>b.disabled=true);
-speak(word.jp);
-if(attempts===1){score++;streak++;const msg=encouragement[Math.floor(Math.random()*encouragement.length)];feedback.textContent=streak>=3?msg+’ 🔥 ‘+streak+’ in a row!’:msg;}
-else{streak=0;feedback.textContent=‘Yes! ‘+word.jp+’ = ‘+word.en+’ 🌟’;}
-feedback.className=‘feedback correct-text’;
-document.getElementById(‘score’).textContent=score;
-document.getElementById(‘streak’).textContent=streak;
-setTimeout(()=>{quizIdx++;showQuizQ();},1600);
-} else {
-btn.classList.add(‘wrong’); btn.disabled=true;
-streak=0; document.getElementById(‘streak’).textContent=0;
-feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
-feedback.className=‘feedback wrong-text’;
-if(attempts>=2) document.getElementById(‘hint-btn’).style.display=‘block’;
-}
+  const feedback=document.getElementById('feedback');
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    document.querySelectorAll('#options .option-btn').forEach(b=>b.disabled=true);
+    speak(word.jp);
+    if(attempts===1){
+      score++; streak++;
+      const msg=encouragement[Math.floor(Math.random()*encouragement.length)];
+      feedback.textContent=streak>=3?msg+' 🔥 '+streak+' in a row!':msg;
+    }
+    else{
+      streak=0;
+      feedback.textContent='Yes! '+word.jp+' = '+word.en+' 🌟';
+    }
+    feedback.className='feedback correct-text';
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    setTimeout(()=>{quizIdx++;showQuizQ();},1600);
+  } else {
+    btn.classList.add('wrong'); btn.disabled=true;
+    streak=0; document.getElementById('streak').textContent=0;
+    feedback.textContent=tryAgain[Math.floor(Math.random()*tryAgain.length)];
+    feedback.className='feedback wrong-text';
+    if(attempts>=2) document.getElementById('hint-btn').style.display='block';
+  }
 }
 
 function showHint() {
-const w=quizData[quizIdx];
-document.getElementById(‘feedback’).textContent=‘💡 ‘+w.jp+’ (’+w.r+’) = ‘+w.en+(w.tip?’ · ‘+w.tip:’’);
-document.getElementById(‘feedback’).className=‘feedback hint-text’;
-speak(w.jp);
+  const w=quizData[quizIdx];
+  document.getElementById('feedback').textContent='💡 '+w.jp+' ('+w.r+') = '+w.en+(w.tip?' · '+w.tip:'');
+  document.getElementById('feedback').className='feedback hint-text';
+  speak(w.jp);
 }
 
 function endQuiz() {
-showScreen(‘end-screen’);
-document.getElementById(‘final-score’).textContent=score;
-document.getElementById(‘final-total’).textContent=quizTotal;
-const pct=score/quizTotal;
-const trophy=document.getElementById(‘trophy’);
-const title=document.getElementById(‘end-title’);
-const msg=document.getElementById(‘end-msg’);
-if(pct===1)      {trophy.textContent=‘🏆’;title.textContent=‘パーフェクト！’;msg.textContent=‘Perfect! You can navigate Japan like a local! 🗾’;}
-else if(pct>=0.8){trophy.textContent=‘🥇’;title.textContent=‘すごい！’;      msg.textContent=‘Excellent! Try another city category!’;}
-else if(pct>=0.6){trophy.textContent=‘🥈’;title.textContent=‘よくできました！’;msg.textContent=‘Good job! Review the Learn cards and try again!’;}
-else             {trophy.textContent=‘🌱’;title.textContent=‘がんばれ！’;    msg.textContent=‘Start with Learn mode — the city is waiting! 🏙️’;}
+  showScreen('end-screen');
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=quizTotal;
+  const pct=score/quizTotal;
+  const trophy=document.getElementById('trophy');
+  const title=document.getElementById('end-title');
+  const msg=document.getElementById('end-msg');
+  if(pct===1)      {trophy.textContent='🏆';title.textContent='パーフェクト！';msg.textContent='Perfect! You can navigate Japan like a local! 🗾';}
+  else if(pct>=0.8){trophy.textContent='🥇';title.textContent='すごい！';      msg.textContent='Excellent! Try another city category!';}
+  else if(pct>=0.6){trophy.textContent='🥈';title.textContent='よくできました！';msg.textContent='Good job! Review the Learn cards and try again!';}
+  else             {trophy.textContent='🌱';title.textContent='がんばれ！';    msg.textContent='Start with Learn mode — the city is waiting! 🏙️';}
 }
 
-document.addEventListener(‘DOMContentLoaded’, function() {
-document.querySelectorAll(’.menu-card’).forEach(card=>{
-card.addEventListener(‘click’, function(){ startCat(this.dataset.cat); });
-});
-document.getElementById(‘back-to-menu-learn’).addEventListener(‘click’, ()=>showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-quiz’).addEventListener(‘click’,  ()=>showScreen(‘menu-screen’));
-document.getElementById(‘back-to-menu-end’).addEventListener(‘click’,   ()=>showScreen(‘menu-screen’));
-document.getElementById(‘learn-back-link’).addEventListener(‘click’,    function(e){e.preventDefault();showScreen(‘menu-screen’);});
-document.getElementById(‘learn-speak-btn’).addEventListener(‘click’,    ()=>speak(learnData[learnIdx].jp));
-document.getElementById(‘learn-prev’).addEventListener(‘click’, function(){
-if(learnIdx>0){learnIdx–;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
-});
-document.getElementById(‘learn-next’).addEventListener(‘click’, function(){
-if(learnIdx<learnData.length-1){learnIdx++;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
-});
-document.getElementById(‘start-quiz-from-learn’).addEventListener(‘click’, startQuiz);
-document.getElementById(‘hint-btn’).addEventListener(‘click’, showHint);
-document.getElementById(‘try-again-btn’).addEventListener(‘click’, startQuiz);
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.menu-card').forEach(card=>{
+    card.addEventListener('click', function(){ startCat(this.dataset.cat); });
+  });
+  document.getElementById('back-to-menu-learn').addEventListener('click', ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-quiz').addEventListener('click',  ()=>showScreen('menu-screen'));
+  document.getElementById('back-to-menu-end').addEventListener('click',   ()=>showScreen('menu-screen'));
+  document.getElementById('learn-back-link').addEventListener('click',    function(e){e.preventDefault();showScreen('menu-screen');});
+  document.getElementById('learn-speak-btn').addEventListener('click',    ()=>speak(learnData[learnIdx].jp));
+  document.getElementById('learn-prev').addEventListener('click', function(){
+    if(learnIdx>0){learnIdx--;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('learn-next').addEventListener('click', function(){
+    if(learnIdx<learnData.length-1){learnIdx++;showLearnCard();setTimeout(()=>speak(learnData[learnIdx].jp),300);}
+  });
+  document.getElementById('start-quiz-from-learn').addEventListener('click', startQuiz);
+  document.getElementById('hint-btn').addEventListener('click', showHint);
+  document.getElementById('try-again-btn').addEventListener('click', startQuiz);
 });
 </script>
 
