@@ -598,10 +598,11 @@ let quizTotal    = 0;
 let score        = 0;
 let streak       = 0;
 let attempts     = 0;
-let studiedSet   = new Set(JSON.parse(localStorage.getItem(‘k1_studied’) || ‘[]’));
+let studiedSet = new Set();
+try { studiedSet = new Set(JSON.parse(localStorage.getItem(‘k1_studied’) || ‘[]’)); } catch(e) {}
 
 function saveStudied() {
-try { localStorage.setItem(‘k1_studied’, JSON.stringify([…studiedSet])); } catch(e){}
+try { localStorage.setItem(‘k1_studied’, JSON.stringify([…studiedSet])); } catch(e) {}
 }
 
 function updateOverallProgress() {
@@ -630,13 +631,11 @@ function buildMenu() {
 const grid = document.getElementById(‘group-menu’);
 grid.innerHTML = ‘’;
 
-// All kanji mixed quiz card
 const mixCard = document.createElement(‘button’);
 mixCard.type = ‘button’;
 mixCard.className = ‘menu-card mix’;
 mixCard.dataset.group = ‘mix’;
-mixCard.innerHTML = ` <div class="menu-icon" style="font-size:1.5em;">🎲</div> <div class="menu-info"> <div class="menu-name">Mixed Quiz — All 80</div> <div class="menu-desc">Random kanji from all groups</div> <div class="menu-count">All 80 kanji</div> </div>`;
-mixCard.addEventListener(‘click’, () => startGroup(‘mix’));
+mixCard.innerHTML = ‘<div class="menu-icon" style="font-size:1.5em;pointer-events:none;">🎲</div><div class="menu-info" style="pointer-events:none;"><div class="menu-name">Mixed Quiz — All 80</div><div class="menu-desc">Random kanji from all groups</div><div class="menu-count">All 80 kanji</div></div>’;
 grid.appendChild(mixCard);
 
 GROUPS.forEach((g, i) => {
@@ -645,9 +644,13 @@ const card = document.createElement(‘button’);
 card.type = ‘button’;
 card.className = ‘menu-card g’ + (i % 5 + 1);
 card.dataset.group = g.id;
-card.innerHTML = ` <div class="menu-icon" style="font-size:1.4em;color:${GROUP_COLORS[i]};">${g.label.slice(0,3)}</div> <div class="menu-info"> <div class="menu-name">Group ${i+1} — ${g.title}</div> <div class="menu-desc">${g.label}</div> <div class="menu-count">${g.kanji.length} kanji · ${studied}/${g.kanji.length} studied</div> </div>`;
-card.addEventListener(‘click’, () => startGroup(g.id));
+card.innerHTML = ‘<div class="menu-icon" style="font-size:1.4em;color:' + GROUP_COLORS[i] + ';pointer-events:none;">’ + g.label.slice(0,3) + ‘</div><div class="menu-info" style="pointer-events:none;"><div class="menu-name">Group ’ + (i+1) + ’ — ’ + g.title + ‘</div><div class="menu-desc">’ + g.label + ‘</div><div class="menu-count">’ + g.kanji.length + ’ kanji · ’ + studied + ‘/’ + g.kanji.length + ’ studied</div></div>’;
 grid.appendChild(card);
+});
+
+grid.addEventListener(‘click’, function(e) {
+const card = e.target.closest(‘button[data-group]’);
+if (card) startGroup(card.dataset.group);
 });
 }
 
