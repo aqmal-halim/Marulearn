@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏯 Kanji Grade 2</title>
+<title>Kanji Grade 2</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -60,19 +60,17 @@ font-family: inherit; text-align: left; -webkit-appearance: none; appearance: no
 .menu-card * { pointer-events: none; }
 .menu-card.g1  { border-color: #1a3a5c; }
 .menu-card.g2  { border-color: #2471a3; }
-.menu-card.g3  { border-color: #1a5276; }
-.menu-card.g4  { border-color: #117864; }
-.menu-card.g5  { border-color: #1e8449; }
-.menu-card.g6  { border-color: #7d3c98; }
+.menu-card.g3  { border-color: #117864; }
+.menu-card.g4  { border-color: #1e8449; }
+.menu-card.g5  { border-color: #b7950b; }
 .menu-card.mix { border-color: #8e44ad; }
 
-.menu-icon { font-size: 1.5em; min-width: 55px; text-align: center; font-weight: 900; }
+.menu-icon { font-size: 1.5em; min-width: 55px; text-align: center; font-weight: 900; color: #2d3436; }
 .menu-info { flex: 1; }
 .menu-name  { font-weight: 900; font-size: 1em; color: #2d3436; }
 .menu-desc  { font-size: 0.8em; color: #888; margin-top: 2px; }
 .menu-count { background: #eaf2ff; color: #1a3a5c; border: 1px solid #aed6f1; padding: 2px 8px; border-radius: 8px; font-size: 0.7em; font-weight: 700; margin-top: 4px; display: inline-block; }
 
-/* KANJI LEARN CARD */
 .learn-card {
 background: white; border-radius: 25px; padding: 20px;
 box-shadow: 0 8px 30px rgba(0,0,0,0.15); margin-bottom: 18px;
@@ -89,11 +87,11 @@ border-radius: 18px; padding: 20px 15px; text-align: center; margin-bottom: 14px
 
 .readings-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .reading-pill { background: #f8f8f8; border-radius: 12px; padding: 10px 12px; text-align: center; }
-.reading-pill .rp-label  { font-size: 0.68em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
-.reading-pill .rp-kana   { font-size: 1.1em; font-weight: 900; color: #2d3436; }
-.reading-pill .rp-romaji { font-size: 0.72em; color: #aaa; font-weight: 700; }
-.reading-pill.on-yomi    { border-left: 3px solid #c0392b; }
-.reading-pill.kun-yomi   { border-left: 3px solid #2471a3; }
+.reading-pill .rp-label { font-size: 0.68em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
+.reading-pill .rp-kana  { font-size: 1.1em; font-weight: 900; color: #2d3436; }
+.reading-pill .rp-romaji{ font-size: 0.72em; color: #aaa; font-weight: 700; }
+.reading-pill.on-yomi   { border-left: 3px solid #1a3a5c; }
+.reading-pill.kun-yomi  { border-left: 3px solid #2471a3; }
 
 .examples-box { background: #eaf2ff; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
 .examples-box .ex-title { font-size: 0.72em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #1a3a5c; margin-bottom: 8px; }
@@ -172,9 +170,9 @@ box-shadow: 0 2px 10px rgba(0,0,0,0.06); -webkit-tap-highlight-color: transparen
 font-size: 0.95em; line-height: 1.4;
 }
 .option-btn * { pointer-events: none; }
-.option-btn .opt-kanji { font-size: 1.8em; display: block; color: #2d3436; font-weight: 900; }
-.option-btn .opt-en    { font-size: 0.82em; display: block; color: #aaa; margin-top: 2px; }
-.option-btn .opt-read  { font-size: 1em; display: block; color: #2d3436; font-weight: 900; }
+.option-btn .opt-kanji  { font-size: 1.8em; display: block; color: #2d3436; font-weight: 900; }
+.option-btn .opt-en     { font-size: 0.82em; display: block; color: #aaa; margin-top: 2px; }
+.option-btn .opt-read   { font-size: 1em; display: block; color: #2d3436; font-weight: 900; }
 .option-btn:active:not(:disabled) { transform: scale(0.97); }
 .option-btn.correct { background: #e8fff5; border-color: #06d6a0; }
 .option-btn.wrong   { background: #fff0f0; border-color: #e63946; animation: shake 0.4s; }
@@ -216,60 +214,51 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 <body>
 <div class="container">
 
-<!-- MENU -->
-
 <div id="menu-screen" class="screen active">
   <div class="menu-header">
-    <div style="font-size:2.5em;margin-bottom:5px;">🏯</div>
+    <div style="font-size:2.5em;margin-bottom:5px;">&#x1F3EF;</div>
     <div class="big-title">Kanji Grade 2</div>
-    <div class="subtitle">All 160 Grade 2 kanji · readings · meanings · examples</div>
+    <div class="subtitle">All 160 Grade 2 kanji - readings - meanings - examples</div>
   </div>
-
   <div class="progress-overview">
-    <div class="po-label">📍 Your Progress</div>
+    <div class="po-label">Your Progress</div>
     <div class="po-bar-wrap"><div class="po-bar-fill" id="overall-bar" style="width:0%"></div></div>
     <div class="po-count" id="overall-count">0 / 160 kanji studied</div>
   </div>
-
   <div class="tip-box">
-    🏯 <strong>Grade 2 kanji</strong> includes 160 characters covering language (話・読・書), people (父・母・兄・姉), nature (海・池・岩), time (朝・昼・夜・週) and much more. Your kids will encounter all of these in their first two years of school!
+    <strong>Grade 2 kanji</strong> covers 160 characters including language (talk, read, write), family (father, mother, siblings), nature (sea, pond, rock), time (morning, noon, night, week) and much more. Your kids encounter all of these in their first two years of school!
   </div>
-
-  <div class="section-lbl">📖 Choose a Group</div>
+  <div class="section-lbl">Choose a Group</div>
   <div class="menu-grid" id="group-menu"></div>
-  <a href="../" class="home-link">← Back to Japanese Hub</a>
+  <a href="../" class="home-link">Back to Japanese Hub</a>
 </div>
-
-<!-- QUIZ MODE SELECT -->
 
 <div id="mode-screen" class="screen">
   <div class="top-bar">
-    <button type="button" class="back-btn" id="back-to-menu-mode">← Back</button>
+    <button type="button" class="back-btn" id="back-to-menu-mode">Back</button>
     <h2 id="mode-title">Choose Quiz Mode</h2>
   </div>
   <div style="background:white;border-radius:25px;padding:20px;margin-bottom:18px;box-shadow:0 8px 30px rgba(0,0,0,0.15);">
     <div style="text-align:center;font-size:0.9em;color:#888;margin-bottom:16px;">How do you want to be tested?</div>
     <button type="button" class="mode-card meaning-mode" data-mode="meaning">
-      <div class="mode-icon">👁️</div>
-      <div class="mode-info"><div class="mode-name">Kanji → Meaning</div><div class="mode-desc">See the kanji, pick the English meaning</div></div>
+      <div class="mode-icon">&#x1F441;</div>
+      <div class="mode-info"><div class="mode-name">Kanji to Meaning</div><div class="mode-desc">See the kanji, pick the English meaning</div></div>
     </button>
     <button type="button" class="mode-card reading-mode" data-mode="reading">
-      <div class="mode-icon">👂</div>
-      <div class="mode-info"><div class="mode-name">Kanji → Reading</div><div class="mode-desc">See the kanji, pick the correct reading</div></div>
+      <div class="mode-icon">&#x1F442;</div>
+      <div class="mode-info"><div class="mode-name">Kanji to Reading</div><div class="mode-desc">See the kanji, pick the correct reading</div></div>
     </button>
     <button type="button" class="mode-card writing-mode" data-mode="writing">
-      <div class="mode-icon">✍️</div>
-      <div class="mode-info"><div class="mode-name">Meaning → Kanji</div><div class="mode-desc">See the English, pick the correct kanji</div></div>
+      <div class="mode-icon">&#x270D;</div>
+      <div class="mode-info"><div class="mode-name">Meaning to Kanji</div><div class="mode-desc">See the English, pick the correct kanji</div></div>
     </button>
   </div>
-  <a href="#" class="home-link" id="mode-back-link">← Back to groups</a>
+  <a href="#" class="home-link" id="mode-back-link">Back to groups</a>
 </div>
-
-<!-- LEARN -->
 
 <div id="learn-screen" class="screen">
   <div class="top-bar">
-    <button type="button" class="back-btn" id="back-to-menu-learn">← Back</button>
+    <button type="button" class="back-btn" id="back-to-menu-learn">Back</button>
     <h2 id="learn-title">Group 1</h2>
   </div>
   <div class="learn-card">
@@ -282,39 +271,37 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
     </div>
     <div class="readings-box">
       <div class="reading-pill on-yomi">
-        <div class="rp-label">音読み On'yomi</div>
+        <div class="rp-label">On yomi</div>
         <div class="rp-kana"   id="learn-on"></div>
         <div class="rp-romaji" id="learn-on-r"></div>
       </div>
       <div class="reading-pill kun-yomi">
-        <div class="rp-label">訓読み Kun'yomi</div>
+        <div class="rp-label">Kun yomi</div>
         <div class="rp-kana"   id="learn-kun"></div>
         <div class="rp-romaji" id="learn-kun-r"></div>
       </div>
     </div>
     <div class="examples-box">
-      <div class="ex-title">📝 Example Words</div>
+      <div class="ex-title">Example Words</div>
       <div id="learn-examples"></div>
     </div>
     <div class="kanji-tip" id="learn-tip"></div>
   </div>
   <div style="text-align:center;margin-bottom:18px;">
-    <button type="button" class="speak-btn" id="learn-speak-btn">🔊 Hear it</button>
+    <button type="button" class="speak-btn" id="learn-speak-btn">Hear it</button>
   </div>
   <div class="learn-nav">
-    <button type="button" class="nav-btn" id="learn-prev">← Prev</button>
+    <button type="button" class="nav-btn" id="learn-prev">Prev</button>
     <span class="learn-counter" id="learn-counter">1 / 16</span>
-    <button type="button" class="nav-btn" id="learn-next">Next →</button>
+    <button type="button" class="nav-btn" id="learn-next">Next</button>
   </div>
-  <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">🎯 Quiz This Group!</button>
-  <a href="#" class="home-link" id="learn-back-link">← Back to groups</a>
+  <button type="button" class="start-quiz-btn" id="start-quiz-from-learn">Quiz This Group!</button>
+  <a href="#" class="home-link" id="learn-back-link">Back to groups</a>
 </div>
-
-<!-- QUIZ -->
 
 <div id="quiz-screen" class="screen">
   <div class="top-bar">
-    <button type="button" class="back-btn" id="back-to-menu-quiz">← Back</button>
+    <button type="button" class="back-btn" id="back-to-menu-quiz">Back</button>
     <h2 id="quiz-title">Kanji Quiz</h2>
   </div>
   <div class="game-header">
@@ -322,11 +309,11 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
     <div class="q-count" id="q-count">1/10</div>
   </div>
   <div class="stats-row">
-    <div class="stat-pill score">⭐ <span id="score">0</span></div>
-    <div class="stat-pill streak">🔥 <span id="streak">0</span></div>
+    <div class="stat-pill score">Score: <span id="score">0</span></div>
+    <div class="stat-pill streak">Streak: <span id="streak">0</span></div>
   </div>
   <div class="question-card">
-    <div class="q-type-badge" id="q-type-badge">Kanji → Meaning</div>
+    <div class="q-type-badge" id="q-type-badge">Kanji to Meaning</div>
     <div class="q-label"  id="q-label">What does this kanji mean?</div>
     <div class="q-kanji"  id="q-kanji"  style="display:none;"></div>
     <div class="q-en"     id="q-en"     style="display:none;"></div>
@@ -334,557 +321,568 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
   </div>
   <div class="options-grid" id="options"></div>
   <div class="feedback"  id="feedback"></div>
-  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">💡 Need a hint?</button>
+  <button type="button" class="hint-btn" id="hint-btn" style="display:none;">Need a hint?</button>
 </div>
-
-<!-- END -->
 
 <div id="end-screen" class="screen">
   <div class="end-inner">
-    <div class="trophy" id="trophy">🏆</div>
-    <div class="end-title" id="end-title">すごい！</div>
+    <div class="trophy" id="trophy">Trophy</div>
+    <div class="end-title" id="end-title">Sugoi!</div>
     <div class="end-score">You scored <span id="final-score">0</span> / <span id="final-total">0</span>!</div>
     <div class="end-msg"   id="end-msg"></div>
     <div class="end-btns">
-      <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
-      <button type="button" class="end-btn secondary" id="change-mode-btn">🔀 Change Mode</button>
-      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Groups</button>
+      <button type="button" class="end-btn"           id="try-again-btn">Try Again</button>
+      <button type="button" class="end-btn secondary" id="change-mode-btn">Change Mode</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-end">All Groups</button>
     </div>
-    <a href="../" class="home-link">← Back to Japanese Hub</a>
+    <a href="../" class="home-link">Back to Japanese Hub</a>
   </div>
 </div>
 
 </div>
+
 <script>
 const ALL_KANJI = [
-
-// GROUP - 16 - Language
-{ id:‘hanasu’, k:‘話’, meaning:‘talk / speak’, sub:‘conversation, story’, on:‘ワ’, onR:‘wa’, kun:‘はな(す)’, kunR:‘hana(su)’, strokes:13,
-ex:[{w:‘話す’,r:‘はなす’,m:‘to speak’},{w:‘電話’,r:‘でんわ’,m:‘telephone’},{w:‘会話’,r:‘かいわ’,m:‘conversation’}],
-tip:‘denwa (telephone) = electric + talk! The most common word using this kanji.’ },
-{ id:‘yomu’, k:‘読’, meaning:‘read’, sub:‘reading, recite’, on:‘ドク’, onR:‘doku’, kun:‘よ(む)’, kunR:‘yo(mu)’, strokes:14,
-ex:[{w:‘読む’,r:‘よむ’,m:‘to read’},{w:‘読書’,r:‘どくしょ’,m:‘reading books’},{w:‘音読み’,r:‘おんよみ’,m:‘on-yomi reading’}],
-tip:‘dokusho = reading books. A wonderful habit - and a key school word!’ },
-{ id:‘kaku’, k:‘書’, meaning:‘write’, sub:‘writing, document’, on:‘ショ’, onR:‘sho’, kun:‘か(く)’, kunR:‘ka(ku)’, strokes:10,
-ex:[{w:‘書く’,r:‘かく’,m:‘to write’},{w:‘教科書’,r:‘きょうかしょ’,m:‘textbook’},{w:‘図書館’,r:‘としょかん’,m:‘library’}],
-tip:‘kyokasho (textbook) = teach + subject + write. Your kids use these every day!’ },
-{ id:‘kiku’, k:‘聞’, meaning:‘listen / ask’, sub:‘hear, inquire’, on:‘ブン’, onR:‘bun’, kun:‘き(く)’, kunR:‘ki(ku)’, strokes:14,
-ex:[{w:‘聞く’,r:‘きく’,m:‘to listen / ask’},{w:‘新聞’,r:‘しんぶん’,m:‘newspaper’},{w:‘見聞’,r:‘けんぶん’,m:‘knowledge’}],
-tip:‘shinbun (newspaper) = new + hear. Reading the news = hearing new things!’ },
-{ id:‘koe’, k:‘声’, meaning:‘voice’, sub:‘sound, tone’, on:‘セイ’, onR:‘sei’, kun:‘こえ’, kunR:‘koe’, strokes:7,
-ex:[{w:‘声’,r:‘こえ’,m:‘voice’},{w:‘大声’,r:‘おおごえ’,m:‘loud voice’},{w:‘声優’,r:‘せいゆう’,m:‘voice actor’}],
-tip:‘seiyu (voice actor) - Japan has an amazing voice acting industry for anime!’ },
-{ id:‘kotoba’, k:‘語’, meaning:‘language / word’, sub:‘vocabulary, speech’, on:‘ゴ’, onR:‘go’, kun:‘かた(る)’, kunR:‘kata(ru)’, strokes:14,
-ex:[{w:‘日本語’,r:‘にほんご’,m:‘Japanese language’},{w:‘英語’,r:‘えいご’,m:‘English language’},{w:‘語る’,r:‘かたる’,m:‘to narrate’}],
-tip:‘nihongo = Japanese! All languages end in 語: 英語(English), 中国語(Chinese).’ },
-{ id:‘ji’, k:‘字’, meaning:‘character / letter’, sub:‘written symbol’, on:‘ジ’, onR:‘ji’, kun:‘あざ’, kunR:‘aza’, strokes:6,
-ex:[{w:‘字’,r:‘じ’,m:‘letter / character’},{w:‘漢字’,r:‘かんじ’,m:‘kanji’},{w:‘文字’,r:‘もじ’,m:‘written character’}],
-tip:‘kanji = Chinese characters. You are learning 字 right now! Very meta.’ },
-{ id:‘bun’, k:‘文’, meaning:‘sentence / culture’, sub:‘text, writing’, on:‘ブン’, onR:‘bun’, kun:‘ふみ’, kunR:‘fumi’, strokes:4,
-ex:[{w:‘文’,r:‘ぶん’,m:‘sentence’},{w:‘文化’,r:‘ぶんか’,m:‘culture’},{w:‘作文’,r:‘さくぶん’,m:‘essay / composition’}],
-tip:‘sakubun (essay) is a key school task! Bunka = culture (sentence + change).’ },
-{ id:‘chichi’, k:‘父’, meaning:‘father’, sub:‘dad, paternal’, on:‘フ’, onR:‘fu’, kun:‘ちち’, kunR:‘chichi’, strokes:4,
-ex:[{w:‘父’,r:‘ちち’,m:‘my father’},{w:‘父母’,r:‘ふぼ’,m:‘parents’},{w:‘お父さん’,r:‘おとうさん’,m:‘father (polite)’}],
-tip:‘chichi = my father (humble). Otousan = someone elses father (polite). Learn both!’ },
-{ id:‘haha’, k:‘母’, meaning:‘mother’, sub:‘mum, maternal’, on:‘ボ’, onR:‘bo’, kun:‘はは’, kunR:‘haha’, strokes:5,
-ex:[{w:‘母’,r:‘はは’,m:‘my mother’},{w:‘父母’,r:‘ふぼ’,m:‘parents’},{w:‘お母さん’,r:‘おかあさん’,m:‘mother (polite)’}],
-tip:‘haha = my mum (humble). Okaasan = polite form. These humble/polite pairs are key!’ },
-{ id:‘ani’, k:‘兄’, meaning:‘older brother’, sub:‘big brother’, on:‘ケイ’, onR:‘kei’, kun:‘あに’, kunR:‘ani’, strokes:5,
-ex:[{w:‘兄’,r:‘あに’,m:‘my older brother’},{w:‘兄弟’,r:‘きょうだい’,m:‘siblings’},{w:‘お兄さん’,r:‘おにいさん’,m:‘older brother (polite)’}],
-tip:‘kyoudai (siblings) = older brother + younger brother. Used for all siblings!’ },
-{ id:‘ane’, k:‘姉’, meaning:‘older sister’, sub:‘big sister’, on:‘シ’, onR:‘shi’, kun:‘あね’, kunR:‘ane’, strokes:8,
-ex:[{w:‘姉’,r:‘あね’,m:‘my older sister’},{w:‘姉妹’,r:‘しまい’,m:‘sisters’},{w:‘お姉さん’,r:‘おねえさん’,m:‘older sister (polite)’}],
-tip:‘shimai (sisters) = older + younger sister! The 女 radical shows both are female.’ },
-{ id:‘otouto’, k:‘弟’, meaning:‘younger brother’, sub:‘little brother’, on:‘ダイ’, onR:‘dai’, kun:‘おとうと’, kunR:‘otouto’, strokes:7,
-ex:[{w:‘弟’,r:‘おとうと’,m:‘younger brother’},{w:‘兄弟’,r:‘きょうだい’,m:‘siblings’},{w:‘弟子’,r:‘でし’,m:‘apprentice’}],
-tip:‘deshi (apprentice) = younger brother + child. The junior who learns from a master!’ },
-{ id:‘imouto’, k:‘妹’, meaning:‘younger sister’, sub:‘little sister’, on:‘マイ’, onR:‘mai’, kun:‘いもうと’, kunR:‘imouto’, strokes:8,
-ex:[{w:‘妹’,r:‘いもうと’,m:‘younger sister’},{w:‘姉妹’,r:‘しまい’,m:‘sisters’},{w:‘妹さん’,r:‘いもうとさん’,m:‘younger sister (polite)’}],
-tip:‘Imouto has 女 (woman) + 未 (not yet) - a girl who has not grown up yet!’ },
-{ id:‘oya’, k:‘親’, meaning:‘parent / close’, sub:‘intimate, affectionate’, on:‘シン’, onR:‘shin’, kun:‘おや’, kunR:‘oya’, strokes:16,
-ex:[{w:‘親’,r:‘おや’,m:‘parent’},{w:‘両親’,r:‘りょうしん’,m:‘both parents’},{w:‘親切’,r:‘しんせつ’,m:‘kind / friendly’}],
-tip:‘shinsetsu (kindness) = parent + cut. Kindness cuts through to the heart!’ },
-{ id:‘kuru’, k:‘来’, meaning:‘come’, sub:‘arrive, approaching’, on:‘ライ’, onR:‘rai’, kun:‘く(る)’, kunR:‘ku(ru)’, strokes:7,
-ex:[{w:‘来る’,r:‘くる’,m:‘to come’},{w:‘来年’,r:‘らいねん’,m:‘next year’},{w:‘来週’,r:‘らいしゅう’,m:‘next week’}],
-tip:‘rainen (next year), raishu (next week), raigetsu (next month) - 来 starts all next time words!’ },
-
-// GROUP - 23 - Family
-{ id:‘iku2’, k:‘行’, meaning:‘go’, sub:‘travel, conduct’, on:‘コウ’, onR:‘kou’, kun:‘い(く)’, kunR:‘i(ku)’, strokes:6,
-ex:[{w:‘行く’,r:‘いく’,m:‘to go’},{w:‘銀行’,r:‘ぎんこう’,m:‘bank’},{w:‘旅行’,r:‘りょこう’,m:‘travel / trip’}],
-tip:‘ryoko = travel! Ginko = bank (silver + go)! 行く is one of the most essential verbs.’ },
-{ id:‘kaeru’, k:‘帰’, meaning:‘return / go home’, sub:‘come back, homecoming’, on:‘キ’, onR:‘ki’, kun:‘かえ(る)’, kunR:‘kae(ru)’, strokes:10,
-ex:[{w:‘帰る’,r:‘かえる’,m:‘to return home’},{w:‘帰国’,r:‘きこく’,m:‘returning home’},{w:‘帰り’,r:‘かえり’,m:‘the way home’}],
-tip:‘Tadaima! (I am home!) - you say this when you kaeru. Okaeri! = Welcome back!’ },
-{ id:‘aruku’, k:‘歩’, meaning:‘walk’, sub:‘step, pace’, on:‘ホ’, onR:‘ho’, kun:‘ある(く)’, kunR:‘aru(ku)’, strokes:8,
-ex:[{w:‘歩く’,r:‘あるく’,m:‘to walk’},{w:‘散歩’,r:‘さんぽ’,m:‘walk / stroll’},{w:‘歩道’,r:‘ほどう’,m:‘pavement’}],
-tip:‘sanpo (stroll) - taking a sanpo is a very Japanese activity! Morning walks are popular.’ },
-{ id:‘hashiru’, k:‘走’, meaning:‘run’, sub:‘dash, flee’, on:‘ソウ’, onR:‘sou’, kun:‘はし(る)’, kunR:‘hashi(ru)’, strokes:7,
-ex:[{w:‘走る’,r:‘はしる’,m:‘to run’},{w:‘走者’,r:‘そうしゃ’,m:‘runner’},{w:‘競走’,r:‘きょうそう’,m:‘race’}],
-tip:‘Undokai (sports day) involves lots of hashiru! Your kids have sports day every autumn.’ },
-{ id:‘tomaru’, k:‘止’, meaning:‘stop’, sub:‘halt, cease’, on:‘シ’, onR:‘shi’, kun:‘と(まる)’, kunR:‘to(maru)’, strokes:4,
-ex:[{w:‘止まる’,r:‘とまる’,m:‘to stop’},{w:‘禁止’,r:‘きんし’,m:‘prohibited’},{w:‘停止’,r:‘ていし’,m:‘halt’}],
-tip:‘kinshi (prohibited) - seen on signs everywhere in Japan! 立入禁止 = No Entry.’ },
-{ id:‘oshieru’, k:‘教’, meaning:‘teach’, sub:‘instruct, doctrine’, on:‘キョウ’, onR:‘kyou’, kun:‘おし(える)’, kunR:‘oshi(eru)’, strokes:11,
-ex:[{w:‘教える’,r:‘おしえる’,m:‘to teach’},{w:‘教室’,r:‘きょうしつ’,m:‘classroom’},{w:‘宗教’,r:‘しゅうきょう’,m:‘religion’}],
-tip:‘kyoshitsu (classroom) = teach + room. Your kids spend most of their day here!’ },
-{ id:‘kau’, k:‘買’, meaning:‘buy’, sub:‘purchase, shop’, on:‘バイ’, onR:‘bai’, kun:‘か(う)’, kunR:‘ka(u)’, strokes:12,
-ex:[{w:‘買う’,r:‘かう’,m:‘to buy’},{w:‘買い物’,r:‘かいもの’,m:‘shopping’},{w:‘売買’,r:‘ばいばい’,m:‘buying and selling’}],
-tip:‘kaimono = shopping! 売買 (baibai) sounds like bye-bye in Japanese - funny coincidence!’ },
-
-// GROUP - 31 - Actions 1
-{ id:‘umi’, k:‘海’, meaning:‘sea / ocean’, sub:‘marine, maritime’, on:‘カイ’, onR:‘kai’, kun:‘うみ’, kunR:‘umi’, strokes:9,
-ex:[{w:‘海’,r:‘うみ’,m:‘sea’},{w:‘海外’,r:‘かいがい’,m:‘overseas’},{w:‘日本海’,r:‘にほんかい’,m:‘Sea of Japan’}],
-tip:‘kaigai = overseas (outside the sea). Japan is an island so abroad = beyond the sea!’ },
-{ id:‘ike’, k:‘池’, meaning:‘pond’, sub:‘small lake’, on:‘チ’, onR:‘chi’, kun:‘いけ’, kunR:‘ike’, strokes:6,
-ex:[{w:‘池’,r:‘いけ’,m:‘pond’},{w:‘電池’,r:‘でんち’,m:‘battery’},{w:‘池田’,r:‘いけだ’,m:‘Ikeda (surname)’}],
-tip:‘denchi (battery) = electric + pond! Imagine electricity stored like water in a pond.’ },
-{ id:‘iwa’, k:‘岩’, meaning:‘rock / boulder’, sub:‘crag, stone cliff’, on:‘ガン’, onR:‘gan’, kun:‘いわ’, kunR:‘iwa’, strokes:8,
-ex:[{w:‘岩’,r:‘いわ’,m:‘rock / boulder’},{w:‘岩石’,r:‘がんせき’,m:‘rock (geological)’},{w:‘溶岩’,r:‘ようがん’,m:‘lava’}],
-tip:‘Iwa = 山 (mountain) + 石 (stone)! Mountain stone = boulder. Beautiful compound logic.’ },
-{ id:‘hara’, k:‘原’, meaning:‘field / origin’, sub:‘plain, meadow, source’, on:‘ゲン’, onR:‘gen’, kun:‘はら’, kunR:‘hara’, strokes:10,
-ex:[{w:‘原っぱ’,r:‘はらっぱ’,m:‘open field’},{w:‘原因’,r:‘げんいん’,m:‘cause / reason’},{w:‘高原’,r:‘こうげん’,m:‘plateau’}],
-tip:‘gen-in (cause/reason) - very useful word in Japanese conversation!’ },
-{ id:‘tani’, k:‘谷’, meaning:‘valley’, sub:‘gorge, ravine’, on:‘コク’, onR:‘koku’, kun:‘たに’, kunR:‘tani’, strokes:7,
-ex:[{w:‘谷’,r:‘たに’,m:‘valley’},{w:‘渋谷’,r:‘しぶや’,m:‘Shibuya (Tokyo)’},{w:‘谷間’,r:‘たにま’,m:‘valley / gap’}],
-tip:‘Shibuya contains 谷! One of Tokyo most famous districts. Shopping and the crossing!’ },
-{ id:‘no’, k:‘野’, meaning:‘field / wild’, sub:‘countryside, natural’, on:‘ヤ’, onR:‘ya’, kun:‘の’, kunR:‘no’, strokes:11,
-ex:[{w:‘野原’,r:‘のはら’,m:‘field / plain’},{w:‘野菜’,r:‘やさい’,m:‘vegetables’},{w:‘上野’,r:‘うえの’,m:‘Ueno (Tokyo)’}],
-tip:‘yasai (vegetables) = field + vegetable. Grown in the field! Ueno has the famous zoo.’ },
-{ id:‘chi’, k:‘地’, meaning:‘ground / earth’, sub:‘land, position, place’, on:‘チ’, onR:‘chi’, kun:‘つち’, kunR:‘tsuchi’, strokes:6,
-ex:[{w:‘地図’,r:‘ちず’,m:‘map’},{w:‘地球’,r:‘ちきゅう’,m:‘Earth / globe’},{w:‘地下鉄’,r:‘ちかてつ’,m:‘subway’}],
-tip:‘chizu (map) = ground + diagram. Chikyu (Earth) = ground + sphere. Chi is vital!’ },
-{ id:‘kuni’, k:‘国’, meaning:‘country / nation’, sub:‘homeland, kingdom’, on:‘コク’, onR:‘koku’, kun:‘くに’, kunR:‘kuni’, strokes:8,
-ex:[{w:‘国’,r:‘くに’,m:‘country’},{w:‘外国’,r:‘がいこく’,m:‘foreign country’},{w:‘中国’,r:‘ちゅうごく’,m:‘China’}],
-tip:‘gaikokujin (foreigner) = outside + country + person. You may hear this in Japan!’ },
-
-// GROUP - 39 - Nature & Places
-{ id:‘asa’, k:‘朝’, meaning:‘morning’, sub:‘dawn, AM’, on:‘チョウ’, onR:‘chou’, kun:‘あさ’, kunR:‘asa’, strokes:12,
-ex:[{w:‘朝’,r:‘あさ’,m:‘morning’},{w:‘今朝’,r:‘けさ’,m:‘this morning’},{w:‘朝食’,r:‘ちょうしょく’,m:‘breakfast’}],
-tip:‘kesa (this morning) = now + morning. Kesa has an irregular reading - memorise it!’ },
-{ id:‘hiru’, k:‘昼’, meaning:‘daytime / noon’, sub:‘midday, lunch time’, on:‘チュウ’, onR:‘chuu’, kun:‘ひる’, kunR:‘hiru’, strokes:9,
-ex:[{w:‘昼’,r:‘ひる’,m:‘noon / daytime’},{w:‘昼食’,r:‘ちゅうしょく’,m:‘lunch’},{w:‘昼休み’,r:‘ひるやすみ’,m:‘lunch break’}],
-tip:‘hiruyasumi (lunch break) - your kids have this at school! kyushoku + hiruyasumi = lunch time.’ },
-{ id:‘yoru’, k:‘夜’, meaning:‘night / evening’, sub:‘nighttime, late’, on:‘ヤ’, onR:‘ya’, kun:‘よる’, kunR:‘yoru’, strokes:8,
-ex:[{w:‘夜’,r:‘よる’,m:‘night’},{w:‘今夜’,r:‘こんや’,m:‘tonight’},{w:‘夜中’,r:‘よなか’,m:‘midnight’}],
-tip:‘konya (tonight) = now + night. Yonaka = midnight. Yoru is a peaceful word.’ },
-{ id:‘shuu’, k:‘週’, meaning:‘week’, sub:‘7-day period’, on:‘シュウ’, onR:‘shuu’, kun:’-’, kunR:’-’, strokes:11,
-ex:[{w:‘今週’,r:‘こんしゅう’,m:‘this week’},{w:‘来週’,r:‘らいしゅう’,m:‘next week’},{w:‘週末’,r:‘しゅうまつ’,m:‘weekend’}],
-tip:‘shuumatsu (weekend) = week + end. What are you doing this weekend?’ },
-{ id:‘aida’, k:‘間’, meaning:‘between / interval’, sub:‘gap, time, room’, on:‘カン’, onR:‘kan’, kun:‘あいだ’, kunR:‘aida’, strokes:12,
-ex:[{w:‘時間’,r:‘じかん’,m:‘time / hour’},{w:‘人間’,r:‘にんげん’,m:‘human being’},{w:‘間もなく’,r:‘まもなく’,m:‘shortly’}],
-tip:‘jikan (time) is one of the most-used words in Japanese! Jikan ga nai = no time!’ },
-{ id:‘toki’, k:‘時’, meaning:‘time / hour’, sub:‘o-clock, moment’, on:‘ジ’, onR:‘ji’, kun:‘とき’, kunR:‘toki’, strokes:10,
-ex:[{w:‘時間’,r:‘じかん’,m:‘time’},{w:‘何時’,r:‘なんじ’,m:‘what time’},{w:‘時々’,r:‘ときどき’,m:‘sometimes’}],
-tip:‘Tokidoki (sometimes) = reduplicated kanji! Tokei (clock) = time + measure.’ },
-{ id:‘fun’, k:‘分’, meaning:‘minute / understand’, sub:‘part, portion’, on:‘ブン’, onR:‘bun’, kun:‘わ(かる)’, kunR:‘wa(karu)’, strokes:4,
-ex:[{w:‘一分’,r:‘いっぷん’,m:‘one minute’},{w:‘分かる’,r:‘わかる’,m:‘to understand’},{w:‘自分’,r:‘じぶん’,m:‘oneself’}],
-tip:‘wakaru (to understand) is one of the most useful verbs! Wakarimashita = I understand.’ },
-{ id:‘byou2’, k:‘秒’, meaning:‘second (time)’, sub:‘instant, moment’, on:‘ビョウ’, onR:‘byou’, kun:’-’, kunR:’-’, strokes:9,
-ex:[{w:‘秒’,r:‘びょう’,m:‘second (time)’},{w:‘三十秒’,r:‘さんじゅうびょう’,m:‘30 seconds’},{w:‘秒針’,r:‘びょうしん’,m:‘second hand’}],
-tip:‘Ji (hour) Fun (minute) Byo (second) - the three time kanji! Learn them together.’ },
-
-// GROUP - 47 - Time
-{ id:‘kou’, k:‘校’, meaning:‘school’, sub:‘institution, check’, on:‘コウ’, onR:‘kou’, kun:’-’, kunR:’-’, strokes:10,
-ex:[{w:‘学校’,r:‘がっこう’,m:‘school’},{w:‘小学校’,r:‘しょうがっこう’,m:‘elementary school’},{w:‘校長’,r:‘こうちょう’,m:‘principal’}],
-tip:‘gakko = school! Shogakko = elementary school. Kocho-sensei = the principal!’ },
-{ id:‘shitsu’, k:‘室’, meaning:‘room’, sub:‘chamber, indoor space’, on:‘シツ’, onR:‘shitsu’, kun:‘むろ’, kunR:‘muro’, strokes:9,
-ex:[{w:‘教室’,r:‘きょうしつ’,m:‘classroom’},{w:‘室内’,r:‘しつない’,m:‘indoors’},{w:‘和室’,r:‘わしつ’,m:‘Japanese-style room’}],
-tip:‘washitsu (Japanese room) has tatami mats! A beautiful traditional space.’ },
-{ id:‘san’, k:‘算’, meaning:‘calculate / count’, sub:‘arithmetic, reckon’, on:‘サン’, onR:‘san’, kun:’-’, kunR:’-’, strokes:14,
-ex:[{w:‘計算’,r:‘けいさん’,m:‘calculation’},{w:‘算数’,r:‘さんすう’,m:‘arithmetic’},{w:‘算盤’,r:‘そろばん’,m:‘abacus’}],
-tip:‘sansuu (arithmetic) is what your kids call Maths in elementary school!’ },
-{ id:‘kazu’, k:‘数’, meaning:‘number / count’, sub:‘quantity, figure’, on:‘スウ’, onR:‘suu’, kun:‘かず’, kunR:‘kazu’, strokes:13,
-ex:[{w:‘数’,r:‘かず’,m:‘number’},{w:‘算数’,r:‘さんすう’,m:‘arithmetic’},{w:‘数学’,r:‘すうがく’,m:‘mathematics’}],
-tip:‘sansuu (elementary maths) vs sugaku (higher maths) - kanji show the school level!’ },
-{ id:‘ka’, k:‘科’, meaning:‘subject / department’, sub:‘branch, section’, on:‘カ’, onR:‘ka’, kun:’-’, kunR:’-’, strokes:9,
-ex:[{w:‘科目’,r:‘かもく’,m:‘subject (school)’},{w:‘理科’,r:‘りか’,m:‘science’},{w:‘教科書’,r:‘きょうかしょ’,m:‘textbook’}],
-tip:‘rika (science) and shakaika (social studies) are school subjects your kids study!’ },
-{ id:‘ri’, k:‘理’, meaning:‘reason / logic’, sub:‘principle, science’, on:‘リ’, onR:‘ri’, kun:’-’, kunR:’-’, strokes:11,
-ex:[{w:‘理科’,r:‘りか’,m:‘science’},{w:‘理由’,r:‘りゆう’,m:‘reason’},{w:‘料理’,r:‘りょうり’,m:‘cooking’}],
-tip:‘ryori (cooking) = materials + reason/logic. Cooking is applied logic!’ },
-{ id:‘tai’, k:‘体’, meaning:‘body’, sub:‘physical, substance’, on:‘タイ’, onR:‘tai’, kun:‘からだ’, kunR:‘karada’, strokes:7,
-ex:[{w:‘体’,r:‘からだ’,m:‘body’},{w:‘体育’,r:‘たいいく’,m:‘PE / physical education’},{w:‘体重’,r:‘たいじゅう’,m:‘body weight’}],
-tip:‘taiiku (PE class) = body + nurture. Your kids have taiiku twice a week at school!’ },
-{ id:‘iku3’, k:‘育’, meaning:‘raise / nurture’, sub:‘grow, bring up’, on:‘イク’, onR:‘iku’, kun:‘そだ(てる)’, kunR:‘soda(teru)’, strokes:8,
-ex:[{w:‘教育’,r:‘きょういく’,m:‘education’},{w:‘体育’,r:‘たいいく’,m:‘physical education’},{w:‘育てる’,r:‘そだてる’,m:‘to raise’}],
-tip:‘kyoiku (education) = teach + nurture. The foundation of Japanese society!’ },
-
-// GROUP - 55 - School
-{ id:‘kaze’, k:‘風’, meaning:‘wind’, sub:‘breeze, style’, on:‘フウ’, onR:‘fuu’, kun:‘かぜ’, kunR:‘kaze’, strokes:9,
-ex:[{w:‘風’,r:‘かぜ’,m:‘wind / cold illness’},{w:‘台風’,r:‘たいふう’,m:‘typhoon’},{w:‘風景’,r:‘ふうけい’,m:‘scenery’}],
-tip:‘Taifuu (typhoon) = platform + wind. Japan gets several typhoons per year!’ },
-{ id:‘yuki’, k:‘雪’, meaning:‘snow’, sub:‘snowfall’, on:‘セツ’, onR:‘setsu’, kun:‘ゆき’, kunR:‘yuki’, strokes:11,
-ex:[{w:‘雪’,r:‘ゆき’,m:‘snow’},{w:‘大雪’,r:‘おおゆき’,m:‘heavy snowfall’},{w:‘雪国’,r:‘ゆきぐに’,m:‘snow country’}],
-tip:‘Yukiguni is a famous novel! Hokkaido gets metres of snow every winter.’ },
-{ id:‘kumo’, k:‘雲’, meaning:‘cloud’, sub:‘overcast’, on:‘ウン’, onR:‘un’, kun:‘くも’, kunR:‘kumo’, strokes:12,
-ex:[{w:‘雲’,r:‘くも’,m:‘cloud’},{w:‘雨雲’,r:‘あまぐも’,m:‘rain cloud’},{w:‘雲海’,r:‘うんかい’,m:‘sea of clouds’}],
-tip:‘Kumo has 雨 (rain) at the top! Rain clouds - makes perfect sense.’ },
-{ id:‘hare’, k:‘晴’, meaning:‘clear / fine weather’, sub:‘sunny, bright’, on:‘セイ’, onR:‘sei’, kun:‘は(れる)’, kunR:‘ha(reru)’, strokes:12,
-ex:[{w:‘晴れ’,r:‘はれ’,m:‘clear weather’},{w:‘晴天’,r:‘せいてん’,m:‘fine weather’},{w:‘快晴’,r:‘かいせい’,m:‘perfectly clear sky’}],
-tip:‘Hare is the weather symbol for sunshine! On Japanese weather maps hare = sunny day.’ },
-{ id:‘atsui’, k:‘暑’, meaning:‘hot (weather)’, sub:‘summer heat’, on:‘ショ’, onR:‘sho’, kun:‘あつ(い)’, kunR:‘atsu(i)’, strokes:12,
-ex:[{w:‘暑い’,r:‘あつい’,m:‘hot (weather)’},{w:‘暑さ’,r:‘あつさ’,m:‘heat’},{w:‘猛暑’,r:‘もうしょ’,m:‘intense heat’}],
-tip:‘Atsui = hot WEATHER. Atsui = hot OBJECT (soup/coffee). Same sound, different kanji!’ },
-{ id:‘samui’, k:‘寒’, meaning:‘cold (weather)’, sub:‘chilly, wintry’, on:‘カン’, onR:‘kan’, kun:‘さむ(い)’, kunR:‘samu(i)’, strokes:12,
-ex:[{w:‘寒い’,r:‘さむい’,m:‘cold (weather)’},{w:‘寒さ’,r:‘さむさ’,m:‘coldness’},{w:‘寒波’,r:‘かんぱ’,m:‘cold wave’}],
-tip:‘Samui = cold WEATHER. Tsumetai = cold TO TOUCH (cold drink). Different words!’ },
-{ id:‘atatakai’, k:‘温’, meaning:‘warm / gentle’, sub:‘lukewarm, temperature’, on:‘オン’, onR:‘on’, kun:‘あたた(かい)’, kunR:‘atata(kai)’, strokes:12,
-ex:[{w:‘温かい’,r:‘あたたかい’,m:‘warm’},{w:‘気温’,r:‘きおん’,m:‘air temperature’},{w:‘温泉’,r:‘おんせん’,m:‘hot spring / onsen’}],
-tip:‘Onsen (hot spring) = warm + spring! Japan most beloved tradition!’ },
-{ id:‘do’, k:‘度’, meaning:‘degree / time’, sub:‘temperature, frequency’, on:‘ド’, onR:‘do’, kun:‘たび’, kunR:‘tabi’, strokes:9,
-ex:[{w:‘温度’,r:‘おんど’,m:‘temperature’},{w:‘今度’,r:‘こんど’,m:‘this time / next time’},{w:‘一度’,r:‘いちど’,m:‘once’}],
-tip:‘kondo = this time OR next time - context dependent! Ichido = once. Nando mo = many times.’ },
-
-// GROUP - 63 - Weather
-{ id:‘shi’, k:‘市’, meaning:‘city / market’, sub:‘municipality, urban’, on:‘シ’, onR:‘shi’, kun:‘いち’, kunR:‘ichi’, strokes:5,
-ex:[{w:‘市’,r:‘し’,m:‘city’},{w:‘都市’,r:‘とし’,m:‘city / urban area’},{w:‘市場’,r:‘いちば’,m:‘market’}],
-tip:‘Toshi (city) is the formal word. 市 comes after place names: 東京都, 大阪市.’ },
-{ id:‘mise’, k:‘店’, meaning:‘shop / store’, sub:‘restaurant, establishment’, on:‘テン’, onR:‘ten’, kun:‘みせ’, kunR:‘mise’, strokes:8,
-ex:[{w:‘お店’,r:‘おみせ’,m:‘shop / store’},{w:‘書店’,r:‘しょてん’,m:‘bookshop’},{w:‘店員’,r:‘てんいん’,m:‘shop staff’}],
-tip:‘shoten (bookshop) = write + store. Ten-in = shop staff. Omise is the polite everyday word!’ },
-{ id:‘ba’, k:‘場’, meaning:‘place / ground’, sub:‘location, occasion’, on:‘ジョウ’, onR:‘jou’, kun:‘ば’, kunR:‘ba’, strokes:12,
-ex:[{w:‘場所’,r:‘ばしょ’,m:‘place / location’},{w:‘工場’,r:‘こうじょう’,m:‘factory’},{w:‘登場’,r:‘とうじょう’,m:‘appearance’}],
-tip:‘basho (place) is one of the most useful nouns! Doko? Basho wa doko desu ka?’ },
-{ id:‘tokoro’, k:‘所’, meaning:‘place / point’, sub:‘spot, address’, on:‘ショ’, onR:‘sho’, kun:‘ところ’, kunR:‘tokoro’, strokes:8,
-ex:[{w:‘場所’,r:‘ばしょ’,m:‘place’},{w:‘近所’,r:‘きんじょ’,m:‘neighbourhood’},{w:‘台所’,r:‘だいどころ’,m:‘kitchen’}],
-tip:‘Daidokoro (kitchen) = platform + place - where you stand to cook!’ },
-{ id:‘michi’, k:‘道’, meaning:‘road / way’, sub:‘path, doctrine’, on:‘ドウ’, onR:‘dou’, kun:‘みち’, kunR:‘michi’, strokes:12,
-ex:[{w:‘道’,r:‘みち’,m:‘road / path’},{w:‘北海道’,r:‘ほっかいどう’,m:‘Hokkaido’},{w:‘道路’,r:‘どうろ’,m:‘road’}],
-tip:‘Hokkaido = North Sea Road! 柔道, 剣道, 茶道 - the Ways of martial arts and tea!’ },
-{ id:‘hashi’, k:‘橋’, meaning:‘bridge’, sub:‘overpass, link’, on:‘キョウ’, onR:‘kyou’, kun:‘はし’, kunR:‘hashi’, strokes:16,
-ex:[{w:‘橋’,r:‘はし’,m:‘bridge’},{w:‘日本橋’,r:‘にほんばし’,m:‘Nihonbashi (Tokyo)’},{w:‘鉄橋’,r:‘てっきょう’,m:‘iron bridge’}],
-tip:‘Nihonbashi = the bridge at the heart of old Tokyo! All distances measured from here.’ },
-{ id:‘eki’, k:‘駅’, meaning:‘station’, sub:‘train stop’, on:‘エキ’, onR:‘eki’, kun:’-’, kunR:’-’, strokes:14,
-ex:[{w:‘駅’,r:‘えき’,m:‘station’},{w:‘駅員’,r:‘えきいん’,m:‘station staff’},{w:‘終着駅’,r:‘しゅうちゃくえき’,m:‘terminal station’}],
-tip:‘Eki is everywhere in Japan! The horse radical inside - horses once used for transport.’ },
-{ id:‘kado’, k:‘角’, meaning:‘corner / angle’, sub:‘horn, square’, on:‘カク’, onR:‘kaku’, kun:‘かど’, kunR:‘kado’, strokes:7,
-ex:[{w:‘角’,r:‘かど’,m:‘corner’},{w:‘三角’,r:‘さんかく’,m:‘triangle’},{w:‘四角’,r:‘しかく’,m:‘square / rectangle’}],
-tip:‘sankaku (triangle) = 3 corners! Shikaku (square) = 4 corners! Great maths vocabulary.’ },
-
-// GROUP - 71 - Town
-{ id:‘atama’, k:‘頭’, meaning:‘head’, sub:‘brain, leader’, on:‘トウ’, onR:‘tou’, kun:‘あたま’, kunR:‘atama’, strokes:16,
-ex:[{w:‘頭’,r:‘あたま’,m:‘head’},{w:‘頭痛’,r:‘ずつう’,m:‘headache’},{w:‘先頭’,r:‘せんとう’,m:‘lead / front’}],
-tip:‘zutsuu (headache) = head + pain. Atama ga ii = smart/clever. Head-good = intelligent!’ },
-{ id:‘kao’, k:‘顔’, meaning:‘face’, sub:‘expression, cheek’, on:‘ガン’, onR:‘gan’, kun:‘かお’, kunR:‘kao’, strokes:18,
-ex:[{w:‘顔’,r:‘かお’,m:‘face’},{w:‘顔色’,r:‘かおいろ’,m:‘complexion’},{w:‘笑顔’,r:‘えがお’,m:‘smile’}],
-tip:‘egao (smiling face) = laugh + face! Egao is very important in Japanese culture.’ },
-{ id:‘kubi’, k:‘首’, meaning:‘neck / head’, sub:‘dismiss, number one’, on:‘シュ’, onR:‘shu’, kun:‘くび’, kunR:‘kubi’, strokes:9,
-ex:[{w:‘首’,r:‘くび’,m:‘neck’},{w:‘首相’,r:‘しゅしょう’,m:‘prime minister’},{w:‘首都’,r:‘しゅと’,m:‘capital city’}],
-tip:‘shuto (capital) = head + city. Tokyo is the shuto! Shusho = prime minister.’ },
-{ id:‘hara2’, k:‘腹’, meaning:‘stomach / belly’, sub:‘abdomen, feelings’, on:‘フク’, onR:‘fuku’, kun:‘はら’, kunR:‘hara’, strokes:13,
-ex:[{w:‘腹’,r:‘はら’,m:‘stomach’},{w:‘腹痛’,r:‘ふくつう’,m:‘stomachache’},{w:‘空腹’,r:‘くうふく’,m:‘hunger’}],
-tip:‘kufuku (hungry) = empty stomach! Hara ga hetta = I am starving (casual).’ },
-{ id:‘byou’, k:‘病’, meaning:‘illness / sick’, sub:‘disease, suffering’, on:‘ビョウ’, onR:‘byou’, kun:‘やまい’, kunR:‘yamai’, strokes:10,
-ex:[{w:‘病気’,r:‘びょうき’,m:‘illness / sickness’},{w:‘病院’,r:‘びょういん’,m:‘hospital’},{w:‘病人’,r:‘びょうにん’,m:‘sick person’}],
-tip:‘byoin (hospital) = illness + institution. Daijoubu desu ka? = Are you OK?’ },
-{ id:‘kusuri’, k:‘薬’, meaning:‘medicine’, sub:‘drug, remedy’, on:‘ヤク’, onR:‘yaku’, kun:‘くすり’, kunR:‘kusuri’, strokes:16,
-ex:[{w:‘薬’,r:‘くすり’,m:‘medicine’},{w:‘薬局’,r:‘やっきょく’,m:‘pharmacy’},{w:‘火薬’,r:‘かやく’,m:‘gunpowder’}],
-tip:‘yakkyoku (pharmacy) = medicine + office. The grass radical = plant origins of medicine.’ },
-{ id:‘isha’, k:‘医’, meaning:‘doctor / medicine’, sub:‘heal, cure’, on:‘イ’, onR:‘i’, kun:’-’, kunR:’-’, strokes:7,
-ex:[{w:‘医者’,r:‘いしゃ’,m:‘doctor’},{w:‘医院’,r:‘いいん’,m:‘clinic’},{w:‘医学’,r:‘いがく’,m:‘medical science’}],
-tip:‘isha (doctor) = medicine + person. Oisha-san is the polite form. Go to the doctor!’ },
-{ id:‘yasumu’, k:‘休’, meaning:‘rest’, sub:‘vacation, absent’, on:‘キュウ’, onR:‘kyuu’, kun:‘やす(む)’, kunR:‘yasu(mu)’, strokes:6,
-ex:[{w:‘休む’,r:‘やすむ’,m:‘to rest / be absent’},{w:‘夏休み’,r:‘なつやすみ’,m:‘summer holiday’},{w:‘休日’,r:‘きゅうじつ’,m:‘holiday’}],
-tip:‘natsuyasumi (summer holiday) - one of the most-anticipated words for Japanese kids!’ },
-
-// GROUP - 79 - Body & Health
-{ id:‘omou’, k:‘思’, meaning:‘think / feel’, sub:‘consider, miss someone’, on:‘シ’, onR:‘shi’, kun:‘おも(う)’, kunR:‘omo(u)’, strokes:9,
-ex:[{w:‘思う’,r:‘おもう’,m:‘to think / feel’},{w:‘思い出’,r:‘おもいで’,m:‘memory’},{w:‘意思’,r:‘いし’,m:‘intention’}],
-tip:‘omoide (memory) = think + exit - memories come out of your mind! Beautiful compound.’ },
-{ id:‘kangaeru’, k:‘考’, meaning:‘think / consider’, sub:‘ponder, plan’, on:‘コウ’, onR:‘kou’, kun:‘かんが(える)’, kunR:‘kanga(eru)’, strokes:6,
-ex:[{w:‘考える’,r:‘かんがえる’,m:‘to think / consider’},{w:‘参考’,r:‘さんこう’,m:‘reference’},{w:‘考え方’,r:‘かんがえかた’,m:‘way of thinking’}],
-tip:‘Omou = feel/think emotionally. Kangaeru = think logically. Different types of thinking!’ },
-{ id:‘ki2’, k:‘気’, meaning:‘spirit / feeling’, sub:‘energy, atmosphere’, on:‘キ’, onR:‘ki’, kun:’-’, kunR:’-’, strokes:6,
-ex:[{w:‘元気’,r:‘げんき’,m:‘healthy / energetic’},{w:‘気持ち’,r:‘きもち’,m:‘feeling’},{w:‘天気’,r:‘てんき’,m:‘weather’}],
-tip:‘Genki = genki! Japan most-used everyday word. Kimochi ii = feels good! 気 is everywhere!’ },
-{ id:‘kokoro’, k:‘心’, meaning:‘heart / mind’, sub:‘spirit, feeling’, on:‘シン’, onR:‘shin’, kun:‘こころ’, kunR:‘kokoro’, strokes:4,
-ex:[{w:‘心’,r:‘こころ’,m:‘heart / mind’},{w:‘安心’,r:‘あんしん’,m:‘relief / peace of mind’},{w:‘心配’,r:‘しんぱい’,m:‘worry’}],
-tip:‘shinpai (worry) = heart + distribute. Anshin = peace of heart. Very common words!’ },
-{ id:‘tanoshii’, k:‘楽’, meaning:‘fun / music’, sub:‘comfortable, easy’, on:‘ガク’, onR:‘gaku’, kun:‘たの(しい)’, kunR:‘tano(shii)’, strokes:13,
-ex:[{w:‘楽しい’,r:‘たのしい’,m:‘fun / enjoyable’},{w:‘音楽’,r:‘おんがく’,m:‘music’},{w:‘楽器’,r:‘がっき’,m:‘musical instrument’}],
-tip:‘ongaku (music) = sound + fun! Tanoshii is one of the most important children words.’ },
-{ id:‘kanashii’, k:‘悲’, meaning:‘sad’, sub:‘grief, sorrow’, on:‘ヒ’, onR:‘hi’, kun:‘かな(しい)’, kunR:‘kana(shii)’, strokes:12,
-ex:[{w:‘悲しい’,r:‘かなしい’,m:‘sad’},{w:‘悲劇’,r:‘ひげき’,m:‘tragedy’},{w:‘悲しむ’,r:‘かなしむ’,m:‘to grieve’}],
-tip:‘Kanashii has 心 (heart) at the bottom - sadness comes from the heart!’ },
-{ id:‘naku’, k:‘泣’, meaning:‘cry / weep’, sub:‘shed tears’, on:‘キュウ’, onR:‘kyuu’, kun:‘な(く)’, kunR:‘na(ku)’, strokes:8,
-ex:[{w:‘泣く’,r:‘なく’,m:‘to cry’},{w:‘泣き虫’,r:‘なきむし’,m:‘crybaby’},{w:‘号泣’,r:‘ごうきゅう’,m:‘sobbing’}],
-tip:‘nakimushi (crybaby) = cry + bug! Water radical = tears like water.’ },
-{ id:‘warau’, k:‘笑’, meaning:‘laugh / smile’, sub:‘grin, giggle’, on:‘ショウ’, onR:‘shou’, kun:‘わら(う)’, kunR:‘wara(u)’, strokes:10,
-ex:[{w:‘笑う’,r:‘わらう’,m:‘to laugh’},{w:‘笑顔’,r:‘えがお’,m:‘smiling face’},{w:‘大笑い’,r:‘おおわらい’,m:‘burst of laughter’}],
-tip:‘Egao (smile) = laugh + face. Waratte! = Smile! One of the nicest words.’ },
-
-// GROUP - 87 - Feelings
-{ id:‘hiku’, k:‘引’, meaning:‘pull / draw’, sub:‘attract, quote’, on:‘イン’, onR:‘in’, kun:‘ひ(く)’, kunR:‘hi(ku)’, strokes:4,
-ex:[{w:‘引く’,r:‘ひく’,m:‘to pull’},{w:‘引っ越し’,r:‘ひっこし’,m:‘moving house’},{w:‘取引’,r:‘とりひき’,m:‘trade / deal’}],
-tip:‘Hikkoshi (moving house) = pull + cross. Very useful if your family moves in Japan!’ },
-{ id:‘ha’, k:‘羽’, meaning:‘feather / wing’, sub:‘counter for birds’, on:‘ウ’, onR:‘u’, kun:‘はね’, kunR:‘hane’, strokes:6,
-ex:[{w:‘羽’,r:‘はね’,m:‘feather / wing’},{w:‘羽毛’,r:‘うもう’,m:‘down feather’},{w:‘一羽’,r:‘いちわ’,m:‘one bird (counter)’}],
-tip:‘Hane = feather AND wing. Birds are counted with 羽 (wa). 一羽, 二羽, 三羽.’ },
-{ id:‘en’, k:‘園’, meaning:‘garden / park’, sub:‘orchard, kindergarten’, on:‘エン’, onR:‘en’, kun:‘その’, kunR:‘sono’, strokes:13,
-ex:[{w:‘公園’,r:‘こうえん’,m:‘park’},{w:‘動物園’,r:‘どうぶつえん’,m:‘zoo’},{w:‘幼稚園’,r:‘ようちえん’,m:‘kindergarten’}],
-tip:‘yochien (kindergarten) = young + slow + garden. Your kids may have gone here!’ },
-{ id:‘tooi’, k:‘遠’, meaning:‘far away’, sub:‘distant, remote’, on:‘エン’, onR:‘en’, kun:‘とお(い)’, kunR:‘too(i)’, strokes:13,
-ex:[{w:‘遠い’,r:‘とおい’,m:‘far away’},{w:‘遠足’,r:‘えんそく’,m:‘school excursion’},{w:‘永遠’,r:‘えいえん’,m:‘eternity’}],
-tip:‘ensoku (school excursion) = far + foot. Going far on foot! School trips use this.’ },
-{ id:‘nani’, k:‘何’, meaning:‘what / how many’, sub:‘which, question word’, on:‘カ’, onR:‘ka’, kun:‘なに’, kunR:‘nani’, strokes:7,
-ex:[{w:‘何’,r:‘なに’,m:‘what’},{w:‘何時’,r:‘なんじ’,m:‘what time’},{w:‘何人’,r:‘なんにん’,m:‘how many people’}],
-tip:‘Nani = what? One of THE key question words. Use it every single day!’ },
-{ id:‘natsu’, k:‘夏’, meaning:‘summer’, sub:‘hot season’, on:‘カ’, onR:‘ka’, kun:‘なつ’, kunR:‘natsu’, strokes:10,
-ex:[{w:‘夏’,r:‘なつ’,m:‘summer’},{w:‘夏休み’,r:‘なつやすみ’,m:‘summer holiday’},{w:‘夏祭り’,r:‘なつまつり’,m:‘summer festival’}],
-tip:‘Natsumatsuri (summer festival) - fireworks, yukata, kakigori shaved ice! Kids love it!’ },
-{ id:‘ie’, k:‘家’, meaning:‘house / home’, sub:‘family, household’, on:‘カ’, onR:‘ka’, kun:‘いえ’, kunR:‘ie’, strokes:10,
-ex:[{w:‘家’,r:‘いえ’,m:‘house / home’},{w:‘家族’,r:‘かぞく’,m:‘family’},{w:‘家庭’,r:‘かてい’,m:‘home / household’}],
-tip:‘Kazoku (family) = house + tribe. Katei (home) = house + garden. Ka is everywhere!’ },
-{ id:‘uta’, k:‘歌’, meaning:‘song / sing’, sub:‘melody, poem’, on:‘カ’, onR:‘ka’, kun:‘うた’, kunR:‘uta’, strokes:14,
-ex:[{w:‘歌’,r:‘うた’,m:‘song’},{w:‘歌う’,r:‘うたう’,m:‘to sing’},{w:‘国歌’,r:‘こっか’,m:‘national anthem’}],
-tip:‘Kokka (national anthem) = country + song. 歌 has 欠 (lack/yawn) - singing opens mouth!’ },
-
-// GROUP - 112 - More Grade 2
-{ id:‘e’, k:‘画’, meaning:‘picture / stroke’, sub:‘drawing, plan’, on:‘ガ’, onR:‘ga’, kun:‘えが(く)’, kunR:‘ega(ku)’, strokes:8,
-ex:[{w:‘絵画’,r:‘かいが’,m:‘painting’},{w:‘映画’,r:‘えいが’,m:‘movie / film’},{w:‘計画’,r:‘けいかく’,m:‘plan’}],
-tip:‘eiga (movie) = reflect + picture! Keikaku (plan) = measure + picture. Very useful!’ },
-{ id:‘mawaru’, k:‘回’, meaning:‘turn / times’, sub:‘rotate, number of times’, on:‘カイ’, onR:‘kai’, kun:‘まわ(る)’, kunR:‘mawa(ru)’, strokes:6,
-ex:[{w:‘回る’,r:‘まわる’,m:‘to turn / go around’},{w:‘今回’,r:‘こんかい’,m:‘this time’},{w:‘回転’,r:‘かいてん’,m:‘rotation’}],
-tip:‘konkai (this time), maikai (every time), ikkai (once). 回 counts rounds and turns!’ },
-{ id:‘kai2’, k:‘会’, meaning:‘meet / association’, sub:‘gather, society’, on:‘カイ’, onR:‘kai’, kun:‘あ(う)’, kunR:‘a(u)’, strokes:6,
-ex:[{w:‘会う’,r:‘あう’,m:‘to meet’},{w:‘会社’,r:‘かいしゃ’,m:‘company’},{w:‘会話’,r:‘かいわ’,m:‘conversation’}],
-tip:‘kaisha (company) = meet + place. Kaiwa (conversation) = meet + talk. Essential!’ },
-{ id:‘e2’, k:‘絵’, meaning:‘picture / painting’, sub:‘illustration’, on:‘カイ’, onR:‘kai’, kun:‘え’, kunR:‘e’, strokes:12,
-ex:[{w:‘絵’,r:‘え’,m:‘picture / drawing’},{w:‘絵本’,r:‘えほん’,m:‘picture book’},{w:‘絵画’,r:‘かいが’,m:‘painting’}],
-tip:‘Ehon (picture book) = picture + book! Japanese picture books are beautiful art.’ },
-{ id:‘soto’, k:‘外’, meaning:‘outside / foreign’, sub:‘exterior, other’, on:‘ガイ’, onR:‘gai’, kun:‘そと’, kunR:‘soto’, strokes:5,
-ex:[{w:‘外’,r:‘そと’,m:‘outside’},{w:‘海外’,r:‘かいがい’,m:‘overseas’},{w:‘外国人’,r:‘がいこくじん’,m:‘foreigner’}],
-tip:‘gaikokujin (foreigner) = outside + country + person. Common word in Japan!’ },
-{ id:‘ikiru’, k:‘活’, meaning:‘lively / activity’, sub:‘life, vigor’, on:‘カツ’, onR:‘katsu’, kun:’-’, kunR:’-’, strokes:9,
-ex:[{w:‘活動’,r:‘かつどう’,m:‘activity’},{w:‘生活’,r:‘せいかつ’,m:‘daily life’},{w:‘活気’,r:‘かっき’,m:‘energy / vitality’}],
-tip:‘seikatsu (daily life) = life + activity. How is your seikatsu in Japan going?’ },
-{ id:‘maru’, k:‘丸’, meaning:‘circle / round’, sub:‘pill, ball’, on:‘ガン’, onR:‘gan’, kun:‘まる’, kunR:‘maru’, strokes:3,
-ex:[{w:‘丸’,r:‘まる’,m:‘circle’},{w:‘丸い’,r:‘まるい’,m:‘round’},{w:‘弾丸’,r:‘だんがん’,m:‘bullet’}],
-tip:‘Maru means circle AND the character O. Marupeke = O and X (correct and wrong).’ },
-{ id:‘yumi’, k:‘弓’, meaning:‘bow (weapon)’, sub:‘archery bow’, on:‘キュウ’, onR:‘kyuu’, kun:‘ゆみ’, kunR:‘yumi’, strokes:3,
-ex:[{w:‘弓’,r:‘ゆみ’,m:‘bow’},{w:‘弓道’,r:‘きゅうどう’,m:‘archery’},{w:‘弓矢’,r:‘ゆみや’,m:‘bow and arrow’}],
-tip:‘Kyudo (archery) = bow + way. A traditional Japanese martial art still practiced today!’ },
-{ id:‘ushi’, k:‘牛’, meaning:‘cow / cattle’, sub:‘bull, ox’, on:‘ギュウ’, onR:‘gyuu’, kun:‘うし’, kunR:‘ushi’, strokes:4,
-ex:[{w:‘牛’,r:‘うし’,m:‘cow’},{w:‘牛乳’,r:‘ぎゅうにゅう’,m:‘milk’},{w:‘牛肉’,r:‘ぎゅうにく’,m:‘beef’}],
-tip:‘Gyunyu (milk) = cow + milk. Gyuniku (beef) = cow + meat. Very logical kanji!’ },
-{ id:‘sakana’, k:‘魚’, meaning:‘fish’, sub:‘marine creature’, on:‘ギョ’, onR:‘gyo’, kun:‘さかな’, kunR:‘sakana’, strokes:11,
-ex:[{w:‘魚’,r:‘さかな’,m:‘fish’},{w:‘金魚’,r:‘きんぎょ’,m:‘goldfish’},{w:‘魚市場’,r:‘うおいちば’,m:‘fish market’}],
-tip:‘Kingyo (goldfish) = gold + fish! Goldfish scooping at summer festivals is a tradition!’ },
-{ id:‘kyou’, k:‘京’, meaning:‘capital city’, sub:‘metropolis’, on:‘キョウ’, onR:‘kyou’, kun:‘みやこ’, kunR:‘miyako’, strokes:8,
-ex:[{w:‘東京’,r:‘とうきょう’,m:‘Tokyo’},{w:‘京都’,r:‘きょうと’,m:‘Kyoto’},{w:‘上京’,r:‘じょうきょう’,m:‘going to Tokyo’}],
-tip:‘Tokyo = East + Capital! Kyoto = Capital + City. Two great Japanese cities!’ },
-{ id:‘tsuyoi’, k:‘強’, meaning:‘strong’, sub:‘powerful, force’, on:‘キョウ’, onR:‘kyou’, kun:‘つよ(い)’, kunR:‘tsuyo(i)’, strokes:11,
-ex:[{w:‘強い’,r:‘つよい’,m:‘strong’},{w:‘強調’,r:‘きょうちょう’,m:‘emphasis’},{w:‘勉強’,r:‘べんきょう’,m:‘studying’}],
-tip:‘Benkyo (studying) = diligence + strong. Study hard! Tsuyoi = strong!’ },
-{ id:‘chikaku2’, k:‘近’, meaning:‘near / close’, sub:‘nearby, recent’, on:‘キン’, onR:‘kin’, kun:‘ちか(い)’, kunR:‘chika(i)’, strokes:7,
-ex:[{w:‘近い’,r:‘ちかい’,m:‘near / close’},{w:‘近所’,r:‘きんじょ’,m:‘neighbourhood’},{w:‘最近’,r:‘さいきん’,m:‘recently’}],
-tip:‘saikin (recently) = most + near. Kinjo (neighbourhood) = near + place. Very useful!’ },
-{ id:‘katachi’, k:‘形’, meaning:‘shape / form’, sub:‘figure, appearance’, on:‘ケイ’, onR:‘kei’, kun:‘かたち’, kunR:‘katachi’, strokes:7,
-ex:[{w:‘形’,r:‘かたち’,m:‘shape / form’},{w:‘形式’,r:‘けいしき’,m:‘format / style’},{w:‘人形’,r:‘にんぎょう’,m:‘doll’}],
-tip:‘Ningyo (doll) = person + shape! Japanese dolls (hina ningyo) are beautiful.’ },
-{ id:‘keikaku’, k:‘計’, meaning:‘measure / plan’, sub:‘count, total’, on:‘ケイ’, onR:‘kei’, kun:‘はか(る)’, kunR:‘haka(ru)’, strokes:9,
-ex:[{w:‘計算’,r:‘けいさん’,m:‘calculation’},{w:‘時計’,r:‘とけい’,m:‘clock / watch’},{w:‘計画’,r:‘けいかく’,m:‘plan’}],
-tip:‘Tokei (watch/clock) = time + measure! Keikaku (plan) = measure + draw.’ },
-{ id:‘moto’, k:‘元’, meaning:‘origin / base’, sub:‘former, healthy’, on:‘ゲン’, onR:‘gen’, kun:‘もと’, kunR:‘moto’, strokes:4,
-ex:[{w:‘元気’,r:‘げんき’,m:‘energetic / healthy’},{w:‘元々’,r:‘もともと’,m:‘originally’},{w:‘元日’,r:‘がんじつ’,m:‘New Year Day’}],
-tip:‘Genki = genki! 元 is in Japan most important greeting word!’ },
-{ id:‘iu’, k:‘言’, meaning:‘say / word’, sub:‘speak, language’, on:‘ゲン’, onR:‘gen’, kun:‘い(う)’, kunR:‘i(u)’, strokes:7,
-ex:[{w:‘言う’,r:‘いう’,m:‘to say’},{w:‘言葉’,r:‘ことば’,m:‘word / language’},{w:‘言語’,r:‘げんご’,m:‘language’}],
-tip:‘Kotoba (word/language) = say + leaf. Language flows like leaves! Very poetic.’ },
-{ id:‘to’, k:‘戸’, meaning:‘door / household’, sub:‘gate, family unit’, on:‘コ’, onR:‘ko’, kun:‘と’, kunR:‘to’, strokes:4,
-ex:[{w:‘戸’,r:‘と’,m:‘door’},{w:‘戸外’,r:‘こがい’,m:‘outdoors’},{w:‘江戸’,r:‘えど’,m:‘Edo (old Tokyo)’}],
-tip:‘Edo (old Tokyo) uses 戸! The Edo period 1603-1868 gave us so much Japanese culture.’ },
-{ id:‘furui’, k:‘古’, meaning:‘old / ancient’, sub:‘secondhand’, on:‘コ’, onR:‘ko’, kun:‘ふる(い)’, kunR:‘furu(i)’, strokes:5,
-ex:[{w:‘古い’,r:‘ふるい’,m:‘old / ancient’},{w:‘古典’,r:‘こてん’,m:‘classical literature’},{w:‘古着’,r:‘ふるぎ’,m:‘used clothing’}],
-tip:‘furui (old) vs atarashii (new). Furugi (used clothes) are trendy in Japan now!’ },
-{ id:‘gozen’, k:‘午’, meaning:‘noon / midday’, sub:‘12 oclock’, on:‘ゴ’, onR:‘go’, kun:’-’, kunR:’-’, strokes:4,
-ex:[{w:‘午前’,r:‘ごぜん’,m:‘AM / morning’},{w:‘午後’,r:‘ごご’,m:‘PM / afternoon’},{w:‘正午’,r:‘しょうご’,m:‘noon / 12pm’}],
-tip:‘Gozen (AM) + Gogo (PM). Shogo = noon. Essential for telling time in Japanese!’ },
-{ id:‘ato’, k:‘後’, meaning:‘after / behind’, sub:‘later, back’, on:‘ゴ’, onR:‘go’, kun:‘あと’, kunR:‘ato’, strokes:9,
-ex:[{w:‘後’,r:‘あと’,m:‘after / behind’},{w:‘午後’,r:‘ごご’,m:‘PM / afternoon’},{w:‘最後’,r:‘さいご’,m:‘the last’}],
-tip:‘Saigo (the last) = most + after. Gogo (afternoon) = noon + after. Very logical!’ },
-{ id:‘koujou’, k:‘工’, meaning:‘work / craft’, sub:‘construction, industry’, on:‘コウ’, onR:‘kou’, kun:’-’, kunR:’-’, strokes:3,
-ex:[{w:‘工場’,r:‘こうじょう’,m:‘factory’},{w:‘工事’,r:‘こうじ’,m:‘construction work’},{w:‘大工’,r:‘だいく’,m:‘carpenter’}],
-tip:‘Daiku (carpenter) = big + craft. Koji (construction) = craft + matter. Seen everywhere!’ },
-{ id:‘kou2b’, k:‘公’, meaning:‘public / official’, sub:‘government, fair’, on:‘コウ’, onR:‘kou’, kun:’-’, kunR:’-’, strokes:4,
-ex:[{w:‘公園’,r:‘こうえん’,m:‘park’},{w:‘公立’,r:‘こうりつ’,m:‘public (institution)’},{w:‘公式’,r:‘こうしき’,m:‘official formula’}],
-tip:‘Koen (park) = public + garden! Public parks are wonderful in Japan. Enjoy them!’ },
-{ id:‘hiroi’, k:‘広’, meaning:‘wide / spacious’, sub:‘broad, spread’, on:‘コウ’, onR:‘kou’, kun:‘ひろ(い)’, kunR:‘hiro(i)’, strokes:5,
-ex:[{w:‘広い’,r:‘ひろい’,m:‘wide / spacious’},{w:‘広場’,r:‘ひろば’,m:‘public square’},{w:‘広告’,r:‘こうこく’,m:‘advertisement’}],
-tip:‘Hiroba (public square) = wide + place. Kokoku (advertisement) = wide + tell!’ },
-{ id:‘majiru’, k:‘交’, meaning:‘mix / interact’, sub:‘traffic, exchange’, on:‘コウ’, onR:‘kou’, kun:‘ま(じる)’, kunR:‘ma(jiru)’, strokes:6,
-ex:[{w:‘交通’,r:‘こうつう’,m:‘traffic / transport’},{w:‘交差点’,r:‘こうさてん’,m:‘intersection’},{w:‘外交’,r:‘がいこう’,m:‘diplomacy’}],
-tip:‘Kotsuu (traffic) = mix + pass. Kousaten (intersection) = mix + differ + point!’ },
-
-// GROUP - 160 - Final Group
-{ id:‘hikari’, k:‘光’, meaning:‘light / shine’, sub:‘beam, glory’, on:‘コウ’, onR:‘kou’, kun:‘ひかり’, kunR:‘hikari’, strokes:6,
-ex:[{w:‘光’,r:‘ひかり’,m:‘light’},{w:‘日光’,r:‘にっこう’,m:‘sunlight / Nikko’},{w:‘観光’,r:‘かんこう’,m:‘sightseeing’}],
-tip:‘Kanko (sightseeing) = look + light. Nikko (famous shrine town) = sun + light!’ },
-{ id:‘takai’, k:‘高’, meaning:‘tall / expensive / high’, sub:‘above, costly’, on:‘コウ’, onR:‘kou’, kun:‘たか(い)’, kunR:‘taka(i)’, strokes:10,
-ex:[{w:‘高い’,r:‘たかい’,m:‘tall / expensive’},{w:‘高校’,r:‘こうこう’,m:‘high school’},{w:‘高速’,r:‘こうそく’,m:‘high speed’}],
-tip:‘Koko (high school) = high + school! Shinkansen = high speed train. Takai = expensive!’ },
-{ id:‘ki2b’, k:‘黄’, meaning:‘yellow’, sub:‘gold colour’, on:‘コウ’, onR:‘kou’, kun:‘き’, kunR:‘ki’, strokes:11,
-ex:[{w:‘黄色’,r:‘きいろ’,m:‘yellow colour’},{w:‘黄金’,r:‘おうごん’,m:‘gold’},{w:‘信号黄’,r:‘しんごうき’,m:‘yellow traffic light’}],
-tip:‘Kiiro (yellow) = yellow + colour. Traffic lights: 青(green) 黄(yellow) 赤(red)!’ },
-{ id:‘au’, k:‘合’, meaning:‘combine / suit’, sub:‘fit, total’, on:‘ゴウ’, onR:‘gou’, kun:‘あ(う)’, kunR:‘a(u)’, strokes:6,
-ex:[{w:‘合う’,r:‘あう’,m:‘to fit / match’},{w:‘合計’,r:‘ごうけい’,m:‘total’},{w:‘場合’,r:‘ばあい’,m:‘case / situation’}],
-tip:‘baai (case/situation) = place + combine. Gokei (total) = combine + count. Common!’ },
-{ id:‘koku’, k:‘黒’, meaning:‘black’, sub:‘dark’, on:‘コク’, onR:‘koku’, kun:‘くろ’, kunR:‘kuro’, strokes:11,
-ex:[{w:‘黒い’,r:‘くろい’,m:‘black’},{w:‘黒板’,r:‘こくばん’,m:‘blackboard’},{w:‘黒字’,r:‘くろじ’,m:‘black ink / profit’}],
-tip:‘Kokuban (blackboard) = black + board. Kuroji (profit) = black figures. Your kids write on this!’ },
-{ id:‘ima2’, k:‘今’, meaning:‘now / present’, sub:‘current’, on:‘コン’, onR:‘kon’, kun:‘いま’, kunR:‘ima’, strokes:4,
-ex:[{w:‘今日’,r:‘きょう’,m:‘today’},{w:‘今年’,r:‘ことし’,m:‘this year’},{w:‘今すぐ’,r:‘いますぐ’,m:‘right now’}],
-tip:‘Kyo (today) has an irregular reading - not konichi! Learn kyo, kotoshi, konshuu.’ },
-{ id:‘sai’, k:‘才’, meaning:‘talent / age’, sub:‘genius, years old’, on:‘サイ’, onR:‘sai’, kun:’-’, kunR:’-’, strokes:3,
-ex:[{w:‘才能’,r:‘さいのう’,m:‘talent’},{w:‘天才’,r:‘tensai’,m:‘genius’},{w:’〜歳’,r:‘さい’,m:‘years old (counter)’}],
-tip:‘Tensai (genius) = heaven + talent! Sai is also used for age: 10-sai = 10 years old.’ },
-{ id:‘hosoi’, k:‘細’, meaning:‘thin / detailed’, sub:‘slender, fine’, on:‘サイ’, onR:‘sai’, kun:‘ほそ(い)’, kunR:‘hoso(i)’, strokes:11,
-ex:[{w:‘細い’,r:‘ほそい’,m:‘thin / slender’},{w:‘細かい’,r:‘こまかい’,m:‘detailed / fine’},{w:‘明細’,r:‘めいさい’,m:‘details’}],
-tip:‘Hosoi = thin/slender. Komakai = detailed/fine. Both come from 細!’ },
-{ id:‘tsukuru’, k:‘作’, meaning:‘make / create’, sub:‘produce, work’, on:‘サク’, onR:‘saku’, kun:‘つく(る)’, kunR:‘tsuku(ru)’, strokes:7,
-ex:[{w:‘作る’,r:‘つくる’,m:‘to make’},{w:‘作文’,r:‘さくぶん’,m:‘essay / composition’},{w:‘作品’,r:‘さくひん’,m:‘work of art’}],
-tip:‘Sakuhin (work of art) = make + product. Sakubun (essay) = make + sentence!’ },
-{ id:‘kami’, k:‘紙’, meaning:‘paper’, sub:‘sheet, document’, on:‘シ’, onR:‘shi’, kun:‘かみ’, kunR:‘kami’, strokes:10,
-ex:[{w:‘紙’,r:‘かみ’,m:‘paper’},{w:‘手紙’,r:‘てがみ’,m:‘letter / mail’},{w:‘新聞紙’,r:‘しんぶんし’,m:‘newspaper’}],
-tip:‘Tegami (letter) = hand + paper! Writing letters by hand is still valued in Japan.’ },
-{ id:‘tera’, k:‘寺’, meaning:‘temple’, sub:‘Buddhist temple’, on:‘ジ’, onR:‘ji’, kun:‘てら’, kunR:‘tera’, strokes:6,
-ex:[{w:‘寺’,r:‘てら’,m:‘temple’},{w:‘お寺’,r:‘おてら’,m:‘temple (polite)’},{w:‘寺院’,r:‘じいん’,m:‘temple / monastery’}],
-tip:‘Japan has over 75,000 Buddhist temples! Otera-mairi = visiting a temple. Beautiful!’ },
-{ id:‘ji2b’, k:‘自’, meaning:‘self / oneself’, sub:‘natural, own’, on:‘ジ’, onR:‘ji’, kun:‘みずか(ら)’, kunR:‘mizuka(ra)’, strokes:6,
-ex:[{w:‘自分’,r:‘じぶん’,m:‘oneself’},{w:‘自転車’,r:‘じてんしゃ’,m:‘bicycle’},{w:‘自由’,r:‘じゆう’,m:‘freedom’}],
-tip:‘Jitensha (bicycle) = self + turn + vehicle! Jiyuu (freedom) = self + reason!’ },
-{ id:‘yashiro’, k:‘社’, meaning:‘shrine / company’, sub:‘association, society’, on:‘シャ’, onR:‘sha’, kun:‘やしろ’, kunR:‘yashiro’, strokes:7,
-ex:[{w:‘会社’,r:‘かいしゃ’,m:‘company’},{w:‘社会’,r:‘しゃかい’,m:‘society’},{w:‘神社’,r:‘じんじゃ’,m:‘Shinto shrine’}],
-tip:‘Jinja (shrine) = god + shrine! There are 80,000+ Shinto shrines in Japan!’ },
-{ id:‘yowai’, k:‘弱’, meaning:‘weak’, sub:‘feeble, poor at’, on:‘ジャク’, onR:‘jaku’, kun:‘よわ(い)’, kunR:‘yowa(i)’, strokes:10,
-ex:[{w:‘弱い’,r:‘よわい’,m:‘weak’},{w:‘弱点’,r:‘じゃくてん’,m:‘weak point’},{w:‘弱気’,r:‘よわき’,m:‘timid / weak-hearted’}],
-tip:‘Yowai = weak. Tsuyoi = strong. Jakuten (weak point) = weak + point. Know your strengths!’ },
-{ id:‘haru’, k:‘春’, meaning:‘spring’, sub:‘springtime’, on:‘シュン’, onR:‘shun’, kun:‘はる’, kunR:‘haru’, strokes:9,
-ex:[{w:‘春’,r:‘はる’,m:‘spring’},{w:‘春休み’,r:‘はるやすみ’,m:‘spring holiday’},{w:‘青春’,r:‘せいしゅん’,m:‘youth’}],
-tip:‘Seishun (youth) = blue + spring - so poetic! School year starts in spring in Japan.’ },
-{ id:‘sukoshi’, k:‘少’, meaning:‘few / a little’, sub:‘small amount’, on:‘ショウ’, onR:‘shou’, kun:‘すく(ない)’, kunR:‘suku(nai)’, strokes:4,
-ex:[{w:‘少ない’,r:‘すくない’,m:‘few / scarce’},{w:‘少し’,r:‘すこし’,m:‘a little’},{w:‘少年’,r:‘しょうねん’,m:‘boy / youth’}],
-tip:‘Shonen (boy/youth) = little + year. Manga genre Shonen is for young boys!’ },
-{ id:‘iro’, k:‘色’, meaning:‘colour’, sub:‘hue, type’, on:‘ショク’, onR:‘shoku’, kun:‘いろ’, kunR:‘iro’, strokes:6,
-ex:[{w:‘色’,r:‘いろ’,m:‘colour’},{w:‘色々’,r:‘いろいろ’,m:‘various’},{w:‘景色’,r:‘けしき’,m:‘scenery’}],
-tip:‘Iroiro (various) = colour colour - doubled for emphasis! Keshiki (scenery) = view + colour.’ },
-{ id:‘taberu’, k:‘食’, meaning:‘eat / food’, sub:‘meal, diet’, on:‘ショク’, onR:‘shoku’, kun:‘た(べる)’, kunR:‘ta(beru)’, strokes:9,
-ex:[{w:‘食べる’,r:‘たべる’,m:‘to eat’},{w:‘食事’,r:‘しょくじ’,m:‘meal’},{w:‘給食’,r:‘きゅうしょく’,m:‘school lunch’}],
-tip:‘Kyushoku (school lunch) = supply + eat! Your kids eat this every day at school.’ },
-{ id:‘atarashii’, k:‘新’, meaning:‘new / fresh’, sub:‘recent, modern’, on:‘シン’, onR:‘shin’, kun:‘あたら(しい)’, kunR:‘atara(shii)’, strokes:13,
-ex:[{w:‘新しい’,r:‘あたらしい’,m:‘new’},{w:‘新幹線’,r:‘しんかんせん’,m:‘Shinkansen’},{w:‘新聞’,r:‘しんぶん’,m:‘newspaper’}],
-tip:‘Shinkansen (bullet train) = new + trunk + line! The symbol of modern Japan!’ },
-{ id:‘zu’, k:‘図’, meaning:‘diagram / map’, sub:‘drawing, plan’, on:‘ズ’, onR:‘zu’, kun:’-’, kunR:’-’, strokes:7,
-ex:[{w:‘地図’,r:‘ちず’,m:‘map’},{w:‘図書館’,r:‘としょかん’,m:‘library’},{w:‘図形’,r:‘ずけい’,m:‘shape / figure’}],
-tip:‘Chizu (map) = ground + diagram. Toshokan (library) = diagram + book + building!’ },
-{ id:‘nishi’, k:‘西’, meaning:‘west’, sub:‘western, Osaka area’, on:‘セイ’, onR:‘sei’, kun:‘にし’, kunR:‘nishi’, strokes:6,
-ex:[{w:‘西’,r:‘にし’,m:‘west’},{w:‘関西’,r:‘かんさい’,m:‘Kansai region’},{w:‘西洋’,r:‘せいよう’,m:‘Western (culture)’}],
-tip:‘Kansai (Osaka/Kyoto area) = gate + west! East Japan = Kanto, West Japan = Kansai.’ },
-{ id:‘hoshi2’, k:‘星’, meaning:‘star’, sub:‘planet, spot’, on:‘セイ’, onR:‘sei’, kun:‘ほし’, kunR:‘hoshi’, strokes:9,
-ex:[{w:‘星’,r:‘ほし’,m:‘star’},{w:‘星座’,r:‘せいざ’,m:‘constellation’},{w:‘流れ星’,r:‘ながれぼし’,m:‘shooting star’}],
-tip:‘Tanabata is a star festival! Nagare-boshi (shooting star) = flowing + star. Beautiful!’ },
-{ id:‘kiru’, k:‘切’, meaning:‘cut / important’, sub:‘sever, expire’, on:‘セツ’, onR:‘setsu’, kun:‘き(る)’, kunR:‘ki(ru)’, strokes:4,
-ex:[{w:‘切る’,r:‘きる’,m:‘to cut’},{w:‘親切’,r:‘しんせつ’,m:‘kind / helpful’},{w:‘大切’,r:‘たいせつ’,m:‘important / precious’}],
-tip:‘Shinsetsu (kind) = parent + cut! Taisetsu (important) = big + cut. Very useful pair!’ },
-{ id:‘sen’, k:‘線’, meaning:‘line / wire’, sub:‘route, track’, on:‘セン’, onR:‘sen’, kun:’-’, kunR:’-’, strokes:15,
-ex:[{w:‘線’,r:‘せん’,m:‘line’},{w:‘新幹線’,r:‘しんかんせん’,m:‘Shinkansen’},{w:‘路線’,r:‘ろせん’,m:‘route / line’}],
-tip:‘Shinkansen = new trunk line. Every Tokyo train line has a colour and name. Very useful!’ },
-{ id:‘fune’, k:‘船’, meaning:‘ship / boat’, sub:‘vessel’, on:‘セン’, onR:‘sen’, kun:‘ふね’, kunR:‘fune’, strokes:11,
-ex:[{w:‘船’,r:‘ふね’,m:‘ship / boat’},{w:‘汽船’,r:‘きせん’,m:‘steamship’},{w:‘船長’,r:‘せんちょう’,m:‘captain of ship’}],
-tip:‘Fune = ship/boat. Japan is an island nation so ships have always been essential!’ },
-{ id:‘mae2’, k:‘前’, meaning:‘front / before’, sub:‘previous, in front of’, on:‘ゼン’, onR:‘zen’, kun:‘まえ’, kunR:‘mae’, strokes:9,
-ex:[{w:‘前’,r:‘まえ’,m:‘front / before’},{w:‘名前’,r:‘なまえ’,m:‘name’},{w:‘以前’,r:‘いぜん’,m:‘before / formerly’}],
-tip:‘Namae (name) = fame + front. Your name faces the world! What is your name?’ },
-{ id:‘kumi’, k:‘組’, meaning:‘group / class’, sub:‘team, assemble’, on:‘ソ’, onR:‘so’, kun:‘く(む)’, kunR:‘ku(mu)’, strokes:11,
-ex:[{w:‘組’,r:‘くみ’,m:‘group / class’},{w:‘組み合わせ’,r:‘くみあわせ’,m:‘combination’},{w:‘番組’,r:‘ばんぐみ’,m:‘TV programme’}],
-tip:‘Kumi = class in school! 1-nen 2-kumi = Year 1 Class 2. Bangumi = TV programme!’ },
-{ id:‘ooi’, k:‘多’, meaning:‘many / much’, sub:‘plenty, frequent’, on:‘タ’, onR:‘ta’, kun:‘おお(い)’, kunR:‘oo(i)’, strokes:6,
-ex:[{w:‘多い’,r:‘おおい’,m:‘many / much’},{w:‘多分’,r:‘たぶん’,m:‘probably’},{w:‘多様’,r:‘たよう’,m:‘diverse’}],
-tip:‘Tabun (probably) = many + part. Oi = many. Opposite is sukunai (few)!’ },
-{ id:‘futoi’, k:‘太’, meaning:‘fat / thick’, sub:‘plump, great’, on:‘タイ’, onR:‘tai’, kun:‘ふと(い)’, kunR:‘futo(i)’, strokes:4,
-ex:[{w:‘太い’,r:‘ふとい’,m:‘thick / fat’},{w:‘太陽’,r:‘たいよう’,m:‘the Sun’},{w:‘太平洋’,r:‘たいへいよう’,m:‘Pacific Ocean’}],
-tip:‘Taiyo (the Sun) = great + sun! Taiheiyo (Pacific Ocean) = great + peaceful + ocean!’ },
-{ id:‘dai2’, k:‘台’, meaning:‘platform / stand’, sub:‘pedestal, counter for machines’, on:‘ダイ’, onR:‘dai’, kun:’-’, kunR:’-’, strokes:5,
-ex:[{w:‘台風’,r:‘たいふう’,m:‘typhoon’},{w:‘台所’,r:‘だいどころ’,m:‘kitchen’},{w:‘舞台’,r:‘ぶたい’,m:‘stage’}],
-tip:‘Taifu (typhoon) = platform + wind! Daidokoro (kitchen) = stand + place!’ },
-{ id:‘shiru’, k:‘知’, meaning:‘know’, sub:‘wisdom, notice’, on:‘チ’, onR:‘chi’, kun:‘し(る)’, kunR:‘shi(ru)’, strokes:8,
-ex:[{w:‘知る’,r:‘しiru’,m:‘to know’},{w:‘知識’,r:‘ちしき’,m:‘knowledge’},{w:‘通知’,r:‘つうち’,m:‘notification’}],
-tip:‘Chishiki (knowledge) = know + understand. Tsuchi (notification) = pass + know!’ },
-{ id:‘ocha’, k:‘茶’, meaning:‘tea’, sub:‘green tea, brown’, on:‘チャ’, onR:‘cha’, kun:’-’, kunR:’-’, strokes:9,
-ex:[{w:‘お茶’,r:‘おちゃ’,m:‘green tea’},{w:‘茶道’,r:‘さどう’,m:‘tea ceremony’},{w:‘喫茶店’,r:‘きっさてん’,m:‘coffee shop / tea house’}],
-tip:‘Sado (tea ceremony) = tea + way! One of Japan most important cultural traditions.’ },
-{ id:‘nagai’, k:‘長’, meaning:‘long / leader’, sub:‘chief, senior’, on:‘チョウ’, onR:‘chou’, kun:‘なが(い)’, kunR:‘naga(i)’, strokes:8,
-ex:[{w:‘長い’,r:‘ながい’,m:‘long’},{w:‘校長’,r:‘こうちょう’,m:‘school principal’},{w:‘社長’,r:‘しゃちょう’,m:‘company president’}],
-tip:‘Kocho (principal) = school + leader. Shacho (president) = company + leader. Important!’ },
-{ id:‘tori’, k:‘鳥’, meaning:‘bird’, sub:‘fowl’, on:‘チョウ’, onR:‘chou’, kun:‘とり’, kunR:‘tori’, strokes:11,
-ex:[{w:‘鳥’,r:‘とり’,m:‘bird’},{w:‘小鳥’,r:‘ことり’,m:‘small bird’},{w:‘焼き鳥’,r:‘やきとり’,m:‘grilled chicken skewer’}],
-tip:‘Yakitori (grilled chicken) = grilled + bird! One of Japan most popular foods!’ },
-{ id:‘chokusetsu’, k:‘直’, meaning:‘straight / direct’, sub:‘honest, fix’, on:‘チョク’, onR:‘choku’, kun:‘なお(す)’, kunR:‘nao(su)’, strokes:8,
-ex:[{w:‘直す’,r:‘なおす’,m:‘to fix / correct’},{w:‘正直’,r:‘しょうじき’,m:‘honest’},{w:‘直接’,r:‘ちょくせつ’,m:‘direct’}],
-tip:‘Shojiki (honest) = correct + straight! Be honest - it is always the best policy!’ },
-{ id:‘tooru’, k:‘通’, meaning:‘pass through / commute’, sub:‘traffic, inform’, on:‘ツウ’, onR:‘tsuu’, kun:‘とお(る)’, kunR:‘too(ru)’, strokes:10,
-ex:[{w:‘通る’,r:‘とおる’,m:‘to pass through’},{w:‘通学’,r:‘つうがく’,m:‘commuting to school’},{w:‘交通’,r:‘こうつう’,m:‘traffic’}],
-tip:‘Tsugaku (commuting to school) = pass + study. Your kids tsugaku every day!’ },
-{ id:‘ten’, k:‘点’, meaning:‘point / dot’, sub:‘score, mark’, on:‘テン’, onR:‘ten’, kun:’-’, kunR:’-’, strokes:9,
-ex:[{w:‘点’,r:‘てん’,m:‘point / dot’},{w:‘点数’,r:‘てんすう’,m:‘score / marks’},{w:‘満点’,r:‘まんてん’,m:‘perfect score’}],
-tip:‘Manten (perfect score) = full + points! Getting manten = the best feeling in school!’ },
-{ id:‘denki’, k:‘電’, meaning:‘electricity’, sub:‘lightning, electric’, on:‘デン’, onR:‘den’, kun:’-’, kunR:’-’, strokes:13,
-ex:[{w:‘電気’,r:‘でんき’,m:‘electricity’},{w:‘電車’,r:‘でんしゃ’,m:‘electric train’},{w:‘電話’,r:‘でんわ’,m:‘telephone’}],
-tip:‘Densha (train) = electric + vehicle. Denwa (phone) = electric + talk. Den is everywhere!’ },
-{ id:‘fuyu’, k:‘冬’, meaning:‘winter’, sub:‘cold season’, on:‘トウ’, onR:‘tou’, kun:‘ふゆ’, kunR:‘fuyu’, strokes:5,
-ex:[{w:‘冬’,r:‘ふゆ’,m:‘winter’},{w:‘冬休み’,r:‘ふゆやすみ’,m:‘winter holiday’},{w:‘冬至’,r:‘とうじ’,m:‘winter solstice’}],
-tip:‘Fuyuyasumi (winter holiday) includes Christmas and New Year in Japan! Short but fun.’ },
-{ id:‘ataru’, k:‘当’, meaning:‘hit / correct’, sub:‘apply, in charge’, on:‘トウ’, onR:‘tou’, kun:‘あ(たる)’, kunR:‘a(taru)’, strokes:6,
-ex:[{w:‘当たる’,r:‘あたる’,m:‘to hit / be correct’},{w:‘当然’,r:‘とうぜん’,m:‘natural / of course’},{w:‘担当’,r:‘たんとう’,m:‘in charge’}],
-tip:‘Tozen (of course) = correct + then. Tanto (in charge) = bear + correct. Common words!’ },
-{ id:‘higashi’, k:‘東’, meaning:‘east’, sub:‘eastern, Tokyo area’, on:‘トウ’, onR:‘tou’, kun:‘ひがし’, kunR:‘higashi’, strokes:8,
-ex:[{w:‘東’,r:‘ひがし’,m:‘east’},{w:‘東京’,r:‘とうきょう’,m:‘Tokyo’},{w:‘東北’,r:‘とうほく’,m:‘Tohoku region’}],
-tip:‘Tokyo = Eastern Capital! Tohoku = east + north. East is a key direction in Japan!’ },
-{ id:‘kotaeru’, k:‘答’, meaning:‘answer / reply’, sub:‘respond, solution’, on:‘トウ’, onR:‘tou’, kun:‘こた(える)’, kunR:‘kota(eru)’, strokes:12,
-ex:[{w:‘答える’,r:‘こたえる’,m:‘to answer’},{w:‘答え’,r:‘こたえ’,m:‘answer’},{w:‘解答’,r:‘かいとう’,m:‘solution’}],
-tip:‘Kotaeru (to answer) = answer! Seikai (correct answer) = correct + answer. School!’ },
-{ id:‘onaji’, k:‘同’, meaning:‘same / agree’, sub:‘identical, together’, on:‘ドウ’, onR:‘dou’, kun:‘おな(じ)’, kunR:‘ona(ji)’, strokes:6,
-ex:[{w:‘同じ’,r:‘おなじ’,m:‘same’},{w:‘同時’,r:‘どうじ’,m:‘simultaneous’},{w:‘共同’,r:‘きょうどう’,m:‘cooperation’}],
-tip:‘Onaji (same) = very useful word! Onajiku = likewise. Kyodo (cooperation) = together!’ },
-{ id:‘uchi’, k:‘内’, meaning:‘inside / within’, sub:‘domestic, family’, on:‘ナイ’, onR:‘nai’, kun:‘うち’, kunR:‘uchi’, strokes:4,
-ex:[{w:‘内’,r:‘うち’,m:‘inside / home’},{w:‘国内’,r:‘こくない’,m:‘domestic’},{w:‘案内’,r:‘あんない’,m:‘guidance’}],
-tip:‘Annai (guidance/information) = plan + inside. Kokunai (domestic) = country + inside!’ },
-{ id:‘minami’, k:‘南’, meaning:‘south’, sub:‘southern’, on:‘ナン’, onR:‘nan’, kun:‘みなみ’, kunR:‘minami’, strokes:9,
-ex:[{w:‘南’,r:‘みなみ’,m:‘south’},{w:‘南極’,r:‘なんきょく’,m:‘South Pole’},{w:‘東南アジア’,r:‘とうなんあじあ’,m:‘Southeast Asia’}],
-tip:‘Nankyoku (South Pole) = south + extreme! Malaysia is in tonan Asia (Southeast Asia)!’ },
-{ id:‘niku’, k:‘肉’, meaning:‘meat / flesh’, sub:‘muscle, body’, on:‘ニク’, onR:‘niku’, kun:’-’, kunR:’-’, strokes:6,
-ex:[{w:‘肉’,r:‘にく’,m:‘meat’},{w:‘牛肉’,r:‘ぎゅうにく’,m:‘beef’},{w:‘筋肉’,r:‘きんにく’,m:‘muscle’}],
-tip:‘Gyuniku (beef) = cow + meat. Toriniku (chicken) = bird + meat. Niku is delicious!’ },
-{ id:‘uma’, k:‘馬’, meaning:‘horse’, sub:‘equine’, on:‘バ’, onR:‘ba’, kun:‘うま’, kunR:‘uma’, strokes:10,
-ex:[{w:‘馬’,r:‘うま’,m:‘horse’},{w:‘競馬’,r:‘けいば’,m:‘horse racing’},{w:‘馬力’,r:‘ばりき’,m:‘horsepower’}],
-tip:‘Uma also means delicious in casual speech! Umai! = Yummy! Same pronunciation!’ },
-{ id:‘mugi’, k:‘麦’, meaning:‘wheat / barley’, sub:‘grain, cereal’, on:‘バク’, onR:‘baku’, kun:‘むぎ’, kunR:‘mugi’, strokes:7,
-ex:[{w:‘麦’,r:‘むぎ’,m:‘wheat / barley’},{w:‘小麦’,r:‘こむぎ’,m:‘wheat’},{w:‘麦茶’,r:‘むぎちゃ’,m:‘barley tea’}],
-tip:‘Mugicha (barley tea) - the classic Japanese summer drink for kids! Cold and caffeine-free.’ },
-{ id:‘sato’, k:‘里’, meaning:‘village / hometown’, sub:‘native place, hometown’, on:‘リ’, onR:‘ri’, kun:‘さと’, kunR:‘sato’, strokes:7,
-ex:[{w:‘里’,r:‘さと’,m:‘village / hometown’},{w:‘故郷’,r:‘こきょう’,m:‘hometown’},{w:‘里帰り’,r:‘さとがえり’,m:‘returning home’}],
-tip:‘Sato = hometown/village. Satogaeri (returning home) = hometown + return. A nostalgic word.’ }
+  { id:"hanasu", k:"話", meaning:"talk", sub:"conversation", on:"WA", onR:"wa", kun:"hanasu", kunR:"hana(su)", strokes:13,
+    ex:[{w:"話す",r:"はなす",m:"to speak"}, {w:"電話",r:"でんわ",m:"telephone"}, {w:"会話",r:"かいわ",m:"conversation"}],
+    tip:"Denwa (telephone) = electric + talk. The most used word with this kanji." },
+  { id:"yomu", k:"読", meaning:"read", sub:"reading, recite", on:"DOKU", onR:"doku", kun:"yomu", kunR:"yo(mu)", strokes:14,
+    ex:[{w:"読む",r:"よむ",m:"to read"}, {w:"読書",r:"どくしょ",m:"reading books"}, {w:"音読み",r:"おんよみ",m:"on-yomi reading"}],
+    tip:"Dokusho = reading books. A wonderful school habit!" },
+  { id:"kaku", k:"書", meaning:"write", sub:"writing, document", on:"SHO", onR:"sho", kun:"kaku", kunR:"ka(ku)", strokes:10,
+    ex:[{w:"書く",r:"かく",m:"to write"}, {w:"教科書",r:"きょうかしょ",m:"textbook"}, {w:"図書館",r:"としょかん",m:"library"}],
+    tip:"Kyokasho (textbook) = teach + subject + write. Your kids use these every day!" },
+  { id:"kiku", k:"聞", meaning:"listen", sub:"hear, ask", on:"BUN", onR:"bun", kun:"kiku", kunR:"ki(ku)", strokes:14,
+    ex:[{w:"聞く",r:"きく",m:"to listen"}, {w:"新聞",r:"しんぶん",m:"newspaper"}, {w:"見聞",r:"けんぶん",m:"experience"}],
+    tip:"Shinbun (newspaper) = new + hear. Reading the news = hearing new things!" },
+  { id:"koe", k:"声", meaning:"voice", sub:"sound, tone", on:"SEI", onR:"sei", kun:"koe", kunR:"koe", strokes:7,
+    ex:[{w:"声",r:"こえ",m:"voice"}, {w:"大声",r:"おおごえ",m:"loud voice"}, {w:"声優",r:"せいゆう",m:"voice actor"}],
+    tip:"Seiyu (voice actor) - Japan has an amazing voice acting industry for anime!" },
+  { id:"kotoba", k:"語", meaning:"language", sub:"word, speech", on:"GO", onR:"go", kun:"kataru", kunR:"kata(ru)", strokes:14,
+    ex:[{w:"日本語",r:"にほんご",m:"Japanese language"}, {w:"英語",r:"えいご",m:"English language"}, {w:"語る",r:"かたる",m:"to narrate"}],
+    tip:"Nihongo = Japanese! All languages end in go: eigo (English), chugokugo (Chinese)." },
+  { id:"ji", k:"字", meaning:"character", sub:"written symbol", on:"JI", onR:"ji", kun:"aza", kunR:"aza", strokes:6,
+    ex:[{w:"字",r:"じ",m:"letter / character"}, {w:"漢字",r:"かんじ",m:"kanji"}, {w:"文字",r:"もじ",m:"written character"}],
+    tip:"Kanji = Chinese characters. You are learning ji right now! Very meta." },
+  { id:"bun", k:"文", meaning:"sentence", sub:"text, culture", on:"BUN", onR:"bun", kun:"fumi", kunR:"fumi", strokes:4,
+    ex:[{w:"文",r:"ぶん",m:"sentence"}, {w:"文化",r:"ぶんか",m:"culture"}, {w:"作文",r:"さくぶん",m:"essay"}],
+    tip:"Sakubun (essay) is a key school task! Bunka = culture. Bun is everywhere." },
+  { id:"chichi", k:"父", meaning:"father", sub:"dad, paternal", on:"FU", onR:"fu", kun:"chichi", kunR:"chichi", strokes:4,
+    ex:[{w:"父",r:"ちち",m:"my father"}, {w:"父母",r:"ふぼ",m:"parents"}, {w:"お父さん",r:"おとうさん",m:"father (polite)"}],
+    tip:"Chichi = my father (humble). Otousan = polite form. Learn the difference!" },
+  { id:"haha", k:"母", meaning:"mother", sub:"mum, maternal", on:"BO", onR:"bo", kun:"haha", kunR:"haha", strokes:5,
+    ex:[{w:"母",r:"はは",m:"my mother"}, {w:"父母",r:"ふぼ",m:"parents"}, {w:"お母さん",r:"おかあさん",m:"mother (polite)"}],
+    tip:"Haha = my mum (humble). Okaasan = polite form. These pairs are key in Japanese!" },
+  { id:"ani", k:"兄", meaning:"older brother", sub:"big brother", on:"KEI", onR:"kei", kun:"ani", kunR:"ani", strokes:5,
+    ex:[{w:"兄",r:"あに",m:"my older brother"}, {w:"兄弟",r:"きょうだい",m:"siblings"}, {w:"お兄さん",r:"おにいさん",m:"older brother (polite)"}],
+    tip:"Kyodai (siblings) = older brother + younger brother. Used for all siblings!" },
+  { id:"ane", k:"姉", meaning:"older sister", sub:"big sister", on:"SHI", onR:"shi", kun:"ane", kunR:"ane", strokes:8,
+    ex:[{w:"姉",r:"あね",m:"my older sister"}, {w:"姉妹",r:"しまい",m:"sisters"}, {w:"お姉さん",r:"おねえさん",m:"older sister (polite)"}],
+    tip:"Shimai (sisters) = older + younger sister. The woman radical shows both are female." },
+  { id:"otouto", k:"弟", meaning:"younger brother", sub:"little brother", on:"DAI", onR:"dai", kun:"otouto", kunR:"otouto", strokes:7,
+    ex:[{w:"弟",r:"おとうと",m:"younger brother"}, {w:"兄弟",r:"きょうだい",m:"siblings"}, {w:"弟子",r:"でし",m:"apprentice"}],
+    tip:"Deshi (apprentice) = younger brother + child. The junior who learns from the master!" },
+  { id:"imouto", k:"妹", meaning:"younger sister", sub:"little sister", on:"MAI", onR:"mai", kun:"imouto", kunR:"imouto", strokes:8,
+    ex:[{w:"妹",r:"いもうと",m:"younger sister"}, {w:"姉妹",r:"しまい",m:"sisters"}, {w:"妹さん",r:"いもうとさん",m:"younger sister (polite)"}],
+    tip:"Imouto has the woman radical + not yet. A girl who has not grown up yet!" },
+  { id:"oya", k:"親", meaning:"parent", sub:"intimate, close", on:"SHIN", onR:"shin", kun:"oya", kunR:"oya", strokes:16,
+    ex:[{w:"親",r:"おや",m:"parent"}, {w:"両親",r:"りょうしん",m:"both parents"}, {w:"親切",r:"しんせつ",m:"kind"}],
+    tip:"Shinsetsu (kind) = parent + cut. Kindness cuts through barriers! Very common word." },
+  { id:"kuru", k:"来", meaning:"come", sub:"arrive, approaching", on:"RAI", onR:"rai", kun:"kuru", kunR:"ku(ru)", strokes:7,
+    ex:[{w:"来る",r:"くる",m:"to come"}, {w:"来年",r:"らいねん",m:"next year"}, {w:"来週",r:"らいしゅう",m:"next week"}],
+    tip:"Rainen (next year), raishu (next week), raigetsu (next month) - all use 来!" },
+  { id:"iku2", k:"行", meaning:"go", sub:"travel, conduct", on:"KOU", onR:"kou", kun:"iku", kunR:"i(ku)", strokes:6,
+    ex:[{w:"行く",r:"いく",m:"to go"}, {w:"銀行",r:"ぎんこう",m:"bank"}, {w:"旅行",r:"りょこう",m:"travel"}],
+    tip:"Ryoko = travel! Ginko = bank (silver + go)! Iku is one of the most essential verbs." },
+  { id:"kaeru", k:"帰", meaning:"return home", sub:"come back", on:"KI", onR:"ki", kun:"kaeru", kunR:"kae(ru)", strokes:10,
+    ex:[{w:"帰る",r:"かえる",m:"to return home"}, {w:"帰国",r:"きこく",m:"return to home country"}, {w:"帰り",r:"かえり",m:"the way home"}],
+    tip:"Tadaima! (I am home!) - you say when you kaeru. Okaeri! = Welcome back!" },
+  { id:"aruku", k:"歩", meaning:"walk", sub:"step, pace", on:"HO", onR:"ho", kun:"aruku", kunR:"aru(ku)", strokes:8,
+    ex:[{w:"歩く",r:"あるく",m:"to walk"}, {w:"散歩",r:"さんぽ",m:"walk / stroll"}, {w:"歩道",r:"ほどう",m:"pavement"}],
+    tip:"Sanpo (stroll) - taking a sanpo is a very Japanese daily activity!" },
+  { id:"hashiru", k:"走", meaning:"run", sub:"dash, speed", on:"SOU", onR:"sou", kun:"hashiru", kunR:"hashi(ru)", strokes:7,
+    ex:[{w:"走る",r:"はしる",m:"to run"}, {w:"走者",r:"そうしゃ",m:"runner"}, {w:"競走",r:"きょうそう",m:"race"}],
+    tip:"Undokai (sports day) involves lots of hashiru! Your kids have sports day every autumn." },
+  { id:"tomaru", k:"止", meaning:"stop", sub:"halt, cease", on:"SHI", onR:"shi", kun:"tomaru", kunR:"to(maru)", strokes:4,
+    ex:[{w:"止まる",r:"とまる",m:"to stop"}, {w:"禁止",r:"きんし",m:"prohibited"}, {w:"停止",r:"ていし",m:"halt"}],
+    tip:"Kinshi (prohibited) - seen on signs everywhere in Japan! Tachiri kinshi = No Entry." },
+  { id:"oshieru", k:"教", meaning:"teach", sub:"instruct, educate", on:"KYOU", onR:"kyou", kun:"oshieru", kunR:"oshi(eru)", strokes:11,
+    ex:[{w:"教える",r:"おしえる",m:"to teach"}, {w:"教室",r:"きょうしつ",m:"classroom"}, {w:"教育",r:"きょういく",m:"education"}],
+    tip:"Kyoshitsu (classroom) = teach + room. Your kids spend most of their day here!" },
+  { id:"kau", k:"買", meaning:"buy", sub:"purchase, shop", on:"BAI", onR:"bai", kun:"kau", kunR:"ka(u)", strokes:12,
+    ex:[{w:"買う",r:"かう",m:"to buy"}, {w:"買い物",r:"かいもの",m:"shopping"}, {w:"売買",r:"ばいばい",m:"trade"}],
+    tip:"Kaimono = shopping! Very useful word for daily life in Japan." },
+  { id:"umi", k:"海", meaning:"sea", sub:"ocean, marine", on:"KAI", onR:"kai", kun:"umi", kunR:"umi", strokes:9,
+    ex:[{w:"海",r:"うみ",m:"sea"}, {w:"海外",r:"かいがい",m:"overseas"}, {w:"日本海",r:"にほんかい",m:"Sea of Japan"}],
+    tip:"Kaigai = overseas. Japan is an island so abroad literally means beyond the sea!" },
+  { id:"ike", k:"池", meaning:"pond", sub:"small lake", on:"CHI", onR:"chi", kun:"ike", kunR:"ike", strokes:6,
+    ex:[{w:"池",r:"いけ",m:"pond"}, {w:"電池",r:"でんち",m:"battery"}, {w:"池田",r:"いけだ",m:"Ikeda (surname)"}],
+    tip:"Denchi (battery) = electric + pond! Imagine electricity stored like water." },
+  { id:"iwa", k:"岩", meaning:"rock", sub:"boulder, crag", on:"GAN", onR:"gan", kun:"iwa", kunR:"iwa", strokes:8,
+    ex:[{w:"岩",r:"いわ",m:"rock / boulder"}, {w:"岩石",r:"がんせき",m:"geological rock"}, {w:"溶岩",r:"ようがん",m:"lava"}],
+    tip:"Iwa = mountain + stone. Mountain stone = boulder. Beautiful compound logic!" },
+  { id:"hara", k:"原", meaning:"field", sub:"plain, origin", on:"GEN", onR:"gen", kun:"hara", kunR:"hara", strokes:10,
+    ex:[{w:"原っぱ",r:"はらっぱ",m:"open field"}, {w:"原因",r:"げんいん",m:"cause / reason"}, {w:"高原",r:"こうげん",m:"plateau"}],
+    tip:"Genin (cause/reason) is very useful in daily conversation. What is the genin?" },
+  { id:"tani", k:"谷", meaning:"valley", sub:"gorge, ravine", on:"KOKU", onR:"koku", kun:"tani", kunR:"tani", strokes:7,
+    ex:[{w:"谷",r:"たに",m:"valley"}, {w:"渋谷",r:"しぶや",m:"Shibuya (Tokyo)"}, {w:"谷間",r:"たにま",m:"valley / gap"}],
+    tip:"Shibuya contains this kanji! One of Tokyo most famous districts." },
+  { id:"no", k:"野", meaning:"field", sub:"wild, countryside", on:"YA", onR:"ya", kun:"no", kunR:"no", strokes:11,
+    ex:[{w:"野原",r:"のはら",m:"field / plain"}, {w:"野菜",r:"やさい",m:"vegetables"}, {w:"上野",r:"うえの",m:"Ueno (Tokyo)"}],
+    tip:"Yasai (vegetables) = field + vegetable. Grown in the field! Ueno has the famous zoo." },
+  { id:"chi", k:"地", meaning:"ground", sub:"earth, land, position", on:"CHI", onR:"chi", kun:"tsuchi", kunR:"tsuchi", strokes:6,
+    ex:[{w:"地図",r:"ちず",m:"map"}, {w:"地球",r:"ちきゅう",m:"Earth"}, {w:"地下鉄",r:"ちかてつ",m:"subway"}],
+    tip:"Chizu (map) = ground + diagram. Chikyu (Earth) = ground + sphere. Chi is vital!" },
+  { id:"kuni", k:"国", meaning:"country", sub:"nation, homeland", on:"KOKU", onR:"koku", kun:"kuni", kunR:"kuni", strokes:8,
+    ex:[{w:"国",r:"くに",m:"country"}, {w:"外国",r:"がいこく",m:"foreign country"}, {w:"中国",r:"ちゅうごく",m:"China"}],
+    tip:"Gaikokujin (foreigner) = outside + country + person. You may hear this in Japan!" },
+  { id:"asa", k:"朝", meaning:"morning", sub:"dawn, AM", on:"CHOU", onR:"chou", kun:"asa", kunR:"asa", strokes:12,
+    ex:[{w:"朝",r:"あさ",m:"morning"}, {w:"今朝",r:"けさ",m:"this morning"}, {w:"朝食",r:"ちょうしょく",m:"breakfast"}],
+    tip:"Kesa (this morning) = now + morning. Kesa has an irregular reading - memorise it!" },
+  { id:"hiru", k:"昼", meaning:"noon", sub:"daytime, midday", on:"CHUU", onR:"chuu", kun:"hiru", kunR:"hiru", strokes:9,
+    ex:[{w:"昼",r:"ひる",m:"noon / daytime"}, {w:"昼食",r:"ちゅうしょく",m:"lunch"}, {w:"昼休み",r:"ひるやすみ",m:"lunch break"}],
+    tip:"Hiruyasumi (lunch break) - your kids have this at school every day!" },
+  { id:"yoru", k:"夜", meaning:"night", sub:"evening, nighttime", on:"YA", onR:"ya", kun:"yoru", kunR:"yoru", strokes:8,
+    ex:[{w:"夜",r:"よる",m:"night"}, {w:"今夜",r:"こんや",m:"tonight"}, {w:"夜中",r:"よなか",m:"midnight"}],
+    tip:"Konya (tonight) = now + night. Yonaka = midnight. Yoru is a peaceful word." },
+  { id:"shuu", k:"週", meaning:"week", sub:"7-day period", on:"SHUU", onR:"shuu", kun:"-", kunR:"-", strokes:11,
+    ex:[{w:"今週",r:"こんしゅう",m:"this week"}, {w:"来週",r:"らいしゅう",m:"next week"}, {w:"週末",r:"しゅうまつ",m:"weekend"}],
+    tip:"Shuumatsu (weekend) = week + end. What are you doing this weekend?" },
+  { id:"aida", k:"間", meaning:"between", sub:"interval, gap, room", on:"KAN", onR:"kan", kun:"aida", kunR:"aida", strokes:12,
+    ex:[{w:"時間",r:"じかん",m:"time / hour"}, {w:"人間",r:"にんげん",m:"human being"}, {w:"間もなく",r:"まもなく",m:"shortly"}],
+    tip:"Jikan (time) is one of the most-used words in Japanese! Jikan ga nai = no time!" },
+  { id:"toki", k:"時", meaning:"time", sub:"hour, o-clock, moment", on:"JI", onR:"ji", kun:"toki", kunR:"toki", strokes:10,
+    ex:[{w:"時間",r:"じかん",m:"time"}, {w:"何時",r:"なんじ",m:"what time"}, {w:"時々",r:"ときどき",m:"sometimes"}],
+    tip:"Tokidoki (sometimes) = doubled kanji! Tokei (clock) = time + measure." },
+  { id:"fun", k:"分", meaning:"minute", sub:"understand, part", on:"BUN", onR:"bun", kun:"wakaru", kunR:"wa(karu)", strokes:4,
+    ex:[{w:"一分",r:"いっぷん",m:"one minute"}, {w:"分かる",r:"わかる",m:"to understand"}, {w:"自分",r:"じぶん",m:"oneself"}],
+    tip:"Wakaru (to understand) is one of the most useful verbs! Wakarimashita = I understand." },
+  { id:"byou", k:"秒", meaning:"second", sub:"instant, moment", on:"BYOU", onR:"byou", kun:"-", kunR:"-", strokes:9,
+    ex:[{w:"秒",r:"びょう",m:"second (time)"}, {w:"三十秒",r:"さんじゅうびょう",m:"30 seconds"}, {w:"秒針",r:"びょうしん",m:"second hand"}],
+    tip:"Ji (hour) Fun (minute) Byou (second) - the three time kanji! Learn them together." },
+  { id:"kou", k:"校", meaning:"school", sub:"institution, check", on:"KOU", onR:"kou", kun:"-", kunR:"-", strokes:10,
+    ex:[{w:"学校",r:"がっこう",m:"school"}, {w:"小学校",r:"しょうがっこう",m:"elementary school"}, {w:"校長",r:"こうちょう",m:"principal"}],
+    tip:"Gakko = school! Shogakko = elementary school. Kocho-sensei = the principal!" },
+  { id:"shitsu", k:"室", meaning:"room", sub:"chamber, indoor space", on:"SHITSU", onR:"shitsu", kun:"muro", kunR:"muro", strokes:9,
+    ex:[{w:"教室",r:"きょうしつ",m:"classroom"}, {w:"室内",r:"しつない",m:"indoors"}, {w:"和室",r:"わしつ",m:"Japanese-style room"}],
+    tip:"Washitsu (Japanese room) has tatami mats! A beautiful traditional space." },
+  { id:"san", k:"算", meaning:"calculate", sub:"arithmetic, count", on:"SAN", onR:"san", kun:"-", kunR:"-", strokes:14,
+    ex:[{w:"計算",r:"けいさん",m:"calculation"}, {w:"算数",r:"さんすう",m:"arithmetic"}, {w:"算盤",r:"そろばん",m:"abacus"}],
+    tip:"Sansuu (arithmetic) is what your kids call Maths in elementary school!" },
+  { id:"kazu", k:"数", meaning:"number", sub:"count, quantity", on:"SUU", onR:"suu", kun:"kazu", kunR:"kazu", strokes:13,
+    ex:[{w:"数",r:"かず",m:"number"}, {w:"算数",r:"さんすう",m:"arithmetic"}, {w:"数学",r:"すうがく",m:"mathematics"}],
+    tip:"Sansuu (elementary maths) vs Sugaku (higher maths) - kanji show the school level!" },
+  { id:"ka", k:"科", meaning:"subject", sub:"branch, department", on:"KA", onR:"ka", kun:"-", kunR:"-", strokes:9,
+    ex:[{w:"科目",r:"かもく",m:"school subject"}, {w:"理科",r:"りか",m:"science"}, {w:"教科書",r:"きょうかしょ",m:"textbook"}],
+    tip:"Rika (science) and shakaika (social studies) are subjects your kids study!" },
+  { id:"ri", k:"理", meaning:"reason", sub:"logic, principle, science", on:"RI", onR:"ri", kun:"-", kunR:"-", strokes:11,
+    ex:[{w:"理科",r:"りか",m:"science"}, {w:"理由",r:"りゆう",m:"reason"}, {w:"料理",r:"りょうり",m:"cooking"}],
+    tip:"Ryori (cooking) = materials + reason/logic. Cooking is applied logic!" },
+  { id:"tai", k:"体", meaning:"body", sub:"physical, substance", on:"TAI", onR:"tai", kun:"karada", kunR:"karada", strokes:7,
+    ex:[{w:"体",r:"からだ",m:"body"}, {w:"体育",r:"たいいく",m:"PE class"}, {w:"体重",r:"たいじゅう",m:"body weight"}],
+    tip:"Taiiku (PE class) = body + nurture. Your kids have taiiku twice a week at school!" },
+  { id:"iku3", k:"育", meaning:"raise", sub:"nurture, grow, bring up", on:"IKU", onR:"iku", kun:"sodateru", kunR:"soda(teru)", strokes:8,
+    ex:[{w:"教育",r:"きょういく",m:"education"}, {w:"体育",r:"たいいく",m:"physical education"}, {w:"育てる",r:"そだてる",m:"to raise"}],
+    tip:"Kyoiku (education) = teach + nurture. The foundation of Japanese society!" },
+  { id:"kaze", k:"風", meaning:"wind", sub:"breeze, style", on:"FUU", onR:"fuu", kun:"kaze", kunR:"kaze", strokes:9,
+    ex:[{w:"風",r:"かぜ",m:"wind"}, {w:"台風",r:"たいふう",m:"typhoon"}, {w:"風景",r:"ふうけい",m:"scenery"}],
+    tip:"Taifu (typhoon) = platform + wind. Japan gets several typhoons per year!" },
+  { id:"yuki", k:"雪", meaning:"snow", sub:"snowfall", on:"SETSU", onR:"setsu", kun:"yuki", kunR:"yuki", strokes:11,
+    ex:[{w:"雪",r:"ゆき",m:"snow"}, {w:"大雪",r:"おおゆき",m:"heavy snowfall"}, {w:"雪国",r:"ゆきぐに",m:"snow country"}],
+    tip:"Yukiguni is a famous novel! Hokkaido gets metres of snow every winter." },
+  { id:"kumo", k:"雲", meaning:"cloud", sub:"overcast", on:"UN", onR:"un", kun:"kumo", kunR:"kumo", strokes:12,
+    ex:[{w:"雲",r:"くも",m:"cloud"}, {w:"雨雲",r:"あまぐも",m:"rain cloud"}, {w:"雲海",r:"うんかい",m:"sea of clouds"}],
+    tip:"Kumo has 雨 (rain) at the top! Rain clouds - makes perfect sense." },
+  { id:"hare", k:"晴", meaning:"sunny", sub:"clear, fine weather", on:"SEI", onR:"sei", kun:"hareru", kunR:"ha(reru)", strokes:12,
+    ex:[{w:"晴れ",r:"はれ",m:"sunny / clear"}, {w:"晴天",r:"せいてん",m:"fine weather"}, {w:"快晴",r:"かいせい",m:"perfectly clear sky"}],
+    tip:"Hare is the sunshine symbol! On weather maps hare = sunny day." },
+  { id:"atsui", k:"暑", meaning:"hot", sub:"summer heat, sweltering", on:"SHO", onR:"sho", kun:"atsui", kunR:"atsu(i)", strokes:12,
+    ex:[{w:"暑い",r:"あつい",m:"hot (weather)"}, {w:"暑さ",r:"あつさ",m:"heat"}, {w:"猛暑",r:"もうしょ",m:"intense heat"}],
+    tip:"Atsui = hot WEATHER. Hot OBJECT (soup) = also atsui but different kanji!" },
+  { id:"samui", k:"寒", meaning:"cold", sub:"chilly, wintry", on:"KAN", onR:"kan", kun:"samui", kunR:"samu(i)", strokes:12,
+    ex:[{w:"寒い",r:"さむい",m:"cold (weather)"}, {w:"寒さ",r:"さむさ",m:"coldness"}, {w:"寒波",r:"かんぱ",m:"cold wave"}],
+    tip:"Samui = cold WEATHER or feeling cold. Tsumetai = cold to the touch. Different!" },
+  { id:"atatakai", k:"温", meaning:"warm", sub:"gentle, lukewarm", on:"ON", onR:"on", kun:"atatakai", kunR:"atata(kai)", strokes:12,
+    ex:[{w:"温かい",r:"あたたかい",m:"warm"}, {w:"気温",r:"きおん",m:"air temperature"}, {w:"温泉",r:"おんせん",m:"hot spring / onsen"}],
+    tip:"Onsen (hot spring) = warm + spring! Japan most beloved tradition!" },
+  { id:"do", k:"度", meaning:"degree", sub:"temperature, times, frequency", on:"DO", onR:"do", kun:"tabi", kunR:"tabi", strokes:9,
+    ex:[{w:"温度",r:"おんど",m:"temperature"}, {w:"今度",r:"こんど",m:"this time / next time"}, {w:"一度",r:"いちど",m:"once"}],
+    tip:"Kondo = this time or next time - context dependent! Ichido = once." },
+  { id:"shi", k:"市", meaning:"city", sub:"municipality, market", on:"SHI", onR:"shi", kun:"ichi", kunR:"ichi", strokes:5,
+    ex:[{w:"市",r:"し",m:"city"}, {w:"都市",r:"とし",m:"city / urban"}, {w:"市場",r:"いちば",m:"market"}],
+    tip:"Toshi (city) is the formal word. Ichi = market. Both readings are common." },
+  { id:"mise", k:"店", meaning:"shop", sub:"store, restaurant", on:"TEN", onR:"ten", kun:"mise", kunR:"mise", strokes:8,
+    ex:[{w:"お店",r:"おみせ",m:"shop / store"}, {w:"書店",r:"しょてん",m:"bookshop"}, {w:"店員",r:"てんいん",m:"shop staff"}],
+    tip:"Shoten (bookshop) = write + store. Omise is the polite everyday word!" },
+  { id:"ba", k:"場", meaning:"place", sub:"location, ground, occasion", on:"JOU", onR:"jou", kun:"ba", kunR:"ba", strokes:12,
+    ex:[{w:"場所",r:"ばしょ",m:"place / location"}, {w:"工場",r:"こうじょう",m:"factory"}, {w:"登場",r:"とうじょう",m:"appearance"}],
+    tip:"Basho (place) is one of the most useful nouns in Japanese!" },
+  { id:"tokoro", k:"所", meaning:"place", sub:"spot, point, address", on:"SHO", onR:"sho", kun:"tokoro", kunR:"tokoro", strokes:8,
+    ex:[{w:"場所",r:"ばしょ",m:"place"}, {w:"近所",r:"きんじょ",m:"neighbourhood"}, {w:"台所",r:"だいどころ",m:"kitchen"}],
+    tip:"Daidokoro (kitchen) = platform + place - where you stand to cook!" },
+  { id:"michi", k:"道", meaning:"road", sub:"way, path, doctrine", on:"DOU", onR:"dou", kun:"michi", kunR:"michi", strokes:12,
+    ex:[{w:"道",r:"みち",m:"road / path"}, {w:"北海道",r:"ほっかいどう",m:"Hokkaido"}, {w:"道路",r:"どうろ",m:"road"}],
+    tip:"Hokkaido = North Sea Road! Judo, kendo, sado - the Ways of martial arts and tea!" },
+  { id:"hashi", k:"橋", meaning:"bridge", sub:"overpass, link", on:"KYOU", onR:"kyou", kun:"hashi", kunR:"hashi", strokes:16,
+    ex:[{w:"橋",r:"はし",m:"bridge"}, {w:"日本橋",r:"にほんばし",m:"Nihonbashi (Tokyo)"}, {w:"鉄橋",r:"てっきょう",m:"iron bridge"}],
+    tip:"Nihonbashi = the bridge at the heart of old Tokyo! All distances measured from here." },
+  { id:"eki", k:"駅", meaning:"station", sub:"train stop", on:"EKI", onR:"eki", kun:"-", kunR:"-", strokes:14,
+    ex:[{w:"駅",r:"えき",m:"station"}, {w:"駅員",r:"えきいん",m:"station staff"}, {w:"終着駅",r:"しゅうちゃくえき",m:"terminal station"}],
+    tip:"Eki is everywhere in Japan! The horse radical inside - horses once used for transport." },
+  { id:"kado", k:"角", meaning:"corner", sub:"angle, horn, square", on:"KAKU", onR:"kaku", kun:"kado", kunR:"kado", strokes:7,
+    ex:[{w:"角",r:"かど",m:"corner"}, {w:"三角",r:"さんかく",m:"triangle"}, {w:"四角",r:"しかく",m:"square / rectangle"}],
+    tip:"Sankaku (triangle) = 3 corners! Shikaku (square) = 4 corners! Great maths vocab." },
+  { id:"atama", k:"頭", meaning:"head", sub:"brain, leader", on:"TOU", onR:"tou", kun:"atama", kunR:"atama", strokes:16,
+    ex:[{w:"頭",r:"あたま",m:"head"}, {w:"頭痛",r:"ずつう",m:"headache"}, {w:"先頭",r:"せんとう",m:"lead / front"}],
+    tip:"Zutsuu (headache) = head + pain. Atama ga ii = smart/clever. Very common!" },
+  { id:"kao", k:"顔", meaning:"face", sub:"expression, cheek", on:"GAN", onR:"gan", kun:"kao", kunR:"kao", strokes:18,
+    ex:[{w:"顔",r:"かお",m:"face"}, {w:"顔色",r:"かおいろ",m:"complexion"}, {w:"笑顔",r:"えがお",m:"smile"}],
+    tip:"Egao (smiling face) = laugh + face! Egao is very important in Japanese culture." },
+  { id:"kubi", k:"首", meaning:"neck", sub:"head, dismiss", on:"SHU", onR:"shu", kun:"kubi", kunR:"kubi", strokes:9,
+    ex:[{w:"首",r:"くび",m:"neck"}, {w:"首相",r:"しゅしょう",m:"prime minister"}, {w:"首都",r:"しゅと",m:"capital city"}],
+    tip:"Shuto (capital) = head + city. Tokyo is the shuto of Japan!" },
+  { id:"hara2", k:"腹", meaning:"stomach", sub:"belly, abdomen", on:"FUKU", onR:"fuku", kun:"hara", kunR:"hara", strokes:13,
+    ex:[{w:"腹",r:"はら",m:"stomach"}, {w:"腹痛",r:"ふくつう",m:"stomachache"}, {w:"空腹",r:"くうふく",m:"hunger"}],
+    tip:"Kufuku (hungry) = empty stomach! Hara ga hetta = I am starving (casual)." },
+  { id:"byou2", k:"病", meaning:"illness", sub:"sick, disease", on:"BYOU", onR:"byou", kun:"yamai", kunR:"yamai", strokes:10,
+    ex:[{w:"病気",r:"びょうき",m:"illness"}, {w:"病院",r:"びょういん",m:"hospital"}, {w:"病人",r:"びょうにん",m:"sick person"}],
+    tip:"Byoin (hospital) = illness + institution. Daijoubu desu ka? = Are you OK?" },
+  { id:"kusuri", k:"薬", meaning:"medicine", sub:"drug, remedy", on:"YAKU", onR:"yaku", kun:"kusuri", kunR:"kusuri", strokes:16,
+    ex:[{w:"薬",r:"くすり",m:"medicine"}, {w:"薬局",r:"やっきょく",m:"pharmacy"}, {w:"火薬",r:"かやく",m:"gunpowder"}],
+    tip:"Yakkyoku (pharmacy) = medicine + office. The grass radical = plant origins." },
+  { id:"isha", k:"医", meaning:"doctor", sub:"medicine, heal", on:"I", onR:"i", kun:"-", kunR:"-", strokes:7,
+    ex:[{w:"医者",r:"いしゃ",m:"doctor"}, {w:"医院",r:"いいん",m:"clinic"}, {w:"医学",r:"いがく",m:"medical science"}],
+    tip:"Isha (doctor) = medicine + person. Oisha-san is the polite form." },
+  { id:"yasumu", k:"休", meaning:"rest", sub:"vacation, absent", on:"KYUU", onR:"kyuu", kun:"yasumu", kunR:"yasu(mu)", strokes:6,
+    ex:[{w:"休む",r:"やすむ",m:"to rest"}, {w:"夏休み",r:"なつやすみ",m:"summer holiday"}, {w:"休日",r:"きゅうじつ",m:"holiday"}],
+    tip:"Natsuyasumi (summer holiday) - one of the most-anticipated words for kids!" },
+  { id:"omou", k:"思", meaning:"think", sub:"feel, consider, miss", on:"SHI", onR:"shi", kun:"omou", kunR:"omo(u)", strokes:9,
+    ex:[{w:"思う",r:"おもう",m:"to think / feel"}, {w:"思い出",r:"おもいで",m:"memory"}, {w:"意思",r:"いし",m:"intention"}],
+    tip:"Omoide (memory) = think + exit - memories come out of your mind! Beautiful word." },
+  { id:"kangaeru", k:"考", meaning:"consider", sub:"think, ponder, plan", on:"KOU", onR:"kou", kun:"kangaeru", kunR:"kanga(eru)", strokes:6,
+    ex:[{w:"考える",r:"かんがえる",m:"to consider"}, {w:"参考",r:"さんこう",m:"reference"}, {w:"考え方",r:"かんがえかた",m:"way of thinking"}],
+    tip:"Omou = feel emotionally. Kangaeru = think logically. Two types of thinking!" },
+  { id:"ki2", k:"気", meaning:"spirit", sub:"energy, feeling, atmosphere", on:"KI", onR:"ki", kun:"-", kunR:"-", strokes:6,
+    ex:[{w:"元気",r:"げんき",m:"healthy / energetic"}, {w:"気持ち",r:"きもち",m:"feeling"}, {w:"天気",r:"てんき",m:"weather"}],
+    tip:"Genki = energetic/healthy! Japan most-used everyday greeting. Ki is everywhere!" },
+  { id:"kokoro", k:"心", meaning:"heart", sub:"mind, spirit, feeling", on:"SHIN", onR:"shin", kun:"kokoro", kunR:"kokoro", strokes:4,
+    ex:[{w:"心",r:"こころ",m:"heart / mind"}, {w:"安心",r:"あんしん",m:"relief / peace of mind"}, {w:"心配",r:"しんぱい",m:"worry"}],
+    tip:"Shinpai (worry) = heart + distribute. Anshin = peace of heart. Very common words!" },
+  { id:"tanoshii", k:"楽", meaning:"fun", sub:"music, comfortable, easy", on:"GAKU", onR:"gaku", kun:"tanoshii", kunR:"tano(shii)", strokes:13,
+    ex:[{w:"楽しい",r:"たのしい",m:"fun / enjoyable"}, {w:"音楽",r:"おんがく",m:"music"}, {w:"楽器",r:"がっき",m:"musical instrument"}],
+    tip:"Ongaku (music) = sound + fun! Tanoshii is one of the most important words!" },
+  { id:"kanashii", k:"悲", meaning:"sad", sub:"grief, sorrow", on:"HI", onR:"hi", kun:"kanashii", kunR:"kana(shii)", strokes:12,
+    ex:[{w:"悲しい",r:"かなしい",m:"sad"}, {w:"悲劇",r:"ひげき",m:"tragedy"}, {w:"悲しむ",r:"かなしむ",m:"to grieve"}],
+    tip:"Kanashii has the heart radical at the bottom - sadness comes from the heart!" },
+  { id:"naku", k:"泣", meaning:"cry", sub:"weep, shed tears", on:"KYUU", onR:"kyuu", kun:"naku", kunR:"na(ku)", strokes:8,
+    ex:[{w:"泣く",r:"なく",m:"to cry"}, {w:"泣き虫",r:"なきむし",m:"crybaby"}, {w:"号泣",r:"ごうきゅう",m:"sobbing"}],
+    tip:"Nakimushi (crybaby) = cry + bug! The water radical = tears like water." },
+  { id:"warau", k:"笑", meaning:"laugh", sub:"smile, grin", on:"SHOU", onR:"shou", kun:"warau", kunR:"wara(u)", strokes:10,
+    ex:[{w:"笑う",r:"わらう",m:"to laugh"}, {w:"笑顔",r:"えがお",m:"smiling face"}, {w:"大笑い",r:"おおわらい",m:"burst of laughter"}],
+    tip:"Egao (smile) = laugh + face. Waratte! = Smile! One of the nicest words in Japanese." },
+  { id:"hiku", k:"引", meaning:"pull", sub:"draw, attract, quote", on:"IN", onR:"in", kun:"hiku", kunR:"hi(ku)", strokes:4,
+    ex:[{w:"引く",r:"ひく",m:"to pull"}, {w:"引っ越し",r:"ひっこし",m:"moving house"}, {w:"取引",r:"とりひき",m:"trade / deal"}],
+    tip:"Hikkoshi (moving house) = pull + cross. Very useful if your family moves in Japan!" },
+  { id:"hane", k:"羽", meaning:"feather", sub:"wing, counter for birds", on:"U", onR:"u", kun:"hane", kunR:"hane", strokes:6,
+    ex:[{w:"羽",r:"はね",m:"feather / wing"}, {w:"羽毛",r:"うもう",m:"down feather"}, {w:"一羽",r:"いちわ",m:"one bird (counter)"}],
+    tip:"Hane = feather AND wing. Birds are counted with this kanji. Ichiva, niva, sanba." },
+  { id:"en", k:"園", meaning:"garden", sub:"park, orchard, kindergarten", on:"EN", onR:"en", kun:"sono", kunR:"sono", strokes:13,
+    ex:[{w:"公園",r:"こうえん",m:"park"}, {w:"動物園",r:"どうぶつえん",m:"zoo"}, {w:"幼稚園",r:"ようちえん",m:"kindergarten"}],
+    tip:"Yochien (kindergarten) = young + slow + garden. Your kids may have gone here!" },
+  { id:"tooi", k:"遠", meaning:"far away", sub:"distant, remote", on:"EN", onR:"en", kun:"tooi", kunR:"too(i)", strokes:13,
+    ex:[{w:"遠い",r:"とおい",m:"far away"}, {w:"遠足",r:"えんそく",m:"school excursion"}, {w:"永遠",r:"えいえん",m:"eternity"}],
+    tip:"Ensoku (school excursion) = far + foot. Going far on foot! School trips use this." },
+  { id:"nani", k:"何", meaning:"what", sub:"how many, which", on:"KA", onR:"ka", kun:"nani", kunR:"nani", strokes:7,
+    ex:[{w:"何",r:"なに",m:"what"}, {w:"何時",r:"なんじ",m:"what time"}, {w:"何人",r:"なんにん",m:"how many people"}],
+    tip:"Nani = what? One of THE key question words. Use it every single day!" },
+  { id:"natsu", k:"夏", meaning:"summer", sub:"hot season", on:"KA", onR:"ka", kun:"natsu", kunR:"natsu", strokes:10,
+    ex:[{w:"夏",r:"なつ",m:"summer"}, {w:"夏休み",r:"なつやすみ",m:"summer holiday"}, {w:"夏祭り",r:"なつまつり",m:"summer festival"}],
+    tip:"Natsumatsuri (summer festival) - fireworks, yukata, kakigori! Kids love it!" },
+  { id:"ie", k:"家", meaning:"house", sub:"home, family, household", on:"KA", onR:"ka", kun:"ie", kunR:"ie", strokes:10,
+    ex:[{w:"家",r:"いえ",m:"house / home"}, {w:"家族",r:"かぞく",m:"family"}, {w:"家庭",r:"かてい",m:"home / household"}],
+    tip:"Kazoku (family) = house + tribe. Katei (home) = house + garden. Ka is everywhere!" },
+  { id:"uta", k:"歌", meaning:"song", sub:"sing, melody", on:"KA", onR:"ka", kun:"uta", kunR:"uta", strokes:14,
+    ex:[{w:"歌",r:"うた",m:"song"}, {w:"歌う",r:"うたう",m:"to sing"}, {w:"国歌",r:"こっか",m:"national anthem"}],
+    tip:"Kokka (national anthem) = country + song. 歌 has the yawn radical - singing opens mouth!" },
+  { id:"e", k:"画", meaning:"picture", sub:"drawing, stroke, plan", on:"GA", onR:"ga", kun:"egaku", kunR:"ega(ku)", strokes:8,
+    ex:[{w:"絵画",r:"かいが",m:"painting"}, {w:"映画",r:"えいが",m:"movie / film"}, {w:"計画",r:"けいかく",m:"plan"}],
+    tip:"Eiga (movie) = reflect + picture! Keikaku (plan) = measure + picture. Very useful!" },
+  { id:"mawaru", k:"回", meaning:"turn", sub:"rotate, times, round", on:"KAI", onR:"kai", kun:"mawaru", kunR:"mawa(ru)", strokes:6,
+    ex:[{w:"回る",r:"まわる",m:"to turn / go around"}, {w:"今回",r:"こんかい",m:"this time"}, {w:"回転",r:"かいてん",m:"rotation"}],
+    tip:"Konkai (this time), maikai (every time), ikkai (once). Kai counts rounds!" },
+  { id:"kai2", k:"会", meaning:"meet", sub:"association, gather, society", on:"KAI", onR:"kai", kun:"au", kunR:"a(u)", strokes:6,
+    ex:[{w:"会う",r:"あう",m:"to meet"}, {w:"会社",r:"かいしゃ",m:"company"}, {w:"会話",r:"かいわ",m:"conversation"}],
+    tip:"Kaisha (company) = meet + place. Kaiwa (conversation) = meet + talk. Essential!" },
+  { id:"e2", k:"絵", meaning:"picture", sub:"painting, illustration", on:"KAI", onR:"kai", kun:"e", kunR:"e", strokes:12,
+    ex:[{w:"絵",r:"え",m:"picture / drawing"}, {w:"絵本",r:"えほん",m:"picture book"}, {w:"絵画",r:"かいが",m:"painting"}],
+    tip:"Ehon (picture book) = picture + book! Japanese picture books are beautiful art." },
+  { id:"soto", k:"外", meaning:"outside", sub:"foreign, exterior", on:"GAI", onR:"gai", kun:"soto", kunR:"soto", strokes:5,
+    ex:[{w:"外",r:"そと",m:"outside"}, {w:"海外",r:"かいがい",m:"overseas"}, {w:"外国人",r:"がいこくじん",m:"foreigner"}],
+    tip:"Gaikokujin (foreigner) = outside + country + person. Common word in Japan!" },
+  { id:"ikiru", k:"活", meaning:"lively", sub:"activity, life, vigor", on:"KATSU", onR:"katsu", kun:"-", kunR:"-", strokes:9,
+    ex:[{w:"活動",r:"かつどう",m:"activity"}, {w:"生活",r:"せいかつ",m:"daily life"}, {w:"活気",r:"かっき",m:"energy"}],
+    tip:"Seikatsu (daily life) = life + activity. How is your seikatsu in Japan going?" },
+  { id:"maru", k:"丸", meaning:"circle", sub:"round, pill, ball", on:"GAN", onR:"gan", kun:"maru", kunR:"maru", strokes:3,
+    ex:[{w:"丸",r:"まる",m:"circle"}, {w:"丸い",r:"まるい",m:"round"}, {w:"弾丸",r:"だんがん",m:"bullet"}],
+    tip:"Maru means circle AND the character for correct in Japanese schools!" },
+  { id:"yumi", k:"弓", meaning:"bow", sub:"archery bow", on:"KYUU", onR:"kyuu", kun:"yumi", kunR:"yumi", strokes:3,
+    ex:[{w:"弓",r:"ゆみ",m:"bow"}, {w:"弓道",r:"きゅうどう",m:"archery"}, {w:"弓矢",r:"ゆみや",m:"bow and arrow"}],
+    tip:"Kyudo (archery) = bow + way. A traditional Japanese martial art!" },
+  { id:"ushi", k:"牛", meaning:"cow", sub:"cattle, bull, ox", on:"GYUU", onR:"gyuu", kun:"ushi", kunR:"ushi", strokes:4,
+    ex:[{w:"牛",r:"うし",m:"cow"}, {w:"牛乳",r:"ぎゅうにゅう",m:"milk"}, {w:"牛肉",r:"ぎゅうにく",m:"beef"}],
+    tip:"Gyunyu (milk) = cow + milk. Gyuniku (beef) = cow + meat. Very logical kanji!" },
+  { id:"sakana", k:"魚", meaning:"fish", sub:"marine creature", on:"GYO", onR:"gyo", kun:"sakana", kunR:"sakana", strokes:11,
+    ex:[{w:"魚",r:"さかな",m:"fish"}, {w:"金魚",r:"きんぎょ",m:"goldfish"}, {w:"魚市場",r:"うおいちば",m:"fish market"}],
+    tip:"Kingyo (goldfish) = gold + fish! Goldfish scooping at summer festivals is a tradition!" },
+  { id:"kyou", k:"京", meaning:"capital city", sub:"metropolis", on:"KYOU", onR:"kyou", kun:"miyako", kunR:"miyako", strokes:8,
+    ex:[{w:"東京",r:"とうきょう",m:"Tokyo"}, {w:"京都",r:"きょうと",m:"Kyoto"}, {w:"上京",r:"じょうきょう",m:"going to Tokyo"}],
+    tip:"Tokyo = East + Capital! Kyoto = Capital + City. Two great Japanese cities!" },
+  { id:"tsuyoi", k:"強", meaning:"strong", sub:"powerful, force", on:"KYOU", onR:"kyou", kun:"tsuyoi", kunR:"tsuyo(i)", strokes:11,
+    ex:[{w:"強い",r:"つよい",m:"strong"}, {w:"強調",r:"きょうちょう",m:"emphasis"}, {w:"勉強",r:"べんきょう",m:"studying"}],
+    tip:"Benkyo (studying) = diligence + strong. Study hard! Tsuyoi = strong!" },
+  { id:"chikaku", k:"近", meaning:"near", sub:"close, recent, nearby", on:"KIN", onR:"kin", kun:"chikaku", kunR:"chika(i)", strokes:7,
+    ex:[{w:"近い",r:"ちかい",m:"near / close"}, {w:"近所",r:"きんじょ",m:"neighbourhood"}, {w:"最近",r:"さいきん",m:"recently"}],
+    tip:"Saikin (recently) = most + near. Kinjo (neighbourhood) = near + place." },
+  { id:"katachi", k:"形", meaning:"shape", sub:"form, figure, appearance", on:"KEI", onR:"kei", kun:"katachi", kunR:"katachi", strokes:7,
+    ex:[{w:"形",r:"かたち",m:"shape / form"}, {w:"形式",r:"けいしき",m:"format / style"}, {w:"人形",r:"にんぎょう",m:"doll"}],
+    tip:"Ningyo (doll) = person + shape! Japanese dolls (hina ningyo) are beautiful." },
+  { id:"keikaku", k:"計", meaning:"measure", sub:"plan, count, total", on:"KEI", onR:"kei", kun:"hakaru", kunR:"haka(ru)", strokes:9,
+    ex:[{w:"計算",r:"けいさん",m:"calculation"}, {w:"時計",r:"とけい",m:"clock / watch"}, {w:"計画",r:"けいかく",m:"plan"}],
+    tip:"Tokei (watch/clock) = time + measure! Keikaku (plan) = measure + draw." },
+  { id:"moto", k:"元", meaning:"origin", sub:"base, former, healthy", on:"GEN", onR:"gen", kun:"moto", kunR:"moto", strokes:4,
+    ex:[{w:"元気",r:"げんき",m:"energetic / healthy"}, {w:"元々",r:"もともと",m:"originally"}, {w:"元日",r:"がんじつ",m:"New Year Day"}],
+    tip:"Genki = energetic/healthy! 元 is in Japan most important greeting word!" },
+  { id:"iu", k:"言", meaning:"say", sub:"word, speak, language", on:"GEN", onR:"gen", kun:"iu", kunR:"i(u)", strokes:7,
+    ex:[{w:"言う",r:"いう",m:"to say"}, {w:"言葉",r:"ことば",m:"word / language"}, {w:"言語",r:"げんご",m:"language"}],
+    tip:"Kotoba (word) = say + leaf. Language flows like leaves! Kotoba is a beautiful word." },
+  { id:"to", k:"戸", meaning:"door", sub:"gate, household", on:"KO", onR:"ko", kun:"to", kunR:"to", strokes:4,
+    ex:[{w:"戸",r:"と",m:"door"}, {w:"戸外",r:"こがい",m:"outdoors"}, {w:"江戸",r:"えど",m:"Edo (old Tokyo)"}],
+    tip:"Edo (old Tokyo) uses this kanji! The Edo period 1603-1868 shaped Japanese culture." },
+  { id:"furui", k:"古", meaning:"old", sub:"ancient, secondhand", on:"KO", onR:"ko", kun:"furui", kunR:"furu(i)", strokes:5,
+    ex:[{w:"古い",r:"ふるい",m:"old / ancient"}, {w:"古典",r:"こてん",m:"classical literature"}, {w:"古着",r:"ふるぎ",m:"used clothing"}],
+    tip:"Furui (old) vs atarashii (new). Furugi (used clothes) are trendy in Japan now!" },
+  { id:"gozen", k:"午", meaning:"noon", sub:"midday, 12 o-clock", on:"GO", onR:"go", kun:"-", kunR:"-", strokes:4,
+    ex:[{w:"午前",r:"ごぜん",m:"AM / morning"}, {w:"午後",r:"ごご",m:"PM / afternoon"}, {w:"正午",r:"しょうご",m:"noon"}],
+    tip:"Gozen (AM) + Gogo (PM). Shogo = noon exactly. Essential for telling time!" },
+  { id:"ato", k:"後", meaning:"after", sub:"behind, later, back", on:"GO", onR:"go", kun:"ato", kunR:"ato", strokes:9,
+    ex:[{w:"後",r:"あと",m:"after / behind"}, {w:"午後",r:"ごご",m:"PM / afternoon"}, {w:"最後",r:"さいご",m:"the last"}],
+    tip:"Saigo (the last) = most + after. Gogo (afternoon) = noon + after. Very logical!" },
+  { id:"koujou", k:"工", meaning:"work", sub:"craft, construction, industry", on:"KOU", onR:"kou", kun:"-", kunR:"-", strokes:3,
+    ex:[{w:"工場",r:"こうじょう",m:"factory"}, {w:"工事",r:"こうじ",m:"construction work"}, {w:"大工",r:"だいく",m:"carpenter"}],
+    tip:"Daiku (carpenter) = big + craft. Koji (construction) = craft + matter. Seen everywhere!" },
+  { id:"kougai", k:"公", meaning:"public", sub:"official, government, fair", on:"KOU", onR:"kou", kun:"-", kunR:"-", strokes:4,
+    ex:[{w:"公園",r:"こうえん",m:"park"}, {w:"公立",r:"こうりつ",m:"public institution"}, {w:"公式",r:"こうしき",m:"official"}],
+    tip:"Koen (park) = public + garden! Public parks are wonderful in Japan. Enjoy them!" },
+  { id:"hiroi", k:"広", meaning:"wide", sub:"spacious, broad, spread", on:"KOU", onR:"kou", kun:"hiroi", kunR:"hiro(i)", strokes:5,
+    ex:[{w:"広い",r:"ひろい",m:"wide / spacious"}, {w:"広場",r:"ひろば",m:"public square"}, {w:"広告",r:"こうこく",m:"advertisement"}],
+    tip:"Hiroba (public square) = wide + place. Kokoku (advertisement) = wide + tell!" },
+  { id:"majiru", k:"交", meaning:"mix", sub:"interact, traffic, exchange", on:"KOU", onR:"kou", kun:"majiru", kunR:"ma(jiru)", strokes:6,
+    ex:[{w:"交通",r:"こうつう",m:"traffic"}, {w:"交差点",r:"こうさてん",m:"intersection"}, {w:"外交",r:"がいこう",m:"diplomacy"}],
+    tip:"Kotsuu (traffic) = mix + pass. Kousaten (intersection) = mix + differ + point!" },
+  { id:"hikari", k:"光", meaning:"light", sub:"shine, beam, glory", on:"KOU", onR:"kou", kun:"hikari", kunR:"hikari", strokes:6,
+    ex:[{w:"光",r:"ひかり",m:"light"}, {w:"日光",r:"にっこう",m:"sunlight"}, {w:"観光",r:"かんこう",m:"sightseeing"}],
+    tip:"Kanko (sightseeing) = look + light. Nikko (shrine town) = sun + light!" },
+  { id:"takai", k:"高", meaning:"tall", sub:"expensive, high, above", on:"KOU", onR:"kou", kun:"takai", kunR:"taka(i)", strokes:10,
+    ex:[{w:"高い",r:"たかい",m:"tall / expensive"}, {w:"高校",r:"こうこう",m:"high school"}, {w:"高速",r:"こうそく",m:"high speed"}],
+    tip:"Koko (high school) = high + school! Shinkansen = high speed train. Takai = expensive!" },
+  { id:"ki2b", k:"黄", meaning:"yellow", sub:"gold colour", on:"KOU", onR:"kou", kun:"ki", kunR:"ki", strokes:11,
+    ex:[{w:"黄色",r:"きいろ",m:"yellow colour"}, {w:"黄金",r:"おうごん",m:"gold"}, {w:"黄緑",r:"きみどり",m:"yellow-green"}],
+    tip:"Kiiro (yellow) = yellow + colour. Traffic lights go ao (green) ki (yellow) aka (red)!" },
+  { id:"au", k:"合", meaning:"combine", sub:"suit, fit, total", on:"GOU", onR:"gou", kun:"au", kunR:"a(u)", strokes:6,
+    ex:[{w:"合う",r:"あう",m:"to fit / match"}, {w:"合計",r:"ごうけい",m:"total"}, {w:"場合",r:"ばあい",m:"case / situation"}],
+    tip:"Baai (case/situation) = place + combine. Gokei (total) = combine + count. Common!" },
+  { id:"koku", k:"黒", meaning:"black", sub:"dark, evil", on:"KOKU", onR:"koku", kun:"kuro", kunR:"kuro", strokes:11,
+    ex:[{w:"黒い",r:"くろい",m:"black"}, {w:"黒板",r:"こくばん",m:"blackboard"}, {w:"黒字",r:"くろじ",m:"profit"}],
+    tip:"Kokuban (blackboard) = black + board. Your kids write on this at school every day!" },
+  { id:"ima2", k:"今", meaning:"now", sub:"present, current", on:"KON", onR:"kon", kun:"ima", kunR:"ima", strokes:4,
+    ex:[{w:"今日",r:"きょう",m:"today"}, {w:"今年",r:"ことし",m:"this year"}, {w:"今すぐ",r:"いますぐ",m:"right now"}],
+    tip:"Kyo (today) has an irregular reading - not konichi! Learn kyo, kotoshi, konshuu." },
+  { id:"sai", k:"才", meaning:"talent", sub:"genius, years old", on:"SAI", onR:"sai", kun:"-", kunR:"-", strokes:3,
+    ex:[{w:"才能",r:"さいのう",m:"talent"}, {w:"天才",r:"てんさい",m:"genius"}, {w:"十歳",r:"じゅっさい",m:"10 years old"}],
+    tip:"Tensai (genius) = heaven + talent! Sai is also used for counting age." },
+  { id:"hosoi", k:"細", meaning:"thin", sub:"detailed, slender, fine", on:"SAI", onR:"sai", kun:"hosoi", kunR:"hoso(i)", strokes:11,
+    ex:[{w:"細い",r:"ほそい",m:"thin / slender"}, {w:"細かい",r:"こまかい",m:"detailed / fine"}, {w:"明細",r:"めいさい",m:"details"}],
+    tip:"Hosoi = thin/slender. Komakai = detailed/fine. Both come from this kanji!" },
+  { id:"tsukuru", k:"作", meaning:"make", sub:"create, produce, work", on:"SAKU", onR:"saku", kun:"tsukuru", kunR:"tsuku(ru)", strokes:7,
+    ex:[{w:"作る",r:"つくる",m:"to make"}, {w:"作文",r:"さくぶん",m:"essay"}, {w:"作品",r:"さくひん",m:"work of art"}],
+    tip:"Sakuhin (work of art) = make + product. Sakubun (essay) = make + sentence!" },
+  { id:"kami", k:"紙", meaning:"paper", sub:"sheet, document", on:"SHI", onR:"shi", kun:"kami", kunR:"kami", strokes:10,
+    ex:[{w:"紙",r:"かみ",m:"paper"}, {w:"手紙",r:"てがみ",m:"letter / mail"}, {w:"新聞紙",r:"しんぶんし",m:"newspaper"}],
+    tip:"Tegami (letter) = hand + paper! Writing letters by hand is still valued in Japan." },
+  { id:"tera", k:"寺", meaning:"temple", sub:"Buddhist temple", on:"JI", onR:"ji", kun:"tera", kunR:"tera", strokes:6,
+    ex:[{w:"寺",r:"てら",m:"temple"}, {w:"お寺",r:"おてら",m:"temple (polite)"}, {w:"寺院",r:"じいん",m:"temple"}],
+    tip:"Japan has over 75000 Buddhist temples! Otera = temple. Beautiful architecture!" },
+  { id:"ji2b", k:"自", meaning:"self", sub:"oneself, natural, own", on:"JI", onR:"ji", kun:"mizukara", kunR:"mizuka(ra)", strokes:6,
+    ex:[{w:"自分",r:"じぶん",m:"oneself"}, {w:"自転車",r:"じてんしゃ",m:"bicycle"}, {w:"自由",r:"じゆう",m:"freedom"}],
+    tip:"Jitensha (bicycle) = self + turn + vehicle! Jiyuu (freedom) = self + reason!" },
+  { id:"yashiro", k:"社", meaning:"shrine", sub:"company, association, society", on:"SHA", onR:"sha", kun:"yashiro", kunR:"yashiro", strokes:7,
+    ex:[{w:"会社",r:"かいしゃ",m:"company"}, {w:"社会",r:"しゃかい",m:"society"}, {w:"神社",r:"じんじゃ",m:"Shinto shrine"}],
+    tip:"Jinja (shrine) = god + shrine! There are 80000 plus Shinto shrines in Japan!" },
+  { id:"yowai", k:"弱", meaning:"weak", sub:"feeble, poor at", on:"JAKU", onR:"jaku", kun:"yowai", kunR:"yowa(i)", strokes:10,
+    ex:[{w:"弱い",r:"よわい",m:"weak"}, {w:"弱点",r:"じゃくてん",m:"weak point"}, {w:"弱気",r:"よわき",m:"timid"}],
+    tip:"Yowai = weak. Tsuyoi = strong. Jakuten (weak point) = weak + point!" },
+  { id:"haru", k:"春", meaning:"spring", sub:"springtime, vernal", on:"SHUN", onR:"shun", kun:"haru", kunR:"haru", strokes:9,
+    ex:[{w:"春",r:"はる",m:"spring"}, {w:"春休み",r:"はるやすみ",m:"spring holiday"}, {w:"青春",r:"せいしゅん",m:"youth"}],
+    tip:"Seishun (youth) = blue + spring - so poetic! School year starts in spring in Japan." },
+  { id:"sukoshi", k:"少", meaning:"few", sub:"a little, small amount", on:"SHOU", onR:"shou", kun:"sukunai", kunR:"suku(nai)", strokes:4,
+    ex:[{w:"少ない",r:"すくない",m:"few / scarce"}, {w:"少し",r:"すこし",m:"a little"}, {w:"少年",r:"しょうねん",m:"boy / youth"}],
+    tip:"Shonen (boy/youth) = little + year. Shonen manga is for young boys! Very popular." },
+  { id:"iro", k:"色", meaning:"colour", sub:"hue, type", on:"SHOKU", onR:"shoku", kun:"iro", kunR:"iro", strokes:6,
+    ex:[{w:"色",r:"いろ",m:"colour"}, {w:"色々",r:"いろいろ",m:"various"}, {w:"景色",r:"けしき",m:"scenery"}],
+    tip:"Iroiro (various) = colour colour - doubled for emphasis! Keshiki (scenery) = view + colour." },
+  { id:"taberu", k:"食", meaning:"eat", sub:"food, meal, diet", on:"SHOKU", onR:"shoku", kun:"taberu", kunR:"ta(beru)", strokes:9,
+    ex:[{w:"食べる",r:"たべる",m:"to eat"}, {w:"食事",r:"しょくじ",m:"meal"}, {w:"給食",r:"きゅうしょく",m:"school lunch"}],
+    tip:"Kyushoku (school lunch) = supply + eat! Your kids eat this every day at school." },
+  { id:"atarashii", k:"新", meaning:"new", sub:"fresh, recent, modern", on:"SHIN", onR:"shin", kun:"atarashii", kunR:"atara(shii)", strokes:13,
+    ex:[{w:"新しい",r:"あたらしい",m:"new"}, {w:"新幹線",r:"しんかんせん",m:"Shinkansen"}, {w:"新聞",r:"しんぶん",m:"newspaper"}],
+    tip:"Shinkansen (bullet train) = new + trunk + line! The symbol of modern Japan!" },
+  { id:"zu", k:"図", meaning:"diagram", sub:"map, drawing, plan", on:"ZU", onR:"zu", kun:"-", kunR:"-", strokes:7,
+    ex:[{w:"地図",r:"ちず",m:"map"}, {w:"図書館",r:"としょかん",m:"library"}, {w:"図形",r:"ずけい",m:"shape"}],
+    tip:"Chizu (map) = ground + diagram. Toshokan (library) = diagram + book + building!" },
+  { id:"nishi", k:"西", meaning:"west", sub:"western", on:"SEI", onR:"sei", kun:"nishi", kunR:"nishi", strokes:6,
+    ex:[{w:"西",r:"にし",m:"west"}, {w:"関西",r:"かんさい",m:"Kansai region"}, {w:"西洋",r:"せいよう",m:"Western culture"}],
+    tip:"Kansai (Osaka/Kyoto area) = gate + west! East = Kanto, West = Kansai." },
+  { id:"hoshi2", k:"星", meaning:"star", sub:"planet, spot", on:"SEI", onR:"sei", kun:"hoshi", kunR:"hoshi", strokes:9,
+    ex:[{w:"星",r:"ほし",m:"star"}, {w:"星座",r:"せいざ",m:"constellation"}, {w:"流れ星",r:"ながれぼし",m:"shooting star"}],
+    tip:"Tanabata is a star festival! Nagare-boshi (shooting star) = flowing + star." },
+  { id:"kiru", k:"切", meaning:"cut", sub:"important, sever, expire", on:"SETSU", onR:"setsu", kun:"kiru", kunR:"ki(ru)", strokes:4,
+    ex:[{w:"切る",r:"きる",m:"to cut"}, {w:"親切",r:"しんせつ",m:"kind"}, {w:"大切",r:"たいせつ",m:"important / precious"}],
+    tip:"Shinsetsu (kind) = parent + cut! Taisetsu (important) = big + cut. Very useful pair!" },
+  { id:"sen", k:"線", meaning:"line", sub:"wire, route, track", on:"SEN", onR:"sen", kun:"-", kunR:"-", strokes:15,
+    ex:[{w:"線",r:"せん",m:"line"}, {w:"新幹線",r:"しんかんせん",m:"Shinkansen"}, {w:"路線",r:"ろせん",m:"route / line"}],
+    tip:"Shinkansen = new trunk line. Every Tokyo train line has a colour and name!" },
+  { id:"fune", k:"船", meaning:"ship", sub:"boat, vessel", on:"SEN", onR:"sen", kun:"fune", kunR:"fune", strokes:11,
+    ex:[{w:"船",r:"ふね",m:"ship / boat"}, {w:"汽船",r:"きせん",m:"steamship"}, {w:"船長",r:"せんちょう",m:"captain of ship"}],
+    tip:"Fune = ship/boat. Japan is an island nation so ships have always been essential!" },
+  { id:"mae2", k:"前", meaning:"front", sub:"before, previous", on:"ZEN", onR:"zen", kun:"mae", kunR:"mae", strokes:9,
+    ex:[{w:"前",r:"まえ",m:"front / before"}, {w:"名前",r:"なまえ",m:"name"}, {w:"以前",r:"いぜん",m:"before / formerly"}],
+    tip:"Namae (name) = fame + front. Your name faces the world! What is your name?" },
+  { id:"kumi", k:"組", meaning:"group", sub:"class, team, assemble", on:"SO", onR:"so", kun:"kumu", kunR:"ku(mu)", strokes:11,
+    ex:[{w:"組",r:"くみ",m:"group / class"}, {w:"組み合わせ",r:"くみあわせ",m:"combination"}, {w:"番組",r:"ばんぐみ",m:"TV programme"}],
+    tip:"Kumi = class in school! 1-nen 2-kumi = Year 1 Class 2. Bangumi = TV programme!" },
+  { id:"ooi", k:"多", meaning:"many", sub:"much, plenty, frequent", on:"TA", onR:"ta", kun:"ooi", kunR:"oo(i)", strokes:6,
+    ex:[{w:"多い",r:"おおい",m:"many / much"}, {w:"多分",r:"たぶん",m:"probably"}, {w:"多様",r:"たよう",m:"diverse"}],
+    tip:"Tabun (probably) = many + part. Ooi = many. Opposite is sukunai (few)!" },
+  { id:"futoi", k:"太", meaning:"fat", sub:"thick, plump, great", on:"TAI", onR:"tai", kun:"futoi", kunR:"futo(i)", strokes:4,
+    ex:[{w:"太い",r:"ふとい",m:"thick / fat"}, {w:"太陽",r:"たいよう",m:"the Sun"}, {w:"太平洋",r:"たいへいよう",m:"Pacific Ocean"}],
+    tip:"Taiyo (the Sun) = great + sun! Taiheiyo (Pacific Ocean) = great + peaceful + ocean!" },
+  { id:"dai2", k:"台", meaning:"platform", sub:"stand, pedestal, counter for machines", on:"DAI", onR:"dai", kun:"-", kunR:"-", strokes:5,
+    ex:[{w:"台風",r:"たいふう",m:"typhoon"}, {w:"台所",r:"だいどころ",m:"kitchen"}, {w:"舞台",r:"ぶたい",m:"stage"}],
+    tip:"Taifu (typhoon) = platform + wind! Daidokoro (kitchen) = stand + place!" },
+  { id:"shiru", k:"知", meaning:"know", sub:"wisdom, notice, understand", on:"CHI", onR:"chi", kun:"shiru", kunR:"shi(ru)", strokes:8,
+    ex:[{w:"知る",r:"しる",m:"to know"}, {w:"知識",r:"ちしき",m:"knowledge"}, {w:"通知",r:"つうち",m:"notification"}],
+    tip:"Chishiki (knowledge) = know + understand. Tsuchi (notification) = pass + know!" },
+  { id:"ocha", k:"茶", meaning:"tea", sub:"green tea, brown", on:"CHA", onR:"cha", kun:"-", kunR:"-", strokes:9,
+    ex:[{w:"お茶",r:"おちゃ",m:"green tea"}, {w:"茶道",r:"さどう",m:"tea ceremony"}, {w:"喫茶店",r:"きっさてん",m:"coffee shop"}],
+    tip:"Sado (tea ceremony) = tea + way! One of Japan most important cultural traditions." },
+  { id:"nagai", k:"長", meaning:"long", sub:"leader, chief, senior", on:"CHOU", onR:"chou", kun:"nagai", kunR:"naga(i)", strokes:8,
+    ex:[{w:"長い",r:"ながい",m:"long"}, {w:"校長",r:"こうちょう",m:"school principal"}, {w:"社長",r:"しゃちょう",m:"company president"}],
+    tip:"Kocho (principal) = school + leader. Shacho (president) = company + leader!" },
+  { id:"tori", k:"鳥", meaning:"bird", sub:"fowl", on:"CHOU", onR:"chou", kun:"tori", kunR:"tori", strokes:11,
+    ex:[{w:"鳥",r:"とり",m:"bird"}, {w:"小鳥",r:"ことり",m:"small bird"}, {w:"焼き鳥",r:"やきとり",m:"grilled chicken"}],
+    tip:"Yakitori (grilled chicken) = grilled + bird! One of Japan most popular foods!" },
+  { id:"choku", k:"直", meaning:"straight", sub:"direct, honest, fix", on:"CHOKU", onR:"choku", kun:"naosu", kunR:"nao(su)", strokes:8,
+    ex:[{w:"直す",r:"なおす",m:"to fix / correct"}, {w:"正直",r:"しょうじき",m:"honest"}, {w:"直接",r:"ちょくせつ",m:"direct"}],
+    tip:"Shojiki (honest) = correct + straight! Be honest - it is always the best policy!" },
+  { id:"tooru", k:"通", meaning:"pass through", sub:"commute, traffic, inform", on:"TSUU", onR:"tsuu", kun:"tooru", kunR:"too(ru)", strokes:10,
+    ex:[{w:"通る",r:"とおる",m:"to pass through"}, {w:"通学",r:"つうがく",m:"commuting to school"}, {w:"交通",r:"こうつう",m:"traffic"}],
+    tip:"Tsugaku (commuting to school) = pass + study. Your kids tsugaku every day!" },
+  { id:"ten", k:"点", meaning:"point", sub:"dot, score, mark", on:"TEN", onR:"ten", kun:"-", kunR:"-", strokes:9,
+    ex:[{w:"点",r:"てん",m:"point / dot"}, {w:"点数",r:"てんすう",m:"score / marks"}, {w:"満点",r:"まんてん",m:"perfect score"}],
+    tip:"Manten (perfect score) = full + points! Getting manten = the best feeling in school!" },
+  { id:"denki", k:"電", meaning:"electricity", sub:"lightning, electric", on:"DEN", onR:"den", kun:"-", kunR:"-", strokes:13,
+    ex:[{w:"電気",r:"でんき",m:"electricity"}, {w:"電車",r:"でんしゃ",m:"electric train"}, {w:"電話",r:"でんわ",m:"telephone"}],
+    tip:"Densha (train) = electric + vehicle. Denwa (phone) = electric + talk. Den is everywhere!" },
+  { id:"fuyu", k:"冬", meaning:"winter", sub:"cold season", on:"TOU", onR:"tou", kun:"fuyu", kunR:"fuyu", strokes:5,
+    ex:[{w:"冬",r:"ふゆ",m:"winter"}, {w:"冬休み",r:"ふゆやすみ",m:"winter holiday"}, {w:"冬至",r:"とうじ",m:"winter solstice"}],
+    tip:"Fuyuyasumi (winter holiday) includes Christmas and New Year in Japan!" },
+  { id:"ataru", k:"当", meaning:"hit", sub:"correct, apply, in charge", on:"TOU", onR:"tou", kun:"ataru", kunR:"a(taru)", strokes:6,
+    ex:[{w:"当たる",r:"あたる",m:"to hit / be correct"}, {w:"当然",r:"とうぜん",m:"natural / of course"}, {w:"担当",r:"たんとう",m:"in charge"}],
+    tip:"Tozen (of course) = correct + then. Tanto (in charge) = bear + correct. Common!" },
+  { id:"higashi", k:"東", meaning:"east", sub:"eastern, Tokyo area", on:"TOU", onR:"tou", kun:"higashi", kunR:"higashi", strokes:8,
+    ex:[{w:"東",r:"ひがし",m:"east"}, {w:"東京",r:"とうきょう",m:"Tokyo"}, {w:"東北",r:"とうほく",m:"Tohoku region"}],
+    tip:"Tokyo = Eastern Capital! Tohoku = east + north. East is a key direction in Japan!" },
+  { id:"kotaeru", k:"答", meaning:"answer", sub:"reply, respond, solution", on:"TOU", onR:"tou", kun:"kotaeru", kunR:"kota(eru)", strokes:12,
+    ex:[{w:"答える",r:"こたえる",m:"to answer"}, {w:"答え",r:"こたえ",m:"answer"}, {w:"解答",r:"かいとう",m:"solution"}],
+    tip:"Kotaeru (to answer)! Seikai (correct answer) = correct + answer. School key word!" },
+  { id:"onaji", k:"同", meaning:"same", sub:"agree, identical, together", on:"DOU", onR:"dou", kun:"onaji", kunR:"ona(ji)", strokes:6,
+    ex:[{w:"同じ",r:"おなじ",m:"same"}, {w:"同時",r:"どうじ",m:"simultaneous"}, {w:"共同",r:"きょうどう",m:"cooperation"}],
+    tip:"Onaji (same) = very useful word! Onajiku = likewise. Kyodo (cooperation) = together!" },
+  { id:"uchi", k:"内", meaning:"inside", sub:"within, domestic, family", on:"NAI", onR:"nai", kun:"uchi", kunR:"uchi", strokes:4,
+    ex:[{w:"内",r:"うち",m:"inside / home"}, {w:"国内",r:"こくない",m:"domestic"}, {w:"案内",r:"あんない",m:"guidance"}],
+    tip:"Annai (guidance) = plan + inside. Kokunai (domestic) = country + inside!" },
+  { id:"minami", k:"南", meaning:"south", sub:"southern", on:"NAN", onR:"nan", kun:"minami", kunR:"minami", strokes:9,
+    ex:[{w:"南",r:"みなみ",m:"south"}, {w:"南極",r:"なんきょく",m:"South Pole"}, {w:"東南アジア",r:"とうなんあじあ",m:"Southeast Asia"}],
+    tip:"Nankyoku (South Pole) = south + extreme! Malaysia is in tonan Asia (Southeast Asia)!" },
+  { id:"niku", k:"肉", meaning:"meat", sub:"flesh, muscle", on:"NIKU", onR:"niku", kun:"-", kunR:"-", strokes:6,
+    ex:[{w:"肉",r:"にく",m:"meat"}, {w:"牛肉",r:"ぎゅうにく",m:"beef"}, {w:"筋肉",r:"きんにく",m:"muscle"}],
+    tip:"Gyuniku (beef) = cow + meat. Toriniku (chicken) = bird + meat. Niku is delicious!" },
+  { id:"uma", k:"馬", meaning:"horse", sub:"equine", on:"BA", onR:"ba", kun:"uma", kunR:"uma", strokes:10,
+    ex:[{w:"馬",r:"うま",m:"horse"}, {w:"競馬",r:"けいば",m:"horse racing"}, {w:"馬力",r:"ばりき",m:"horsepower"}],
+    tip:"Uma also means delicious in casual speech! Umai! = Yummy! Same pronunciation!" },
+  { id:"mugi", k:"麦", meaning:"wheat", sub:"barley, grain, cereal", on:"BAKU", onR:"baku", kun:"mugi", kunR:"mugi", strokes:7,
+    ex:[{w:"麦",r:"むぎ",m:"wheat / barley"}, {w:"小麦",r:"こむぎ",m:"wheat"}, {w:"麦茶",r:"むぎちゃ",m:"barley tea"}],
+    tip:"Mugicha (barley tea) - the classic Japanese summer drink for kids! Cold and caffeine-free." },
+  { id:"han", k:"半", meaning:"half", sub:"middle, incomplete", on:"HAN", onR:"han", kun:"-", kunR:"-", strokes:5,
+    ex:[{w:"半分",r:"はんぶん",m:"half"}, {w:"一時半",r:"いちじはん",m:"1:30"}, {w:"半島",r:"はんとう",m:"peninsula"}],
+    tip:"Ichiji han = 1:30! Han means half-past in time. Hanto (peninsula) = half + island!" },
+  { id:"ban", k:"番", meaning:"number", sub:"turn, order, watch over", on:"BAN", onR:"ban", kun:"-", kunR:"-", strokes:12,
+    ex:[{w:"番号",r:"ばんごう",m:"number"}, {w:"番組",r:"ばんぐみ",m:"TV programme"}, {w:"一番",r:"いちばん",m:"number one / best"}],
+    tip:"Ichiban (number one / best) = one + turn! Ichiban suki = my favourite! Essential!" },
+  { id:"kome", k:"米", meaning:"rice", sub:"America shorthand", on:"BEI", onR:"bei", kun:"kome", kunR:"kome", strokes:6,
+    ex:[{w:"米",r:"こめ",m:"uncooked rice"}, {w:"米国",r:"べいこく",m:"USA"}, {w:"玄米",r:"げんまい",m:"brown rice"}],
+    tip:"Beikoku (USA) = rice + country! Because America sounds like a Japanese word with 米!" },
+  { id:"kata", k:"方", meaning:"direction", sub:"person polite, way, method", on:"HOU", onR:"hou", kun:"kata", kunR:"kata", strokes:4,
+    ex:[{w:"方",r:"かた",m:"person (polite)"}, {w:"方法",r:"ほうほう",m:"method"}, {w:"地方",r:"ちほう",m:"region"}],
+    tip:"Hoho (method) = direction + direction! Kata is a polite word for person. Very useful!" },
+  { id:"kita", k:"北", meaning:"north", sub:"northern", on:"HOKU", onR:"hoku", kun:"kita", kunR:"kita", strokes:5,
+    ex:[{w:"北",r:"きた",m:"north"}, {w:"北海道",r:"ほっかいどう",m:"Hokkaido"}, {w:"北極",r:"ほっきょく",m:"North Pole"}],
+    tip:"Hokkaido = North Sea Road! Hokkyoku (North Pole) = north + extreme. Cold!" },
+  { id:"mainichi", k:"毎", meaning:"every", sub:"each, regular, habitual", on:"MAI", onR:"mai", kun:"-", kunR:"-", strokes:6,
+    ex:[{w:"毎日",r:"まいにち",m:"every day"}, {w:"毎週",r:"まいしゅう",m:"every week"}, {w:"毎年",r:"まいとし",m:"every year"}],
+    tip:"Mainichi (every day) = every + day! Mainichi benkyo = study every day!" },
+  { id:"man", k:"万", meaning:"ten thousand", sub:"myriad, all", on:"MAN", onR:"man", kun:"-", kunR:"-", strokes:3,
+    ex:[{w:"万",r:"まん",m:"ten thousand"}, {w:"一万",r:"いちまん",m:"10,000"}, {w:"万国",r:"ばんこく",m:"all nations"}],
+    tip:"Ichiman = 10000! Japan uses man as a unit. 100-man = hyakuman = 1 million!" },
+  { id:"akarui", k:"明", meaning:"bright", sub:"clear, light, smart", on:"MEI", onR:"mei", kun:"akarui", kunR:"aka(rui)", strokes:8,
+    ex:[{w:"明るい",r:"あかるい",m:"bright"}, {w:"明日",r:"あした",m:"tomorrow"}, {w:"説明",r:"せつめい",m:"explanation"}],
+    tip:"Ashita (tomorrow) = bright + day! Setsumei (explanation) = explain + bright." },
+  { id:"naku2", k:"鳴", meaning:"cry sound", sub:"chirp, ring, sound", on:"MEI", onR:"mei", kun:"naku", kunR:"na(ku)", strokes:14,
+    ex:[{w:"鳴く",r:"なく",m:"to cry - animal"}, {w:"鳴る",r:"なる",m:"to ring / sound"}, {w:"雷鳴",r:"らいめい",m:"thunder"}],
+    tip:"Naku for animals crying (birds chirping, cats meowing). Humans cry with different kanji!" },
+  { id:"ke", k:"毛", meaning:"hair", sub:"fur, wool, feather", on:"MOU", onR:"mou", kun:"ke", kunR:"ke", strokes:4,
+    ex:[{w:"毛",r:"け",m:"hair / fur"}, {w:"毛布",r:"もうふ",m:"blanket"}, {w:"毛糸",r:"けいと",m:"wool yarn"}],
+    tip:"Mofu (blanket) = hair/wool + cloth! Keito (wool yarn) = hair + thread!" },
+  { id:"mon", k:"門", meaning:"gate", sub:"entrance, family", on:"MON", onR:"mon", kun:"kado", kunR:"kado", strokes:8,
+    ex:[{w:"門",r:"もん",m:"gate"}, {w:"校門",r:"こうもん",m:"school gate"}, {w:"専門",r:"せんもん",m:"specialty"}],
+    tip:"Koumon (school gate) = school + gate! Where kids line up every morning!" },
+  { id:"tomo", k:"友", meaning:"friend", sub:"companion, pal", on:"YUU", onR:"yuu", kun:"tomo", kunR:"tomo", strokes:4,
+    ex:[{w:"友だち",r:"ともだち",m:"friend"}, {w:"親友",r:"しんゆう",m:"best friend"}, {w:"友人",r:"ゆうじん",m:"friend (formal)"}],
+    tip:"Tomodachi = friend! Making tomodachi at school is everything for children." },
+  { id:"sato", k:"里", meaning:"village", sub:"hometown, native place", on:"RI", onR:"ri", kun:"sato", kunR:"sato", strokes:7,
+    ex:[{w:"里",r:"さと",m:"village / hometown"}, {w:"故郷",r:"こきょう",m:"hometown"}, {w:"里帰り",r:"さとがえり",m:"returning home"}],
+    tip:"Sato = hometown/village. Satogaeri (returning home) = hometown + return. Nostalgic!" }
 ];
 
 const GROUPS = [
-{ id:‘g1’, label:‘話読書聞声語字文’, title:‘Language’, kanji: ALL_KANJI.slice(0, 16) },
-{ id:‘g2’, label:‘父母兄姉弟妹親’, title:‘Family’, kanji: ALL_KANJI.slice(16, 23) },
-{ id:‘g3’, label:‘来行帰歩走止教買’, title:‘Actions 1’, kanji: ALL_KANJI.slice(23, 31) },
-{ id:‘g4’, label:‘海池岩原谷野地国’, title:‘Nature & Places’, kanji: ALL_KANJI.slice(31, 39) },
-{ id:‘g5’, label:‘朝昼夜週間時分秒’, title:‘Time’, kanji: ALL_KANJI.slice(39, 47) },
-{ id:‘g6’, label:‘校室算数科理体育’, title:‘School’, kanji: ALL_KANJI.slice(47, 55) },
-{ id:‘g7’, label:‘風雪雲晴暑寒温度’, title:‘Weather’, kanji: ALL_KANJI.slice(55, 63) },
-{ id:‘g8’, label:‘市店場所道橋駅角’, title:‘Town’, kanji: ALL_KANJI.slice(63, 71) },
-{ id:‘g9’, label:‘頭顔首腹病薬医休’, title:‘Body & Health’, kanji: ALL_KANJI.slice(71, 79) },
-{ id:‘g10’, label:‘思考気心楽悲泣笑’, title:‘Feelings’, kanji: ALL_KANJI.slice(79, 87) },
-{ id:‘g11’, label:‘引羽園遠何夏家歌’, title:‘More Grade 2’, kanji: ALL_KANJI.slice(87, 112) },
-{ id:‘g12’, label:‘丸弓牛魚京強近形’, title:‘Final Group’, kanji: ALL_KANJI.slice(112, 160) },
+  { id:"g1", label:"話読書聞声", title:"Language", kanji: ALL_KANJI.slice(0, 8) },
+  { id:"g2", label:"父母兄姉弟", title:"Family", kanji: ALL_KANJI.slice(8, 15) },
+  { id:"g3", label:"来行帰歩走", title:"Actions", kanji: ALL_KANJI.slice(15, 23) },
+  { id:"g4", label:"海池岩原谷", title:"Nature", kanji: ALL_KANJI.slice(23, 31) },
+  { id:"g5", label:"朝昼夜週間", title:"Time", kanji: ALL_KANJI.slice(31, 39) },
+  { id:"g6", label:"校室算数科", title:"School", kanji: ALL_KANJI.slice(39, 47) },
+  { id:"g7", label:"風雪雲晴暑", title:"Weather", kanji: ALL_KANJI.slice(47, 55) },
+  { id:"g8", label:"市店場所道", title:"Town", kanji: ALL_KANJI.slice(55, 63) },
+  { id:"g9", label:"頭顔首腹病", title:"Body and Health", kanji: ALL_KANJI.slice(63, 71) },
+  { id:"g10", label:"思考気心楽", title:"Feelings", kanji: ALL_KANJI.slice(71, 79) },
+  { id:"g11", label:"引羽園遠何", title:"More Grade 2", kanji: ALL_KANJI.slice(79, 103) },
+  { id:"g12", label:"言戸古午後", title:"Final Group", kanji: ALL_KANJI.slice(103) },
 ];
 
-const GROUP_COLORS = [’#1a3a5c’,’#2471a3’,’#1a5276’,’#117864’,’#1e8449’,’#7d3c98’,’#922b21’,’#b7950b’,’#784212’,’#2e86c1’,’#e67e22’,’#16a085’];
+const GROUP_COLORS = ["#1a3a5c","#2471a3","#117864","#1e8449","#b7950b","#7d3c98","#c0392b","#e67e22","#2e86c1","#16a085","#8e44ad","#1a5276"];
 
 let currentGroup = null;
-let currentMode  = ‘meaning’;
+let currentMode  = "meaning";
 let learnData    = [];
 let learnIdx     = 0;
 let quizData     = [];
@@ -894,254 +892,238 @@ let score        = 0;
 let streak       = 0;
 let attempts     = 0;
 let studiedSet = new Set();
-try { studiedSet = new Set(JSON.parse(localStorage.getItem(‘k2_studied’) || ‘[]’)); } catch(e) {}
+try { studiedSet = new Set(JSON.parse(localStorage.getItem("k2_studied") || "[]")); } catch(e) {}
 
 function saveStudied() {
-try { localStorage.setItem(‘k2_studied’, JSON.stringify([…studiedSet])); } catch(e) {}
+  try { localStorage.setItem("k2_studied", JSON.stringify([...studiedSet])); } catch(e) {}
 }
-
 function updateOverallProgress() {
-const pct = (studiedSet.size / 160) * 100;
-const bar = document.getElementById(‘overall-bar’);
-const cnt = document.getElementById(‘overall-count’);
-if (bar) bar.style.width = pct + ‘%’;
-if (cnt) cnt.textContent = studiedSet.size + ’ / 160 kanji studied’;
+  var pct = (studiedSet.size / 160) * 100;
+  var bar = document.getElementById("overall-bar");
+  var cnt = document.getElementById("overall-count");
+  if (bar) bar.style.width = pct + "%";
+  if (cnt) cnt.textContent = studiedSet.size + " / 160 kanji studied";
 }
-
 function speak(text) {
-if (!window.speechSynthesis) return;
-window.speechSynthesis.cancel();
-const u = new SpeechSynthesisUtterance(text);
-u.lang = ‘ja-JP’; u.rate = 0.75; u.pitch = 1.0;
-window.speechSynthesis.speak(u);
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = "ja-JP"; u.rate = 0.75; u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
 }
-
 function showScreen(id) {
-document.querySelectorAll(’.screen’).forEach(s => s.classList.remove(‘active’));
-document.getElementById(id).classList.add(‘active’);
-window.scrollTo(0, 0);
+  document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active"); });
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0, 0);
 }
-
 function buildMenu() {
-const grid = document.getElementById(‘group-menu’);
-grid.innerHTML = ‘’;
-const mixCard = document.createElement(‘button’);
-mixCard.type = ‘button’;
-mixCard.className = ‘menu-card mix’;
-mixCard.dataset.group = ‘mix’;
-mixCard.innerHTML = ‘<div class="menu-icon" style="pointer-events:none;">Mix</div><div class="menu-info" style="pointer-events:none;"><div class="menu-name">Mixed Quiz - All 160</div><div class="menu-desc">Random kanji from all groups</div><div class="menu-count">All 160 kanji</div></div>’;
-grid.appendChild(mixCard);
-GROUPS.forEach((g, i) => {
-const studied = g.kanji.filter(k => studiedSet.has(k.id)).length;
-const card = document.createElement(‘button’);
-card.type = ‘button’;
-card.className = ‘menu-card g’ + (i % 6 + 1);
-card.dataset.group = g.id;
-card.innerHTML = ‘<div class="menu-icon" style="font-size:1.2em;color:' + GROUP_COLORS[i] + ';pointer-events:none;">’ + g.label.slice(0,3) + ‘</div><div class="menu-info" style="pointer-events:none;"><div class="menu-name">Group ’ + (i+1) + ’ - ’ + g.title + ‘</div><div class="menu-desc">’ + g.label + ‘</div><div class="menu-count">’ + g.kanji.length + ’ kanji - ’ + studied + ‘/’ + g.kanji.length + ’ studied</div></div>’;
-grid.appendChild(card);
-});
-grid.addEventListener(‘click’, function(e) {
-const card = e.target.closest(‘button[data-group]’);
-if (card) startGroup(card.dataset.group);
-});
+  var grid = document.getElementById("group-menu");
+  grid.innerHTML = "";
+  var mixCard = document.createElement("button");
+  mixCard.type = "button";
+  mixCard.className = "menu-card mix";
+  mixCard.dataset.group = "mix";
+  mixCard.innerHTML = "<div class=\"menu-icon\" style=\"pointer-events:none;\">Mix</div><div class=\"menu-info\" style=\"pointer-events:none;\"><div class=\"menu-name\">Mixed Quiz - All 160</div><div class=\"menu-desc\">Random kanji from all groups</div><div class=\"menu-count\">All 160 kanji</div></div>";
+  grid.appendChild(mixCard);
+  GROUPS.forEach(function(g, i) {
+    var studied = g.kanji.filter(function(k) { return studiedSet.has(k.id); }).length;
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "menu-card g" + (i % 5 + 1);
+    card.dataset.group = g.id;
+    card.innerHTML = "<div class=\"menu-icon\" style=\"color:" + GROUP_COLORS[i] + ";pointer-events:none;\">" + g.label.slice(0,3) + "</div><div class=\"menu-info\" style=\"pointer-events:none;\"><div class=\"menu-name\">Group " + (i+1) + " - " + g.title + "</div><div class=\"menu-desc\">" + g.label + "</div><div class=\"menu-count\">" + g.kanji.length + " kanji - " + studied + "/" + g.kanji.length + " studied</div></div>";
+    grid.appendChild(card);
+  });
+  grid.addEventListener("click", function(e) {
+    var card = e.target.closest("button[data-group]");
+    if (card) startGroup(card.dataset.group);
+  });
 }
-
 function startGroup(groupId) {
-if (groupId === ‘mix’) {
-currentGroup = null;
-learnData = […ALL_KANJI].sort(() => Math.random() - 0.5).slice(0, 20);
-} else {
-currentGroup = GROUPS.find(g => g.id === groupId);
-learnData = currentGroup.kanji;
+  if (groupId === "mix") {
+    currentGroup = null;
+    learnData = [...ALL_KANJI].sort(function() { return Math.random() - 0.5; }).slice(0, 20);
+  } else {
+    currentGroup = GROUPS.find(function(g) { return g.id === groupId; });
+    learnData = currentGroup.kanji;
+  }
+  learnIdx = 0;
+  document.getElementById("mode-title").textContent = currentGroup ? "Group - " + currentGroup.title : "Mixed - All 160";
+  showScreen("mode-screen");
 }
-learnIdx = 0;
-const title = currentGroup ? ’Group - ’ + currentGroup.title : ‘Mixed - All 160’;
-document.getElementById(‘mode-title’).textContent = title;
-showScreen(‘mode-screen’);
-}
-
 function startLearn() {
-learnIdx = 0;
-const title = currentGroup ? currentGroup.title : ‘Mixed Kanji’;
-document.getElementById(‘learn-title’).textContent = title;
-showLearnCard();
-showScreen(‘learn-screen’);
-setTimeout(() => speak(learnData[0].k), 600);
+  learnIdx = 0;
+  document.getElementById("learn-title").textContent = currentGroup ? currentGroup.title : "Mixed Kanji";
+  showLearnCard();
+  showScreen("learn-screen");
+  setTimeout(function() { speak(learnData[0].k); }, 600);
 }
-
 function showLearnCard() {
-const w = learnData[learnIdx];
-studiedSet.add(w.id);
-saveStudied();
-updateOverallProgress();
-document.getElementById(‘learn-group-tag’).textContent = currentGroup ? ‘Group - ’ + currentGroup.title : ‘Mixed Kanji’;
-document.getElementById(‘learn-kanji’).textContent     = w.k;
-document.getElementById(‘learn-strokes’).textContent   = w.strokes + ’ strokes’;
-document.getElementById(‘learn-meaning’).textContent   = w.meaning;
-document.getElementById(‘learn-meaning-sub’).textContent = w.sub || ‘’;
-document.getElementById(‘learn-on’).textContent        = w.on;
-document.getElementById(‘learn-on-r’).textContent      = w.onR;
-document.getElementById(‘learn-kun’).textContent       = w.kun;
-document.getElementById(‘learn-kun-r’).textContent     = w.kunR;
-document.getElementById(‘learn-counter’).textContent   = (learnIdx+1) + ’ / ’ + learnData.length;
-document.getElementById(‘learn-prev’).disabled = learnIdx === 0;
-document.getElementById(‘learn-next’).disabled = learnIdx === learnData.length - 1;
-const exDiv = document.getElementById(‘learn-examples’);
-exDiv.innerHTML = ‘’;
-w.ex.forEach(e => {
-const row = document.createElement(‘div’);
-row.className = ‘example-row’;
-row.innerHTML = ‘<span class="ex-word">’ + e.w + ‘</span><span class="ex-read">’ + e.r + ‘</span><span class="ex-mean">’ + e.m + ‘</span>’;
-exDiv.appendChild(row);
-});
-document.getElementById(‘learn-tip’).textContent = ’Tip: ’ + w.tip;
+  var w = learnData[learnIdx];
+  studiedSet.add(w.id);
+  saveStudied();
+  updateOverallProgress();
+  document.getElementById("learn-group-tag").textContent   = currentGroup ? "Group - " + currentGroup.title : "Mixed Kanji";
+  document.getElementById("learn-kanji").textContent        = w.k;
+  document.getElementById("learn-strokes").textContent      = w.strokes + " strokes";
+  document.getElementById("learn-meaning").textContent      = w.meaning;
+  document.getElementById("learn-meaning-sub").textContent  = w.sub || "";
+  document.getElementById("learn-on").textContent           = w.on;
+  document.getElementById("learn-on-r").textContent         = w.onR;
+  document.getElementById("learn-kun").textContent          = w.kun;
+  document.getElementById("learn-kun-r").textContent        = w.kunR;
+  document.getElementById("learn-counter").textContent      = (learnIdx+1) + " / " + learnData.length;
+  document.getElementById("learn-prev").disabled = learnIdx === 0;
+  document.getElementById("learn-next").disabled = learnIdx === learnData.length - 1;
+  var exDiv = document.getElementById("learn-examples");
+  exDiv.innerHTML = "";
+  w.ex.forEach(function(e) {
+    var row = document.createElement("div");
+    row.className = "example-row";
+    row.innerHTML = "<span class=\"ex-word\">" + e.w + "</span><span class=\"ex-read\">" + e.r + "</span><span class=\"ex-mean\">" + e.m + "</span>";
+    exDiv.appendChild(row);
+  });
+  document.getElementById("learn-tip").textContent = "Tip: " + w.tip;
 }
-
 function startQuiz() {
-score = 0; streak = 0; quizIdx = 0; attempts = 0;
-quizData  = […learnData].sort(() => Math.random() - 0.5).slice(0, Math.min(10, learnData.length));
-quizTotal = quizData.length;
-document.getElementById(‘score’).textContent  = 0;
-document.getElementById(‘streak’).textContent = 0;
-const modeLabels = { meaning:‘Kanji -> Meaning’, reading:‘Kanji -> Reading’, writing:‘Meaning -> Kanji’ };
-document.getElementById(‘quiz-title’).textContent = modeLabels[currentMode] || ‘Kanji Quiz’;
-showScreen(‘quiz-screen’);
-showQuizQ();
+  score = 0; streak = 0; quizIdx = 0; attempts = 0;
+  quizData  = [...learnData].sort(function() { return Math.random() - 0.5; }).slice(0, Math.min(10, learnData.length));
+  quizTotal = quizData.length;
+  document.getElementById("score").textContent  = 0;
+  document.getElementById("streak").textContent = 0;
+  var modeLabels = { meaning:"Kanji to Meaning", reading:"Kanji to Reading", writing:"Meaning to Kanji" };
+  document.getElementById("quiz-title").textContent = modeLabels[currentMode] || "Kanji Quiz";
+  showScreen("quiz-screen");
+  showQuizQ();
 }
-
 function showQuizQ() {
-if (quizIdx >= quizTotal) { endQuiz(); return; }
-attempts = 0;
-const w = quizData[quizIdx];
-document.getElementById(‘q-count’).textContent  = (quizIdx+1) + ‘/’ + quizTotal;
-document.getElementById(‘progress’).style.width = (quizIdx / quizTotal * 100) + ‘%’;
-document.getElementById(‘feedback’).textContent  = ‘’;
-document.getElementById(‘hint-btn’).style.display = ‘none’;
-const kanjiEl = document.getElementById(‘q-kanji’);
-const enEl    = document.getElementById(‘q-en’);
-const hintEl  = document.getElementById(‘q-hint’);
-kanjiEl.style.display = ‘none’;
-enEl.style.display    = ‘none’;
-if (currentMode === ‘meaning’) {
-document.getElementById(‘q-type-badge’).textContent = ‘Kanji -> Meaning’;
-document.getElementById(‘q-label’).textContent = ‘What does this kanji mean?’;
-kanjiEl.textContent = w.k; kanjiEl.style.display = ‘block’;
-hintEl.textContent = w.strokes + ’ strokes’;
-setTimeout(() => speak(w.k), 300);
-buildOptions(w, ‘meaning’);
-} else if (currentMode === ‘reading’) {
-document.getElementById(‘q-type-badge’).textContent = ‘Kanji -> Reading’;
-document.getElementById(‘q-label’).textContent = ‘How do you read this?’;
-kanjiEl.textContent = w.k; kanjiEl.style.display = ‘block’;
-hintEl.textContent = ‘meaning: ’ + w.meaning;
-setTimeout(() => speak(w.k), 300);
-buildOptions(w, ‘reading’);
-} else {
-document.getElementById(‘q-type-badge’).textContent = ‘Meaning -> Kanji’;
-document.getElementById(‘q-label’).textContent = ‘Which kanji means this?’;
-enEl.textContent = w.meaning; enEl.style.display = ‘block’;
-hintEl.textContent = w.strokes + ’ strokes’;
-buildOptions(w, ‘writing’);
+  if (quizIdx >= quizTotal) { endQuiz(); return; }
+  attempts = 0;
+  var w = quizData[quizIdx];
+  document.getElementById("q-count").textContent  = (quizIdx+1) + "/" + quizTotal;
+  document.getElementById("progress").style.width = (quizIdx / quizTotal * 100) + "%";
+  document.getElementById("feedback").textContent  = "";
+  document.getElementById("hint-btn").style.display = "none";
+  var kanjiEl = document.getElementById("q-kanji");
+  var enEl    = document.getElementById("q-en");
+  var hintEl  = document.getElementById("q-hint");
+  kanjiEl.style.display = "none";
+  enEl.style.display    = "none";
+  if (currentMode === "meaning") {
+    document.getElementById("q-type-badge").textContent = "Kanji to Meaning";
+    document.getElementById("q-label").textContent = "What does this kanji mean?";
+    kanjiEl.textContent = w.k; kanjiEl.style.display = "block";
+    hintEl.textContent = w.strokes + " strokes";
+    setTimeout(function() { speak(w.k); }, 300);
+    buildOptions(w, "meaning");
+  } else if (currentMode === "reading") {
+    document.getElementById("q-type-badge").textContent = "Kanji to Reading";
+    document.getElementById("q-label").textContent = "How do you read this?";
+    kanjiEl.textContent = w.k; kanjiEl.style.display = "block";
+    hintEl.textContent = "meaning: " + w.meaning;
+    setTimeout(function() { speak(w.k); }, 300);
+    buildOptions(w, "reading");
+  } else {
+    document.getElementById("q-type-badge").textContent = "Meaning to Kanji";
+    document.getElementById("q-label").textContent = "Which kanji means this?";
+    enEl.textContent = w.meaning; enEl.style.display = "block";
+    hintEl.textContent = w.strokes + " strokes";
+    buildOptions(w, "writing");
+  }
 }
-}
-
 function buildOptions(correct, type) {
-const optDiv = document.getElementById(‘options’);
-optDiv.innerHTML = ‘’;
-const pool = ALL_KANJI.filter(x => x.id !== correct.id).sort(() => Math.random() - 0.5).slice(0, 3);
-const opts = […pool, correct].sort(() => Math.random() - 0.5);
-opts.forEach(opt => {
-const btn = document.createElement(‘button’);
-btn.type = ‘button’; btn.className = ‘option-btn’;
-if (type === ‘meaning’) {
-btn.innerHTML = ‘<span class="opt-en">’ + opt.meaning + ‘</span><span style="font-size:0.72em;color:#bbb;">’ + opt.sub + ‘</span>’;
-} else if (type === ‘reading’) {
-btn.innerHTML = ‘<span class="opt-read">’ + opt.kun.split(’\u3001’)[0].split(’(’)[0].trim() + ‘</span><span class="opt-en">’ + opt.kunR.split(’,’)[0].trim() + ‘</span>’;
-} else {
-btn.innerHTML = ‘<span class="opt-kanji">’ + opt.k + ‘</span><span class="opt-en">’ + opt.strokes + ’ strokes</span>’;
+  var optDiv = document.getElementById("options");
+  optDiv.innerHTML = "";
+  var pool = ALL_KANJI.filter(function(x) { return x.id !== correct.id; }).sort(function() { return Math.random() - 0.5; }).slice(0, 3);
+  var opts = [...pool, correct].sort(function() { return Math.random() - 0.5; });
+  opts.forEach(function(opt) {
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "option-btn";
+    if (type === "meaning") {
+      btn.innerHTML = "<span class=\"opt-en\">" + opt.meaning + "</span><span style=\"font-size:0.72em;color:#bbb;\">" + opt.sub + "</span>";
+    } else if (type === "reading") {
+      btn.innerHTML = "<span class=\"opt-read\">" + opt.kun + "</span><span class=\"opt-en\">" + opt.kunR + "</span>";
+    } else {
+      btn.innerHTML = "<span class=\"opt-kanji\">" + opt.k + "</span><span class=\"opt-en\">" + opt.strokes + " strokes</span>";
+    }
+    btn.addEventListener("click", function() { checkAnswer(opt.id === correct.id, btn, correct); });
+    optDiv.appendChild(btn);
+  });
 }
-btn.addEventListener(‘click’, () => checkAnswer(opt.id === correct.id, btn, correct));
-optDiv.appendChild(btn);
-});
-}
-
-const encouragement = [‘Sugoi! Great job!’, ‘Yoku dekimashita!’, ‘Ganbare! Keep it up!’, ‘Saikou! Amazing!’, ‘Perfekuto!’];
-const tryAgain = [‘Mou ichido! Try again!’, ‘Chigaimasu. Not quite!’, ‘Ganbatte!’];
-
+var encouragement = ["Sugoi! Great job!", "Yoku dekimashita!", "Ganbare! Keep it up!", "Saikou! Amazing!", "Perfekuto!"];
+var tryAgain = ["Mou ichido! Try again!", "Chigaimasu. Not quite!", "Ganbatte!"];
 function checkAnswer(isCorrect, btn, word) {
-const feedback = document.getElementById(‘feedback’);
-attempts++;
-if (isCorrect) {
-btn.classList.add(‘correct’);
-document.querySelectorAll(’#options .option-btn’).forEach(b => b.disabled = true);
-speak(word.k);
-if (attempts === 1) {
-score++; streak++;
-const msg = encouragement[Math.floor(Math.random() * encouragement.length)];
-feedback.textContent = streak >= 3 ? msg + ’ ’ + streak + ’ in a row!’ : msg;
-} else {
-streak = 0;
-feedback.textContent = word.k + ’ = ’ + word.meaning + ’ (’ + word.kun + ‘)’;
+  var feedback = document.getElementById("feedback");
+  attempts++;
+  if (isCorrect) {
+    btn.classList.add("correct");
+    document.querySelectorAll("#options .option-btn").forEach(function(b) { b.disabled = true; });
+    speak(word.k);
+    if (attempts === 1) {
+      score++; streak++;
+      var msg = encouragement[Math.floor(Math.random() * encouragement.length)];
+      feedback.textContent = streak >= 3 ? msg + " " + streak + " in a row!" : msg;
+    } else {
+      streak = 0;
+      feedback.textContent = word.k + " = " + word.meaning;
+    }
+    feedback.className = "feedback correct-text";
+    document.getElementById("score").textContent  = score;
+    document.getElementById("streak").textContent = streak;
+    setTimeout(function() { quizIdx++; showQuizQ(); }, 1600);
+  } else {
+    btn.classList.add("wrong"); btn.disabled = true;
+    streak = 0; document.getElementById("streak").textContent = 0;
+    feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
+    feedback.className = "feedback wrong-text";
+    if (attempts >= 2) document.getElementById("hint-btn").style.display = "block";
+  }
 }
-feedback.className = ‘feedback correct-text’;
-document.getElementById(‘score’).textContent  = score;
-document.getElementById(‘streak’).textContent = streak;
-setTimeout(() => { quizIdx++; showQuizQ(); }, 1600);
-} else {
-btn.classList.add(‘wrong’); btn.disabled = true;
-streak = 0; document.getElementById(‘streak’).textContent = 0;
-feedback.textContent = tryAgain[Math.floor(Math.random() * tryAgain.length)];
-feedback.className = ‘feedback wrong-text’;
-if (attempts >= 2) document.getElementById(‘hint-btn’).style.display = ‘block’;
-}
-}
-
 function showHint() {
-const w = quizData[quizIdx];
-document.getElementById(‘feedback’).textContent = ’Hint: ’ + w.k + ’ = ’ + w.meaning + ’ on: ’ + w.on + ’ kun: ’ + w.kun;
-document.getElementById(‘feedback’).className = ‘feedback hint-text’;
-speak(w.k);
+  var w = quizData[quizIdx];
+  document.getElementById("feedback").textContent = "Hint: " + w.k + " = " + w.meaning + " on: " + w.on + " kun: " + w.kun;
+  document.getElementById("feedback").className = "feedback hint-text";
+  speak(w.k);
 }
-
 function endQuiz() {
-showScreen(‘end-screen’);
-document.getElementById(‘final-score’).textContent = score;
-document.getElementById(‘final-total’).textContent = quizTotal;
-const pct = score / quizTotal;
-const trophy = document.getElementById(‘trophy’);
-const title  = document.getElementById(‘end-title’);
-const msg    = document.getElementById(‘end-msg’);
-if (pct === 1)       { trophy.textContent=‘Trophy’; title.textContent=‘Perfekuto!’;    msg.textContent=‘Perfect! Grade 2 kanji mastered!’; }
-else if (pct >= 0.8) { trophy.textContent=‘Gold’;   title.textContent=‘Sugoi!’;        msg.textContent=‘Excellent! Try a different quiz mode!’; }
-else if (pct >= 0.6) { trophy.textContent=‘Silver’; title.textContent=‘Yoku dekimashita!’; msg.textContent=‘Good job! Review the Learn cards and try again!’; }
-else                 { trophy.textContent=‘Try!’;   title.textContent=‘Ganbare!’;      msg.textContent=‘Study the Learn cards first - Grade 2 is challenging!’; }
+  showScreen("end-screen");
+  document.getElementById("final-score").textContent = score;
+  document.getElementById("final-total").textContent = quizTotal;
+  var pct = score / quizTotal;
+  var trophy = document.getElementById("trophy");
+  var title  = document.getElementById("end-title");
+  var msg    = document.getElementById("end-msg");
+  if (pct === 1)       { trophy.textContent="Trophy"; title.textContent="Perfekuto!";    msg.textContent="Perfect! Grade 2 kanji mastered!"; }
+  else if (pct >= 0.8) { trophy.textContent="Gold";   title.textContent="Sugoi!";        msg.textContent="Excellent! Try a different quiz mode!"; }
+  else if (pct >= 0.6) { trophy.textContent="Silver"; title.textContent="Yoku dekimashita!"; msg.textContent="Good job! Review the Learn cards!"; }
+  else                 { trophy.textContent="Try!";   title.textContent="Ganbare!";      msg.textContent="Study the Learn cards first - Grade 2 is challenging!"; }
 }
-
-document.addEventListener(‘DOMContentLoaded’, function () {
-buildMenu();
-updateOverallProgress();
-document.querySelectorAll(’.mode-card’).forEach(card => {
-card.addEventListener(‘click’, function () { currentMode = this.dataset.mode; startLearn(); });
-});
-document.getElementById(‘back-to-menu-mode’).addEventListener(‘click’, () => { showScreen(‘menu-screen’); buildMenu(); });
-document.getElementById(‘mode-back-link’).addEventListener(‘click’, function(e) { e.preventDefault(); showScreen(‘menu-screen’); buildMenu(); });
-document.getElementById(‘back-to-menu-learn’).addEventListener(‘click’, () => showScreen(‘mode-screen’));
-document.getElementById(‘learn-back-link’).addEventListener(‘click’, function(e) { e.preventDefault(); showScreen(‘mode-screen’); });
-document.getElementById(‘learn-speak-btn’).addEventListener(‘click’, () => speak(learnData[learnIdx].k));
-document.getElementById(‘learn-prev’).addEventListener(‘click’, function() {
-if (learnIdx > 0) { learnIdx–; showLearnCard(); setTimeout(() => speak(learnData[learnIdx].k), 300); }
-});
-document.getElementById(‘learn-next’).addEventListener(‘click’, function() {
-if (learnIdx < learnData.length - 1) { learnIdx++; showLearnCard(); setTimeout(() => speak(learnData[learnIdx].k), 300); }
-});
-document.getElementById(‘start-quiz-from-learn’).addEventListener(‘click’, startQuiz);
-document.getElementById(‘back-to-menu-quiz’).addEventListener(‘click’, () => showScreen(‘mode-screen’));
-document.getElementById(‘hint-btn’).addEventListener(‘click’, showHint);
-document.getElementById(‘try-again-btn’).addEventListener(‘click’, startQuiz);
-document.getElementById(‘change-mode-btn’).addEventListener(‘click’, () => showScreen(‘mode-screen’));
-document.getElementById(‘back-to-menu-end’).addEventListener(‘click’, () => { showScreen(‘menu-screen’); buildMenu(); });
+document.addEventListener("DOMContentLoaded", function() {
+  buildMenu();
+  updateOverallProgress();
+  document.querySelectorAll(".mode-card").forEach(function(card) {
+    card.addEventListener("click", function() { currentMode = this.dataset.mode; startLearn(); });
+  });
+  document.getElementById("back-to-menu-mode").addEventListener("click", function() { showScreen("menu-screen"); buildMenu(); });
+  document.getElementById("mode-back-link").addEventListener("click", function(e) { e.preventDefault(); showScreen("menu-screen"); buildMenu(); });
+  document.getElementById("back-to-menu-learn").addEventListener("click", function() { showScreen("mode-screen"); });
+  document.getElementById("learn-back-link").addEventListener("click", function(e) { e.preventDefault(); showScreen("mode-screen"); });
+  document.getElementById("learn-speak-btn").addEventListener("click", function() { speak(learnData[learnIdx].k); });
+  document.getElementById("learn-prev").addEventListener("click", function() {
+    if (learnIdx > 0) { learnIdx--; showLearnCard(); setTimeout(function() { speak(learnData[learnIdx].k); }, 300); }
+  });
+  document.getElementById("learn-next").addEventListener("click", function() {
+    if (learnIdx < learnData.length - 1) { learnIdx++; showLearnCard(); setTimeout(function() { speak(learnData[learnIdx].k); }, 300); }
+  });
+  document.getElementById("start-quiz-from-learn").addEventListener("click", startQuiz);
+  document.getElementById("back-to-menu-quiz").addEventListener("click", function() { showScreen("mode-screen"); });
+  document.getElementById("hint-btn").addEventListener("click", showHint);
+  document.getElementById("try-again-btn").addEventListener("click", startQuiz);
+  document.getElementById("change-mode-btn").addEventListener("click", function() { showScreen("mode-screen"); });
+  document.getElementById("back-to-menu-end").addEventListener("click", function() { showScreen("menu-screen"); buildMenu(); });
 });
 
 </script>
+
 </body>
 </html>
