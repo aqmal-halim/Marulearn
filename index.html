@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,175 +8,183 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-  body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Trebuchet MS', sans-serif;
-    background-color: #FFD9C6;
-    color: #444;
-    padding: 14px;
-    display: flex;
-    justify-content: center;
-  }
+body {
+font-family: ‘Comic Sans MS’, ‘Chalkboard SE’, ‘Trebuchet MS’, sans-serif;
+background-color: #FFD9C6;
+color: #444;
+padding: 14px;
+display: flex;
+justify-content: center;
+}
 
-  .app-container { width: 100%; max-width: 500px; }
+.app-container { width: 100%; max-width: 500px; }
 
-  /* ── HERO CARD ── */
-  .hero-card {
-    background: white;
-    border-radius: 32px;
-    padding: 20px;
-    position: relative;
-    box-shadow: 0 10px 0 rgba(0,0,0,0.06);
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
+/* ── HERO CARD ── */
+.hero-card {
+background: white;
+border-radius: 32px;
+padding: 20px;
+position: relative;
+box-shadow: 0 10px 0 rgba(0,0,0,0.06);
+margin-bottom: 22px;
+overflow: hidden;
+}
 
-  .hero-blue-panel {
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 48%;
-    background: #D9EDFF;
-    border-radius: 0 32px 80px 32px;
-    z-index: 0;
-  }
+.hero-blue-panel {
+position: absolute;
+top: 0; right: 0; bottom: 0;
+width: 48%;
+background: #D9EDFF;
+border-radius: 0 32px 80px 32px;
+z-index: 0;
+}
 
-  .header-top {
-    display: flex; justify-content: space-between; align-items: center;
-    position: relative; z-index: 2; margin-bottom: 16px;
-  }
-  .logo {
-    font-size: 1.2rem; font-weight: 900; color: #FF784E;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .logo-ring {
-    width: 26px; height: 26px;
-    border: 3.5px solid #FF784E; border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .header-right { color: #bbb; font-weight: 700; font-size: 0.75rem; }
+.header-top {
+display: flex; justify-content: space-between; align-items: center;
+position: relative; z-index: 2; margin-bottom: 16px;
+}
+.logo {
+font-size: 1.2rem; font-weight: 900; color: #FF784E;
+display: flex; align-items: center; gap: 7px;
+}
+.logo-ring {
+width: 26px; height: 26px;
+border: 3.5px solid #FF784E; border-radius: 50%;
+flex-shrink: 0;
+}
+.header-right { color: #bbb; font-weight: 700; font-size: 0.75rem; }
 
-  .hero-body {
-    display: flex; align-items: flex-end;
-    position: relative; z-index: 2;
-    gap: 0;
-  }
+.hero-body {
+display: flex; align-items: flex-end;
+position: relative; z-index: 2;
+gap: 0;
+}
 
-  .hero-text { flex: 1; padding-right: 8px; }
-  .welcome-tag { font-size: 0.72rem; font-weight: 700; color: #ccc; letter-spacing: 1.5px; margin-bottom: 4px; }
-  .hero-title {
-    font-size: 2em; font-weight: 900; line-height: 1;
-    color: #FF784E;
-  }
-  .hero-title span { color: #5BBAFF; }
-  .hero-tagline { font-size: 0.82rem; color: #aaa; margin-top: 7px; font-weight: 600; }
+.hero-text { flex: 1; padding-right: 8px; }
+.welcome-tag { font-size: 0.72rem; font-weight: 700; color: #ccc; letter-spacing: 1.5px; margin-bottom: 4px; }
+.hero-title {
+font-size: 2em; font-weight: 900; line-height: 1;
+color: #FF784E;
+}
+.hero-title span { color: #5BBAFF; }
+.hero-tagline { font-size: 0.82rem; color: #aaa; margin-top: 7px; font-weight: 600; }
 
-  .hero-chips { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
-  .hero-chip {
-    background: #fff3ee; color: #FF784E;
-    border: 1.5px solid #ffd4c4; border-radius: 20px;
-    padding: 3px 9px; font-size: 0.65rem; font-weight: 700;
-  }
+.hero-chips { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+.hero-chip {
+background: #fff3ee; color: #FF784E;
+border: 1.5px solid #ffd4c4; border-radius: 20px;
+padding: 3px 9px; font-size: 0.65rem; font-weight: 700;
+}
 
-  .mascot-wrap {
-    width: 120px; height: 150px;
-    position: relative; flex-shrink: 0;
-    animation: mascot-hover 3s ease-in-out infinite;
-  }
-  @keyframes mascot-hover {
-    0%, 100% { transform: translateY(0) rotate(-2deg); }
-    50%       { transform: translateY(-8px) rotate(2deg); }
-  }
+.mascot-wrap {
+width: 120px; height: 150px;
+position: relative; flex-shrink: 0;
+animation: mascot-hover 3s ease-in-out infinite;
+}
+@keyframes mascot-hover {
+0%, 100% { transform: translateY(0) rotate(-2deg); }
+50%       { transform: translateY(-8px) rotate(2deg); }
+}
 
-  .bubble {
-    position: absolute;
-    top: -12px; right: 4px;
-    background: white;
-    padding: 6px 10px;
-    border-radius: 14px 14px 4px 14px;
-    font-size: 0.68rem; font-weight: 700; color: #FF784E;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-    white-space: nowrap; z-index: 5;
-    animation: bub-pulse 2s ease-in-out infinite;
-  }
-  @keyframes bub-pulse {
-    0%, 100% { transform: scale(1); }
-    50%       { transform: scale(1.05); }
-  }
+.bubble {
+position: absolute;
+top: -12px; right: 4px;
+background: white;
+padding: 6px 10px;
+border-radius: 14px 14px 4px 14px;
+font-size: 0.68rem; font-weight: 700; color: #FF784E;
+box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+white-space: nowrap; z-index: 5;
+animation: bub-pulse 2s ease-in-out infinite;
+}
+@keyframes bub-pulse {
+0%, 100% { transform: scale(1); }
+50%       { transform: scale(1.05); }
+}
 
-  /* ── SECTION TITLES ── */
-  .section-title {
-    display: flex; align-items: center; gap: 9px;
-    margin: 24px 0 12px 4px;
-    font-size: 1rem; font-weight: 900; color: #555;
-    letter-spacing: 0.5px;
-  }
-  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+/* ── SECTION TITLES ── */
+.section-title {
+display: flex; align-items: center; gap: 9px;
+margin: 24px 0 12px 4px;
+font-size: 1rem; font-weight: 900; color: #555;
+letter-spacing: 0.5px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 
-  /* ── CARDS ── */
-  .grid { display: grid; gap: 12px; }
+/* ── CARDS ── */
+.grid { display: grid; gap: 12px; }
 
-  .card {
-    background: white; border-radius: 22px; padding: 16px;
-    text-decoration: none; display: flex; align-items: center; gap: 13px;
-    position: relative; color: #444;
-    border-bottom: 5px solid #e8e8e8;
-    transition: all 0.1s ease;
-  }
-  .card:active { transform: translateY(3px); border-bottom-width: 2px; }
+.card {
+background: white; border-radius: 22px; padding: 16px;
+text-decoration: none; display: flex; align-items: center; gap: 13px;
+position: relative; color: #444;
+border-bottom: 5px solid #e8e8e8;
+transition: all 0.1s ease;
+}
+.card:active { transform: translateY(3px); border-bottom-width: 2px; }
 
-  .icon-box {
-    width: 58px; height: 58px; border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem; flex-shrink: 0;
-  }
+.icon-box {
+width: 58px; height: 58px; border-radius: 16px;
+display: flex; align-items: center; justify-content: center;
+font-size: 1.8rem; flex-shrink: 0;
+}
 
-  .card-info { flex: 1; min-width: 0; }
-  .card-info h3 { font-size: 1rem; color: #333; margin-bottom: 2px; font-weight: 900; }
-  .card-info p  { font-size: 0.78rem; color: #aaa; font-weight: 600; line-height: 1.35; }
+.card-info { flex: 1; min-width: 0; }
+.card-info h3 { font-size: 1rem; color: #333; margin-bottom: 2px; font-weight: 900; }
+.card-info p  { font-size: 0.78rem; color: #aaa; font-weight: 600; line-height: 1.35; }
 
-  /* Category colors */
-  .cat-lang { background: #EBF5FF; border-bottom-color: #B8DBFF; }
-  .cat-read { background: #FFF5E8; border-bottom-color: #FFD9A0; }
-  .cat-math { background: #EDFFF5; border-bottom-color: #9FE8C0; }
-  .cat-life { background: #F4EEFF; border-bottom-color: #D4B8FF; }
-  .cat-quest { background: #FFFBEB; border-bottom-color: #FDE68A; } /* New Quest Color */
+/* Category colors */
+.cat-lang  { background: #EBF5FF; border-bottom-color: #B8DBFF; }
+.cat-read  { background: #FFF5E8; border-bottom-color: #FFD9A0; }
+.cat-math  { background: #EDFFF5; border-bottom-color: #9FE8C0; }
+.cat-life  { background: #F4EEFF; border-bottom-color: #D4B8FF; }
+.cat-quest { background: #FFFBEB; border-bottom-color: #FDE68A; }
+.cat-forest { background: #F0FFF4; border-bottom-color: #86EFAC; }
 
-  .icon-lang { background: #D0E9FF; }
-  .icon-read { background: #FFE5C0; }
-  .icon-math { background: #CEFAE0; }
-  .icon-life { background: #E6D8FF; }
-  .icon-quest { background: #FEF3C7; border: 2px solid #F59E0B; } /* New Quest Icon Box */
+.icon-lang   { background: #D0E9FF; }
+.icon-read   { background: #FFE5C0; }
+.icon-math   { background: #CEFAE0; }
+.icon-life   { background: #E6D8FF; }
+.icon-quest  { background: #FEF3C7; border: 2px solid #F59E0B; }
+.icon-forest { background: #DCFCE7; border: 2px solid #22C55E; }
 
-  /* Badge */
-  .badge {
-    position: absolute; top: -10px; right: 14px;
-    color: white; padding: 3px 10px; border-radius: 11px;
-    font-size: 0.65rem; font-weight: 700;
-    z-index: 10;
-  }
-  .badge.hot  { background: #FF5E5E; animation: badge-pop 2s ease-in-out infinite; }
-  .badge.new  { background: #2ED573; animation: badge-pop 2s ease-in-out infinite; }
-  @keyframes badge-pop {
-    0%, 100% { transform: scale(1); }
-    50%       { transform: scale(1.08); }
-  }
+/* Badge */
+.badge {
+position: absolute; top: -10px; right: 14px;
+color: white; padding: 3px 10px; border-radius: 11px;
+font-size: 0.65rem; font-weight: 700;
+z-index: 10;
+}
+.badge.hot  { background: #FF5E5E; animation: badge-pop 2s ease-in-out infinite; }
+.badge.new  { background: #2ED573; animation: badge-pop 2s ease-in-out infinite; }
+.badge.baby { background: #F472B6; animation: badge-pop 2s ease-in-out infinite; }
+@keyframes badge-pop {
+0%, 100% { transform: scale(1); }
+50%       { transform: scale(1.08); }
+}
 
-  /* JP sub tags */
-  .jp-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-  .tag {
-    background: white; border: 1.5px solid #dde;
-    padding: 2px 7px; border-radius: 10px;
-    font-size: 0.62rem; color: #777; font-weight: 700;
-  }
+/* Tags */
+.jp-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tag {
+background: white; border: 1.5px solid #dde;
+padding: 2px 7px; border-radius: 10px;
+font-size: 0.62rem; color: #777; font-weight: 700;
+}
+.tag.green  { border-color: #86EFAC; color: #166534; background: #F0FFF4; }
+.tag.gold   { border-color: #F59E0B; color: #B45309; }
 
-  footer {
-    text-align: center; padding: 35px 0 15px;
-    color: #B89080; font-weight: 700; font-size: 0.82rem;
-  }
-  footer strong { color: #FF784E; }
+footer {
+text-align: center; padding: 35px 0 15px;
+color: #B89080; font-weight: 700; font-size: 0.82rem;
+}
+footer strong { color: #FF784E; }
 </style>
+
 </head>
 <body>
 <div class="app-container">
+
+  <!-- HERO -->
 
   <div class="hero-card">
     <div class="hero-blue-panel"></div>
@@ -192,7 +201,7 @@
         <div class="hero-title">MARU<span>LEARN</span></div>
         <div class="hero-tagline">Fun learning for awesome kids! 🚀</div>
         <div class="hero-chips">
-          <span class="hero-chip">🎮 12+ Games</span>
+          <span class="hero-chip">🎮 13+ Games</span>
           <span class="hero-chip">🇯🇵 Japanese</span>
           <span class="hero-chip">🆓 Free</span>
         </div>
@@ -256,25 +265,49 @@
     </div>
   </div>
 
+  <!-- NEW ADVENTURE -->
+
   <div class="section-title">
     <div class="dot" style="background:#F59E0B;"></div>
     NEW ADVENTURE!
   </div>
   <div class="grid">
-    <a href="maruquest/" class="card cat-quest">
-      <span class="badge new">RPG</span>
-      <div class="icon-box icon-quest">⚔️</div>
-      <div class="card-info">
-        <h3>MaruQuest: Math Tower</h3>
-        <p>Defeat monsters using your Power Stones! 🛡️</p>
-        <div class="jp-tags">
-          <span class="tag" style="border-color: #F59E0B; color: #B45309;"> Unlimited tower level</span>
-          <span class="tag">Permadeath</span>
-          <span class="tag">Boss Battle</span>
-        </div>
-      </div>
-    </a>
+
+```
+<!-- ★ NEW: Alphabet Forest -->
+<a href="alphabetforest/" class="card cat-forest">
+  <span class="badge baby">✨ AGE 4+</span>
+  <div class="icon-box icon-forest">🌲</div>
+  <div class="card-info">
+    <h3>MaruQuest: Alphabet Forest</h3>
+    <p>Trace letters & numbers with a magic glowing trail! 🦊✨</p>
+    <div class="jp-tags">
+      <span class="tag green">🔤 A–Z Tracing</span>
+      <span class="tag green">🔢 1–5 Numbers</span>
+      <span class="tag green">🎌 Watch & Copy</span>
+      <span class="tag green">🌟 Firefly Rewards</span>
+    </div>
   </div>
+</a>
+
+<a href="maruquest/" class="card cat-quest">
+  <span class="badge new">RPG</span>
+  <div class="icon-box icon-quest">⚔️</div>
+  <div class="card-info">
+    <h3>MaruQuest: Math Tower</h3>
+    <p>Defeat monsters using your Power Stones! 🛡️</p>
+    <div class="jp-tags">
+      <span class="tag" style="border-color:#F59E0B;color:#B45309;">Unlimited tower level</span>
+      <span class="tag">Permadeath</span>
+      <span class="tag">Boss Battle</span>
+    </div>
+  </div>
+</a>
+```
+
+  </div>
+
+  <!-- LANGUAGES -->
 
   <div class="section-title">
     <div class="dot" style="background:#5BBAFF;"></div>
@@ -299,6 +332,8 @@
     </a>
   </div>
 
+  <!-- READING & ABC -->
+
   <div class="section-title">
     <div class="dot" style="background:#FFAA33;"></div>
     READING & ABC
@@ -319,6 +354,8 @@
       </div>
     </a>
   </div>
+
+  <!-- MATH MAGIC -->
 
   <div class="section-title">
     <div class="dot" style="background:#2ED573;"></div>
@@ -368,6 +405,8 @@
       </div>
     </a>
   </div>
+
+  <!-- LIFE SKILLS -->
 
   <div class="section-title">
     <div class="dot" style="background:#A55EEA;"></div>
