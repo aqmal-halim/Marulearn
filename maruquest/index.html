@@ -77,7 +77,10 @@
     @keyframes c-fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
 
     /* Level up banner */
-    #lvl-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); background: linear-gradient(135deg,#F59E0B,#EF4444); color: white; padding: 14px 28px; border-radius: 20px; font-size: 1.2em; font-weight: 900; box-shadow: 0 8px 30px rgba(239,68,68,0.4); z-index: 999; pointer-events: none; transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); text-shadow: 0 2px 4px rgba(0,0,0,0.2); text-align: center; }
+    #lvl-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); color: white; padding: 16px 32px; border-radius: 22px; font-size: 1.25em; font-weight: 900; z-index: 999; pointer-events: none; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); text-align: center; border: 3px solid rgba(255,255,255,0.4); }
+    #lvl-banner.type-boss    { background: #EF4444; box-shadow: 0 10px 30px rgba(239,68,68,0.5); }
+    #lvl-banner.type-unlock  { background: #6366F1; box-shadow: 0 10px 30px rgba(99,102,241,0.5); }
+    #lvl-banner.type-floor   { background: #F59E0B; box-shadow: 0 10px 30px rgba(245,158,11,0.5); }
     #lvl-banner.show { transform: translate(-50%,-50%) scale(1); }
 
     /* Game over overlay */
@@ -280,10 +283,13 @@
             s.appendChild(el); setTimeout(()=>el.remove(), 700+i*90);
         });
     }
-    function showBanner(text) {
+    function showBanner(text, type='floor') {
         const b=document.getElementById('lvl-banner');
-        b.innerText=text; b.classList.add('show');
-        setTimeout(()=>b.classList.remove('show'), 1500);
+        b.innerText=text;
+        b.className='';  // clear all classes
+        b.classList.add('show', 'type-'+type);
+        clearTimeout(b._t);
+        b._t=setTimeout(()=>{ b.classList.remove('show'); }, 1600);
     }
     function confetti(n=40) {
         const cols=['#FF784E','#FCD34D','#4ADE80','#60A5FA','#F472B6','#FB923C'];
@@ -323,16 +329,16 @@
             document.getElementById('monster-label').innerText = monster.name;
             document.getElementById('monster-label').className = 'boss-label';
             document.getElementById('enemy').innerText = monster.icon;
-            SFX.boss(); showBanner('⚠️ BOSS FIGHT! ⚠️');
+            SFX.boss(); showBanner('⚠️ BOSS FIGHT! ⚠️', 'boss');
         } else {
             monster = pick(MONSTERS);
             document.getElementById('monster-label').innerText = monster.name;
             document.getElementById('monster-label').className = '';
             document.getElementById('enemy').innerText = monster.icon;
-            if(floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!'); }
-            else if(floor===6)  showBanner('➖ Subtraction unlocked!');
-            else if(floor===11) showBanner('✖️ Multiplication unlocked!');
-            else if(floor===16) showBanner('➗ Division unlocked!');
+            if(floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!', 'floor'); }
+            else if(floor===6)  showBanner('➖ Subtraction unlocked!', 'unlock');
+            else if(floor===11) showBanner('✖️ Multiplication unlocked!', 'unlock');
+            else if(floor===16) showBanner('➗ Division unlocked!', 'unlock');
         }
 
         newRound();
