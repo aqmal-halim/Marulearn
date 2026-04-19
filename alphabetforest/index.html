@@ -10,22 +10,22 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: none; }
 
 :root {
-–peach: #FFD9C6;
-–orange: #FF784E;
-–blue: #5BBAFF;
-–forest: #3d6b3d;
-–moss: #5a8a3a;
-–glow: #7fff6a;
-–firefly: #ffe066;
-–cream: #fff8e7;
-–dark: #2a1a0a;
-–quest-gold: #F59E0B;
-–quest-bg: #FFFBEB;
-–quest-border: #FDE68A;
+--peach: #FFD9C6;
+--orange: #FF784E;
+--blue: #5BBAFF;
+--forest: #3d6b3d;
+--moss: #5a8a3a;
+--glow: #7fff6a;
+--firefly: #ffe066;
+--cream: #fff8e7;
+--dark: #2a1a0a;
+--quest-gold: #F59E0B;
+--quest-bg: #FFFBEB;
+--quest-border: #FDE68A;
 }
 
 body {
-font-family: ‘Baloo 2’, cursive;
+font-family: 'Baloo 2', cursive;
 background: #FFD9C6;
 min-height: 100vh;
 display: flex; flex-direction: column; align-items: center;
@@ -40,7 +40,7 @@ margin-bottom: 14px;
 }
 .back-btn {
 background: white; border: none; border-radius: 14px;
-padding: 8px 14px; font-family: ‘Baloo 2’, cursive;
+padding: 8px 14px; font-family: 'Baloo 2', cursive;
 font-size: 0.85rem; font-weight: 800; color: #FF784E;
 cursor: pointer; box-shadow: 0 4px 0 #e8c4b0;
 display: flex; align-items: center; gap: 5px;
@@ -88,7 +88,7 @@ flex-shrink: 0;
 .fh-info { flex: 1; }
 .fh-subtitle { font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 2px; }
 .fh-title { font-size: 1.3rem; font-weight: 900; color: white; line-height: 1; }
-.fh-title span { color: var(–firefly); }
+.fh-title span { color: var(--firefly); }
 .fh-word { font-size: 0.8rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
 
 .firefly-row {
@@ -103,16 +103,16 @@ font-size: 0.6rem; font-weight: 900; color: #bbb;
 transition: all 0.4s cubic-bezier(.68,-0.55,.27,1.55);
 cursor: pointer;
 }
-.ff.active { background: #fff3c8; border-color: var(–quest-gold); color: var(–quest-gold); transform: scale(1.1); }
+.ff.active { background: #fff3c8; border-color: var(--quest-gold); color: var(--quest-gold); transform: scale(1.1); }
 .ff.done {
-background: var(–firefly); border-color: #d4a000; color: #7a5800;
+background: var(--firefly); border-color: #d4a000; color: #7a5800;
 box-shadow: 0 0 8px #ffe06688;
 animation: ff-glow 2s ease-in-out infinite;
 }
 @keyframes ff-glow { 0%,100%{box-shadow:0 0 6px #ffe06666} 50%{box-shadow:0 0 14px #ffe066aa} }
 
 .instruction-pill {
-background: var(–quest-bg); border: 2px solid var(–quest-border);
+background: var(--quest-bg); border: 2px solid var(--quest-border);
 border-radius: 20px; padding: 8px 18px;
 font-size: 0.88rem; font-weight: 800; color: #92400e;
 text-align: center; width: 100%;
@@ -122,7 +122,7 @@ transition: all 0.3s;
 .canvas-wrap {
 width: 100%; position: relative;
 border-radius: 20px; overflow: hidden;
-border: 3px solid var(–quest-border);
+border: 3px solid var(--quest-border);
 background: #fffef5;
 box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
 aspect-ratio: 460 / 280;
@@ -131,8 +131,8 @@ canvas { display: block; width: 100%; height: 100%; }
 
 .guide-dot {
 position: absolute; width: 26px; height: 26px; border-radius: 50%;
-background: radial-gradient(circle, #fff 20%, var(–firefly) 55%, transparent 100%);
-box-shadow: 0 0 14px var(–firefly), 0 0 28px #ffe06655;
+background: radial-gradient(circle, #fff 20%, var(--firefly) 55%, transparent 100%);
+box-shadow: 0 0 14px var(--firefly), 0 0 28px #ffe06655;
 pointer-events: none; transform: translate(-50%, -50%);
 opacity: 0; transition: opacity 0.2s; z-index: 5;
 animation: dot-pulse 0.7s ease-in-out infinite;
@@ -155,7 +155,7 @@ transition: opacity 0.3s;
 .btn-row { display: flex; gap: 10px; width: 100%; }
 .btn {
 flex: 1; padding: 11px 8px; border: none; border-radius: 16px;
-font-family: ‘Baloo 2’, cursive; font-size: 0.92rem; font-weight: 800;
+font-family: 'Baloo 2', cursive; font-size: 0.92rem; font-weight: 800;
 cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
 transition: all 0.1s;
 }
@@ -171,20 +171,20 @@ transition: all 0.1s;
 .spark {
 position: absolute; pointer-events: none; z-index: 30;
 width: 7px; height: 7px; border-radius: 50%;
-animation: spark-anim var(–dur,0.7s) ease-out forwards;
+animation: spark-anim var(--dur,0.7s) ease-out forwards;
 }
 @keyframes spark-anim {
 0%   { transform: translate(0,0) scale(1.2); opacity: 1; }
-100% { transform: translate(var(–tx,0px),var(–ty,-40px)) scale(0); opacity: 0; }
+100% { transform: translate(var(--tx,0px),var(--ty,-40px)) scale(0); opacity: 0; }
 }
 
 .mode-tabs { display: flex; gap: 8px; width: 100%; }
 .mode-tab {
 flex: 1; padding: 8px; border: 2.5px solid #eee; border-radius: 14px;
-background: white; font-family: ‘Baloo 2’, cursive; font-size: 0.8rem; font-weight: 800; color: #aaa;
+background: white; font-family: 'Baloo 2', cursive; font-size: 0.8rem; font-weight: 800; color: #aaa;
 cursor: pointer; text-align: center; transition: all 0.15s;
 }
-.mode-tab.active { background: var(–quest-bg); border-color: var(–quest-gold); color: #92400e; }
+.mode-tab.active { background: var(--quest-bg); border-color: var(--quest-gold); color: #92400e; }
 </style>
 
 </head>
@@ -296,7 +296,6 @@ function speak(text, delay = 0) {
     utt.rate = 0.85;
     utt.pitch = 1.2;
     utt.volume = 1;
-    // Prefer a child-friendly English voice if available
     const preferred = voices.find(v =>
       v.lang.startsWith('en') && (v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Moira') || v.name.includes('Google') || v.name.includes('Female'))
     ) || voices.find(v => v.lang.startsWith('en')) || null;
@@ -307,14 +306,8 @@ function speak(text, delay = 0) {
 
 function announceSuccess(key, data) {
   if (!window.speechSynthesis) return;
-  let phrase;
-  if (mode === 'letters') {
-    phrase = `${key}! ${key} is for ${data.word}! Great job!`;
-  } else {
-    // Spell out number name
-    phrase = `${data.word}! You traced the number ${key}! Amazing!`;
-  }
-  speak(phrase, 600); // slight delay so success sound plays first
+  // This function now speaks only the key (letter or number) immediately
+  speak(key, 600); 
 }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -336,14 +329,7 @@ const LETTERS = {
   D:{strokes:[pts([[165,50],[165,220]]),pts([[165,50],[230,50],[285,90],[285,180],[230,220],[165,220]])],mascot:'🦆',word:'Duck',color:'#3498db'},
   E:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[265,135]]),pts([[170,220],[290,220]])],mascot:'🐘',word:'Elephant',color:'#9b59b6'},
   F:{strokes:[pts([[170,50],[170,220]]),pts([[170,50],[290,50]]),pts([[170,135],[270,135]])],mascot:'🦊',word:'Fox',color:'#e67e22'},
-
-  // ── G FIXED ──
-  // Start upper-right, arc counterclockwise (like C), stop at 3-o'clock, then draw shelf inward
-  G:{strokes:[
-    arc(CX, CY, 95, 100, -Math.PI*0.15, Math.PI*1.62, 34)
-      .concat(pts([[CX+95, CY],[CX+10, CY]]))
-  ],mascot:'🦒',word:'Giraffe',color:'#27ae60'},
-
+  G:{strokes:[arc(CX, CY, 95, 100, -Math.PI*0.15, Math.PI*1.62, 34).concat(pts([[CX+95, CY],[CX+10, CY]]))],mascot:'🦒',word:'Giraffe',color:'#27ae60'},
   H:{strokes:[pts([[160,50],[160,220]]),pts([[160,135],[300,135]]),pts([[300,50],[300,220]])],mascot:'🐹',word:'Hamster',color:'#d35400'},
   I:{strokes:[pts([[CX,50],[CX,220]]),pts([[CX-50,50],[CX+50,50]]),pts([[CX-50,220],[CX+50,220]])],mascot:'🦎',word:'Iguana',color:'#16a085'},
   J:{strokes:[pts([[CX+50,50],[CX+50,185]]).concat(arc(CX,185,50,35,0,Math.PI,16))],mascot:'🪼',word:'Jellyfish',color:'#8e44ad'},
@@ -366,53 +352,26 @@ const LETTERS = {
 };
 
 const NUMBERS = {
-  // 1 — straight down with serif base
   '1':{strokes:[pts([[CX-20,80],[CX,50],[CX,230]]),pts([[CX-35,230],[CX+35,230]])],mascot:'🌟',word:'One',color:'#e74c3c'},
-
-  // 2 — top arc, diagonal, base line
   '2':{strokes:[arc(CX,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-60,220],[CX+75,220]]))],mascot:'🦆',word:'Two',color:'#3498db'},
-
-  // ── 3 FIXED ──
-  // Two bumps opening to the RIGHT. Each arc goes from left-ish open ends to right.
-  // We draw top bump first (upper half), then bottom bump (lower half).
-  // arc params: cx, cy, rx, ry, startAngle, endAngle
-  // Angle 0=right, PI/2=down, PI=left, -PI/2=up
-  // Top bump: center at (CX, 108), opens left, goes from top-left round to bottom-left
-  // Bottom bump: center at (CX, 180), same principle but slightly larger
-  '3':{strokes:[
-    arc(CX, 108, 68, 58, -Math.PI*0.75, Math.PI*0.75, 24),
-    arc(CX, 180, 72, 62, -Math.PI*0.8,  Math.PI*0.8,  24)
-  ],mascot:'🐝',word:'Three',color:'#f39c12'},
-
-  // 4 — diagonal arm + vertical
+  '3':{strokes:[arc(CX, 108, 68, 58, -Math.PI*0.75, Math.PI*0.75, 24), arc(CX, 180, 72, 62, -Math.PI*0.8,  Math.PI*0.8,  24)],mascot:'🐝',word:'Three',color:'#f39c12'},
   '4':{strokes:[pts([[CX+30,60],[CX-60,175],[CX+85,175]]),pts([[CX+30,60],[CX+30,230]])],mascot:'🌸',word:'Four',color:'#9b59b6'},
-
-  // 5 — top-left corner, down, curve right
   '5':{strokes:[pts([[CX+50,60],[CX-50,60],[CX-50,145],[CX+30,145]]).concat(arc(CX,190,65,50,Math.PI*1.5,Math.PI*3.2,20))],mascot:'🖐️',word:'Five',color:'#e67e22'},
-
-  // ── 6 FIXED ──
-  // 6 = curved stem from top-right curving LEFT+DOWN, connecting INTO top of the circle
-  // Drawn as ONE continuous stroke: curve down into circle
-  // The stem ends at the top of the circle (12 o'clock), circle goes full around
-  '6':{strokes:[
-    // Stem: start top-right, curve down-left to meet top of circle
-    pts([[CX+55, 52],[CX+30, 80],[CX+5, 108],[CX-20, 130]])
-      // Transition smoothly into the circle — circle center (CX, 188), r=58
-      // Top of circle = (CX, 130), so we connect there and go round clockwise
-      .concat(arc(CX, 188, 58, 58, -Math.PI/2, Math.PI*1.5, 36))
-  ],mascot:'🎲',word:'Six',color:'#d35400'},
-
-  // 7 — top bar, diagonal
+  '6':{strokes:[pts([[CX+55, 52],[CX+30, 80],[CX+5, 108],[CX-20, 130]]).concat(arc(CX, 188, 58, 58, -Math.PI/2, Math.PI*1.5, 36))],mascot:'🎲',word:'Six',color:'#d35400'},
   '7':{strokes:[pts([[CX-60,60],[CX+60,60],[CX-30,230]])],mascot:'🌈',word:'Seven',color:'#9b59b6'},
-
-  // 8 — two stacked circles
   '8':{strokes:[arc(CX,105,55,50,Math.PI*0.5,Math.PI*2.5,24).concat(arc(CX,190,65,55,Math.PI*1.5,-Math.PI*0.5,24))],mascot:'🐙',word:'Eight',color:'#3498db'},
-
-  // 9 — circle on top, tail hanging down-right
   '9':{strokes:[arc(CX,100,65,55,0,Math.PI*2.1,32).concat(pts([[CX+65,100],[CX+40,230]]))],mascot:'🎈',word:'Nine',color:'#e74c3c'},
-
-  // 10 — 1 on left, circle on right
-  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]),arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'}
+  '10':{strokes:[pts([[CX-60,60],[CX-60,230]]),arc(CX+40,145,50,85,0,Math.PI*2,24)],mascot:'🔟',word:'Ten',color:'#27ae60'},
+  '11':{strokes:[pts([[CX-60,60],[CX-60,230]]),pts([[CX+60,60],[CX+60,230]])],mascot:'🚲',word:'Eleven',color:'#e74c3c'},
+  '12':{strokes:[pts([[CX-60,60],[CX-60,230]]),arc(CX+60,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX,220],[CX+135,220]]))],mascot:'🕛',word:'Twelve',color:'#3498db'},
+  '13':{strokes:[pts([[CX-100,60],[CX-100,230]]),arc(CX+20, 108, 68, 58, -Math.PI*0.75, Math.PI*0.75, 24), arc(CX+20, 180, 72, 62, -Math.PI*0.8,  Math.PI*0.8,  24)],mascot:'🌳',word:'Thirteen',color:'#f39c12'},
+  '14':{strokes:[pts([[CX-100,60],[CX-100,230]]),pts([[CX+60,60],[CX-30,175],[CX+115,175]]),pts([[CX+60,60],[CX+60,230]])],mascot:'🦋',word:'Fourteen',color:'#9b59b6'},
+  '15':{strokes:[pts([[CX-100,60],[CX-100,230]]),pts([[CX+80,60],[CX-20,60],[CX-20,145],[CX+60,145]]).concat(arc(CX+30,190,65,50,Math.PI*1.5,Math.PI*3.2,20))],mascot:'🍎',word:'Fifteen',color:'#e67e22'},
+  '16':{strokes:[pts([[CX-100,60],[CX-100,230]]),pts([[CX+85, 52],[CX+60, 80],[CX+35, 108],[CX+10, 130]]).concat(arc(CX+30, 188, 58, 58, -Math.PI/2, Math.PI*1.5, 36))],mascot:'🍭',word:'Sixteen',color:'#d35400'},
+  '17':{strokes:[pts([[CX-100,60],[CX-100,230]]),pts([[CX-10,60],[CX+110,60],[CX+20,230]])],mascot:'⚓',word:'Seventeen',color:'#9b59b6'},
+  '18':{strokes:[pts([[CX-100,60],[CX-100,230]]),arc(CX+50,105,55,50,Math.PI*0.5,Math.PI*2.5,24).concat(arc(CX+50,190,65,55,Math.PI*1.5,-Math.PI*0.5,24))],mascot:'🐧',word:'Eighteen',color:'#3498db'},
+  '19':{strokes:[pts([[CX-100,60],[CX-100,230]]),arc(CX+40,100,65,55,0,Math.PI*2.1,32).concat(pts([[CX+105,100],[CX+80,230]]))],mascot:'🌙',word:'Nineteen',color:'#e74c3c'},
+  '20':{strokes:[arc(CX-60,115,65,60,-Math.PI*0.9,Math.PI*0.15,20).concat(pts([[CX-120,220],[CX,220]])),arc(CX+80,145,50,85,0,Math.PI*2,24)],mascot:'⚽',word:'Twenty',color:'#27ae60'}
 };
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
@@ -649,7 +608,7 @@ function resetTrace() {
 function checkCompletion() {
   const data = currentData();
   let total = 0, covered = 0;
-  const PROXIMITY = 24; // generous for small hands
+  const PROXIMITY = 24; 
   const THRESHOLD = 0.90;
 
   data.strokes.forEach(stroke => {
