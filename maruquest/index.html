@@ -7,118 +7,100 @@
     <style>
         :root { --primary: #FF784E; --secondary: #60A5FA; --boss: #EF4444; }
         
-        /* Mobile Lock & Reset */
+        /* Strict Mobile Lock */
         html, body { 
             height: 100%; 
             overflow: hidden; 
-            background-color: #F8FAFC; 
+            background-color: #334155; 
             margin: 0; 
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Comic Sans MS', sans-serif;
-            touch-action: manipulation;
+            touch-action: none; /* Prevents accidental zooming/scrolling */
         }
 
         #game-container { 
-            width: 100%; 
-            max-width: 400px; 
+            width: 100vw; 
+            max-width: 420px; 
             height: 100vh;
             max-height: 850px;
             background: white; 
-            border: 8px solid var(--primary); 
-            border-radius: 40px; 
-            padding: 20px; 
+            border: 6px solid var(--primary); 
+            border-radius: 30px; 
+            padding: 15px; 
             box-sizing: border-box;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
             position: relative; 
             display: flex;
             flex-direction: column;
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
         }
 
         .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; font-family: inherit; cursor: pointer; -webkit-appearance: none; }
+        .home-btn { background: white; border: 2px solid #CBD5E1; padding: 5px 10px; border-radius: 12px; font-weight: 900; color: #475569; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; cursor: pointer; }
         .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
-        #best-stat { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
 
-        #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+        #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 5px; overflow: hidden; }
         #timer-fill { width: 100%; height: 100%; background: #4ADE80; transition: width 0.1s linear; }
-        #timer-fill.warning { background: #FB923C; }
-        #timer-fill.danger  { background: #EF4444; }
 
-        #combo-strip { text-align: center; height: 16px; margin-bottom: 3px; font-size: 0.73rem; font-weight: 900; color: #F59E0B; }
+        #combo-strip { text-align: center; height: 18px; font-size: 0.8rem; font-weight: 900; color: #F59E0B; }
 
-        #stage { flex-grow: 1; min-height: 200px; position: relative; border-radius: 25px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; border: 4px solid rgba(0,0,0,0.05); overflow: hidden; background: #F1F5F9; }
+        /* Fixed Aspect Stage to prevent stretching */
+        #stage { 
+            position: relative; 
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border-radius: 20px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            justify-content: center;
+            border: 4px solid rgba(0,0,0,0.05); 
+            overflow: hidden; 
+            background: #F1F5F9; 
+        }
         
         #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
-        #monster-label.boss-label { background: var(--boss); color: white; animation: boss-glow 1s ease-in-out infinite alternate; }
-        @keyframes boss-glow { from{box-shadow:0 0 5px var(--boss)} to{box-shadow:0 0 15px var(--boss), 0 0 25px var(--boss)} }
-        
-        #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; }
         #hp-fill { height: 100%; width: 100%; background: var(--boss); border-radius: 10px; transition: 0.3s; }
 
-        .bubble { position: absolute; background: white; border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; font-weight: 900; color: #1E293B; box-shadow: 0 4px 0 rgba(0,0,0,0.05); opacity: 0; transition: 0.2s; z-index: 20; border: 2px solid #E2E8F0; pointer-events: none; white-space: nowrap; }
-        .bubble::after { content: ''; position: absolute; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid white; bottom: -6px; left: 50%; transform: translateX(-50%); }
-        #hero-bubble { bottom: 110px; left: 20px; }
-        #enemy-bubble { bottom: 110px; right: 20px; }
+        #hero-wrap { position: absolute; bottom: 15px; left: 15%; width: 80px; transition: 0.3s; }
+        #enemy { position: absolute; bottom: 20px; right: 15%; font-size: 70px; transition: 0.3s; }
 
-        #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.12s; border-radius: 20px; }
+        .hero-attack { transform: translateX(100px) rotate(10deg); }
+        .enemy-hit   { opacity: 0; transform: scale(0.5); }
 
-        .pop-num { position: absolute; font-size: 1.4em; font-weight: 900; pointer-events: none; z-index: 30; animation: pop-rise 0.8s ease-out forwards; }
-        .pop-num.good { color: #EF4444; }
-        .pop-num.bad  { color: #94A3B8; }
-        @keyframes pop-rise { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-50px);opacity:0} }
+        #equation-box { background: var(--primary); color: white; border-radius: 20px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 55px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 
-        #hero-wrap { position: absolute; bottom: 15px; left: 25px; width: 85px; transition: 0.3s; }
-        #enemy { position: absolute; bottom: 30px; right: 30px; font-size: 80px; transition: 0.3s; }
+        .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 10px; }
+        .card { height: 65px; background: var(--secondary); color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; -webkit-appearance: none; }
+        .card:active { transform: translateY(4px); box-shadow: 0 1px 0 #2563EB; }
 
-        .hero-attack { transform: translateX(120px) rotate(15deg); }
-        .enemy-hit   { transform: translateX(-140px); opacity: 0; }
-        .enemy-shake { animation: e-shake 0.4s; }
-        .hero-hurt   { animation: h-hurt 0.35s; }
-        @keyframes e-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-12px)} 75%{transform:translateX(12px)} }
-        @keyframes h-hurt  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
-
-        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; }
-        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; }
-
-        .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
-        .card { height: 60px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; font-family: inherit; -webkit-appearance: none; transition: 0.1s; }
-        .card:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #2563EB; }
-
-        /* Interstitial & Overlays */
+        /* Overlays */
         #go-overlay, #interstitial { 
             display: none; 
-            position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.7); 
+            position: absolute; inset: 0; 
+            background: rgba(0,0,0,0.8); 
             z-index: 1000; 
             justify-content: center; align-items: center; 
             flex-direction: column;
+            border-radius: 24px;
         }
 
-        #go-card { background: white; border-radius: 30px; padding: 26px 22px; width: 86%; max-width: 320px; text-align: center; border: 6px solid var(--primary); animation: go-pop 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-        @keyframes go-pop { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
-        
-        .int-icon { font-size: 5em; margin-bottom: 10px; }
-        .int-title { font-size: 2em; font-weight: 900; color: white; text-align: center; }
-        .int-sub { font-size: 1.1em; color: rgba(255,255,255,0.9); margin-top: 5px; font-weight: 700; text-align: center; }
-        .inter-bar { width: 200px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 10px; margin-top: 25px; overflow: hidden; }
-        .inter-progress { height: 100%; background: white; width: 0%; }
-
-        .confetti { position: fixed; width: 9px; height: 9px; pointer-events: none; z-index: 1001; border-radius: 2px; animation: c-fall linear forwards; }
-        @keyframes c-fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+        .int-title { font-size: 2em; font-weight: 900; color: white; }
+        .inter-bar { width: 200px; height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .inter-progress { height: 100%; background: white; width: 0%; transition: width 1.2s linear; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
     <div class="nav-bar">
-        <button type="button" class="home-btn" id="home-btn">🏠 Home</button>
+        <button class="home-btn" onclick="location.reload()">🏠 Home</button>
         <div class="stats-col">
             <div>❤️ <span id="p-hp">3</span> | 🏰 F: <span id="floor">1</span></div>
-            <div id="best-stat">🏆 Best: F1</div>
+            <div style="font-size:0.6rem">🏆 Best: <span id="best-f">1</span></div>
         </div>
     </div>
 
@@ -128,219 +110,136 @@
     <div id="stage">
         <div id="monster-label">Zappy</div>
         <div id="hp-bar-container"><div id="hp-fill"></div></div>
-        <div id="hero-bubble" class="bubble"></div>
-        <div id="enemy-bubble" class="bubble"></div>
-        <div id="flash"></div>
         <div id="enemy">👾</div>
         <div id="hero-wrap">
-            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(5deg)">
-                <defs>
-                    <radialGradient id="grad_maru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
-                        <stop offset="0%" style="stop-color:#FFD4A1"/><stop offset="100%" style="stop-color:#FFB15E"/>
-                    </radialGradient>
-                </defs>
-                <circle cx="80" cy="85" r="45" fill="url(#grad_maru)"/>
-                <g><path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/></g>
-                <g><path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/></g>
-                <g>
-                    <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/><ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                    <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/><ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
-                </g>
-                <path d="M65 102 q15 12 30 0" stroke="#333333" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <svg viewBox="0 0 160 160" style="width:100%;">
+                <circle cx="80" cy="85" r="45" fill="#FFB15E"/>
+                <circle cx="68" cy="80" r="5" fill="black"/>
+                <circle cx="92" cy="80" r="5" fill="black"/>
+                <path d="M65 105 q15 10 30 0" stroke="black" stroke-width="3" fill="none"/>
             </svg>
         </div>
     </div>
 
     <div id="equation-box">
         <div class="slot" id="slot">?</div>
-        <span id="op">+</span>
+        <span>+</span>
         <span id="const-val">0</span>
         <span>=</span>
         <span id="goal-val">0</span>
     </div>
 
     <div class="hand" id="card-hand"></div>
-</div>
 
-<div id="interstitial">
-    <div class="int-icon" id="int-icon"></div>
-    <div class="int-title" id="int-title"></div>
-    <div class="int-sub" id="int-sub"></div>
-    <div class="inter-bar"><div class="inter-progress" id="inter-progress"></div></div>
-</div>
+    <div id="interstitial">
+        <div id="int-icon" style="font-size:4rem"></div>
+        <div class="int-title" id="int-title"></div>
+        <div class="inter-bar"><div class="inter-progress" id="inter-p"></div></div>
+    </div>
 
-<div id="go-overlay">
-    <div id="go-card">
-        <div class="go-emoji" id="go-emoji" style="font-size:4em">💀</div>
-        <div class="go-title" id="go-title" style="font-size:1.6em; font-weight:900;">Tower Broken!</div>
-        <div class="go-sub" id="go-sub" style="color:#94A3B8; margin-bottom:15px;">Keep practising!</div>
-        <div class="go-stats" style="background:#F8FAFC; padding:10px; border-radius:15px; margin-bottom:15px;">
-            <div style="display:flex; justify-content:space-between"><span>Floor</span><span id="go-floor" style="font-weight:900">1</span></div>
-            <div style="display:flex; justify-content:space-between"><span>Score</span><span id="go-score" style="font-weight:900">0</span></div>
-            <div style="display:flex; justify-content:space-between"><span>Best</span><span id="go-best" style="font-weight:900">F1</span></div>
-        </div>
-        <button type="button" class="go-btn" id="go-retry" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:15px; font-weight:900; cursor:pointer;">⚔️ Try Again!</button>
+    <div id="go-overlay">
+        <h1 style="color:white">GAME OVER</h1>
+        <button onclick="location.reload()" style="padding:15px 30px; border-radius:15px; border:none; font-weight:900; background:var(--primary); color:white;">Try Again</button>
     </div>
 </div>
 
 <script>
-    let floor=1, playerHP=3, enemyHP=1, isBusy=false, timerInterval, combo=0, score=0, monster=null;
-
-    const SFX = {
-        hit() { tone(523,'square',0.07,0.2); },
-        wrong() { tone(220,'sawtooth',0.1,0.3); },
-        levelup() { [523,659,784].forEach((f,i) => tone(f,'square',0.1,0.2,i*0.1)); },
-        over() { tone(165,'sawtooth',0.4,0.3); }
-    };
-
-    function tone(f,t,d,v,delay=0) {
-        try {
-            const c=new (window.AudioContext||window.webkitAudioContext)(), o=c.createOscillator(), g=c.createGain();
-            o.connect(g); g.connect(c.destination);
-            o.type=t; o.frequency.setValueAtTime(f,c.currentTime+delay);
-            g.gain.setValueAtTime(v,c.currentTime+delay);
-            g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
-            o.start(c.currentTime+delay); o.stop(c.currentTime+delay+d+0.05);
-        } catch(e){}
-    }
-
-    const MONSTERS = [{name:'Zappy',icon:'👾'},{name:'Dusty',icon:'🐝'},{name:'Gloop',icon:'🐙'}];
-    const BOSSES = [{name:'MEGA BOSS',icon:'👹'}];
-
-    function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
-    function getBest() { return parseInt(localStorage.getItem('mq_best')||'1'); }
-
-    function showBanner(text, type='floor') {
-        const overlay = document.getElementById('interstitial');
-        const progress = document.getElementById('inter-progress');
-        const colors = { boss:'#EF4444', unlock:'#6366F1', floor:'#F59E0B' };
-        
-        document.getElementById('int-icon').innerText = type==='boss'?'⚠️':type==='unlock'?'🔓':'🏆';
-        document.getElementById('int-title').innerText = text;
-        document.getElementById('int-sub').innerText = type==='boss'?'Defeat it to advance!':'Keep going!';
-        overlay.style.backgroundColor = colors[type];
-        overlay.style.display = 'flex';
-        
-        progress.style.transition = 'none';
-        progress.style.width = '0%';
-        setTimeout(() => {
-            progress.style.transition = 'width 1.2s linear';
-            progress.style.width = '100%';
-        }, 10);
-
-        setTimeout(() => { overlay.style.display = 'none'; }, 1400);
-    }
+    let floor=1, hp=3, enemyHp=1, combo=0, isBusy=false, timer;
+    const MONSTERS = ['👾', '🐝', '🐙', '🦖'];
 
     function init() {
         isBusy = false;
         document.getElementById('floor').innerText = floor;
-        document.getElementById('p-hp').innerText = playerHP;
-        const isBoss = (floor % 5 === 0);
-        enemyHP = isBoss ? 3 : 1;
+        document.getElementById('p-hp').innerText = hp;
         
-        const m = isBoss ? pick(BOSSES) : pick(MONSTERS);
-        document.getElementById('monster-label').innerText = m.name;
-        document.getElementById('enemy').innerText = m.icon;
+        const isBoss = floor % 5 === 0;
+        enemyHp = isBoss ? 3 : 1;
+        document.getElementById('enemy').innerText = isBoss ? '👹' : pick(MONSTERS);
         document.getElementById('enemy').className = '';
         document.getElementById('hp-bar-container').style.display = isBoss ? 'block' : 'none';
         document.getElementById('hp-fill').style.width = '100%';
 
-        if(isBoss) showBanner('BOSS FIGHT!', 'boss');
-        else if(floor > 1 && floor % 5 === 1) showBanner('Next Stage!', 'floor');
-        
+        if (isBoss) triggerBanner("BOSS FIGHT!", "⚠️");
         newRound();
     }
 
-    function newRound() {
-        let op='+', ans, cVal, goal;
-        ans = Math.floor(Math.random()*10)+1;
-        cVal = Math.floor(Math.random()*10)+1;
-        goal = ans + cVal;
+    function triggerBanner(text, icon) {
+        const ui = document.getElementById('interstitial');
+        const bar = document.getElementById('inter-p');
+        document.getElementById('int-title').innerText = text;
+        document.getElementById('int-icon').innerText = icon;
+        ui.style.display = 'flex';
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = '100%'; }, 50);
+        setTimeout(() => { ui.style.display = 'none'; }, 1300);
+    }
 
-        document.getElementById('op').innerText = op;
+    function newRound() {
+        let ans = Math.floor(Math.random() * 10) + 1;
+        let cVal = Math.floor(Math.random() * 10) + 1;
         document.getElementById('const-val').innerText = cVal;
-        document.getElementById('goal-val').innerText = goal;
+        document.getElementById('goal-val').innerText = ans + cVal;
         document.getElementById('slot').innerText = '?';
-        document.getElementById('slot').className = 'slot';
 
         const hand = document.getElementById('card-hand');
         hand.innerHTML = '';
         let cards = [ans];
-        while(cards.length < 6) { let r = Math.floor(Math.random()*20)+1; if(!cards.includes(r)) cards.push(r); }
-        cards.sort(()=>Math.random()-0.5).forEach(n => {
+        while(cards.length < 6) {
+            let r = Math.floor(Math.random() * 20) + 1;
+            if(!cards.includes(r)) cards.push(r);
+        }
+        cards.sort(() => Math.random() - 0.5).forEach(n => {
             const b = document.createElement('button');
-            b.className = 'card'; b.innerText = n;
+            b.className = 'card';
+            b.innerText = n;
             b.onclick = () => play(n, ans);
             hand.appendChild(b);
         });
-        startTimer();
-    }
-
-    function startTimer() {
-        clearInterval(timerInterval);
+        
         let timeLeft = 100;
-        timerInterval = setInterval(() => {
-            timeLeft -= (0.5 + floor*0.05);
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft -= (0.8 + (floor * 0.1));
             document.getElementById('timer-fill').style.width = timeLeft + '%';
-            if(timeLeft <= 0) { clearInterval(timerInterval); play(-1, 0); }
+            if(timeLeft <= 0) { clearInterval(timer); play(-1, ans); }
         }, 100);
     }
 
     function play(n, ans) {
         if(isBusy) return;
-        isBusy = true; clearInterval(timerInterval);
+        isBusy = true;
+        clearInterval(timer);
 
         if(n === ans) {
-            SFX.hit();
             combo++;
-            score += 10;
+            document.getElementById('combo-strip').innerText = combo + "x COMBO!";
             document.getElementById('hero-wrap').classList.add('hero-attack');
             document.getElementById('slot').innerText = ans;
-            document.getElementById('slot').className = 'slot filled';
             
             setTimeout(() => {
                 document.getElementById('hero-wrap').classList.remove('hero-attack');
-                enemyHP--;
-                if(enemyHP <= 0) {
-                    SFX.levelup();
+                enemyHp--;
+                if(enemyHp <= 0) {
                     document.getElementById('enemy').classList.add('enemy-hit');
-                    setTimeout(() => { floor++; init(); }, 500);
+                    setTimeout(() => { floor++; init(); }, 400);
                 } else {
-                    document.getElementById('hp-fill').style.width = (enemyHP/3*100)+'%';
+                    document.getElementById('hp-fill').style.width = (enemyHp/3*100)+'%';
                     isBusy = false; newRound();
                 }
-            }, 400);
+            }, 300);
         } else {
-            SFX.wrong();
-            playerHP--;
-            document.getElementById('p-hp').innerText = playerHP;
-            document.getElementById('hero-wrap').classList.add('hero-hurt');
-            setTimeout(() => {
-                document.getElementById('hero-wrap').classList.remove('hero-hurt');
-                if(playerHP <= 0) { SFX.over(); gameOver(); }
-                else { isBusy = false; newRound(); }
-            }, 500);
+            combo = 0;
+            document.getElementById('combo-strip').innerText = "";
+            hp--;
+            document.getElementById('p-hp').innerText = hp;
+            if(hp <= 0) document.getElementById('go-overlay').style.display = 'flex';
+            else { isBusy = false; setTimeout(newRound, 500); }
         }
     }
 
-    function gameOver() {
-        const best = getBest();
-        if(floor > best) localStorage.setItem('mq_best', floor);
-        document.getElementById('go-floor').innerText = floor;
-        document.getElementById('go-score').innerText = score;
-        document.getElementById('go-best').innerText = 'F' + Math.max(floor, best);
-        document.getElementById('go-overlay').style.display = 'flex';
-    }
+    function pick(a) { return a[Math.floor(Math.random()*a.length)]; }
 
-    document.getElementById('go-retry').onclick = () => {
-        floor=1; playerHP=3; score=0; combo=0;
-        document.getElementById('go-overlay').style.display = 'none';
-        init();
-    };
-
-    document.getElementById('home-btn').onclick = () => location.reload();
-
-    init();
+    window.onload = init;
 </script>
 </body>
 </html>
