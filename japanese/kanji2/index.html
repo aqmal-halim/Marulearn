@@ -633,7 +633,8 @@ let quizTotal    = 0;
 let score        = 0;
 let streak       = 0;
 let attempts     = 0;
-let studiedSet   = new Set(JSON.parse(localStorage.getItem(‘k2_studied’) || ‘[]’));
+let studiedSet = new Set();
+try { studiedSet = new Set(JSON.parse(localStorage.getItem(‘k2_studied’) || ‘[]’)); } catch(e) {}
 
 function saveStudied() {
 try { localStorage.setItem(‘k2_studied’, JSON.stringify([…studiedSet])); } catch(e) {} }
@@ -669,8 +670,7 @@ mixCard.type = ‘button’;
 mixCard.className = ‘menu-card’;
 mixCard.style.borderColor = ‘#8e44ad’;
 mixCard.dataset.group = ‘mix’;
-mixCard.innerHTML = ` <div class="menu-icon" style="color:#8e44ad;">🎲</div> <div class="menu-info"> <div class="menu-name">Mixed Quiz — All 160</div> <div class="menu-desc">Random kanji from all groups</div> <div class="menu-count">All 160 kanji</div> </div>`;
-mixCard.addEventListener(‘click’, () => startGroup(‘mix’));
+mixCard.innerHTML = ` <div class="menu-icon" style="color:#8e44ad;pointer-events:none;">🎲</div> <div class="menu-info" style="pointer-events:none;"> <div class="menu-name">Mixed Quiz — All 160</div> <div class="menu-desc">Random kanji from all groups</div> <div class="menu-count">All 160 kanji</div> </div>`;
 grid.appendChild(mixCard);
 
 GROUPS.forEach((g, i) => {
@@ -681,9 +681,13 @@ card.className = ‘menu-card’;
 card.style.borderColor = GROUP_COLORS[i];
 card.dataset.group = g.id;
 const sample = g.kanji.slice(0, 4).map(k => k.k).join(’’);
-card.innerHTML = ` <div class="menu-icon" style="color:${GROUP_COLORS[i]};font-size:1.1em;">${sample}</div> <div class="menu-info"> <div class="menu-name">Group ${i+1} — ${g.title}</div> <div class="menu-desc">${g.kanji.map(k=>k.k).join('　')}</div> <div class="menu-count">${g.kanji.length} kanji · ${studied}/${g.kanji.length} studied</div> </div>`;
-card.addEventListener(‘click’, () => startGroup(g.id));
+card.innerHTML = ` <div class="menu-icon" style="color:${GROUP_COLORS[i]};font-size:1.1em;pointer-events:none;">${sample}</div> <div class="menu-info"> <div class="menu-name">Group ${i+1} — ${g.title}</div> <div class="menu-desc">${g.kanji.map(k=>k.k).join('　')}</div> <div class="menu-count">${g.kanji.length} kanji · ${studied}/${g.kanji.length} studied</div> </div>`;
 grid.appendChild(card);
+});
+
+grid.addEventListener(‘click’, function(e) {
+const card = e.target.closest(‘button[data-group]’);
+if (card) startGroup(card.dataset.group);
 });
 }
 
