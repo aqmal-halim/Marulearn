@@ -24,8 +24,6 @@
             height: 100vh;
             background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             position: relative;
-            border-left: 4px solid #bae6fd;
-            border-right: 4px solid #bae6fd;
         }
 
         /* UI Header */
@@ -37,8 +35,25 @@
             padding: 0 15px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             z-index: 100;
         }
+
+        .home-btn {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-group { display: flex; gap: 8px; }
+
         .stat-box {
             background: white;
             padding: 5px 12px;
@@ -48,12 +63,7 @@
             color: #0369A1;
         }
 
-        /* Falling Words Area */
-        #sky {
-            width: 100%;
-            height: 65%;
-            position: relative;
-        }
+        #sky { width: 100%; height: 65%; position: relative; }
 
         .falling-word {
             position: absolute;
@@ -66,12 +76,11 @@
             white-space: nowrap;
             display: flex;
             gap: 2px;
-            transition: transform 0.1s;
         }
+
         .char { color: #334155; }
         .char.typed { color: #4ADE80; transform: scale(1.2); display: inline-block; }
 
-        /* Keyboard Area */
         #input-area {
             height: 35%;
             background: white;
@@ -81,7 +90,6 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
-            box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
         .key {
@@ -91,30 +99,22 @@
             font-size: 1.1rem;
             font-weight: 900;
             color: #475569;
-            cursor: pointer;
             box-shadow: 0 4px 0 #CBD5E1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 10px 0;
-            font-family: inherit;
         }
-        .key:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #CBD5E1;
-            background: var(--accent);
-        }
+        .key:active { transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; background: var(--accent); }
 
         #game-over {
             display: none;
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             z-index: 200;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
+            text-align: center;
         }
     </style>
 </head>
@@ -122,112 +122,123 @@
 
 <div id="game-wrapper">
     <div class="header">
-        <div class="stat-box">⭐ <span id="score">0</span></div>
-        <div class="stat-box">❤️ <span id="lives">3</span></div>
+        <a href="../index.html" class="home-btn">🏠</a>
+        <div class="stat-group">
+            <div class="stat-box">⭐ <span id="score">0</span></div>
+            <div class="stat-box">❤️ <span id="lives">3</span></div>
+        </div>
     </div>
 
     <div id="sky"></div>
-
-    <div id="input-area">
-        </div>
+    <div id="input-area"></div>
 
     <div id="game-over">
         <h1>Cloud Full! ☁️</h1>
-        <p>Score: <span id="final-score">0</span></p>
-        <button onclick="location.reload()" style="padding: 10px 20px; font-weight: 900; border-radius: 10px; border: none; background: var(--accent);">Try Again!</button>
+        <p style="font-size: 1.5rem; margin: 10px 0;">Score: <span id="final-score">0</span></p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="location.reload()" style="padding: 15px 25px; font-weight: 900; border-radius: 15px; border: none; background: var(--accent); cursor:pointer;">Play Again</button>
+            <a href="../index.html" style="padding: 15px 25px; font-weight: 900; border-radius: 15px; border: none; background: white; text-decoration: none; color: black;">Home</a>
+        </div>
     </div>
 </div>
 
 <script>
-    const WORDS = ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED'];
+    const WORDS = ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'CAKE', 'TREE'];
     const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     
     let score = 0;
     let lives = 3;
     let activeWords = [];
-    let currentInput = "";
     let gameActive = true;
     let spawnRate = 3000;
+
+    // Web Audio Context for Built-in Sounds
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playNote(freq, type, duration) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    const sounds = {
+        type: () => playNote(440, 'sine', 0.1),
+        pop: () => { playNote(600, 'sine', 0.1); setTimeout(() => playNote(900, 'sine', 0.1), 50); },
+        fail: () => playNote(150, 'sawtooth', 0.3)
+    };
 
     const sky = document.getElementById('sky');
     const inputArea = document.getElementById('input-area');
 
-    // Create Keyboard
     ALPHABET.forEach(letter => {
         const btn = document.createElement('button');
         btn.className = 'key';
         btn.innerText = letter;
-        btn.onclick = () => handleInput(letter);
+        btn.onclick = () => {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            handleInput(letter);
+        };
         inputArea.appendChild(btn);
     });
 
     function spawnWord() {
         if (!gameActive) return;
-        
         const wordText = WORDS[Math.floor(Math.random() * WORDS.length)];
         const wordEl = document.createElement('div');
         wordEl.className = 'falling-word';
         wordEl.style.left = Math.random() * (sky.clientWidth - 100) + 'px';
         wordEl.style.top = '-50px';
-        
-        // Wrap each letter in a span
         wordEl.innerHTML = wordText.split('').map(char => `<span class="char">${char}</span>`).join('');
-        
         sky.appendChild(wordEl);
         
-        const wordObj = {
-            el: wordEl,
-            text: wordText,
-            y: -50,
-            progress: 0
-        };
-        
-        activeWords.push(wordObj);
+        activeWords.push({ el: wordEl, text: wordText, y: -50, progress: 0 });
         setTimeout(spawnWord, spawnRate);
-        spawnRate = Math.max(1000, spawnRate - 50); // Get faster!
+        spawnRate = Math.max(800, spawnRate - 40);
     }
 
     function handleInput(letter) {
-        // Find if any word starts with this letter or continues with it
-        // For simplicity: check the oldest word first
         for (let word of activeWords) {
             if (word.text[word.progress] === letter) {
                 word.progress++;
+                sounds.type();
                 const chars = word.el.querySelectorAll('.char');
                 chars[word.progress - 1].classList.add('typed');
                 
                 if (word.progress === word.text.length) {
-                    popWord(word);
+                    score += 10;
+                    document.getElementById('score').innerText = score;
+                    sounds.pop();
+                    word.el.style.transform = 'scale(1.3)';
+                    word.el.style.opacity = '0';
+                    setTimeout(() => {
+                        word.el.remove();
+                        activeWords = activeWords.filter(w => w !== word);
+                    }, 150);
                 }
-                break; // Only type one letter at a time
+                return;
             }
         }
     }
 
-    function popWord(word) {
-        score += 10;
-        document.getElementById('score').innerText = score;
-        word.el.style.transform = 'scale(1.5)';
-        word.el.style.opacity = '0';
-        setTimeout(() => {
-            word.el.remove();
-            activeWords = activeWords.filter(w => w !== word);
-        }, 200);
-    }
-
     function update() {
         if (!gameActive) return;
-
         activeWords.forEach((word, index) => {
-            word.y += 1.5; // Fall speed
+            word.y += 1.2 + (score / 200); 
             word.el.style.top = word.y + 'px';
 
             if (word.y > sky.clientHeight) {
+                sounds.fail();
                 lives--;
                 document.getElementById('lives').innerText = lives;
                 word.el.remove();
                 activeWords.splice(index, 1);
-                
                 if (lives <= 0) {
                     gameActive = false;
                     document.getElementById('game-over').style.display = 'flex';
@@ -235,7 +246,6 @@
                 }
             }
         });
-
         requestAnimationFrame(update);
     }
 
