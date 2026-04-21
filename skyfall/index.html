@@ -24,55 +24,43 @@
             position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
         }
+        .menu-title { font-size: 2.5rem; color: white; text-shadow: 2px 2px 0px #0369A1; margin-bottom: 20px; }
         .mode-btn {
             width: 85%; padding: 18px; margin: 8px; border: none; border-radius: 20px;
             font-size: 1.3rem; font-weight: 900; cursor: pointer; color: white;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.1s;
         }
+        .mode-btn:active { transform: translateY(4px); box-shadow: none; }
+        .hub-btn { margin-top: 25px; background: white !important; color: #333 !important; width: 60%; padding: 12px; font-size: 1rem; }
 
         .header {
             position: absolute; top: 10px; left: 0; width: 100%;
             padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
         }
-        .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; color: #0369A1; }
+        .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
+        .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
 
         #sky { flex: 1; position: relative; width: 100%; }
 
         .falling-word {
             position: absolute; background: white; padding: 8px 15px; border-radius: 20px;
             font-weight: 900; font-size: 1.4rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            display: flex; gap: 2px; z-index: 10;
+            display: flex; gap: 2px; z-index: 10; user-select: none;
         }
         .char.typed { color: #4ADE80; }
 
-        /* TABBED KEYBOARD UI */
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
-            padding: 10px 5px 30px 5px; display: flex; flex-direction: column; gap: 8px;
+            padding: 15px 5px 40px 5px; display: flex; flex-direction: column; gap: 6px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         }
-
-        #tab-bar {
-            display: flex; gap: 4px; overflow-x: auto; padding: 5px;
-            scrollbar-width: none; /* Hide scrollbar for cleaner look */
-        }
-        #tab-bar::-webkit-scrollbar { display: none; }
-
-        .tab-btn {
-            background: #E2E8F0; border: none; padding: 8px 12px; border-radius: 10px;
-            font-weight: 900; font-size: 0.9rem; color: #475569; white-space: nowrap;
-        }
-        .tab-btn.active { background: var(--primary); color: white; }
-
-        #key-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 5px;
-        }
-
+        .keyboard-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
         .key {
-            background: #F1F5F9; border: none; border-radius: 10px;
-            height: 55px; font-size: 1.2rem; font-weight: 900; color: #475569;
-            box-shadow: 0 4px 0 #CBD5E1; display: flex; align-items: center; justify-content: center;
+            background: #F1F5F9; border: none; border-radius: 6px; flex: 1;
+            height: 48px; max-width: 40px; font-size: 1.1rem; font-weight: 900; color: #475569;
+            box-shadow: 0 4px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
         }
-        .key:active { background: var(--accent); transform: translateY(2px); box-shadow: none; }
+        .key:active { background: var(--accent); transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
 
         #game-over {
             display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9);
@@ -84,16 +72,16 @@
 
 <div id="game-wrapper">
     <div id="menu-screen">
-        <h1 style="color:white; text-shadow:2px 2px #0369A1;">SKY FALL</h1>
+        <h1 class="menu-title">SKY FALL</h1>
         <button class="mode-btn" style="background:#4ADE80" onclick="startGame('abc')">ABC 🔤</button>
         <button class="mode-btn" style="background:#FBBF24" onclick="startGame('123')">123 🔢</button>
-        <button class="mode-btn" style="background:#F87171" onclick="startGame('hira')">あいう 🇯🇵</button>
-        <button class="mode-btn" style="background:#60A5FA" onclick="startGame('kata')">アイウ 🇯🇵</button>
-        <a href="../index.html" style="margin-top:20px; color:white; font-weight:900;">🏠 Back to Hub</a>
+        <button class="mode-btn" style="background:#F87171" onclick="startGame('hira')">あいう (ROM) 🇯🇵</button>
+        <button class="mode-btn" style="background:#60A5FA" onclick="startGame('kata')">アイウ (ROM) 🇯🇵</button>
+        <a href="../index.html" class="mode-btn hub-btn">🏠 Marulearn Hub</a>
     </div>
 
     <div class="header">
-        <a href="#" onclick="location.reload()" style="text-decoration:none;">🏠</a>
+        <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
         <div style="display:flex; gap:8px;">
             <div class="stat-box">⭐ <span id="score">0</span></div>
             <div class="stat-box">❤️ <span id="lives">3</span></div>
@@ -101,117 +89,115 @@
     </div>
 
     <div id="sky"></div>
-
-    <div id="input-area">
-        <div id="tab-bar"></div>
-        <div id="key-grid"></div>
-    </div>
+    <div id="input-area"></div>
 
     <div id="game-over">
         <h1>GAME OVER!</h1>
-        <p>Score: <span id="final-score">0</span></p>
-        <button onclick="location.reload()" style="padding:15px 30px; border-radius:15px; background:var(--accent); border:none; font-weight:900;">Menu</button>
+        <p style="font-size: 1.5rem;">Score: <span id="final-score">0</span></p>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 15px; background: var(--accent); border:none; font-weight:900;">Menu</button>
     </div>
 </div>
 
 <script>
-    const DATA = {
-        abc: {
-            words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'STAR', 'BLUE', 'RED', 'APPLE', 'RAIN'],
-            groups: [{ name: "QWERTY", keys: "QWERTYUIOPASDFGHJKLZXCVBNM".split("") }]
-        },
-        '123': {
-            words: ['10', '25', '7', '100', '42', '9', '5', '88', '12', '3'],
-            groups: [{ name: "Numbers", keys: "1234567890".split("") }]
-        },
-        hira: {
-            words: ['ねこ', 'いぬ', 'うみ', 'とり', 'ほし', 'あめ', 'はな', 'ゆき', 'つき', 'もり'],
-            groups: [
-                { name: "あ-な", keys: "あいうえおかきくけこさしすせそたちつてとなにぬねの".split("") },
-                { name: "は-ん", keys: "はひふへほまみむめもやゆよらりるれろわをん".split("") }
-            ]
-        },
-        kata: {
-            words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ'],
-            groups: [
-                { name: "ア-ナ", keys: "アイウエオカキクケコサシスセソタチツテトナニヌネノ".split("") },
-                { name: "ハ-ン", keys: "ハヒフヘホマミムメモヤユヨラリルレロワヲン".split("") }
-            ]
-        }
+    // Romaji Map for typing Hiragana/Katakana with QWERTY
+    const ROMAJI_MAP = {
+        'ねこ': 'NEKO', 'いぬ': 'INU', 'うみ': 'UMI', 'とり': 'TORI', 'ほし': 'HOSHI',
+        'あめ': 'AME', 'はな': 'HANA', 'ゆき': 'YUKI', 'つき': 'TSUKI', 'もり': 'MORI',
+        'さくら': 'SAKURA', 'くも': 'KUMO',
+        'ネコ': 'NEKO', 'イヌ': 'INU', 'ウミ': 'UMI', 'トリ': 'TORI', 'ホシ': 'HOSHI',
+        'アメ': 'AME', 'ハナ': 'HANA', 'ユキ': 'YUKI', 'ツキ': 'TSUKI', 'モリ': 'MORI',
+        'ケーキ': 'K-KI', 'パン': 'PAN'
     };
+
+    const DATA = {
+        abc: { words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'STAR', 'BLUE', 'RED', 'APPLE', 'RAIN'] },
+        '123': { words: ['10', '25', '7', '100', '42', '9', '55', '88', '12', '3'] },
+        hira: { words: ['ねこ', 'いぬ', 'うみ', 'とり', 'ほし', 'あめ', 'はな', 'ゆき', 'つき', 'もり', 'さくら', 'くも'] },
+        kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
+    };
+
+    const QWERTY = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
+    const NUMPAD = [["1","2","3"],["4","5","6"],["7","8","9"],["0"]];
 
     let score = 0, lives = 3, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSfx(f, t, d) {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
+    }
 
     function startGame(mode) {
         currentMode = mode;
         gameActive = true;
         document.getElementById('menu-screen').style.display = 'none';
-        setupTabs(DATA[mode].groups);
+        buildKeyboard(mode === '123' ? NUMPAD : QWERTY);
         spawnWord();
         update();
     }
 
-    function setupTabs(groups) {
-        const tabBar = document.getElementById('tab-bar');
-        tabBar.innerHTML = '';
-        
-        // Hide tab bar if only one group
-        tabBar.style.display = groups.length > 1 ? 'flex' : 'none';
-
-        groups.forEach((group, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
-            btn.innerText = group.name;
-            btn.onclick = () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderKeys(group.keys);
-            };
-            tabBar.appendChild(btn);
-        });
-        renderKeys(groups[0].keys);
-    }
-
-    function renderKeys(keys) {
-        const grid = document.getElementById('key-grid');
-        grid.innerHTML = '';
-        // Change grid columns for ABC/Numbers
-        grid.style.gridTemplateColumns = currentMode === 'abc' ? 'repeat(10, 1fr)' : (currentMode === '123' ? 'repeat(5, 1fr)' : 'repeat(5, 1fr)');
-        
-        keys.forEach(l => {
-            const b = document.createElement('button');
-            b.className = 'key'; b.innerText = l;
-            b.style.fontSize = currentMode === 'abc' ? '0.9rem' : '1.2rem';
-            b.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(l); });
-            b.onclick = (e) => { if(e.pointerType !== 'touch') handleInput(l); };
-            grid.appendChild(b);
+    function buildKeyboard(layout) {
+        const area = document.getElementById('input-area');
+        area.innerHTML = '';
+        layout.forEach(row => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'keyboard-row';
+            row.forEach(l => {
+                const b = document.createElement('button');
+                b.className = 'key'; b.innerText = l;
+                b.addEventListener('touchstart', (e) => { e.preventDefault(); handleInput(l); });
+                b.onclick = (e) => { if(e.pointerType !== 'touch') handleInput(l); };
+                rowDiv.appendChild(b);
+            });
+            area.appendChild(rowDiv);
         });
     }
 
     function spawnWord() {
         if(!gameActive) return;
         if(audioCtx.state === 'suspended') audioCtx.resume();
+        
         const text = DATA[currentMode].words[Math.floor(Math.random() * DATA[currentMode].words.length)];
+        const targetString = (currentMode === 'hira' || currentMode === 'kata') ? ROMAJI_MAP[text] : text;
+        
         const el = document.createElement('div');
         el.className = 'falling-word';
         el.style.left = Math.random() * (window.innerWidth - 120) + 'px';
         el.style.top = '-50px';
+        
+        // We show the Japanese/Full word, but check against the letters
         el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
+        
         document.getElementById('sky').appendChild(el);
-        activeWords.push({ el, text, y: -50, progress: 0 });
+        // We store 'targetString' so typing 'N-E-K-O' pops 'ねこ'
+        activeWords.push({ el, text, target: targetString, y: -50, progress: 0 });
+        
         setTimeout(spawnWord, spawnRate);
         spawnRate = Math.max(1000, spawnRate - 50);
     }
 
     function handleInput(l) {
         for(let w of activeWords) {
-            if(w.text[w.progress] === l) {
+            if(w.target[w.progress] === l || (w.target[w.progress] === '-' && l === 'K')) { // Handle long vowels like ケーキ
                 w.progress++;
-                w.el.querySelectorAll('.char')[w.progress-1].classList.add('typed');
-                if(w.progress === w.text.length) {
-                    score += 10; document.getElementById('score').innerText = score;
-                    w.el.remove(); activeWords = activeWords.filter(item => item !== w);
+                playSfx(440 + (w.progress * 60), 'sine', 0.1);
+                
+                // Visual feedback: highlight the Japanese character as the Romaji is typed
+                // (Rough approximation: 2 romaji letters per 1 kana)
+                const charIndex = Math.floor((w.progress / w.target.length) * w.text.length);
+                const chars = w.el.querySelectorAll('.char');
+                if(chars[charIndex]) chars[charIndex].classList.add('typed');
+
+                if(w.progress === w.target.length) {
+                    score += 10;
+                    document.getElementById('score').innerText = score;
+                    playSfx(800, 'sine', 0.2);
+                    w.el.remove();
+                    activeWords = activeWords.filter(item => item !== w);
                 }
                 return;
             }
@@ -223,10 +209,16 @@
         activeWords.forEach((w, i) => {
             w.y += 1.2 + (score / 600);
             w.el.style.top = w.y + 'px';
-            if(w.y > window.innerHeight * 0.5) {
-                lives--; document.getElementById('lives').innerText = lives;
+            if(w.y > window.innerHeight * 0.6) {
+                lives--;
+                document.getElementById('lives').innerText = lives;
+                playSfx(150, 'sawtooth', 0.2);
                 w.el.remove(); activeWords.splice(i, 1);
-                if(lives <= 0) { gameActive = false; document.getElementById('game-over').style.display = 'flex'; document.getElementById('final-score').innerText = score; }
+                if(lives <= 0) {
+                    gameActive = false;
+                    document.getElementById('game-over').style.display = 'flex';
+                    document.getElementById('final-score').innerText = score;
+                }
             }
         });
         requestAnimationFrame(update);
