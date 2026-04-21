@@ -14,88 +14,99 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px; /* Reduced padding for mobile */
         }
 
         #game-container {
             background: white;
             width: 100%;
-            max-width: 400px;
-            padding: 30px 20px;
+            max-width: 380px; /* Slightly tighter for better mobile fit */
+            padding: 20px;
             border-radius: 32px;
             box-shadow: 0 10px 0 rgba(0,0,0,0.06);
             text-align: center;
+            display: flex;
+            flex-direction: column;
         }
 
         h1 {
             color: #FF784E;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            margin-bottom: 15px;
             letter-spacing: 1px;
         }
 
         /* ── VAULT DISPLAY ── */
         #display-screen {
-            background: #F5F3FF; /* Light Purple to match MaruLearn index */
+            background: #F5F3FF;
             border: 3px solid #C4B5FD;
             border-radius: 20px;
             display: flex;
             justify-content: center;
-            gap: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
+            gap: clamp(8px, 3vw, 15px);
+            padding: clamp(15px, 4vw, 25px);
+            margin-bottom: 15px;
             box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .code-slot {
-            width: 60px;
-            height: 80px;
+            width: clamp(45px, 15vw, 60px);
+            height: clamp(65px, 20vw, 80px);
             background: white;
             border-radius: 12px;
             border-bottom: 4px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
             font-weight: 900;
-            color: #8B5CF6; /* Purple accent */
+            color: #8B5CF6;
         }
 
         /* ── LOG & FEEDBACK ── */
         #feedback-log {
-            min-height: 50px;
-            margin-bottom: 20px;
-            padding: 10px;
+            min-height: 44px;
+            margin-bottom: 15px;
+            padding: 8px;
             background: #FFFBEB;
             border-radius: 12px;
             color: #B45309;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* ── KEYPAD ── */
+        /* ── RESPONSIVE KEYPAD ── */
         #keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: clamp(8px, 2.5vw, 12px);
+            width: 100%;
         }
 
         button {
-            padding: 18px;
-            font-size: 1.5rem;
+            /* aspect-ratio ensures buttons are always square */
+            aspect-ratio: 1 / 1; 
+            width: 100%;
+            font-size: clamp(1.2rem, 6vw, 1.6rem);
             font-weight: 900;
             border: none;
             border-radius: 16px;
             background: #EBF5FF;
             color: #5BBAFF;
-            border-bottom: 5px solid #B8DBFF;
+            border-bottom: clamp(3px, 1vw, 5px) solid #B8DBFF;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.1s ease;
         }
 
         button:active {
             transform: translateY(3px);
-            border-bottom-width: 2px;
+            border-bottom-width: 1px;
         }
 
         .btn-red {
@@ -110,10 +121,9 @@
             border-bottom-color: #9FE8C0;
         }
 
-        /* Responsive tweak for smaller phones */
-        @media (max-width: 360px) {
-            .code-slot { width: 50px; height: 70px; font-size: 2rem; }
-            button { padding: 14px; }
+        /* Specific fix for text on CLR button */
+        .btn-red {
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
         }
     </style>
 </head>
