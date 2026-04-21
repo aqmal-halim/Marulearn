@@ -20,7 +20,6 @@
             display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* Fixed Upper Layer (HUD) */
         .header-layer {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
@@ -50,11 +49,9 @@
         .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
         .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
 
-        /* Power Bar inside the Header */
         #power-container { height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; width: 100%; }
         #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; }
 
-        /* Separated Game Window */
         #sky { flex: 1; position: relative; width: 100%; overflow: hidden; }
 
         .falling-word {
@@ -64,7 +61,6 @@
         }
         .char.typed { color: #4ADE80; transform: scale(1.1); display: inline-block; }
 
-        /* Bottom Keyboard Layer */
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
             padding: 15px 5px 40px 5px; display: flex; flex-direction: column; gap: 6px;
@@ -108,7 +104,6 @@
     </div>
 
     <div id="sky"></div>
-
     <div id="input-area"></div>
 
     <div id="game-over">
@@ -133,13 +128,14 @@
         'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
         'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
         'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
-        'タ':['T','A'],'チ':['T','I'],'つ':['T','U'],'テ':['T','E'],'ト':['T','O'],
+        'タ':['T','A'],'チ':['T','I'],'ツ':['T','U'],'テ':['T','E'],'ト':['T','O'],
         'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
-        'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'む':['M','U'],'メ':['M','E'],'も':['M','O'],
+        'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
+        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
         'ヤ':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
-        'ラ':['R','A'],'リ':['R','I'],'る':['R','U'],'レ':['R','E'],'ろ':['R','O'],
-        'ワ':['W','A'],'を':['W','O'],'ン':['N'],'ー':['-']
+        'ラ':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],
+        'ー':['-'], 'ケ':['K','E'], 'キ':['K','I'], 'パ':['P','A']
     };
 
     const DATA = {
@@ -149,7 +145,7 @@
         kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
     };
 
-    const QWERTY = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
+    const QWERTY = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"],["-"]];
     const NUMPAD = [["1","2","3"],["4","5","6"],["7","8","9"],["0"]];
 
     let score = 0, lives = 3, power = 0, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
@@ -203,14 +199,11 @@
         document.getElementById('sky').appendChild(el);
 
         let sequence = [];
-        if (currentMode === 'hira' || currentMode === 'kata') {
-            text.split('').forEach((char, idx) => {
-                const keys = KANA_TO_ROMAJI[char] || [char];
-                keys.forEach(k => sequence.push({ key: k, charIdx: idx }));
-            });
-        } else {
-            text.split('').forEach((char, idx) => sequence.push({ key: char, charIdx: idx }));
-        }
+        text.split('').forEach((char, idx) => {
+            // Check for katakana long vowel or mapping
+            const keys = KANA_TO_ROMAJI[char] || [char];
+            keys.forEach(k => sequence.push({ key: k.toUpperCase(), charIdx: idx }));
+        });
 
         activeWords.push({ el, text, sequence, y: -50, progress: 0 });
         setTimeout(spawnWord, spawnRate);
@@ -218,9 +211,12 @@
     }
 
     function handleInput(l) {
-        for(let w of activeWords) {
+        // Iterate through words from bottom to top for better targeting
+        for(let j = activeWords.length - 1; j >= 0; j--) {
+            let w = activeWords[j];
             let nextRequired = w.sequence[w.progress];
-            if(nextRequired && nextRequired.key === l) {
+            
+            if(nextRequired && nextRequired.key === l.toUpperCase()) {
                 w.progress++;
                 playSfx(440 + (w.progress * 60), 'sine', 0.1);
                 
@@ -237,9 +233,9 @@
                     document.getElementById('power-bar').style.width = power + '%';
                     playSfx(800, 'sine', 0.2);
                     w.el.remove();
-                    activeWords = activeWords.filter(item => item !== w);
+                    activeWords.splice(j, 1);
                 }
-                return;
+                return; // Input consumed
             }
         }
     }
@@ -247,21 +243,23 @@
     function update() {
         if(!gameActive) return;
         const skyHeight = document.getElementById('sky').clientHeight;
-        activeWords.forEach((w, i) => {
+        for (let i = activeWords.length - 1; i >= 0; i--) {
+            let w = activeWords[i];
             w.y += 1.2 + (score / 600);
             w.el.style.top = w.y + 'px';
             if(w.y > skyHeight) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
                 playSfx(150, 'sawtooth', 0.2);
-                w.el.remove(); activeWords.splice(i, 1);
+                w.el.remove(); 
+                activeWords.splice(i, 1);
                 if(lives <= 0) {
                     gameActive = false;
                     document.getElementById('game-over').style.display = 'flex';
                     document.getElementById('final-score').innerText = score;
                 }
             }
-        });
+        }
         requestAnimationFrame(update);
     }
 </script>
