@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -181,7 +182,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-info">
         <div class="level-name">Level 1 — Beginner</div>
         <div class="level-desc">Simple 3-4 word sentences · は、を、です</div>
-        <div class="level-badge" style="background:#f0fff4;color:#27ae60;">8 sentences</div>
+        <div class="level-badge" style="background:#f0fff4;color:#27ae60;">18 sentences</div>
       </div>
     </button>
     <button type="button" class="level-card" style="border-color:#2980b9;" data-level="elementary">
@@ -189,7 +190,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-info">
         <div class="level-name">Level 2 — Elementary</div>
         <div class="level-desc">4-5 words · に、で、と particles included</div>
-        <div class="level-badge" style="background:#eaf2ff;color:#2980b9;">8 sentences</div>
+        <div class="level-badge" style="background:#eaf2ff;color:#2980b9;">18 sentences</div>
       </div>
     </button>
     <button type="button" class="level-card" style="border-color:#8e44ad;" data-level="intermediate">
@@ -197,7 +198,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-info">
         <div class="level-name">Level 3 — Intermediate</div>
         <div class="level-desc">5-6 words · Time expressions, adjectives, て-form</div>
-        <div class="level-badge" style="background:#f5eef8;color:#8e44ad;">8 sentences</div>
+        <div class="level-badge" style="background:#f5eef8;color:#8e44ad;">18 sentences</div>
       </div>
     </button>
     <button type="button" class="level-card" style="border-color:#e67e22;" data-level="school">
@@ -205,7 +206,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
       <div class="level-info">
         <div class="level-name">Level 4 — School Life</div>
         <div class="level-desc">Sentences your kids hear and say every day!</div>
-        <div class="level-badge" style="background:#fef9e7;color:#e67e22;">8 sentences</div>
+        <div class="level-badge" style="background:#fef9e7;color:#e67e22;">18 sentences</div>
       </div>
     </button>
     <button type="button" class="level-card" style="border-color:#e74c3c;" data-level="mixed">
@@ -228,7 +229,7 @@ font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
 
   <div class="game-header">
     <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
-    <div class="q-count" id="q-count">1/8</div>
+    <div class="q-count" id="q-count">1/18</div>
   </div>
   <div class="stats-row">
     <div class="stat-pill score">⭐ <span id="score">0</span></div>
@@ -322,6 +323,57 @@ tiles:['あなた','は','だれ','です','か','？','わたし','なに'],
 en:'Who are you?',
 hint:'だれ = who · か turns it into a question',
 particles:['は'] },
+// 10 NEW BEGINNER SENTENCES
+{ correct:['いぬ','は','おおきい','です','。'],
+tiles:['いぬ','は','おおきい','です','。','ねこ','ちいさい'],
+en:'Dogs are big.',
+hint:'いぬ = dog · おおきい = big · です = are',
+particles:['は'] },
+{ correct:['そら','は','あおい','です','。'],
+tiles:['そら','は','あおい','です','。','うみ','きれい'],
+en:'The sky is blue.',
+hint:'そら = sky · あおい = blue',
+particles:['は'] },
+{ correct:['わたし','は','にほんご','を','べんきょう','します','。'],
+tiles:['わたし','は','にほんご','を','べんきょう','します','。','えいご','おしえます'],
+en:'I study Japanese.',
+hint:'べんきょうします = study · を marks the subject being studied',
+particles:['は','を'] },
+{ correct:['これ','は','わたし','の','かばん','です','。'],
+tiles:['これ','は','わたし','の','かばん','です','。','あれ','ほん'],
+en:'This is my bag.',
+hint:'の connects nouns: わたしの = my',
+particles:['は','の'] },
+{ correct:['かのじょ','は','きれい','です','。'],
+tiles:['かのじょ','は','きれい','です','。','かれ','かっこいい'],
+en:'She is pretty.',
+hint:'かのじょ = she · きれい = pretty/beautiful',
+particles:['は'] },
+{ correct:['わたし','は','テレビ','を','みます','。'],
+tiles:['わたし','は','テレビ','を','みます','。','きます','えいが'],
+en:'I watch TV.',
+hint:'みます = watch/see · を marks what you watch',
+particles:['は','を'] },
+{ correct:['おちゃ','は','おいしい','です','。'],
+tiles:['おちゃ','は','おいしい','です','。','みず','まずい'],
+en:'Green tea is delicious.',
+hint:'おちゃ = green tea · おいしい = delicious',
+particles:['は'] },
+{ correct:['あれ','は','くるま','です','。'],
+tiles:['あれ','は','くるま','です','。','これ','じてんしゃ'],
+en:'That (over there) is a car.',
+hint:'あれ = that over there · くるま = car',
+particles:['は'] },
+{ correct:['わたし','は','ねます','。'],
+tiles:['わたし','は','ねます','。','あなた','おきます'],
+en:'I sleep.',
+hint:'ねます = sleep · Simple Subject は Verb sentence!',
+particles:['は'] },
+{ correct:['にほん','は','きれい','です','。'],
+tiles:['にほん','は','きれい','です','。','マレーシア','すごい'],
+en:'Japan is beautiful.',
+hint:'にほん = Japan · きれい = beautiful/clean',
+particles:['は'] },
 ],
 
 elementary: [
@@ -364,6 +416,57 @@ particles:['は','が'] },
 tiles:['としょかん','で','ほん','を','よみます','。','に','かきます','えんぴつ'],
 en:'I read books at the library.',
 hint:'で = place of action · を = direct object',
+particles:['で','を'] },
+// 10 NEW ELEMENTARY SENTENCES
+{ correct:['おとうさん','は','かいしゃ','に','はたらきます','。'],
+tiles:['おとうさん','は','かいしゃ','に','はたらきます','。','で','おかあさん','うち'],
+en:'Dad works at the company.',
+hint:'に can mark the place of work · はたらきます = work',
+particles:['は','に'] },
+{ correct:['わたし','は','おんがく','が','すき','です','。'],
+tiles:['わたし','は','おんがく','が','すき','です','。','を','スポーツ','きらい'],
+en:'I like music.',
+hint:'すき always takes が · おんがく = music',
+particles:['は','が'] },
+{ correct:['バス','で','うち','に','かえります','。'],
+tiles:['バス','で','うち','に','かえります','。','でんしゃ','がっこう','を'],
+en:'I go home by bus.',
+hint:'で = transport method · に = destination · かえります = go home',
+particles:['で','に'] },
+{ correct:['いもうと','と','スーパー','に','いきます','。'],
+tiles:['いもうと','と','スーパー','に','いきます','。','で','あに','こうえん'],
+en:'I go to the supermarket with my younger sister.',
+hint:'と = with · に = destination',
+particles:['と','に'] },
+{ correct:['わたし','は','コーヒー','が','きらい','です','。'],
+tiles:['わたし','は','コーヒー','が','きらい','です','。','を','おちゃ','すき'],
+en:'I dislike coffee.',
+hint:'きらい (dislike) uses が, same as すき!',
+particles:['は','が'] },
+{ correct:['あに','は','へや','で','ゲーム','を','します','。'],
+tiles:['あに','は','へや','で','ゲーム','を','します','。','に','いもうと','べんきょう'],
+en:'My older brother plays games in his room.',
+hint:'で = place of action · を = object of action',
+particles:['は','で','を'] },
+{ correct:['まいにち','にほんご','を','れんしゅう','します','。'],
+tiles:['まいにち','にほんご','を','れんしゅう','します','。','えいご','で','は'],
+en:'I practise Japanese every day.',
+hint:'まいにち = every day, goes at the start · れんしゅうします = practise',
+particles:['を'] },
+{ correct:['ともだち','は','アメリカじん','です','。'],
+tiles:['ともだち','は','アメリカじん','です','。','かれ','にほんじん'],
+en:'My friend is American.',
+hint:'アメリカじん = American person · Simple は です sentence',
+particles:['は'] },
+{ correct:['わたし','は','くだもの','が','すき','です','。'],
+tiles:['わたし','は','くだもの','が','すき','です','。','を','やさい','きらい'],
+en:'I like fruit.',
+hint:'くだもの = fruit · すき takes が',
+particles:['は','が'] },
+{ correct:['うち','で','えいご','を','べんきょう','します','。'],
+tiles:['うち','で','えいご','を','べんきょう','します','。','に','にほんご','がっこう'],
+en:'I study English at home.',
+hint:'で = place of action · を = what is studied',
 particles:['で','を'] },
 ],
 
@@ -408,6 +511,57 @@ tiles:['にほん','に','きて','から','にほんご','が','じょうずに
 en:'Since coming to Japan, I have become good at Japanese.',
 hint:'〜てから = since/after doing · なりました = became',
 particles:['に','が'] },
+// 10 NEW INTERMEDIATE SENTENCES
+{ correct:['あさごはん','を','たべて','から','がっこう','に','いきます','。'],
+tiles:['あさごはん','を','たべて','から','がっこう','に','いきます','。','で','は','かえります'],
+en:'After eating breakfast, I go to school.',
+hint:'〜てから = after doing · を = object eaten · に = destination',
+particles:['を','に'] },
+{ correct:['あたらしい','ともだち','が','たくさん','できました','。'],
+tiles:['あたらしい','ともだち','が','たくさん','できました','。','は','を','すこし','ふるい'],
+en:'I made many new friends.',
+hint:'できました here means "came into being" · たくさん = many',
+particles:['が'] },
+{ correct:['にほんの','たべもの','は','からい','もの','が','すき','です','。'],
+tiles:['にほんの','たべもの','は','からい','もの','が','すき','です','。','を','あまい','きらい'],
+en:'I like spicy Japanese food.',
+hint:'〜のたべもの = food of ~ · からい = spicy · もの = thing/stuff',
+particles:['は','が'] },
+{ correct:['むすこ','は','まいにち','にっき','を','かいて','います','。'],
+tiles:['むすこ','は','まいにち','にっき','を','かいて','います','。','が','えほん','よんで'],
+en:'My son writes a diary every day.',
+hint:'〜ています = ongoing habit · にっき = diary · かく = write',
+particles:['は','を'] },
+{ correct:['はじめて','にほんご','で','はなした','とき','とても','きんちょう','しました','。'],
+tiles:['はじめて','にほんご','で','はなした','とき','とても','きんちょう','しました','。','に','えいご','すこし'],
+en:'The first time I spoke in Japanese, I was very nervous.',
+hint:'〜したとき = when I did ~ · で = language used · きんちょうしました = was nervous',
+particles:['で'] },
+{ correct:['らいしゅう','かぞく','と','おきなわ','に','いきます','。'],
+tiles:['らいしゅう','かぞく','と','おきなわ','に','いきます','。','で','ともだち','きょねん'],
+en:'Next week I will go to Okinawa with my family.',
+hint:'らいしゅう = next week · と = with · に = destination',
+particles:['と','に'] },
+{ correct:['このまち','は','しずか','で','すみやすい','です','。'],
+tiles:['このまち','は','しずか','で','すみやすい','です','。','が','うるさい','あのまち'],
+en:'This town is quiet and easy to live in.',
+hint:'〜で connects two adjectives/descriptions · すみやすい = easy to live in',
+particles:['は','で'] },
+{ correct:['こども','たち','は','こうえん','で','たのしく','あそんで','います','。'],
+tiles:['こども','たち','は','こうえん','で','たのしく','あそんで','います','。','に','が','かなしく'],
+en:'The children are playing happily at the park.',
+hint:'たち = plural suffix · たのしく = happily · 〜ています = ongoing',
+particles:['は','で'] },
+{ correct:['にほんに','すんで','から','もう','三ねん','に','なります','。'],
+tiles:['にほんに','すんで','から','もう','三ねん','に','なります','。','で','は','二ねん'],
+en:'It will soon be three years since I moved to Japan.',
+hint:'〜てから = since ~ · もう = already/soon · なります = become',
+particles:['に'] },
+{ correct:['わたし','の','ゆめ','は','にほんご','の','せんせい','に','なる','こと','です','。'],
+tiles:['わたし','の','ゆめ','は','にほんご','の','せんせい','に','なる','こと','です','。','が','で','がくせい'],
+en:'My dream is to become a Japanese teacher.',
+hint:'〜になること = the thing of becoming ~ · ゆめ = dream',
+particles:['の','は','の','に'] },
 ],
 
 school: [
@@ -451,6 +605,57 @@ tiles:['あした','てすと','が','ある','から','べんきょう','しま
 en:'Because there\'s a test tomorrow, I will study.',
 hint:'〜から = because · あした = tomorrow · verb at end!',
 particles:['が','から'] },
+// 10 NEW SCHOOL SENTENCES
+{ correct:['きょう','は','そうじ','の','じかん','が','あります','。'],
+tiles:['きょう','は','そうじ','の','じかん','が','あります','。','を','やすみ','ありません'],
+en:'Today there is cleaning time.',
+hint:'そうじ = cleaning · じかん = time · があります = there is',
+particles:['は','の','が'] },
+{ correct:['せんせい','に','しゅくだい','を','だします','。'],
+tiles:['せんせい','に','しゅくだい','を','だします','。','で','ともだち','もらいます'],
+en:'I hand in homework to the teacher.',
+hint:'に = to (recipient) · を = object handed · だします = hand in/submit',
+particles:['に','を'] },
+{ correct:['たいいく','の','じゅぎょう','で','はしります','。'],
+tiles:['たいいく','の','じゅぎょう','で','はしります','。','に','さんすう','あそびます'],
+en:'I run in PE class.',
+hint:'で = place/context of action · はしります = run',
+particles:['の','で'] },
+{ correct:['きょうしつ','で','しずかに','して','ください','。'],
+tiles:['きょうしつ','で','しずかに','して','ください','。','に','うるさく','あそんで'],
+en:'Please be quiet in the classroom.',
+hint:'〜してください = please do ~ · しずかに = quietly',
+particles:['で'] },
+{ correct:['わたし','の','クラス','は','にじゅうご','にん','います','。'],
+tiles:['わたし','の','クラス','は','にじゅうご','にん','います','。','が','を','さんじゅう'],
+en:'My class has 25 people.',
+hint:'にん = people (counter) · います = there are (for people)',
+particles:['の','は'] },
+{ correct:['らいしゅう','えんそく','が','あります','。'],
+tiles:['らいしゅう','えんそく','が','あります','。','は','を','きょねん','ありません'],
+en:'Next week there is a school trip.',
+hint:'えんそく = school excursion/trip · があります = there is',
+particles:['が'] },
+{ correct:['ともだち','に','けしごむ','を','かして','あげました','。'],
+tiles:['ともだち','に','けしごむ','を','かして','あげました','。','で','せんせい','もらって'],
+en:'I lent an eraser to my friend.',
+hint:'〜てあげました = did something for someone · かす = lend · に = recipient',
+particles:['に','を'] },
+{ correct:['きょう','は','がっこう','を','やすみました','。'],
+tiles:['きょう','は','がっこう','を','やすみました','。','に','うち','いきました'],
+en:'Today I was absent from school.',
+hint:'〜をやすむ = to be absent from / take a day off',
+particles:['は','を'] },
+{ correct:['しょうがっこう','は','たのしい','です','。'],
+tiles:['しょうがっこう','は','たのしい','です','。','が','つまらない','ちゅうがっこう'],
+en:'Elementary school is fun.',
+hint:'しょうがっこう = elementary school · たのしい = fun',
+particles:['は'] },
+{ correct:['わたし','は','クラスの','かいちょう','に','なりたい','です','。'],
+tiles:['わたし','は','クラスの','かいちょう','に','なりたい','です','。','が','の','せんせい'],
+en:'I want to become class president.',
+hint:'〜になりたい = want to become ~ · かいちょう = president/leader',
+particles:['は','に'] },
 ],
 };
 
