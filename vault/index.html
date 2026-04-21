@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaruVault: Code Breaker 🕵️‍♂️</title>
+    <title>MaruVault: Mission Critical 🕵️‍♂️</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -25,112 +25,110 @@
             border-radius: 32px;
             box-shadow: 0 10px 0 rgba(0,0,0,0.06);
             text-align: center;
+            position: relative;
+        }
+
+        /* ── STATUS BAR ── */
+        #status-bar {
             display: flex;
-            flex-direction: column;
-        }
-
-        h1 {
-            color: #FF784E;
-            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            justify-content: space-between;
             margin-bottom: 15px;
-            letter-spacing: 1px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #555;
         }
 
+        .timer-low { color: #FF5E5E; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        h1 { color: #FF784E; font-size: clamp(1.4rem, 5vw, 1.8rem); margin-bottom: 10px; }
+
+        /* ── VAULT DISPLAY ── */
         #display-screen {
             background: #F5F3FF;
             border: 3px solid #C4B5FD;
             border-radius: 20px;
             display: flex;
             justify-content: center;
-            gap: clamp(8px, 3vw, 15px);
-            padding: clamp(15px, 4vw, 25px);
+            gap: 12px;
+            padding: 20px;
             margin-bottom: 15px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .code-slot {
-            width: clamp(45px, 15vw, 60px);
-            height: clamp(65px, 20vw, 80px);
+            width: clamp(50px, 16vw, 65px);
+            height: clamp(70px, 22vw, 85px);
             background: white;
             border-radius: 12px;
             border-bottom: 4px solid #ddd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            font-size: 2.2rem;
             font-weight: 900;
-            color: #8B5CF6;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* Color States */
+        .correct { background: #2ED573 !important; color: white !important; border-color: #26af5f !important; }
+        .present { background: #FFBC00 !important; color: white !important; border-color: #d49c00 !important; }
+        .wrong { background: #FF5E5E !important; color: white !important; border-color: #d14d4d !important; }
+        .neutral { color: #8B5CF6; }
+
         #feedback-log {
-            min-height: 55px;
+            min-height: 60px;
             margin-bottom: 15px;
-            padding: 8px;
+            padding: 10px;
             background: #FFFBEB;
             border-radius: 12px;
             color: #B45309;
             font-weight: 700;
-            font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        #keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: clamp(8px, 2.5vw, 12px);
-            width: 100%;
-        }
+        /* ── KEYPAD ── */
+        #keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
         button {
-            aspect-ratio: 1 / 1; 
-            width: 100%;
-            font-size: clamp(1.2rem, 6vw, 1.6rem);
+            aspect-ratio: 1 / 1;
+            font-size: 1.5rem;
             font-weight: 900;
             border: none;
             border-radius: 16px;
             background: #EBF5FF;
             color: #5BBAFF;
-            border-bottom: clamp(3px, 1vw, 5px) solid #B8DBFF;
+            border-bottom: 5px solid #B8DBFF;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.1s ease;
+            transition: transform 0.1s;
         }
 
-        button:active {
-            transform: translateY(3px);
-            border-bottom-width: 1px;
-        }
+        button:active { transform: translateY(3px); border-bottom-width: 1px; }
+        .btn-red { background: #FFF1F1; color: #FF5E5E; border-bottom-color: #FFD1D1; font-size: 1.1rem; }
+        .btn-green { background: #EDFFF5; color: #2ED573; border-bottom-color: #9FE8C0; }
 
-        .btn-red {
-            background: #FFF1F1;
-            color: #FF5E5E;
-            border-bottom-color: #FFD1D1;
-            font-size: clamp(0.9rem, 4vw, 1.2rem);
-        }
-
-        .btn-green {
-            background: #EDFFF5;
-            color: #2ED573;
-            border-bottom-color: #9FE8C0;
-        }
+        .disabled { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
 <body>
     <div id="game-container">
+        <div id="status-bar">
+            <div id="lives-display">❤️❤️❤️❤️❤️</div>
+            <div id="timer-display">Time: 60s</div>
+        </div>
+
         <h1>🔓 MARU-VAULT</h1>
         
         <div id="display-screen">
-            <div class="code-slot" id="slot-0">?</div>
-            <div class="code-slot" id="slot-1">?</div>
-            <div class="code-slot" id="slot-2">?</div>
+            <div class="code-slot neutral" id="slot-0">?</div>
+            <div class="code-slot neutral" id="slot-1">?</div>
+            <div class="code-slot neutral" id="slot-2">?</div>
         </div>
         
         <div id="feedback-log">
-            <p id="message">Ready to crack the code? Enter 3 digits!</p>
+            <p id="message">Quick! Crack the code before time runs out!</p>
         </div>
 
         <div id="keypad">
@@ -145,7 +143,7 @@
             <button onclick="press(9)">9</button>
             <button onclick="clearCode()" class="btn-red">CLR</button>
             <button onclick="press(0)">0</button>
-            <button onclick="checkCode()" class="btn-green">GO</button>
+            <button onclick="checkCode()" id="go-btn" class="btn-green">GO</button>
         </div>
     </div>
 
@@ -153,107 +151,150 @@
         let currentInput = [];
         let secretCode = [];
         let attempts = 0;
+        let lives = 5;
+        let timeLeft = 60;
+        let gameActive = true;
+        let timerInterval;
 
-        // Generate a random 3-digit code
-        function generateNewCode() {
+        function startGame() {
             secretCode = [
                 Math.floor(Math.random() * 10),
                 Math.floor(Math.random() * 10),
                 Math.floor(Math.random() * 10)
             ];
+            lives = 5;
+            timeLeft = 60;
             attempts = 0;
-            console.log("Secret Code is:", secretCode.join('')); 
+            gameActive = true;
+            currentInput = [];
+            
+            updateStatus();
+            updateDisplay();
+            startTimer();
+            console.log("Secret:", secretCode.join(''));
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = `Time: ${timeLeft}s`;
+                if (timeLeft <= 10) document.getElementById('timer-display').classList.add('timer-low');
+                if (timeLeft <= 0) endGame(false, "TIME EXPIRED!");
+            }, 1000);
         }
 
         function press(num) {
-            // If user starts typing again after a wrong guess, clear slots automatically
-            if (currentInput.length === 3) {
-                currentInput = [];
-            }
-            
+            if (!gameActive) return;
             if (currentInput.length < 3) {
+                // Reset colors if typing a new guess
+                if (currentInput.length === 0) resetSlotColors();
                 currentInput.push(num);
                 updateDisplay();
             }
-        }
-
-        function clearCode() {
-            currentInput = [];
-            updateDisplay();
-            const msg = document.getElementById('message');
-            msg.innerText = "Ready to try again?";
-            msg.style.color = "#B45309";
         }
 
         function updateDisplay() {
             for (let i = 0; i < 3; i++) {
                 const slot = document.getElementById(`slot-${i}`);
                 slot.innerText = currentInput[i] !== undefined ? currentInput[i] : "?";
-                slot.style.color = currentInput[i] !== undefined ? "#FF784E" : "#8B5CF6";
+            }
+        }
+
+        function resetSlotColors() {
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`slot-${i}`).className = "code-slot neutral";
             }
         }
 
         function checkCode() {
-            if (currentInput.length < 3) {
-                document.getElementById('message').innerText = "Enter all 3 digits first!";
-                return;
-            }
+            if (!gameActive || currentInput.length < 3) return;
 
             const msgArea = document.getElementById('message');
-            const guessStr = currentInput.join('');
-            const secretStr = secretCode.join('');
-
-            if (guessStr === secretStr) {
-                msgArea.innerHTML = "🎉 <b>CRACKED!</b> You opened the vault!";
-                msgArea.style.color = "#2ED573";
-                setTimeout(() => {
-                    generateNewCode();
-                    clearCode();
-                }, 4000);
-            } else {
-                attempts++;
-                provideSmartHint(currentInput, secretCode);
-            }
-        }
-
-        function provideSmartHint(guess, secret) {
-            const msgArea = document.getElementById('message');
-            const guessSum = guess.reduce((a, b) => a + b, 0);
-            const secretSum = secret.reduce((a, b) => a + b, 0);
+            const guess = [...currentInput];
+            const secret = [...secretCode];
             
-            // Cycle through different hints to keep them learning
-            let hintType = attempts % 3;
+            // Color Logic (Traffic Lights)
+            let correctCount = 0;
+            let tempSecret = [...secretCode];
+            let results = ["wrong", "wrong", "wrong"];
 
-            if (hintType === 1) {
-                // Hint 1: Addition
-                if (guessSum < secretSum) {
-                    msgArea.innerText = `💡 Hint: The sum of the digits is HIGHER than ${guessSum}.`;
-                } else if (guessSum > secretSum) {
-                    msgArea.innerText = `💡 Hint: The sum of the digits is LOWER than ${guessSum}.`;
-                } else {
-                    msgArea.innerText = `💡 Hint: The sum is exactly ${guessSum}, but the numbers are wrong!`;
+            // 1st Pass: Check for Greens (Correct Position)
+            for (let i = 0; i < 3; i++) {
+                if (guess[i] === secret[i]) {
+                    results[i] = "correct";
+                    tempSecret[i] = null;
+                    guess[i] = "used";
+                    correctCount++;
                 }
-            } else if (hintType === 2) {
-                // Hint 2: Even/Odd count
-                const evens = secret.filter(n => n % 2 === 0).length;
-                msgArea.innerText = `🕵️‍♂️ Spy Tip: There are ${evens} even numbers in the code.`;
+            }
+
+            // 2nd Pass: Check for Yellows (Present elsewhere)
+            for (let i = 0; i < 3; i++) {
+                if (guess[i] !== "used") {
+                    let foundIndex = tempSecret.indexOf(guess[i]);
+                    if (foundIndex !== -1) {
+                        results[i] = "present";
+                        tempSecret[foundIndex] = null;
+                    }
+                }
+            }
+
+            // Apply colors
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`slot-${i}`).className = `code-slot ${results[i]}`;
+            }
+
+            if (correctCount === 3) {
+                endGame(true, "VAULT OPENED! MATH GENIUS!");
             } else {
-                // Hint 3: Placement
-                let correctPos = 0;
-                for(let i=0; i<3; i++) {
-                    if(guess[i] === secret[i]) correctPos++;
-                }
-                
-                if(correctPos > 0) {
-                    msgArea.innerText = `🎯 Good job! ${correctPos} number(s) are in the CORRECT spot.`;
+                lives--;
+                attempts++;
+                updateStatus();
+                if (lives <= 0) {
+                    endGame(false, `LOCKED! Code was ${secretCode.join('')}`);
                 } else {
-                    msgArea.innerText = "❌ None of those numbers are in the right spot!";
+                    provideMathHint(currentInput, secretCode);
+                    currentInput = []; // Clear for next try
                 }
             }
         }
 
-        // Initialize game
-        generateNewCode();
+        function provideMathHint(guess, secret) {
+            const msgArea = document.getElementById('message');
+            const secretSum = secretCode.reduce((a, b) => a + b, 0);
+            
+            // Educational cycle
+            if (attempts % 2 === 1) {
+                msgArea.innerText = `💡 Math Hint: The sum of all digits is ${secretSum}.`;
+            } else {
+                const evens = secretCode.filter(n => n % 2 === 0).length;
+                msgArea.innerText = `🕵️‍♂️ Spy Tip: There are ${evens} even numbers in the code.`;
+            }
+        }
+
+        function updateStatus() {
+            document.getElementById('lives-display').innerText = "❤️".repeat(lives) + "🖤".repeat(5 - lives);
+        }
+
+        function endGame(won, text) {
+            gameActive = false;
+            clearInterval(timerInterval);
+            const msgArea = document.getElementById('message');
+            msgArea.innerHTML = `<b>${text}</b><br>Tap CLR to restart mission.`;
+            msgArea.style.color = won ? "#2ED573" : "#FF5E5E";
+        }
+
+        function clearCode() {
+            if (!gameActive) startGame();
+            currentInput = [];
+            resetSlotColors();
+            updateDisplay();
+            document.getElementById('message').innerText = "New Mission Started!";
+            document.getElementById('message').style.color = "#B45309";
+        }
+
+        startGame();
     </script>
 </body>
 </html>
