@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,22 +18,33 @@
             width: 100vw; max-width: 420px; height: 100vh; position: relative;
             background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             display: flex; flex-direction: column; overflow: hidden;
-            transition: background 2s ease;
         }
 
-        #power-container {
-            position: absolute; top: 65px; left: 15px; right: 15px;
-            height: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; overflow: hidden; z-index: 50;
+        .header-layer {
+            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+            padding: 10px 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
         }
-        #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; box-shadow: 0 0 10px #4ADE80; }
 
-        .header {
-            position: absolute; top: 10px; left: 0; width: 100%;
-            padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+        .stats-row { display: flex; justify-content: space-between; align-items: center; }
+
+        #menu-screen {
+            position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
         }
+        .menu-title { font-size: 2.5rem; color: white; text-shadow: 2px 2px 0px #0369A1; margin-bottom: 20px; }
+        .mode-btn {
+            width: 85%; padding: 18px; margin: 8px; border: none; border-radius: 20px;
+            font-size: 1.3rem; font-weight: 900; cursor: pointer; color: white;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.1s;
+        }
+        .mode-btn:active { transform: translateY(4px); box-shadow: none; }
 
         .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
         .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
+
+        #power-container { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; width: 100%; }
+        #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; box-shadow: 0 0 10px #4ADE80; }
 
         #sky { flex: 1; position: relative; width: 100%; }
 
@@ -42,24 +53,25 @@
             font-weight: 900; font-size: 1.3rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             display: flex; gap: 2px; z-index: 10; user-select: none;
         }
+        .falling-word.target { border: 3px solid var(--primary); box-shadow: 0 0 15px var(--primary); }
         .falling-word.golden { background: var(--gold); border: 3px solid #FFF; animation: glow 1s infinite alternate; }
         @keyframes glow { from { box-shadow: 0 0 5px #fff; } to { box-shadow: 0 0 20px var(--gold); } }
 
-        .char.typed { color: #4ADE80; transform: scale(1.2); display: inline-block; }
+        .char.typed { color: #4ADE80; transform: scale(1.1); display: inline-block; }
 
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
             padding: 15px 10px 40px 10px; display: flex; flex-direction: column; gap: 8px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
-        .keyboard-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
-        
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
         .key {
             background: #F1F5F9; border: none; border-radius: 8px; flex: 1;
-            height: 50px; max-width: 42px; font-size: 1.1rem; font-weight: 900; color: #475569;
+            height: 50px; max-width: 44px; font-size: 1.2rem; font-weight: 900; color: #475569;
             box-shadow: 0 4px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
         }
         .key:active { background: var(--accent); transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
+        .numpad-row .key { max-width: 80px; height: 60px; font-size: 1.5rem; }
 
         .particle { position: absolute; width: 6px; height: 6px; border-radius: 2px; pointer-events: none; z-index: 5; }
 
@@ -72,84 +84,130 @@
 <body>
 
 <div id="game-wrapper">
-    <div class="header">
-        <a href="../index.html" class="home-btn">🏠</a>
-        <div style="display:flex; gap:8px;">
-            <div class="stat-box">⭐ <span id="score">0</span></div>
-            <div class="stat-box">❤️ <span id="lives">3</span></div>
-        </div>
+    <div id="menu-screen">
+        <h1 class="menu-title">SKY FALL</h1>
+        <button class="mode-btn" style="background:#4ADE80" onclick="startGame('abc')">ABC 🔤</button>
+        <button class="mode-btn" style="background:#FBBF24" onclick="startGame('123')">123 🔢</button>
+        <button class="mode-btn" style="background:#F87171" onclick="startGame('hira')">あいう (ROM) 🇯🇵</button>
+        <button class="mode-btn" style="background:#60A5FA" onclick="startGame('kata')">アイウ (ROM) 🇯🇵</button>
+        <a href="../index.html" class="mode-btn" style="background:white; color:#333; font-size:1rem; width:60%; padding:12px; margin-top:20px; text-decoration:none; text-align:center;">🏠 Hub</a>
     </div>
 
-    <div id="power-container"><div id="power-bar"></div></div>
+    <div class="header-layer">
+        <div class="stats-row">
+            <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
+            <div style="display:flex; gap:8px;">
+                <div class="stat-box">⭐ <span id="score">0</span></div>
+                <div class="stat-box">❤️ <span id="lives">3</span></div>
+            </div>
+        </div>
+        <div id="power-container"><div id="power-bar"></div></div>
+    </div>
+
     <div id="sky"></div>
-
-    <div id="input-area">
-        <div class="keyboard-row">
-            <button class="key" onclick="handleInput('Q')">Q</button>
-            <button class="key" onclick="handleInput('W')">W</button>
-            <button class="key" onclick="handleInput('E')">E</button>
-            <button class="key" onclick="handleInput('R')">R</button>
-            <button class="key" onclick="handleInput('T')">T</button>
-            <button class="key" onclick="handleInput('Y')">Y</button>
-            <button class="key" onclick="handleInput('U')">U</button>
-            <button class="key" onclick="handleInput('I')">I</button>
-            <button class="key" onclick="handleInput('O')">O</button>
-            <button class="key" onclick="handleInput('P')">P</button>
-        </div>
-        <div class="keyboard-row">
-            <button class="key" onclick="handleInput('A')">A</button>
-            <button class="key" onclick="handleInput('S')">S</button>
-            <button class="key" onclick="handleInput('D')">D</button>
-            <button class="key" onclick="handleInput('F')">F</button>
-            <button class="key" onclick="handleInput('G')">G</button>
-            <button class="key" onclick="handleInput('H')">H</button>
-            <button class="key" onclick="handleInput('J')">J</button>
-            <button class="key" onclick="handleInput('K')">K</button>
-            <button class="key" onclick="handleInput('L')">L</button>
-        </div>
-        <div class="keyboard-row">
-            <button class="key" onclick="handleInput('Z')">Z</button>
-            <button class="key" onclick="handleInput('X')">X</button>
-            <button class="key" onclick="handleInput('C')">C</button>
-            <button class="key" onclick="handleInput('V')">V</button>
-            <button class="key" onclick="handleInput('B')">B</button>
-            <button class="key" onclick="handleInput('N')">N</button>
-            <button class="key" onclick="handleInput('M')">M</button>
-            <button class="key" onclick="handleInput('-')">ー</button>
-        </div>
-    </div>
+    <div id="input-area"></div>
 
     <div id="game-over">
         <h1>MARU POWER! 🚀</h1>
-        <p style="font-size: 1.5rem;">Score: <span id="final-score">0</span></p>
+        <p style="font-size: 1.5rem;">Final Score: <span id="final-score">0</span></p>
         <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 15px; background: var(--accent); border:none; font-weight:900;">Play Again</button>
     </div>
 </div>
 
 <script>
     const KANA_TO_ROMAJI = {
-        'ネ':['N','E'],'コ':['K','O'],'イ':['I'],'ヌ':['N','U'],'ウ':['U'],'ミ':['M','I'],
-        'ト':['T','O'],'リ':['R','I'],'ホ':['H','O'],'シ':['S','I'],'ア':['A'],'メ':['M','E'],
-        'ハ':['H','A'],'ナ':['N','A'],'ユ':['Y','U'],'キ':['K','I'],'ツ':['T','S','U'],
-        'モ':['M','O'],'ケ':['K','E'],'ー':['-'],'パ':['P','A'],'ン':['N']
+        'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
+        'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
+        'さ':['S','A'],'し':['S','I'],'す':['S','U'],'せ':['S','E'],'そ':['S','O'],
+        'た':['T','A'],'ち':['C','H','I'],'つ':['T','S','U'],'て':['T','E'],'と':['T','O'],
+        'な':['N','A'],'に':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
+        'は':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
+        'ま':['M','A'],'み':['M','I'],'む':['M','U'],'め':['M','E'],'も':['M','O'],
+        'や':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
+        'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'わ':['W','A'],'を':['W','O'],'ん':['N'],
+        'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
+        'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
+        'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
+        'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
+        'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
+        'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
+        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
+        'ラ':['R','A'],'リ':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],'パ':['P','A']
     };
-    const WORDS = ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'];
 
-    let score = 0, lives = 3, power = 0, activeWords = [], gameActive = true, spawnRate = 3000;
+    const DATA = {
+        abc: { words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED'] },
+        '123': { words: ['10', '25', '7', '100', '42', '9', '55', '88', '12', '3'] },
+        hira: { words: ['ねこ', 'いぬ', 'うみ', 'とり', 'ほし', 'あめ', 'はな', 'ゆき', 'つき', 'もり'] },
+        kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
+    };
+
+    const QWERTY_KATA = [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M", "-"]];
+    const QWERTY_STD = [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"]];
+    const NUMPAD = [["1","2","3"], ["4","5","6"], ["7","8","9"], ["0"]];
+
+    let score = 0, lives = 3, power = 0, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playSfx(f, t, d) {
+    function playSfx(f, t, d, v=0.1) {
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
         o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        g.gain.setValueAtTime(v, audioCtx.currentTime);
         g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
         o.connect(g); g.connect(audioCtx.destination);
         o.start(); o.stop(audioCtx.currentTime + d);
     }
 
+    function startGame(mode) {
+        currentMode = mode; gameActive = true;
+        document.getElementById('menu-screen').style.display = 'none';
+        let layout = (mode === '123') ? NUMPAD : (mode === 'kata' ? QWERTY_KATA : QWERTY_STD);
+        buildKeyboard(layout, mode === '123');
+        spawnWord(); update();
+    }
+
+    function buildKeyboard(layout, isNum) {
+        const area = document.getElementById('input-area');
+        area.innerHTML = '';
+        layout.forEach(row => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = isNum ? 'keyboard-row numpad-row' : 'keyboard-row';
+            row.forEach(l => {
+                const b = document.createElement('button');
+                b.className = 'key'; b.innerText = l;
+                b.addEventListener('touchstart', (e) => { e.preventDefault(); if(audioCtx.state==='suspended') audioCtx.resume(); handleInput(l); });
+                b.onclick = (e) => { if(e.pointerType !== 'touch') handleInput(l); };
+                rowDiv.appendChild(b);
+            });
+            area.appendChild(rowDiv);
+        });
+    }
+
+    function createParticles(x, y, color) {
+        const sky = document.getElementById('sky');
+        for(let i=0; i<8; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle'; p.style.backgroundColor = color;
+            p.style.left = x + 'px'; p.style.top = y + 'px';
+            sky.appendChild(p);
+            const angle = Math.random() * Math.PI * 2, speed = Math.random() * 4 + 2;
+            let px = x, py = y, op = 1;
+            const move = () => {
+                px += Math.cos(angle) * speed; py += Math.sin(angle) * speed;
+                p.style.left = px + 'px'; p.style.top = py + 'px';
+                op -= 0.05; p.style.opacity = op;
+                if(op > 0) requestAnimationFrame(move); else p.remove();
+            };
+            move();
+        }
+    }
+
     function spawnWord() {
         if(!gameActive) return;
-        const text = WORDS[Math.floor(Math.random() * WORDS.length)];
+        const text = DATA[currentMode].words[Math.floor(Math.random() * DATA[currentMode].words.length)];
         const isGolden = Math.random() < 0.1;
         const el = document.createElement('div');
         el.className = 'falling-word' + (isGolden ? ' golden' : '');
@@ -170,51 +228,61 @@
     }
 
     function handleInput(l) {
-        if(!gameActive) return;
-        if(audioCtx.state === 'suspended') audioCtx.resume();
-
-        // FOCUS LOGIC: Sort to find the word closest to the bottom
-        let targets = [...activeWords].sort((a, b) => b.y - a.y);
+        if(!gameActive || activeWords.length === 0) return;
         
-        for(let w of targets) {
-            let nextRequired = w.sequence[w.progress];
+        // Find the lowest word (highest Y value)
+        let targetWord = activeWords.reduce((prev, current) => (prev.y > current.y) ? prev : current);
+        
+        // Visual indicator for target
+        activeWords.forEach(w => w.el.classList.remove('target'));
+        targetWord.el.classList.add('target');
+
+        let nextRequired = targetWord.sequence[targetWord.progress];
+        if(nextRequired && nextRequired.key === l.toUpperCase()) {
+            targetWord.progress++;
+            playSfx(440 + (targetWord.progress * 50), 'sine', 0.1);
             
-            // Special TSU handling (Allow T-U or T-S-U)
-            if(nextRequired && nextRequired.key === 'T' && l === 'T') {
-                const nextKey = w.sequence[w.progress + 1];
-                if(nextKey && nextKey.key === 'S') { 
-                    // If user types T, and next is S, we check if they skip S
-                }
+            // Check if character is fully typed
+            const isCharFinished = !targetWord.sequence[targetWord.progress] || targetWord.sequence[targetWord.progress].charIdx !== nextRequired.charIdx;
+            if (isCharFinished) {
+                const chars = targetWord.el.querySelectorAll('.char');
+                if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
             }
 
-            if(nextRequired && nextRequired.key === l.toUpperCase()) {
-                w.progress++;
-                playSfx(440 + (w.progress * 50), 'sine', 0.1);
-                
-                const isCharFinished = !w.sequence[w.progress] || w.sequence[w.progress].charIdx !== nextRequired.charIdx;
-                if (isCharFinished) {
-                    const chars = w.el.querySelectorAll('.char');
-                    if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
-                }
-
-                if(w.progress === w.sequence.length) popWord(w);
-                return; // Stop here so we only hit ONE word at a time
+            if(targetWord.progress === targetWord.sequence.length) {
+                popWord(targetWord);
             }
         }
     }
 
     function popWord(w) {
-        if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; }
-        else { score += 10; }
+        const rect = w.el.getBoundingClientRect();
+        createParticles(rect.left + rect.width/2, rect.top, w.isGolden ? '#FFD700' : '#4ADE80');
+        
+        if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; playSfx(880, 'triangle', 0.4); }
+        else { score += 10; playSfx(600, 'sine', 0.1); }
         
         power = Math.min(100, power + 15);
         document.getElementById('power-bar').style.width = power + '%';
+        if(power >= 100) triggerMegaClear();
+
         document.getElementById('score').innerText = score;
         document.getElementById('lives').innerText = lives;
         
         w.el.remove();
         activeWords = activeWords.filter(item => item !== w);
-        playSfx(800, 'sine', 0.2);
+    }
+
+    function triggerMegaClear() {
+        playSfx(200, 'sine', 0.5, 0.3);
+        activeWords.forEach(w => {
+            const r = w.el.getBoundingClientRect();
+            createParticles(r.left, r.top, '#4ADE80');
+            w.el.remove();
+        });
+        activeWords = []; power = 0;
+        document.getElementById('power-bar').style.width = '0%';
+        score += 100; document.getElementById('score').innerText = score;
     }
 
     function update() {
@@ -222,13 +290,14 @@
         const skyHeight = document.getElementById('sky').clientHeight;
         for (let i = activeWords.length - 1; i >= 0; i--) {
             let w = activeWords[i];
-            w.y += 1.0 + (score / 500);
+            w.y += 1.2 + (score / 500);
             w.el.style.top = w.y + 'px';
+
             if(w.y > skyHeight) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
-                w.el.remove(); 
-                activeWords.splice(i, 1);
+                playSfx(150, 'sawtooth', 0.2);
+                w.el.remove(); activeWords.splice(i, 1);
                 if(lives <= 0) {
                     gameActive = false;
                     document.getElementById('game-over').style.display = 'flex';
@@ -238,9 +307,6 @@
         }
         requestAnimationFrame(update);
     }
-
-    spawnWord();
-    update();
 </script>
 </body>
 </html>
