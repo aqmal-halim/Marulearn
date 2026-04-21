@@ -1,324 +1,1167 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruQuest: Sky Fall ULTRA</title>
-    <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-        :root { --primary: #60A5FA; --accent: #FBBF24; --gold: #FFD700; --success: #4ADE80; }
-        
-        body { 
-            font-family: 'Comic Sans MS', "Hiragino Sans", "Meiryo", sans-serif; 
-            margin: 0; overflow: hidden; display: flex; justify-content: center;
-            background: #111; position: fixed; width: 100%; height: 100%;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SKY FALL — MaruQuest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
 
-        #game-wrapper {
-            width: 100vw; max-width: 420px; height: 100vh; position: relative;
-            background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
-            display: flex; flex-direction: column; overflow: hidden;
-            transition: background 2s ease;
-        }
+*, *::before, *::after {
+box-sizing: border-box;
+-webkit-tap-highlight-color: transparent;
+touch-action: manipulation;
+}
 
-        .header-layer {
-            background: white; 
-            padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; z-index: 100;
-            border-bottom: 4px solid #E2E8F0;
-            border-radius: 0 0 20px 20px;
-        }
+:root {
+–sky-top: #38BDF8;
+–sky-bot: #BAE6FD;
+–panel: rgba(255,255,255,0.97);
+–key-bg: #FFFFFF;
+–key-shadow: #CBD5E1;
+–key-active-bg: #FBBF24;
+–primary: #0EA5E9;
+–success: #22C55E;
+–danger: #EF4444;
+–gold: #F59E0B;
+–text-dark: #0F172A;
+–text-mid: #475569;
+–combo-color: #A855F7;
+–header-bg: rgba(255,255,255,0.98);
+–font-main: ‘Fredoka One’, ‘Hiragino Sans’, ‘Meiryo’, cursive;
+–font-body: ‘Nunito’, sans-serif;
+–border-r: 20px;
+–transition: 0.12s cubic-bezier(0.34,1.56,0.64,1);
+}
 
-        .stats-row { display: flex; justify-content: space-between; align-items: center; }
+body {
+font-family: var(–font-body);
+margin: 0; padding: 0; overflow: hidden;
+display: flex; justify-content: center;
+background: #0F172A;
+position: fixed; width: 100%; height: 100%;
+touch-action: none;
+}
 
-        #menu-screen {
-            position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-        }
-        .menu-title { font-size: 3rem; color: white; text-shadow: 4px 4px 0px #0369A1; margin-bottom: 30px; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+/* ══════════════ WRAPPER ══════════════ */
+#game-wrapper {
+width: 100vw; max-width: 430px; height: 100svh;
+position: relative; display: flex; flex-direction: column;
+overflow: hidden;
+background: linear-gradient(180deg, var(–sky-top) 0%, var(–sky-bot) 100%);
+transition: background 1.5s ease;
+}
 
-        .mode-btn {
-            width: 85%; padding: 18px; margin: 8px; border: none; border-radius: 25px;
-            font-size: 1.4rem; font-weight: 900; cursor: pointer; color: white;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: all 0.1s;
-        }
-        .mode-btn:active { transform: translateY(4px); box-shadow: none; }
+/* ══════════════ HEADER ══════════════ */
+#header {
+flex-shrink: 0;
+background: var(–header-bg);
+border-bottom: 3px solid rgba(0,0,0,0.06);
+border-radius: 0 0 24px 24px;
+padding: 10px 14px 12px;
+z-index: 100;
+box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+display: flex; flex-direction: column; gap: 8px;
+}
+.hdr-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.hdr-mid { display:flex; align-items:center; gap:8px; }
 
-        .home-btn { background: #F1F5F9; border-radius: 15px; padding: 10px 15px; font-size: 1.4rem; text-decoration: none; box-shadow: 0 4px 0 #CBD5E1; color: #333; }
-        .stat-box { background: #F8FAFC; padding: 6px 15px; border-radius: 20px; font-weight: 900; border: 2px solid #E2E8F0; color: #0369A1; font-size: 1.1rem; }
+.icon-btn {
+background: #F1F5F9; border: none; border-radius: 14px;
+width: 42px; height: 42px; font-size: 1.3rem; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+box-shadow: 0 3px 0 #CBD5E1; transition: var(–transition);
+flex-shrink: 0;
+}
+.icon-btn:active { transform: translateY(3px); box-shadow: none; }
 
-        #power-container { height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden; width: 100%; border: 1px solid #CBD5E1; }
-        #power-bar { width: 0%; height: 100%; background: var(--success); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.stat-pill {
+background: #F8FAFC; border-radius: 50px; padding: 6px 14px;
+font-family: var(–font-main); font-size: 1.1rem; color: var(–primary);
+border: 2px solid #E2E8F0; white-space: nowrap;
+display: flex; align-items: center; gap: 4px;
+box-shadow: 0 2px 0 #E2E8F0;
+}
+.stat-pill.danger { color: var(–danger); border-color: #FCA5A5; background: #FFF5F5; }
+.stat-pill.combo  { color: var(–combo-color); border-color: #E9D5FF; background: #FAF5FF; }
+.combo-pill-val { font-size: 1.3rem; }
 
-        #sky { flex: 1; position: relative; width: 100%; }
+/* Power bar */
+#power-track {
+flex: 1; height: 14px; background: #E2E8F0;
+border-radius: 99px; overflow: hidden; border: 2px solid #CBD5E1;
+position: relative;
+}
+#power-fill {
+height: 100%; width: 0%; border-radius: 99px;
+background: linear-gradient(90deg, #22C55E, #86EFAC);
+transition: width 0.35s cubic-bezier(0.34,1.56,0.64,1);
+position: relative;
+}
+#power-fill::after {
+content:’’; position:absolute; right:0; top:0; bottom:0; width:6px;
+background: white; border-radius: 99px; opacity: 0.7;
+}
+#power-label {
+font-size: 0.72rem; color: var(–text-mid); font-weight: 900;
+white-space: nowrap; flex-shrink: 0; font-family: var(–font-main);
+}
 
-        .falling-word {
-            position: absolute; background: white; padding: 10px 20px; border-radius: 25px;
-            font-weight: 900; font-size: 1.5rem; box-shadow: 0 8px 0px rgba(0,0,0,0.1);
-            display: flex; gap: 2px; z-index: 10; user-select: none; border: 3px solid transparent;
-        }
-        .falling-word.target { border-color: var(--primary); animation: pulse 0.8s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+/* ══════════════ SKY ══════════════ */
+#sky {
+flex: 1; position: relative; width: 100%; overflow: hidden;
+}
 
-        .falling-word.golden { background: var(--gold); border-color: #FFF; animation: glow 1s infinite alternate; color: #92400E; }
-        @keyframes glow { from { box-shadow: 0 0 5px #fff; } to { box-shadow: 0 0 25px var(--gold); } }
+/* Clouds */
+.cloud {
+position: absolute; opacity: 0.55; pointer-events: none;
+animation: cloudDrift linear infinite;
+}
+.cloud svg { display: block; }
+@keyframes cloudDrift {
+from { transform: translateX(-220px); }
+to   { transform: translateX(calc(100vw + 220px)); }
+}
 
-        .char.typed { color: var(--success); transform: scale(1.2); display: inline-block; transition: all 0.2s; }
+/* ══════════════ WORDS ══════════════ */
+.falling-word {
+position: absolute; background: white;
+padding: 10px 18px; border-radius: 30px;
+font-family: var(–font-main); font-size: 1.5rem;
+box-shadow: 0 8px 0 rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.06);
+display: flex; gap: 1px; z-index: 10; user-select: none;
+border: 3px solid transparent;
+will-change: transform, top;
+animation: wordPop 0.25s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes wordPop {
+from { opacity:0; transform: scale(0.5) translateY(-8px); }
+to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.falling-word.target {
+border-color: var(–primary);
+box-shadow: 0 8px 0 rgba(14,165,233,0.3), 0 0 0 4px rgba(14,165,233,0.1);
+}
+.falling-word.golden {
+background: linear-gradient(135deg, #FDE68A, #FCD34D);
+border-color: #F59E0B;
+color: #78350F;
+animation: wordPop 0.25s cubic-bezier(0.34,1.56,0.64,1) both, goldenGlow 1s ease-in-out infinite alternate;
+}
+@keyframes goldenGlow {
+from { box-shadow: 0 8px 0 rgba(245,158,11,0.4), 0 0 10px rgba(245,158,11,0.3); }
+to   { box-shadow: 0 8px 0 rgba(245,158,11,0.5), 0 0 30px rgba(245,158,11,0.5); }
+}
+.falling-word.danger-word {
+border-color: var(–danger);
+box-shadow: 0 8px 0 rgba(239,68,68,0.2), 0 0 0 3px rgba(239,68,68,0.1);
+}
 
-        #input-area {
-            background: #F1F5F9; border-top-left-radius: 35px; border-top-right-radius: 35px;
-            padding: 20px 10px 45px 10px; display: flex; flex-direction: column; gap: 10px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1); z-index: 100; border-top: 5px solid white;
-        }
-        .keyboard-row { display: flex; justify-content: center; gap: 8px; width: 100%; }
-        .key {
-            background: white; border: none; border-radius: 12px; flex: 1;
-            height: 55px; max-width: 46px; font-size: 1.4rem; font-weight: 900; color: #1E293B;
-            box-shadow: 0 5px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
-        }
-        .key:active { background: var(--accent); transform: translateY(3px); box-shadow: 0 2px 0 #94A3B8; }
-        .numpad-row .key { max-width: 90px; height: 65px; font-size: 1.8rem; }
+.char { color: var(–text-dark); transition: all 0.15s; display: inline-block; }
+.char.typed {
+color: var(–success);
+transform: scale(1.15);
+}
+.char.typed-golden { color: #92400E; }
 
-        .particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 5; }
+/* Romaji sub-hint on kana words */
+.rom-hint {
+position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+background: rgba(0,0,0,0.6); color: white; font-size: 0.6rem;
+padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+font-family: var(–font-body); font-weight: 700; pointer-events: none;
+opacity: 0; transition: opacity 0.2s;
+}
+.falling-word.target .rom-hint { opacity: 1; }
 
-        #game-over {
-            display: none; position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95);
-            z-index: 400; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;
-        }
-        .retry-btn { padding: 20px 40px; font-size: 1.5rem; border-radius: 20px; background: var(--success); border: none; font-weight: 900; color: white; box-shadow: 0 6px 0 #166534; cursor: pointer; }
-    </style>
+/* ══════════════ PARTICLES ══════════════ */
+.particle {
+position: absolute; border-radius: 50%; pointer-events: none; z-index: 30;
+will-change: transform, opacity;
+}
+
+/* ══════════════ COMBO TOAST ══════════════ */
+#combo-toast {
+position: absolute; top: 30%; left: 50%; transform: translateX(-50%) scale(0);
+z-index: 200; pointer-events: none;
+background: var(–combo-color); color: white; font-family: var(–font-main);
+font-size: 2rem; padding: 10px 30px; border-radius: 20px;
+box-shadow: 0 8px 0 rgba(168,85,247,0.4);
+transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
+opacity: 0;
+}
+#combo-toast.show { transform: translateX(-50%) scale(1); opacity: 1; }
+
+/* ══════════════ SCORE POPUP ══════════════ */
+.score-popup {
+position: absolute; pointer-events: none; z-index: 40;
+font-family: var(–font-main); font-size: 1.4rem; color: var(–success);
+text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+animation: floatUp 0.8s ease-out forwards;
+}
+.score-popup.gold { color: var(–gold); }
+.score-popup.combo { color: var(–combo-color); font-size: 1.8rem; }
+@keyframes floatUp {
+from { opacity:1; transform: translateY(0) scale(1); }
+to   { opacity:0; transform: translateY(-60px) scale(0.7); }
+}
+
+/* ══════════════ INPUT ══════════════ */
+#input-area {
+flex-shrink: 0;
+background: var(–panel); border-top: 4px solid white;
+border-radius: 28px 28px 0 0;
+padding: 14px 8px 40px;
+box-shadow: 0 -8px 30px rgba(0,0,0,0.09);
+z-index: 100;
+display: flex; flex-direction: column; gap: 7px;
+}
+.key-row { display: flex; justify-content: center; gap: 6px; }
+
+.key {
+background: var(–key-bg); border: none; border-radius: 12px;
+flex: 1; height: 52px; max-width: 44px;
+font-family: var(–font-main); font-size: 1.35rem; color: var(–text-dark);
+box-shadow: 0 5px 0 var(–key-shadow);
+outline: none; display: flex; align-items: center; justify-content: center;
+cursor: pointer; transition: background 0.08s, transform 0.08s, box-shadow 0.08s;
+position: relative; overflow: hidden; user-select: none;
+-webkit-user-select: none;
+}
+.key::after {
+content: ‘’; position: absolute; inset: 0; border-radius: 12px;
+background: rgba(255,255,255,0);
+transition: background 0.1s;
+}
+.key.lit { background: var(–key-active-bg) !important; transform: translateY(3px); box-shadow: 0 2px 0 #B45309 !important; }
+.key.numpad { max-width: 85px; height: 62px; font-size: 1.7rem; }
+
+/* ══════════════ PAUSE OVERLAY ══════════════ */
+#pause-overlay {
+display: none; position: absolute; inset: 0; z-index: 500;
+background: rgba(15,23,42,0.88); backdrop-filter: blur(4px);
+flex-direction: column; align-items: center; justify-content: center; gap: 20px; color: white;
+}
+#pause-overlay.visible { display: flex; }
+.pause-title { font-family: var(–font-main); font-size: 2.8rem; }
+.pause-sub { font-family: var(–font-body); font-size: 1rem; color: #94A3B8; }
+.overlay-btn {
+padding: 16px 40px; border: none; border-radius: 20px; font-family: var(–font-main);
+font-size: 1.4rem; cursor: pointer; color: white;
+box-shadow: 0 6px 0 rgba(0,0,0,0.25); transition: var(–transition);
+}
+.overlay-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+.overlay-btn.green  { background: var(–success); }
+.overlay-btn.blue   { background: var(–primary); }
+.overlay-btn.gray   { background: #475569; }
+
+/* High score badge */
+#hs-badge {
+display: none; position: absolute; top: -4px; right: -4px;
+background: var(–gold); color: #78350F; font-size: 0.55rem;
+font-family: var(–font-main); padding: 1px 5px; border-radius: 99px;
+border: 2px solid white; z-index: 5;
+}
+
+/* ══════════════ MENU ══════════════ */
+#menu-screen {
+position: absolute; inset: 0; z-index: 600;
+background: linear-gradient(160deg, #0EA5E9 0%, #38BDF8 40%, #7DD3FC 100%);
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+padding: 20px; overflow-y: auto;
+}
+.menu-logo {
+font-family: var(–font-main); font-size: 3.4rem; color: white;
+text-shadow: 0 5px 0 rgba(0,0,0,0.15); margin-bottom: 6px;
+animation: logoBounce 2.5s ease-in-out infinite;
+line-height: 1;
+}
+@keyframes logoBounce {
+0%,100% { transform: translateY(0) rotate(-1deg); }
+50% { transform: translateY(-10px) rotate(1deg); }
+}
+.menu-sub { font-family: var(–font-body); font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
+
+.mode-btn {
+width: 88%; padding: 18px 20px; margin: 6px; border: none; border-radius: 22px;
+font-family: var(–font-main); font-size: 1.3rem; cursor: pointer; color: white;
+box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: var(–transition);
+display: flex; align-items: center; justify-content: space-between; text-align: left;
+position: relative;
+}
+.mode-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+.mode-icon { font-size: 1.6rem; }
+.mode-hs {
+font-size: 0.7rem; background: rgba(0,0,0,0.2); border-radius: 10px;
+padding: 2px 8px; font-family: var(–font-body); font-weight: 900;
+}
+
+.menu-hub-btn {
+margin-top: 16px; width: 60%;
+background: rgba(255,255,255,0.95); color: var(–text-dark);
+font-size: 1rem; padding: 14px;
+box-shadow: 0 5px 0 rgba(0,0,0,0.12);
+text-decoration: none; border-radius: 20px;
+font-family: var(–font-main); text-align: center; display: block;
+}
+
+/* ══════════════ GAME OVER ══════════════ */
+#game-over {
+display: none; position: absolute; inset: 0; z-index: 700;
+background: rgba(15,23,42,0.97); flex-direction: column;
+align-items: center; justify-content: center; gap: 14px;
+padding: 20px; text-align: center;
+}
+.go-title { font-family: var(–font-main); font-size: 2.6rem; color: var(–gold); }
+.go-score { font-family: var(–font-main); font-size: 2rem; color: white; }
+.go-best  { font-family: var(–font-body); font-size: 0.9rem; color: #94A3B8; }
+.go-stat-row { display:flex; gap:12px; }
+.go-stat { background: #1E293B; border-radius: 16px; padding: 12px 20px; color: white; text-align: center; }
+.go-stat-label { font-size: 0.75rem; color: #94A3B8; font-family: var(–font-body); }
+.go-stat-val { font-family: var(–font-main); font-size: 1.5rem; color: white; }
+
+/* ══════════════ SCREEN SHAKE ══════════════ */
+@keyframes shake {
+0%,100% { transform: translateX(0); }
+20% { transform: translateX(-7px) rotate(-0.5deg); }
+40% { transform: translateX(7px) rotate(0.5deg); }
+60% { transform: translateX(-5px); }
+80% { transform: translateX(4px); }
+}
+#game-wrapper.shake { animation: shake 0.35s ease-out; }
+
+/* ══════════════ SETTINGS PANEL ══════════════ */
+#settings-panel {
+display: none; position: absolute; bottom: 0; left: 0; right: 0; z-index: 800;
+background: white; border-radius: 28px 28px 0 0;
+padding: 20px 20px 48px; box-shadow: 0 -8px 40px rgba(0,0,0,0.2);
+animation: slideUp 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes slideUp {
+from { transform: translateY(100%); }
+to   { transform: translateY(0); }
+}
+#settings-panel.visible { display: block; }
+.settings-backdrop {
+display: none; position: absolute; inset: 0; z-index: 799; background: rgba(0,0,0,0.3);
+}
+#settings-panel.visible ~ #settings-backdrop { display: block; }
+.settings-title { font-family: var(–font-main); font-size: 1.5rem; color: var(–text-dark); margin-bottom: 16px; }
+.setting-row { display:flex; align-items:center; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #F1F5F9; }
+.setting-label { font-family: var(–font-body); font-size: 0.95rem; font-weight: 700; color: var(–text-dark); }
+.setting-desc { font-size: 0.75rem; color: var(–text-mid); }
+
+/* Toggle switch */
+.toggle-wrap { position: relative; width: 52px; height: 30px; }
+.toggle-wrap input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider {
+position: absolute; inset:0; background: #CBD5E1; border-radius: 30px;
+cursor: pointer; transition: 0.3s;
+}
+.toggle-slider::before {
+content:’’; position:absolute; height:22px; width:22px; left:4px; bottom:4px;
+background: white; border-radius: 50%; transition: 0.3s;
+box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-wrap input:checked + .toggle-slider { background: var(–primary); }
+.toggle-wrap input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+/* Speed selector */
+.speed-btns { display:flex; gap:8px; }
+.speed-btn {
+padding: 6px 14px; border: 2px solid #E2E8F0; border-radius: 10px;
+background: white; font-family: var(–font-main); font-size: 0.9rem; cursor: pointer;
+color: var(–text-mid); transition: 0.15s;
+}
+.speed-btn.active { background: var(–primary); color: white; border-color: var(–primary); }
+
+/* Responsiveness */
+@media (max-height: 700px) {
+.key { height: 46px; font-size: 1.2rem; }
+.key.numpad { height: 56px; }
+#input-area { padding-bottom: 28px; gap: 5px; }
+}
+</style>
+
 </head>
 <body>
-
 <div id="game-wrapper">
-    <div id="menu-screen">
-        <h1 class="menu-title">SKY FALL</h1>
-        <button class="mode-btn" style="background:#4ADE80" onclick="startGame('abc')">ABC 🔤</button>
-        <button class="mode-btn" style="background:#FBBF24" onclick="startGame('123')">123 🔢</button>
-        <button class="mode-btn" style="background:#F87171" onclick="startGame('hira')">あいう (ROM) 🇯🇵</button>
-        <button class="mode-btn" style="background:#60A5FA" onclick="startGame('kata')">アイウ (ROM) 🇯🇵</button>
-        <a href="../index.html" class="mode-btn" style="background:white; color:#333; font-size:1rem; width:60%; padding:12px; margin-top:20px; text-decoration:none; text-align:center;">🏠 Hub</a>
-    </div>
 
-    <div class="header-layer">
-        <div class="stats-row">
-            <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
-            <div style="display:flex; gap:10px;">
-                <div class="stat-box">⭐ <span id="score">0</span></div>
-                <div class="stat-box">❤️ <span id="lives">3</span></div>
-            </div>
+  <!-- ═══ MENU ═══ -->
+
+  <div id="menu-screen">
+    <div class="menu-logo">☁️ SKY FALL</div>
+    <div class="menu-sub">Type fast before they hit the ground!</div>
+
+```
+<button class="mode-btn" style="background:#22C55E;box-shadow:0 6px 0 #16A34A" onclick="startGame('abc')">
+  <span>ABC Mode</span><span class="mode-icon">🔤</span>
+  <span class="mode-hs" id="hs-abc">Best: 0</span>
+</button>
+<button class="mode-btn" style="background:#FBBF24;box-shadow:0 6px 0 #D97706" onclick="startGame('123')">
+  <span>123 Mode</span><span class="mode-icon">🔢</span>
+  <span class="mode-hs" id="hs-123">Best: 0</span>
+</button>
+<button class="mode-btn" style="background:#F87171;box-shadow:0 6px 0 #DC2626" onclick="startGame('hira')">
+  <span>あいう Hiragana</span><span class="mode-icon">🇯🇵</span>
+  <span class="mode-hs" id="hs-hira">Best: 0</span>
+</button>
+<button class="mode-btn" style="background:#60A5FA;box-shadow:0 6px 0 #2563EB" onclick="startGame('kata')">
+  <span>アイウ Katakana</span><span class="mode-icon">🇯🇵</span>
+  <span class="mode-hs" id="hs-kata">Best: 0</span>
+</button>
+<a href="../index.html" class="menu-hub-btn">🏠 Back to Hub</a>
+```
+
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+
+  <div id="header">
+    <div class="hdr-top">
+      <button class="icon-btn" onclick="openMenu()" title="Menu">🏠</button>
+      <div style="display:flex;gap:8px;align-items:center;flex:1;justify-content:center;">
+        <div class="stat-pill">⭐ <span id="score-disp">0</span></div>
+        <div class="stat-pill danger">❤️ <span id="lives-disp">3</span></div>
+        <div class="stat-pill combo" id="combo-pill" style="display:none;">
+          🔥 <span class="combo-pill-val" id="combo-disp">0</span>x
         </div>
-        <div id="power-container"><div id="power-bar"></div></div>
+      </div>
+      <button class="icon-btn" onclick="togglePause()" id="pause-btn" title="Pause">⏸️</button>
+      <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
     </div>
-
-    <div id="sky"></div>
-    <div id="input-area"></div>
-
-    <div id="game-over">
-        <h1 style="font-size: 3rem; color: var(--gold);">AWESOME! 🚀</h1>
-        <p style="font-size: 1.8rem; margin-bottom: 30px;">Score: <span id="final-score">0</span></p>
-        <button class="retry-btn" onclick="location.reload()">Play Again</button>
+    <div class="hdr-mid">
+      <span id="power-label" style="font-family:var(--font-main);font-size:0.8rem;color:var(--text-mid);flex-shrink:0;">⚡ POWER</span>
+      <div id="power-track"><div id="power-fill"></div></div>
     </div>
+  </div>
+
+  <!-- ═══ SKY ═══ -->
+
+  <div id="sky">
+    <!-- clouds injected by JS -->
+  </div>
+
+  <!-- ═══ KEYBOARD ═══ -->
+
+  <div id="input-area"></div>
+
+  <!-- ═══ COMBO TOAST ═══ -->
+
+  <div id="combo-toast">COMBO!</div>
+
+  <!-- ═══ PAUSE OVERLAY ═══ -->
+
+  <div id="pause-overlay">
+    <div class="pause-title">⏸ PAUSED</div>
+    <div class="pause-sub">Take a breather!</div>
+    <button class="overlay-btn green" onclick="togglePause()">▶ Resume</button>
+    <button class="overlay-btn gray" onclick="openMenu()">🏠 Menu</button>
+  </div>
+
+  <!-- ═══ GAME OVER ═══ -->
+
+  <div id="game-over">
+    <div class="go-title">AWESOME! 🚀</div>
+    <div class="go-score">Score: <span id="final-score">0</span></div>
+    <div class="go-best" id="go-best-line"></div>
+    <div class="go-stat-row">
+      <div class="go-stat">
+        <div class="go-stat-label">MAX COMBO</div>
+        <div class="go-stat-val" id="final-combo">0</div>
+      </div>
+      <div class="go-stat">
+        <div class="go-stat-label">WORDS TYPED</div>
+        <div class="go-stat-val" id="final-words">0</div>
+      </div>
+      <div class="go-stat">
+        <div class="go-stat-label">ACCURACY</div>
+        <div class="go-stat-val" id="final-acc">0%</div>
+      </div>
+    </div>
+    <button class="overlay-btn green" onclick="restartGame()" style="margin-top:8px;">▶ Play Again</button>
+    <button class="overlay-btn gray" onclick="openMenu()">🏠 Menu</button>
+  </div>
+
+  <!-- ═══ SETTINGS ═══ -->
+
+  <div id="settings-panel">
+    <div class="settings-title">⚙️ Settings</div>
+    <div class="setting-row">
+      <div><div class="setting-label">Sound Effects</div></div>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="sfx-toggle" checked onchange="settings.sfx=this.checked;saveSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Haptic Feedback</div><div class="setting-desc">Vibration on correct key</div></div>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="haptic-toggle" checked onchange="settings.haptic=this.checked;saveSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Show Romaji Hint</div><div class="setting-desc">Displays romaji below target kana</div></div>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="hint-toggle" checked onchange="settings.showHint=this.checked;saveSettings()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Starting Speed</div></div>
+      <div class="speed-btns">
+        <button class="speed-btn active" data-speed="normal" onclick="setSpeed(this,'normal')">Normal</button>
+        <button class="speed-btn" data-speed="fast"   onclick="setSpeed(this,'fast')">Fast</button>
+        <button class="speed-btn" data-speed="slow"   onclick="setSpeed(this,'slow')">Slow</button>
+      </div>
+    </div>
+    <button class="overlay-btn blue" style="width:100%;margin-top:16px;" onclick="closeSettings()">Done ✓</button>
+  </div>
+  <div id="settings-backdrop" onclick="closeSettings()" style="display:none;position:absolute;inset:0;z-index:799;background:rgba(0,0,0,0.3);"></div>
 </div>
 
 <script>
-    const KANA_TO_ROMAJI = {
-        'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
-        'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
-        'さ':['S','A'],'し':['S','I'],'す':['S','U'],'せ':['S','E'],'そ':['S','O'],
-        'た':['T','A'],'ち':['C','H','I'],'つ':['T','S','U'],'て':['T','E'],'と':['T','O'],
-        'な':['N','A'],'に':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
-        'は':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
-        'ま':['M','A'],'み':['M','I'],'む':['M','U'],'め':['M','E'],'も':['M','O'],
-        'や':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
-        'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
-        'わ':['W','A'],'を':['W','O'],'ん':['N'],
-        'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
-        'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
-        'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'そ':['S','O'],
-        'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
-        'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
-        'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
-        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
-        'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
-        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],'パ':['P','A']
+/* ════════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const KANA_ROM = {
+  'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
+  'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
+  'さ':['S','A'],'し':['S','H','I'],'す':['S','U'],'せ':['S','E'],'そ':['S','O'],
+  'た':['T','A'],'ち':['C','H','I'],'つ':['T','S','U'],'て':['T','E'],'と':['T','O'],
+  'な':['N','A'],'に':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
+  'は':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
+  'ま':['M','A'],'み':['M','I'],'む':['M','U'],'め':['M','E'],'も':['M','O'],
+  'や':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
+  'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+  'わ':['W','A'],'を':['W','O'],'ん':['N'],
+  'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
+  'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
+  'サ':['S','A'],'シ':['S','H','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
+  'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
+  'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
+  'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
+  'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+  'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
+  'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
+  'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],
+  'パ':['P','A'],'ピ':['P','I'],'プ':['P','U'],'ペ':['P','E'],'ポ':['P','O'],
+  'バ':['B','A'],'ビ':['B','I'],'ブ':['B','U'],'ベ':['B','E'],'ボ':['B','O'],
+  'ガ':['G','A'],'ギ':['G','I'],'グ':['G','U'],'ゲ':['G','E'],'ゴ':['G','O'],
+  'ダ':['D','A'],'デ':['D','E'],'ド':['D','O'],
+  'ザ':['Z','A'],'ジ':['J','I'],'ズ':['Z','U'],'ゼ':['Z','E'],'ゾ':['Z','O'],
+};
+
+const WORDS = {
+  abc: {
+    easy:   ['CAT','DOG','SUN','BIG','RED','FUN','HAT','RUN','YAK','FLY'],
+    medium: ['MOON','FISH','BIRD','STAR','BLUE','CAKE','FROG','JUMP','PLAY','BOOK','RAIN','TREE'],
+    hard:   ['APPLE','GRAPE','TIGER','CLOUD','FLAME','TRAIN','BEACH','STORK','FLUTE','BRAVE']
+  },
+  '123': {
+    easy:   ['3','7','9','5','1','8','2','6','4'],
+    medium: ['12','25','47','81','30','99','56','73','18','64'],
+    hard:   ['100','247','509','738','365','420','999','111','888','303']
+  },
+  hira: {
+    easy:   ['ねこ','いぬ','うみ','やま','はな'],
+    medium: ['とり','ほし','あめ','つき','もり','ゆき','かぜ','ひか','なみ'],
+    hard:   ['さくら','こうえん','あおぞら','ほたる','わたしは']
+  },
+  kata: {
+    easy:   ['ネコ','イヌ','ウミ','ハナ','ヤマ'],
+    medium: ['トリ','ホシ','アメ','ツキ','モリ','ユキ','ケーキ','パン','アイス'],
+    hard:   ['サクラ','コーヒー','アイスクリーム','バナナ','パーティ']
+  }
+};
+
+const KEYBOARDS = {
+  abc:  [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]],
+  hira: [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]],
+  kata: [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M","-"]],
+  '123':[["1","2","3"],["4","5","6"],["7","8","9"],["0"]]
+};
+
+const BACKGROUNDS = {
+  day:   'linear-gradient(180deg,#38BDF8 0%,#BAE6FD 100%)',
+  dusk:  'linear-gradient(180deg,#FB923C 0%,#F43F5E 100%)',
+  night: 'linear-gradient(180deg,#1E1B4B 0%,#312E81 100%)',
+};
+
+/* ════════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let score=0, lives=3, power=0, combo=0, maxCombo=0, wordsTyped=0;
+let totalKeystrokes=0, correctKeystrokes=0;
+let gameActive=false, paused=false;
+let activeWords=[], spawnTimer=null, frameId=null;
+let spawnInterval=3000, lastSpawnTime=0;
+let currentMode='', currentBg='day';
+let settings = { sfx:true, haptic:true, showHint:true, startSpeed:'normal' };
+
+/* ════════════════════════════════════════
+   AUDIO
+═══════════════════════════════════════ */
+let audioCtx = null;
+function getAudio() {
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+function resumeAudio() {
+  const a = getAudio();
+  if(a.state==='suspended') a.resume();
+}
+
+function playSfx(type) {
+  if(!settings.sfx) return;
+  const a = getAudio();
+  const t = a.currentTime;
+  const o = a.createOscillator(), g = a.createGain();
+  o.connect(g); g.connect(a.destination);
+
+  const configs = {
+    key:    { freq:440, type:'sine',     dur:0.09, vol:0.07 },
+    word:   { freq:660, type:'triangle', dur:0.18, vol:0.1  },
+    golden: { freq:880, type:'triangle', dur:0.4,  vol:0.12 },
+    miss:   { freq:180, type:'sawtooth', dur:0.25, vol:0.09 },
+    combo:  { freq:550, type:'sine',     dur:0.3,  vol:0.12 },
+    clear:  { freq:220, type:'sine',     dur:0.5,  vol:0.15 },
+    wrong:  { freq:200, type:'square',   dur:0.06, vol:0.05 },
+  };
+  const c = configs[type] || configs.key;
+
+  o.type = c.type;
+  if(type==='golden') {
+    o.frequency.setValueAtTime(660, t);
+    o.frequency.exponentialRampToValueAtTime(1320, t + c.dur);
+  } else if(type==='combo') {
+    o.frequency.setValueAtTime(440 + combo*20, t);
+    o.frequency.exponentialRampToValueAtTime(660 + combo*20, t + c.dur);
+  } else {
+    o.frequency.setValueAtTime(c.freq, t);
+  }
+  g.gain.setValueAtTime(c.vol, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + c.dur);
+  o.start(t); o.stop(t + c.dur);
+}
+
+function vibrate(ms=20) {
+  if(settings.haptic && navigator.vibrate) navigator.vibrate(ms);
+}
+
+/* ════════════════════════════════════════
+   PERSISTENCE
+═══════════════════════════════════════ */
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('sf_settings')||'{}');
+    Object.assign(settings, s);
+    document.getElementById('sfx-toggle').checked = settings.sfx !== false;
+    document.getElementById('haptic-toggle').checked = settings.haptic !== false;
+    document.getElementById('hint-toggle').checked = settings.showHint !== false;
+    document.querySelectorAll('.speed-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.speed === (settings.startSpeed||'normal'));
+    });
+  } catch(e){}
+}
+function saveSettings() {
+  try { localStorage.setItem('sf_settings', JSON.stringify(settings)); } catch(e){}
+}
+function getHighScore(mode) {
+  return parseInt(localStorage.getItem('sf_hs_'+mode)||'0');
+}
+function setHighScore(mode, s) {
+  localStorage.setItem('sf_hs_'+mode, s);
+}
+
+function refreshMenuHighScores() {
+  ['abc','123','hira','kata'].forEach(m => {
+    const el = document.getElementById('hs-'+m);
+    if(el) el.textContent = 'Best: '+getHighScore(m);
+  });
+}
+
+/* ════════════════════════════════════════
+   CLOUDS
+═══════════════════════════════════════ */
+function spawnClouds() {
+  const sky = document.getElementById('sky');
+  sky.querySelectorAll('.cloud').forEach(c=>c.remove());
+  for(let i=0;i<4;i++) {
+    const c = document.createElement('div');
+    c.className='cloud';
+    const size = 80+Math.random()*100;
+    const y = 5+Math.random()*40;
+    const dur = 18+Math.random()*20;
+    const delay = Math.random()*-dur;
+    c.style.cssText = `top:${y}%;animation-duration:${dur}s;animation-delay:${delay}s;`;
+    c.innerHTML = `<svg width="${size}" height="${size*0.55}" viewBox="0 0 200 110">
+      <ellipse cx="100" cy="80" rx="90" ry="30" fill="white"/>
+      <ellipse cx="70" cy="65" rx="55" ry="40" fill="white"/>
+      <ellipse cx="130" cy="70" rx="45" ry="35" fill="white"/>
+      <ellipse cx="100" cy="55" rx="50" ry="40" fill="white"/>
+    </svg>`;
+    sky.appendChild(c);
+  }
+}
+
+/* ════════════════════════════════════════
+   GAME START / STOP
+═══════════════════════════════════════ */
+function startGame(mode) {
+  currentMode = mode;
+  score=0; lives=3; power=0; combo=0; maxCombo=0; wordsTyped=0;
+  totalKeystrokes=0; correctKeystrokes=0;
+  activeWords=[]; paused=false; gameActive=true;
+  spawnInterval = settings.startSpeed==='fast' ? 1800 : settings.startSpeed==='slow' ? 4200 : 2800;
+
+  document.getElementById('menu-screen').style.display='none';
+  document.getElementById('game-over').style.display='none';
+  document.getElementById('pause-overlay').classList.remove('visible');
+  document.getElementById('pause-btn').textContent='⏸️';
+
+  updateHUD();
+  buildKeyboard(KEYBOARDS[mode], mode==='123');
+  document.getElementById('game-wrapper').style.background = BACKGROUNDS.day;
+  currentBg='day';
+
+  spawnClouds();
+  scheduleSpawn();
+  if(frameId) cancelAnimationFrame(frameId);
+  frameId = requestAnimationFrame(gameLoop);
+}
+
+function restartGame() { startGame(currentMode); }
+
+function openMenu() {
+  gameActive=false; paused=false;
+  if(frameId) cancelAnimationFrame(frameId);
+  clearTimeout(spawnTimer);
+  activeWords.forEach(w => w.el.remove());
+  activeWords=[];
+  document.getElementById('game-over').style.display='none';
+  document.getElementById('pause-overlay').classList.remove('visible');
+  document.getElementById('menu-screen').style.display='flex';
+  refreshMenuHighScores();
+}
+
+function togglePause() {
+  if(!gameActive) return;
+  paused = !paused;
+  document.getElementById('pause-btn').textContent = paused ? '▶️' : '⏸️';
+  document.getElementById('pause-overlay').classList.toggle('visible', paused);
+  if(!paused) {
+    scheduleSpawn();
+    frameId = requestAnimationFrame(gameLoop);
+  }
+}
+
+function endGame() {
+  gameActive=false;
+  if(frameId) cancelAnimationFrame(frameId);
+  clearTimeout(spawnTimer);
+
+  const prev = getHighScore(currentMode);
+  const isNew = score > prev;
+  if(isNew) setHighScore(currentMode, score);
+
+  document.getElementById('final-score').textContent = score;
+  document.getElementById('final-combo').textContent = maxCombo;
+  document.getElementById('final-words').textContent = wordsTyped;
+  const acc = totalKeystrokes > 0 ? Math.round(correctKeystrokes/totalKeystrokes*100) : 100;
+  document.getElementById('final-acc').textContent = acc+'%';
+  document.getElementById('go-best-line').textContent = isNew
+    ? '🎉 New High Score!' : `Best: ${prev}`;
+  document.getElementById('game-over').style.display='flex';
+}
+
+/* ════════════════════════════════════════
+   SPAWN
+═══════════════════════════════════════ */
+function getWordPool() {
+  const pool = WORDS[currentMode];
+  if(score < 80)  return pool.easy;
+  if(score < 250) return [...pool.easy, ...pool.medium];
+  return [...pool.medium, ...pool.hard];
+}
+
+function scheduleSpawn() {
+  clearTimeout(spawnTimer);
+  if(!gameActive || paused) return;
+  spawnTimer = setTimeout(() => {
+    spawnWord();
+    spawnInterval = Math.max(700, spawnInterval - 35);
+    scheduleSpawn();
+  }, spawnInterval);
+}
+
+function buildRomSequence(text) {
+  // Returns [{key, charIdx}] for the full word
+  const seq=[], romStr=[];
+  text.split('').forEach((ch,idx) => {
+    const keys = KANA_ROM[ch] || [ch.toUpperCase()];
+    keys.forEach(k => { seq.push({key:k,charIdx:idx}); romStr.push(k); });
+  });
+  return { seq, romStr };
+}
+
+function spawnWord() {
+  if(!gameActive || paused) return;
+  const pool = getWordPool();
+  const text = pool[Math.floor(Math.random()*pool.length)];
+  const isGolden = Math.random() < 0.08;
+  const skyEl = document.getElementById('sky');
+  const skyW = skyEl.clientWidth;
+
+  const el = document.createElement('div');
+  el.className = 'falling-word' + (isGolden ? ' golden' : '');
+
+  const { seq, romStr } = buildRomSequence(text);
+  el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
+
+  // Romaji hint
+  if(['hira','kata'].includes(currentMode)) {
+    const hint = document.createElement('div');
+    hint.className = 'rom-hint';
+    hint.textContent = romStr.join('');
+    el.appendChild(hint);
+  }
+
+  // Random horizontal position, avoid edges
+  const estimatedW = Math.max(text.length * 18 + 40, 80);
+  const maxX = Math.max(skyW - estimatedW - 10, 10);
+  el.style.left = (10 + Math.random() * maxX) + 'px';
+  el.style.top = '-70px';
+
+  skyEl.appendChild(el);
+
+  const wordObj = {
+    el, text, sequence: seq, y: -70,
+    progress: 0, isGolden, missed: false,
+    charCount: text.length
+  };
+  activeWords.push(wordObj);
+}
+
+/* ════════════════════════════════════════
+   INPUT
+═══════════════════════════════════════ */
+function handleInput(l) {
+  if(!gameActive || paused || activeWords.length === 0) return;
+  resumeAudio();
+  totalKeystrokes++;
+
+  // Target: lowest word (highest y value)
+  let target = activeWords.reduce((a,b) => a.y > b.y ? a : b);
+  activeWords.forEach(w => w.el.classList.remove('target'));
+  target.el.classList.add('target');
+
+  const next = target.sequence[target.progress];
+  if(next && next.key === l.toUpperCase()) {
+    correctKeystrokes++;
+    target.progress++;
+    vibrate(15);
+    playSfx('key');
+
+    // Flash key
+    flashKey(l);
+
+    // Mark char typed if complete
+    const nextStep = target.sequence[target.progress];
+    if(!nextStep || nextStep.charIdx !== next.charIdx) {
+      const chars = target.el.querySelectorAll('.char');
+      if(chars[next.charIdx]) {
+        chars[next.charIdx].classList.add('typed');
+        if(target.isGolden) chars[next.charIdx].classList.add('typed-golden');
+      }
+      // Update romaji hint text
+      const hint = target.el.querySelector('.rom-hint');
+      if(hint && target.sequence[target.progress]) {
+        hint.textContent = target.sequence.slice(target.progress).map(s=>s.key).join('');
+      }
+    }
+
+    // Remove danger styling if word now being typed
+    target.el.classList.remove('danger-word');
+
+    if(target.progress === target.sequence.length) popWord(target);
+  } else {
+    // Wrong key
+    playSfx('wrong');
+    flashWrong(target.el);
+    combo = 0;
+    updateComboUI();
+  }
+}
+
+function flashKey(l) {
+  const allKeys = document.querySelectorAll('.key');
+  allKeys.forEach(k => {
+    if(k.textContent.trim().toUpperCase() === l.toUpperCase()) {
+      k.classList.add('lit');
+      setTimeout(() => k.classList.remove('lit'), 150);
+    }
+  });
+}
+
+function flashWrong(el) {
+  el.style.background = '#FEE2E2';
+  el.style.borderColor = '#F87171';
+  setTimeout(() => { el.style.background=''; el.style.borderColor=''; }, 200);
+}
+
+/* ════════════════════════════════════════
+   WORD CLEAR
+═══════════════════════════════════════ */
+function popWord(w) {
+  const rect = w.el.getBoundingClientRect();
+  const sky = document.getElementById('sky');
+  const skyRect = sky.getBoundingClientRect();
+
+  const cx = rect.left - skyRect.left + rect.width/2;
+  const cy = rect.top - skyRect.top + rect.height/2;
+
+  const pts = w.isGolden ? 50 : 10;
+  let bonusStr = '+'+pts;
+
+  combo++;
+  if(combo > maxCombo) maxCombo = combo;
+  wordsTyped++;
+
+  let multiplier = 1;
+  if(combo >= 10) multiplier = 3;
+  else if(combo >= 5) multiplier = 2;
+
+  if(multiplier > 1) {
+    const bonus = pts * (multiplier-1);
+    bonusStr = `+${pts + bonus} x${multiplier}`;
+    showComboToast(combo);
+    playSfx('combo');
+    vibrate([20,10,20]);
+  }
+
+  score += pts * multiplier;
+  power = Math.min(100, power + 12 + (combo > 5 ? 5 : 0));
+  if(w.isGolden) {
+    lives = Math.min(5, lives+1);
+    playSfx('golden');
+    vibrate([15,10,30]);
+  } else {
+    playSfx('word');
+    vibrate(20);
+  }
+
+  if(power >= 100) triggerMegaClear();
+
+  createParticles(cx, cy, w.isGolden ? '#F59E0B' : '#22C55E', w.isGolden ? 18 : 12);
+  showScorePopup(cx, cy, bonusStr, w.isGolden ? 'gold' : (multiplier>1 ? 'combo' : ''));
+
+  updateBg();
+  updateHUD();
+  updateComboUI();
+
+  w.el.remove();
+  activeWords = activeWords.filter(x=>x!==w);
+}
+
+function triggerMegaClear() {
+  playSfx('clear');
+  vibrate([50,30,50,30,50]);
+  activeWords.forEach(w => {
+    const r = w.el.getBoundingClientRect();
+    const s = document.getElementById('sky').getBoundingClientRect();
+    createParticles(r.left-s.left+r.width/2, r.top-s.top+r.height/2, '#22C55E', 10);
+    w.el.remove();
+  });
+  activeWords=[];
+  power=0; score+=100;
+  document.getElementById('power-fill').style.width='0%';
+  updateHUD();
+  showComboToast('⚡ MEGA CLEAR!', 2000);
+}
+
+/* ════════════════════════════════════════
+   GAME LOOP
+═══════════════════════════════════════ */
+function gameLoop() {
+  if(!gameActive || paused) return;
+
+  const skyEl = document.getElementById('sky');
+  const skyH = skyEl.clientHeight;
+  const speed = 0.9 + score/500;
+
+  for(let i=activeWords.length-1;i>=0;i--) {
+    const w = activeWords[i];
+    w.y += speed;
+    w.el.style.top = w.y+'px';
+
+    // Warning when near bottom
+    if(w.y > skyH * 0.65 && !w.el.classList.contains('danger-word')) {
+      w.el.classList.add('danger-word');
+    }
+
+    if(w.y > skyH) {
+      lives--;
+      combo=0;
+      updateComboUI();
+      playSfx('miss');
+      vibrate([60,30,60]);
+      shakeScreen();
+      w.el.remove();
+      activeWords.splice(i,1);
+      updateHUD();
+      if(lives<=0) { endGame(); return; }
+    }
+  }
+
+  frameId = requestAnimationFrame(gameLoop);
+}
+
+/* ════════════════════════════════════════
+   HUD
+═══════════════════════════════════════ */
+function updateHUD() {
+  document.getElementById('score-disp').textContent = score;
+  document.getElementById('lives-disp').textContent = lives;
+  document.getElementById('power-fill').style.width = power+'%';
+  document.getElementById('power-fill').style.background =
+    power>70 ? 'linear-gradient(90deg,#22C55E,#86EFAC)' :
+    power>40 ? 'linear-gradient(90deg,#FBBF24,#FDE68A)' :
+               'linear-gradient(90deg,#22C55E,#86EFAC)';
+}
+
+function updateComboUI() {
+  const pill = document.getElementById('combo-pill');
+  if(combo >= 2) {
+    pill.style.display='flex';
+    document.getElementById('combo-disp').textContent = combo;
+  } else {
+    pill.style.display='none';
+  }
+}
+
+function updateBg() {
+  const wrapper = document.getElementById('game-wrapper');
+  if(score >= 350 && currentBg !== 'night') {
+    currentBg='night';
+    wrapper.style.background = BACKGROUNDS.night;
+  } else if(score >= 120 && currentBg === 'day') {
+    currentBg='dusk';
+    wrapper.style.background = BACKGROUNDS.dusk;
+  }
+}
+
+function shakeScreen() {
+  const w = document.getElementById('game-wrapper');
+  w.classList.add('shake');
+  setTimeout(()=>w.classList.remove('shake'), 400);
+}
+
+function showComboToast(msg, dur=1200) {
+  const t = document.getElementById('combo-toast');
+  t.textContent = typeof msg === 'number' ? `🔥 ${msg}x COMBO!` : msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+function showScorePopup(x, y, text, cls='') {
+  const p = document.createElement('div');
+  p.className = 'score-popup '+cls;
+  p.textContent = text;
+  p.style.left = x+'px'; p.style.top = y+'px';
+  document.getElementById('sky').appendChild(p);
+  p.addEventListener('animationend', ()=>p.remove());
+}
+
+/* ════════════════════════════════════════
+   PARTICLES
+═══════════════════════════════════════ */
+const COLORS = ['#22C55E','#86EFAC','#4ADE80','#F59E0B','#FCD34D','#60A5FA','#A855F7','#FB923C'];
+function createParticles(x, y, mainColor, count=12) {
+  const sky = document.getElementById('sky');
+  for(let i=0;i<count;i++) {
+    const p = document.createElement('div');
+    p.className='particle';
+    const size = 5+Math.random()*7;
+    p.style.cssText = `width:${size}px;height:${size}px;background:${Math.random()<0.5?mainColor:COLORS[Math.floor(Math.random()*COLORS.length)]};left:${x}px;top:${y}px;`;
+    sky.appendChild(p);
+    const angle = Math.random()*Math.PI*2;
+    const speed = 2.5+Math.random()*5;
+    let px=x,py=y,op=1;
+    const vx=Math.cos(angle)*speed, vy=Math.sin(angle)*speed-1;
+    let gravity=0;
+    const step=()=>{
+      gravity+=0.12; px+=vx; py+=vy+gravity;
+      op-=0.025;
+      p.style.left=px+'px'; p.style.top=py+'px'; p.style.opacity=op;
+      if(op>0) requestAnimationFrame(step); else p.remove();
     };
+    step();
+  }
+}
 
-    const DATA = {
-        abc: { words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'CAKE', 'FROG'] },
-        '123': { words: ['10', '25', '7', '100', '42', '9', '55', '88', '12', '3'] },
-        hira: { words: ['ねこ', 'いぬ', 'うみ', 'とり', 'ほし', 'あめ', 'はな', 'ゆき', 'つき', 'もり'] },
-        kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
-    };
+/* ════════════════════════════════════════
+   KEYBOARD
+═══════════════════════════════════════ */
+function buildKeyboard(layout, isNum) {
+  const area = document.getElementById('input-area');
+  area.innerHTML='';
+  layout.forEach(row => {
+    const rowDiv = document.createElement('div');
+    rowDiv.className='key-row';
+    row.forEach(l => {
+      const b = document.createElement('button');
+      b.className = 'key' + (isNum ? ' numpad' : '');
+      b.textContent = l;
+      b.addEventListener('touchstart', e => {
+        e.preventDefault();
+        resumeAudio();
+        handleInput(l);
+      }, {passive:false});
+      b.onclick = e => { if(e.pointerType!=='touch') handleInput(l); };
+      rowDiv.appendChild(b);
+    });
+    area.appendChild(rowDiv);
+  });
 
-    const QWERTY_KATA = [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M", "-"]];
-    const QWERTY_STD = [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M"]];
-    const NUMPAD = [["1","2","3"], ["4","5","6"], ["7","8","9"], ["0"]];
+  // Physical keyboard support
+  document.onkeydown = e => {
+    if(e.key==='Escape') { togglePause(); return; }
+    if(!gameActive || paused) return;
+    const k = e.key.toUpperCase();
+    if(k.length===1 || k==='-') handleInput(k);
+  };
+}
 
-    let score = 0, lives = 3, power = 0, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+/* ════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════ */
+function openSettings() {
+  document.getElementById('settings-panel').classList.add('visible');
+  document.getElementById('settings-backdrop').style.display='block';
+}
+function closeSettings() {
+  document.getElementById('settings-panel').classList.remove('visible');
+  document.getElementById('settings-backdrop').style.display='none';
+}
+function setSpeed(el, val) {
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  settings.startSpeed = val;
+  saveSettings();
+}
 
-    function playSfx(f, t, d, v=0.1) {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-        g.gain.setValueAtTime(v, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + d);
-    }
+/* ════════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+loadSettings();
+refreshMenuHighScores();
 
-    function startGame(mode) {
-        currentMode = mode; gameActive = true;
-        document.getElementById('menu-screen').style.display = 'none';
-        let layout = (mode === '123') ? NUMPAD : (mode === 'kata' ? QWERTY_KATA : QWERTY_STD);
-        buildKeyboard(layout, mode === '123');
-        spawnWord(); update();
-    }
-
-    function buildKeyboard(layout, isNum) {
-        const area = document.getElementById('input-area');
-        area.innerHTML = '';
-        layout.forEach(row => {
-            const rowDiv = document.createElement('div');
-            rowDiv.className = isNum ? 'keyboard-row numpad-row' : 'keyboard-row';
-            row.forEach(l => {
-                const b = document.createElement('button');
-                b.className = 'key'; b.innerText = l;
-                b.addEventListener('touchstart', (e) => { e.preventDefault(); if(audioCtx.state==='suspended') audioCtx.resume(); handleInput(l); });
-                b.onclick = (e) => { if(e.pointerType !== 'touch') handleInput(l); };
-                rowDiv.appendChild(b);
-            });
-            area.appendChild(rowDiv);
-        });
-    }
-
-    function createParticles(x, y, color) {
-        const sky = document.getElementById('sky');
-        for(let i=0; i<12; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle'; p.style.backgroundColor = color;
-            p.style.left = x + 'px'; p.style.top = y + 'px';
-            sky.appendChild(p);
-            const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 2;
-            let px = x, py = y, op = 1;
-            const move = () => {
-                px += Math.cos(angle) * speed; py += Math.sin(angle) * speed;
-                p.style.left = px + 'px'; p.style.top = py + 'px';
-                op -= 0.03; p.style.opacity = op;
-                if(op > 0) requestAnimationFrame(move); else p.remove();
-            };
-            move();
-        }
-    }
-
-    function spawnWord() {
-        if(!gameActive) return;
-        const text = DATA[currentMode].words[Math.floor(Math.random() * DATA[currentMode].words.length)];
-        const isGolden = Math.random() < 0.1;
-        const el = document.createElement('div');
-        el.className = 'falling-word' + (isGolden ? ' golden' : '');
-        el.style.left = Math.random() * (window.innerWidth - 140) + 10 + 'px';
-        el.style.top = '-60px';
-        el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
-        document.getElementById('sky').appendChild(el);
-
-        let sequence = [];
-        text.split('').forEach((char, idx) => {
-            const keys = KANA_TO_ROMAJI[char] || [char];
-            keys.forEach(k => sequence.push({ key: k.toUpperCase(), charIdx: idx }));
-        });
-
-        activeWords.push({ el, text, sequence, y: -60, progress: 0, isGolden });
-        setTimeout(spawnWord, spawnRate);
-        spawnRate = Math.max(800, spawnRate - 40);
-    }
-
-    function handleInput(l) {
-        if(!gameActive || activeWords.length === 0) return;
-        
-        // Target the lowest word
-        let targetWord = activeWords.reduce((prev, current) => (prev.y > current.y) ? prev : current);
-        
-        activeWords.forEach(w => w.el.classList.remove('target'));
-        targetWord.el.classList.add('target');
-
-        let nextRequired = targetWord.sequence[targetWord.progress];
-        if(nextRequired && nextRequired.key === l.toUpperCase()) {
-            targetWord.progress++;
-            playSfx(440 + (targetWord.progress * 60), 'sine', 0.1);
-            
-            const isCharFinished = !targetWord.sequence[targetWord.progress] || targetWord.sequence[targetWord.progress].charIdx !== nextRequired.charIdx;
-            if (isCharFinished) {
-                const chars = targetWord.el.querySelectorAll('.char');
-                if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
-            }
-
-            if(targetWord.progress === targetWord.sequence.length) {
-                popWord(targetWord);
-            }
-        }
-    }
-
-    function popWord(w) {
-        const rect = w.el.getBoundingClientRect();
-        const wrapper = document.getElementById('game-wrapper');
-        createParticles(rect.left + rect.width/2, rect.top + rect.height/2, w.isGolden ? '#FFD700' : '#4ADE80');
-        
-        if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; playSfx(880, 'triangle', 0.4); }
-        else { score += 10; playSfx(600, 'sine', 0.1); }
-        
-        power = Math.min(100, power + 15);
-        document.getElementById('power-bar').style.width = power + '%';
-        if(power >= 100) triggerMegaClear();
-
-        document.getElementById('score').innerText = score;
-        document.getElementById('lives').innerText = lives;
-        
-        // Aesthetic Background Shift
-        if(score >= 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
-        else if(score >= 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
-
-        w.el.remove();
-        activeWords = activeWords.filter(item => item !== w);
-    }
-
-    function triggerMegaClear() {
-        playSfx(200, 'sine', 0.5, 0.4);
-        activeWords.forEach(w => {
-            const r = w.el.getBoundingClientRect();
-            createParticles(r.left + r.width/2, r.top + r.height/2, '#4ADE80');
-            w.el.remove();
-        });
-        activeWords = []; power = 0;
-        document.getElementById('power-bar').style.width = '0%';
-        score += 100; document.getElementById('score').innerText = score;
-    }
-
-    function update() {
-        if(!gameActive) return;
-        const skyHeight = document.getElementById('sky').clientHeight;
-        const speedMultiplier = 1.2 + (score / 600);
-
-        for (let i = activeWords.length - 1; i >= 0; i--) {
-            let w = activeWords[i];
-            w.y += speedMultiplier;
-            w.el.style.top = w.y + 'px';
-
-            if(w.y > skyHeight) {
-                lives--;
-                document.getElementById('lives').innerText = lives;
-                playSfx(150, 'sawtooth', 0.2);
-                w.el.remove(); activeWords.splice(i, 1);
-                if(lives <= 0) {
-                    gameActive = false;
-                    document.getElementById('game-over').style.display = 'flex';
-                    document.getElementById('final-score').innerText = score;
-                }
-            }
-        }
-        requestAnimationFrame(update);
-    }
+// Prevent scroll on body
+document.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 </script>
+
 </body>
 </html>
