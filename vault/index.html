@@ -33,12 +33,12 @@
         #menu-screen {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            padding-top: 20px;
+            gap: 12px;
+            padding-top: 10px;
         }
 
         .menu-btn {
-            padding: 15px;
+            padding: 12px;
             border-radius: 20px;
             border: none;
             background: #F5F3FF;
@@ -50,6 +50,7 @@
             flex-direction: column;
             align-items: center;
             transition: transform 0.1s;
+            font-size: 0.95rem;
         }
 
         .menu-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
@@ -58,7 +59,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             color: #2ED573;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         /* ── STATUS BAR ── */
@@ -152,6 +153,15 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        .home-link {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #FF784E;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -159,18 +169,24 @@
         <h1>🔓 MARU-VAULT</h1>
 
         <div id="menu-screen">
-            <button class="menu-btn" onclick="initGame('recruit')">
-                RECRUIT (90s / 6 ❤️)
-                <span id="pb-recruit" class="pb-text">PB: --</span>
+            <button class="menu-btn" onclick="initGame('beginner')">
+                BEGINNER (3m / 10 ❤️)
+                <span id="pb-beginner" class="pb-text">PB: --</span>
             </button>
-            <button class="menu-btn" onclick="initGame('agent')">
-                AGENT (60s / 5 ❤️)
-                <span id="pb-agent" class="pb-text">PB: --</span>
+            <button class="menu-btn" onclick="initGame('intermediate')">
+                INTERMEDIATE (2m / 7 ❤️)
+                <span id="pb-intermediate" class="pb-text">PB: --</span>
             </button>
-            <button class="menu-btn" onclick="initGame('master')">
-                MASTER (40s / 3 ❤️)
-                <span id="pb-master" class="pb-text">PB: --</span>
+            <button class="menu-btn" onclick="initGame('hard')">
+                HARD (1.5m / 5 ❤️)
+                <span id="pb-hard" class="pb-text">PB: --</span>
             </button>
+            <button class="menu-btn" onclick="initGame('veryhard')">
+                VERY HARD (1m / 3 ❤️)
+                <span id="pb-veryhard" class="pb-text">PB: --</span>
+            </button>
+            
+            <a href="index.html" class="home-link">🏠 Back to Marulearn Home</a>
         </div>
 
         <div id="game-play-area">
@@ -213,15 +229,15 @@
         let attempts = 0;
         let lives = 5;
         let timeLeft = 60;
-        let startLimit = 60;
         let currentDifficulty = '';
         let gameActive = false;
         let timerInterval;
 
         const config = {
-            recruit: { time: 90, lives: 6 },
-            agent:   { time: 60, lives: 5 },
-            master:  { time: 40, lives: 3 }
+            beginner:     { time: 180, lives: 10 },
+            intermediate: { time: 120, lives: 7 },
+            hard:         { time: 90,  lives: 5 },
+            veryhard:     { time: 60,  lives: 3 }
         };
 
         function showMenu() {
@@ -234,16 +250,18 @@
         }
 
         function loadPBs() {
-            ['recruit', 'agent', 'master'].forEach(diff => {
+            Object.keys(config).forEach(diff => {
                 const pb = localStorage.getItem(`maruvault_pb_${diff}`);
-                document.getElementById(`pb-${diff}`).innerText = pb ? `Best Time: ${pb}s left` : "Best: --";
+                const element = document.getElementById(`pb-${diff}`);
+                if (element) {
+                    element.innerText = pb ? `Best Time: ${pb}s left` : "Best: --";
+                }
             });
         }
 
         function initGame(difficulty) {
             currentDifficulty = difficulty;
             timeLeft = config[difficulty].time;
-            startLimit = config[difficulty].time;
             lives = config[difficulty].lives;
             
             document.getElementById('menu-screen').style.display = 'none';
@@ -268,7 +286,6 @@
             startTimer();
             document.getElementById('message').innerText = "Crack the code!";
             document.getElementById('message').style.color = "#B45309";
-            console.log("Secret:", secretCode.join(''));
         }
 
         function startTimer() {
@@ -357,12 +374,12 @@
         }
 
         function updateStatus() {
-            document.getElementById('lives-display').innerText = "❤️".repeat(lives) + "🖤".repeat(config[currentDifficulty].lives - lives);
+            const total = config[currentDifficulty].lives;
+            document.getElementById('lives-display').innerText = "❤️".repeat(lives) + "🖤".repeat(total - lives);
         }
 
         function savePB() {
             const currentPB = localStorage.getItem(`maruvault_pb_${currentDifficulty}`);
-            // PB is "highest time left" (finishing fastest)
             if (!currentPB || timeLeft > parseInt(currentPB)) {
                 localStorage.setItem(`maruvault_pb_${currentDifficulty}`, timeLeft);
             }
@@ -377,8 +394,11 @@
         }
 
         function clearCode() {
-            if (!gameActive) startGame();
-            else {
+            if (!gameActive) {
+                timeLeft = config[currentDifficulty].time;
+                lives = config[currentDifficulty].lives;
+                startGame();
+            } else {
                 currentInput = [];
                 resetSlotColors();
                 updateDisplay();
