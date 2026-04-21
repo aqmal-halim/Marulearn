@@ -425,14 +425,14 @@ const KANA_ROM = {
   'が':['G','A'],'ぎ':['G','I'],'ぐ':['G','U'],'げ':['G','E'],'ご':['G','O'],
   'ざ':['Z','A'],'じ':['J','I'],'ず':['Z','U'],'ぜ':['Z','E'],'ぞ':['Z','O'],
   'だ':['D','A'],'ぢ':['D','I'],'づ':['D','U'],'で':['D','E'],'ど':['D','O'],
-  'ば':['B','A'],'び':['B','I'],'ぶ':['B','U'],'べ':['B','E'],'ボ':['B','O'],
+  'ば':['B','A'],'び':['B','I'],'ぶ':['B','U'],'べ':['B','E'],'ぼ':['B','O'],
   'ぱ':['P','A'],'ぴ':['P','I'],'ぷ':['P','U'],'ぺ':['P','E'],'ぽ':['P','O'],
   // Katakana
   'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
   'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
   'サ':['S','A'],'シ':['S','H','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
   'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
-  'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
+  'ナ':['N','A'],'ニ':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
   'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'へ':['H','E'],'ホ':['H','O'],
   'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
   'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
@@ -651,6 +651,8 @@ function spawnWord() {
 function handleInput(l) {
   if(!gameActive || paused || activeWords.length === 0) return;
   resumeAudio(); totalKeystrokes++;
+  
+  // Find target word (lowest on screen)
   let target = activeWords.reduce((a,b) => a.y > b.y ? a : b);
   activeWords.forEach(w => w.el.classList.remove('target'));
   target.el.classList.add('target');
@@ -659,6 +661,7 @@ function handleInput(l) {
   if(next && next.key === l.toUpperCase()) {
     correctKeystrokes++; target.progress++; vibrate(15); playSfx('key'); flashKey(l);
     
+    // Update visuals if full kana character is typed
     const nextStep = target.sequence[target.progress];
     if(!nextStep || nextStep.charIdx !== next.charIdx) {
       const chars = target.el.querySelectorAll('.char');
@@ -666,9 +669,18 @@ function handleInput(l) {
         chars[next.charIdx].classList.add('typed'); 
         if(target.isGolden) chars[next.charIdx].classList.add('typed-golden'); 
       }
-      const hint = target.el.querySelector('.rom-hint');
-      if(hint && target.sequence[target.progress]) hint.textContent = target.sequence.slice(target.progress).map(s=>s.key).join('');
     }
+
+    // Always update hint string
+    const hint = target.el.querySelector('.rom-hint');
+    if(hint) {
+        if(target.progress < target.sequence.length) {
+            hint.textContent = target.sequence.slice(target.progress).map(s=>s.key).join('');
+        } else {
+            hint.textContent = "";
+        }
+    }
+
     if(target.progress === target.sequence.length) popWord(target);
   } else { 
     playSfx('wrong'); 
