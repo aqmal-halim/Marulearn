@@ -6,26 +6,26 @@
     <title>MaruQuest: Sky Fall ULTRA</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-        :root { --primary: #60A5FA; --accent: #FCD34D; --gold: #FFD700; }
+        :root { --primary: #60A5FA; --accent: #FBBF24; --gold: #FFD700; --success: #4ADE80; }
         
         body { 
             font-family: 'Comic Sans MS', "Hiragino Sans", "Meiryo", sans-serif; 
             margin: 0; overflow: hidden; display: flex; justify-content: center;
-            background: #000; position: fixed; width: 100%; height: 100%;
+            background: #111; position: fixed; width: 100%; height: 100%;
         }
 
         #game-wrapper {
             width: 100vw; max-width: 420px; height: 100vh; position: relative;
             background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             display: flex; flex-direction: column; overflow: hidden;
-            transition: background 2s ease; /* Smooth transition for background shifts */
+            transition: background 2s ease;
         }
 
-        /* Fixed: Changed from transparent rgba to solid white */
         .header-layer {
-            background: #FFFFFF; 
-            padding: 10px 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
-            border-bottom: 3px solid #E2E8F0;
+            background: white; 
+            padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; z-index: 100;
+            border-bottom: 4px solid #E2E8F0;
+            border-radius: 0 0 20px 20px;
         }
 
         .stats-row { display: flex; justify-content: space-between; align-items: center; }
@@ -34,53 +34,58 @@
             position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
         }
-        .menu-title { font-size: 2.5rem; color: white; text-shadow: 2px 2px 0px #0369A1; margin-bottom: 20px; }
+        .menu-title { font-size: 3rem; color: white; text-shadow: 4px 4px 0px #0369A1; margin-bottom: 30px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
         .mode-btn {
-            width: 85%; padding: 18px; margin: 8px; border: none; border-radius: 20px;
-            font-size: 1.3rem; font-weight: 900; cursor: pointer; color: white;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.1s;
+            width: 85%; padding: 18px; margin: 8px; border: none; border-radius: 25px;
+            font-size: 1.4rem; font-weight: 900; cursor: pointer; color: white;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: all 0.1s;
         }
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        .home-btn { background: #F1F5F9; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 #CBD5E1; color: #333; }
-        .stat-box { background: #F8FAFC; padding: 5px 12px; border-radius: 15px; font-weight: 900; border: 1px solid #E2E8F0; color: #0369A1; }
+        .home-btn { background: #F1F5F9; border-radius: 15px; padding: 10px 15px; font-size: 1.4rem; text-decoration: none; box-shadow: 0 4px 0 #CBD5E1; color: #333; }
+        .stat-box { background: #F8FAFC; padding: 6px 15px; border-radius: 20px; font-weight: 900; border: 2px solid #E2E8F0; color: #0369A1; font-size: 1.1rem; }
 
-        #power-container { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; width: 100%; }
-        #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; box-shadow: 0 0 10px #4ADE80; }
+        #power-container { height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden; width: 100%; border: 1px solid #CBD5E1; }
+        #power-bar { width: 0%; height: 100%; background: var(--success); transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         #sky { flex: 1; position: relative; width: 100%; }
 
         .falling-word {
-            position: absolute; background: white; padding: 8px 15px; border-radius: 20px;
-            font-weight: 900; font-size: 1.3rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            display: flex; gap: 2px; z-index: 10; user-select: none;
+            position: absolute; background: white; padding: 10px 20px; border-radius: 25px;
+            font-weight: 900; font-size: 1.5rem; box-shadow: 0 8px 0px rgba(0,0,0,0.1);
+            display: flex; gap: 2px; z-index: 10; user-select: none; border: 3px solid transparent;
         }
-        .falling-word.target { border: 3px solid var(--primary); box-shadow: 0 0 15px var(--primary); }
-        .falling-word.golden { background: var(--gold); border: 3px solid #FFF; animation: glow 1s infinite alternate; }
-        @keyframes glow { from { box-shadow: 0 0 5px #fff; } to { box-shadow: 0 0 20px var(--gold); } }
+        .falling-word.target { border-color: var(--primary); animation: pulse 0.8s infinite alternate; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
 
-        .char.typed { color: #4ADE80; transform: scale(1.1); display: inline-block; }
+        .falling-word.golden { background: var(--gold); border-color: #FFF; animation: glow 1s infinite alternate; color: #92400E; }
+        @keyframes glow { from { box-shadow: 0 0 5px #fff; } to { box-shadow: 0 0 25px var(--gold); } }
+
+        .char.typed { color: var(--success); transform: scale(1.2); display: inline-block; transition: all 0.2s; }
 
         #input-area {
-            background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
-            padding: 15px 10px 40px 10px; display: flex; flex-direction: column; gap: 8px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
+            background: #F1F5F9; border-top-left-radius: 35px; border-top-right-radius: 35px;
+            padding: 20px 10px 45px 10px; display: flex; flex-direction: column; gap: 10px;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1); z-index: 100; border-top: 5px solid white;
         }
-        .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
+        .keyboard-row { display: flex; justify-content: center; gap: 8px; width: 100%; }
         .key {
-            background: #F1F5F9; border: none; border-radius: 8px; flex: 1;
-            height: 50px; max-width: 44px; font-size: 1.2rem; font-weight: 900; color: #475569;
-            box-shadow: 0 4px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
+            background: white; border: none; border-radius: 12px; flex: 1;
+            height: 55px; max-width: 46px; font-size: 1.4rem; font-weight: 900; color: #1E293B;
+            box-shadow: 0 5px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
         }
-        .key:active { background: var(--accent); transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
-        .numpad-row .key { max-width: 80px; height: 60px; font-size: 1.5rem; }
+        .key:active { background: var(--accent); transform: translateY(3px); box-shadow: 0 2px 0 #94A3B8; }
+        .numpad-row .key { max-width: 90px; height: 65px; font-size: 1.8rem; }
 
-        .particle { position: absolute; width: 6px; height: 6px; border-radius: 2px; pointer-events: none; z-index: 5; }
+        .particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 5; }
 
         #game-over {
-            display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9);
-            z-index: 400; flex-direction: column; align-items: center; justify-content: center; color: white;
+            display: none; position: absolute; inset: 0; background: rgba(15, 23, 42, 0.95);
+            z-index: 400; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;
         }
+        .retry-btn { padding: 20px 40px; font-size: 1.5rem; border-radius: 20px; background: var(--success); border: none; font-weight: 900; color: white; box-shadow: 0 6px 0 #166534; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -98,7 +103,7 @@
     <div class="header-layer">
         <div class="stats-row">
             <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:10px;">
                 <div class="stat-box">⭐ <span id="score">0</span></div>
                 <div class="stat-box">❤️ <span id="lives">3</span></div>
             </div>
@@ -110,9 +115,9 @@
     <div id="input-area"></div>
 
     <div id="game-over">
-        <h1>MARU POWER! 🚀</h1>
-        <p style="font-size: 1.5rem;">Final Score: <span id="final-score">0</span></p>
-        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 15px; background: var(--accent); border:none; font-weight:900;">Play Again</button>
+        <h1 style="font-size: 3rem; color: var(--gold);">AWESOME! 🚀</h1>
+        <p style="font-size: 1.8rem; margin-bottom: 30px;">Score: <span id="final-score">0</span></p>
+        <button class="retry-btn" onclick="location.reload()">Play Again</button>
     </div>
 </div>
 
@@ -131,17 +136,17 @@
         'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
         'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
         'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'そ':['S','O'],
-        'タ':['T','A'],'ち':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
+        'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
         'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
-        'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'め':['M','E'],'も':['M','O'],
-        'ヤ':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
-        'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
+        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
+        'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
         'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],'パ':['P','A']
     };
 
     const DATA = {
-        abc: { words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED'] },
+        abc: { words: ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'CAKE', 'FROG'] },
         '123': { words: ['10', '25', '7', '100', '42', '9', '55', '88', '12', '3'] },
         hira: { words: ['ねこ', 'いぬ', 'うみ', 'とり', 'ほし', 'あめ', 'はな', 'ゆき', 'つき', 'もり'] },
         kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
@@ -190,17 +195,17 @@
 
     function createParticles(x, y, color) {
         const sky = document.getElementById('sky');
-        for(let i=0; i<8; i++) {
+        for(let i=0; i<12; i++) {
             const p = document.createElement('div');
             p.className = 'particle'; p.style.backgroundColor = color;
             p.style.left = x + 'px'; p.style.top = y + 'px';
             sky.appendChild(p);
-            const angle = Math.random() * Math.PI * 2, speed = Math.random() * 4 + 2;
+            const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 2;
             let px = x, py = y, op = 1;
             const move = () => {
                 px += Math.cos(angle) * speed; py += Math.sin(angle) * speed;
                 p.style.left = px + 'px'; p.style.top = py + 'px';
-                op -= 0.05; p.style.opacity = op;
+                op -= 0.03; p.style.opacity = op;
                 if(op > 0) requestAnimationFrame(move); else p.remove();
             };
             move();
@@ -213,8 +218,8 @@
         const isGolden = Math.random() < 0.1;
         const el = document.createElement('div');
         el.className = 'falling-word' + (isGolden ? ' golden' : '');
-        el.style.left = Math.random() * (window.innerWidth - 120) + 'px';
-        el.style.top = '-50px';
+        el.style.left = Math.random() * (window.innerWidth - 140) + 10 + 'px';
+        el.style.top = '-60px';
         el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
         document.getElementById('sky').appendChild(el);
 
@@ -224,14 +229,15 @@
             keys.forEach(k => sequence.push({ key: k.toUpperCase(), charIdx: idx }));
         });
 
-        activeWords.push({ el, text, sequence, y: -50, progress: 0, isGolden });
+        activeWords.push({ el, text, sequence, y: -60, progress: 0, isGolden });
         setTimeout(spawnWord, spawnRate);
-        spawnRate = Math.max(1000, spawnRate - 50);
+        spawnRate = Math.max(800, spawnRate - 40);
     }
 
     function handleInput(l) {
         if(!gameActive || activeWords.length === 0) return;
         
+        // Target the lowest word
         let targetWord = activeWords.reduce((prev, current) => (prev.y > current.y) ? prev : current);
         
         activeWords.forEach(w => w.el.classList.remove('target'));
@@ -240,7 +246,7 @@
         let nextRequired = targetWord.sequence[targetWord.progress];
         if(nextRequired && nextRequired.key === l.toUpperCase()) {
             targetWord.progress++;
-            playSfx(440 + (targetWord.progress * 50), 'sine', 0.1);
+            playSfx(440 + (targetWord.progress * 60), 'sine', 0.1);
             
             const isCharFinished = !targetWord.sequence[targetWord.progress] || targetWord.sequence[targetWord.progress].charIdx !== nextRequired.charIdx;
             if (isCharFinished) {
@@ -256,7 +262,8 @@
 
     function popWord(w) {
         const rect = w.el.getBoundingClientRect();
-        createParticles(rect.left + rect.width/2, rect.top, w.isGolden ? '#FFD700' : '#4ADE80');
+        const wrapper = document.getElementById('game-wrapper');
+        createParticles(rect.left + rect.width/2, rect.top + rect.height/2, w.isGolden ? '#FFD700' : '#4ADE80');
         
         if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; playSfx(880, 'triangle', 0.4); }
         else { score += 10; playSfx(600, 'sine', 0.1); }
@@ -268,21 +275,19 @@
         document.getElementById('score').innerText = score;
         document.getElementById('lives').innerText = lives;
         
-        // Re-added: Background Shift logic
-        const wrapper = document.getElementById('game-wrapper');
-        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
-        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
-        else wrapper.style.background = 'linear-gradient(to bottom, #7DD3FC, #BAE6FD)';
+        // Aesthetic Background Shift
+        if(score >= 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
+        else if(score >= 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
 
         w.el.remove();
         activeWords = activeWords.filter(item => item !== w);
     }
 
     function triggerMegaClear() {
-        playSfx(200, 'sine', 0.5, 0.3);
+        playSfx(200, 'sine', 0.5, 0.4);
         activeWords.forEach(w => {
             const r = w.el.getBoundingClientRect();
-            createParticles(r.left, r.top, '#4ADE80');
+            createParticles(r.left + r.width/2, r.top + r.height/2, '#4ADE80');
             w.el.remove();
         });
         activeWords = []; power = 0;
@@ -293,9 +298,11 @@
     function update() {
         if(!gameActive) return;
         const skyHeight = document.getElementById('sky').clientHeight;
+        const speedMultiplier = 1.2 + (score / 600);
+
         for (let i = activeWords.length - 1; i >= 0; i--) {
             let w = activeWords[i];
-            w.y += 1.2 + (score / 500);
+            w.y += speedMultiplier;
             w.el.style.top = w.y + 'px';
 
             if(w.y > skyHeight) {
