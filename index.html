@@ -140,6 +140,7 @@ font-size: 1.8rem; flex-shrink: 0;
 .cat-quest { background: #FFFBEB; border-bottom-color: #FDE68A; }
 .cat-forest { background: #F0FFF4; border-bottom-color: #86EFAC; }
 .cat-sky   { background: #F0F9FF; border-bottom-color: #7DD3FC; }
+.cat-vault { background: #F5F3FF; border-bottom-color: #C4B5FD; }
 
 .icon-lang   { background: #D0E9FF; }
 .icon-read   { background: #FFE5C0; }
@@ -148,6 +149,7 @@ font-size: 1.8rem; flex-shrink: 0;
 .icon-quest  { background: #FEF3C7; border: 2px solid #F59E0B; }
 .icon-forest { background: #DCFCE7; border: 2px solid #22C55E; }
 .icon-sky    { background: #E0F2FE; border: 2px solid #0EA5E9; }
+.icon-vault  { background: #EDE9FE; border: 2px solid #8B5CF6; }
 
 /* Badge */
 .badge {
@@ -159,6 +161,7 @@ z-index: 10;
 .badge.hot  { background: #FF5E5E; animation: badge-pop 2s ease-in-out infinite; }
 .badge.new  { background: #2ED573; animation: badge-pop 2s ease-in-out infinite; }
 .badge.baby { background: #F472B6; animation: badge-pop 2s ease-in-out infinite; }
+.badge.pro  { background: #6366F1; animation: badge-pop 2s ease-in-out infinite; }
 @keyframes badge-pop {
 0%, 100% { transform: scale(1); }
 50%       { transform: scale(1.08); }
@@ -174,6 +177,7 @@ font-size: 0.62rem; color: #777; font-weight: 700;
 .tag.green  { border-color: #86EFAC; color: #166534; background: #F0FFF4; }
 .tag.gold   { border-color: #F59E0B; color: #B45309; }
 .tag.blue   { border-color: #7DD3FC; color: #0369A1; background: #F0F9FF; }
+.tag.purple { border-color: #A78BFA; color: #5B21B6; background: #F5F3FF; }
 
 footer {
 text-align: center; padding: 35px 0 15px;
@@ -201,7 +205,7 @@ footer strong { color: #FF784E; }
         <div class="hero-title">MARU<span>LEARN</span></div>
         <div class="hero-tagline">Fun learning for awesome kids! 🚀</div>
         <div class="hero-chips">
-          <span class="hero-chip">🎮 14+ Games</span>
+          <span class="hero-chip">🎮 15+ Games</span>
           <span class="hero-chip">🇯🇵 Japanese</span>
           <span class="hero-chip">🆓 Free</span>
         </div>
@@ -270,6 +274,20 @@ footer strong { color: #FF784E; }
     NEW ADVENTURE!
   </div>
   <div class="grid">
+
+    <a href="maruvault/" class="card cat-vault">
+        <span class="badge pro">🧠 LOGIC</span>
+        <div class="icon-box icon-vault">🔐</div>
+        <div class="card-info">
+          <h3>MaruVault: Code Breaker</h3>
+          <p>Crack the secret vault using math & logic clues! 🕵️‍♂️</p>
+          <div class="jp-tags">
+            <span class="tag purple">🟢 Green/Yellow</span>
+            <span class="tag purple">➕ Sum Hints</span>
+            <span class="tag purple">🔢 Deduction</span>
+          </div>
+        </div>
+      </a>
 
     <a href="alphabetforest/" class="card cat-forest">
       <span class="badge baby">✨ AGE 4+</span>
