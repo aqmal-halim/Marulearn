@@ -3,247 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Marulearn: Sky Fall Ultimate</title>
+    <title>MaruQuest: Sky Fall ULTRA</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        :root { --primary: #60A5FA; --accent: #FCD34D; --gold: #FFD700; }
+        
         body { 
-            font-family: 'Comic Sans MS', sans-serif; margin: 0; overflow: hidden; 
-            display: flex; justify-content: center; background: #000; position: fixed; width: 100%; height: 100%;
+            font-family: 'Comic Sans MS', "Hiragino Sans", "Meiryo", sans-serif; 
+            margin: 0; overflow: hidden; display: flex; justify-content: center;
+            background: #000; position: fixed; width: 100%; height: 100%;
         }
+
         #game-wrapper {
             width: 100vw; max-width: 420px; height: 100vh; position: relative;
-            background: #7DD3FC; transition: background 2s ease;
+            background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             display: flex; flex-direction: column; overflow: hidden;
+            transition: background 2s ease;
         }
-        .header-layer {
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
-            padding: 10px 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
+
+        #power-container {
+            position: absolute; top: 65px; left: 15px; right: 15px;
+            height: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; overflow: hidden; z-index: 50;
         }
-        .stats-row { display: flex; justify-content: space-between; align-items: center; }
+        #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; box-shadow: 0 0 10px #4ADE80; }
+
+        .header {
+            position: absolute; top: 10px; left: 0; width: 100%;
+            padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
+        }
+
+        .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
         .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
-        
+
         #sky { flex: 1; position: relative; width: 100%; }
 
         .falling-word {
             position: absolute; background: white; padding: 8px 15px; border-radius: 20px;
-            font-weight: 900; font-size: 1.4rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            display: flex; gap: 2px; z-index: 10; border: 3px solid transparent;
+            font-weight: 900; font-size: 1.3rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            display: flex; gap: 2px; z-index: 10; user-select: none;
         }
-        /* Target Lock Visual */
-        .falling-word.target { border-color: #60A5FA; box-shadow: 0 0 15px #60A5FA; transform: scale(1.05); }
-        .falling-word.golden { background: #FFD700; border-color: #FFA500; color: #B45309; }
-        
-        .char.typed { color: #4ADE80; }
+        .falling-word.golden { background: var(--gold); border: 3px solid #FFF; animation: glow 1s infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 5px #fff; } to { box-shadow: 0 0 20px var(--gold); } }
+
+        .char.typed { color: #4ADE80; transform: scale(1.2); display: inline-block; }
 
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
             padding: 15px 10px 40px 10px; display: flex; flex-direction: column; gap: 8px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
-        .keyboard-row { display: flex; justify-content: center; gap: 6px; }
+        .keyboard-row { display: flex; justify-content: center; gap: 5px; width: 100%; }
+        
         .key {
             background: #F1F5F9; border: none; border-radius: 8px; flex: 1;
-            height: 50px; max-width: 44px; font-size: 1.2rem; font-weight: 900; color: #475569;
-            box-shadow: 0 4px 0 #CBD5E1; display: flex; align-items: center; justify-content: center;
+            height: 50px; max-width: 42px; font-size: 1.1rem; font-weight: 900; color: #475569;
+            box-shadow: 0 4px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
         }
-        .key:active { background: #FCD34D; transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
-        .numpad-row .key { max-width: 80px; height: 60px; font-size: 1.5rem; }
+        .key:active { background: var(--accent); transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
 
-        #menu-screen, #game-over {
-            position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .mode-btn {
-            width: 80%; padding: 15px; margin: 8px; border: none; border-radius: 20px;
-            font-size: 1.2rem; font-weight: 900; color: white; cursor: pointer;
+        .particle { position: absolute; width: 6px; height: 6px; border-radius: 2px; pointer-events: none; z-index: 5; }
+
+        #game-over {
+            display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 400; flex-direction: column; align-items: center; justify-content: center; color: white;
         }
     </style>
 </head>
 <body>
 
 <div id="game-wrapper">
-    <div id="menu-screen">
-        <h1 style="color:white; text-shadow:2px 2px #0369A1">SKY FALL</h1>
-        <button class="mode-btn" style="background:#4ADE80" onclick="startGame('abc')">ABC</button>
-        <button class="mode-btn" style="background:#FBBF24" onclick="startGame('123')">123</button>
-        <button class="mode-btn" style="background:#F87171" onclick="startGame('hira')">あいうえお</button>
-        <button class="mode-btn" style="background:#60A5FA" onclick="startGame('kata')">アイウエオ</button>
-    </div>
-
-    <div class="header-layer">
-        <div class="stats-row">
-            <button onclick="location.reload()" style="background:white; border:none; border-radius:10px; padding:5px 10px;">🏠</button>
-            <div style="display:flex; gap:10px">
-                <div class="stat-box">⭐ <span id="score">0</span></div>
-                <div class="stat-box">❤️ <span id="lives">3</span></div>
-            </div>
+    <div class="header">
+        <a href="../index.html" class="home-btn">🏠</a>
+        <div style="display:flex; gap:8px;">
+            <div class="stat-box">⭐ <span id="score">0</span></div>
+            <div class="stat-box">❤️ <span id="lives">3</span></div>
         </div>
     </div>
 
+    <div id="power-container"><div id="power-bar"></div></div>
     <div id="sky"></div>
-    <div id="input-area"></div>
 
-    <div id="game-over" style="display:none; background:rgba(0,0,0,0.8); color:white;">
-        <h1>GAME OVER</h1>
-        <button onclick="location.reload()" class="mode-btn" style="background:#FBBF24">TRY AGAIN</button>
+    <div id="input-area">
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('Q')">Q</button>
+            <button class="key" onclick="handleInput('W')">W</button>
+            <button class="key" onclick="handleInput('E')">E</button>
+            <button class="key" onclick="handleInput('R')">R</button>
+            <button class="key" onclick="handleInput('T')">T</button>
+            <button class="key" onclick="handleInput('Y')">Y</button>
+            <button class="key" onclick="handleInput('U')">U</button>
+            <button class="key" onclick="handleInput('I')">I</button>
+            <button class="key" onclick="handleInput('O')">O</button>
+            <button class="key" onclick="handleInput('P')">P</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('A')">A</button>
+            <button class="key" onclick="handleInput('S')">S</button>
+            <button class="key" onclick="handleInput('D')">D</button>
+            <button class="key" onclick="handleInput('F')">F</button>
+            <button class="key" onclick="handleInput('G')">G</button>
+            <button class="key" onclick="handleInput('H')">H</button>
+            <button class="key" onclick="handleInput('J')">J</button>
+            <button class="key" onclick="handleInput('K')">K</button>
+            <button class="key" onclick="handleInput('L')">L</button>
+        </div>
+        <div class="keyboard-row">
+            <button class="key" onclick="handleInput('Z')">Z</button>
+            <button class="key" onclick="handleInput('X')">X</button>
+            <button class="key" onclick="handleInput('C')">C</button>
+            <button class="key" onclick="handleInput('V')">V</button>
+            <button class="key" onclick="handleInput('B')">B</button>
+            <button class="key" onclick="handleInput('N')">N</button>
+            <button class="key" onclick="handleInput('M')">M</button>
+            <button class="key" onclick="handleInput('-')">ー</button>
+        </div>
+    </div>
+
+    <div id="game-over">
+        <h1>MARU POWER! 🚀</h1>
+        <p style="font-size: 1.5rem;">Score: <span id="final-score">0</span></p>
+        <button onclick="location.reload()" style="padding: 15px 30px; border-radius: 15px; background: var(--accent); border:none; font-weight:900;">Play Again</button>
     </div>
 </div>
 
 <script>
-    const KANA_MAP = {
-        'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
-        'か':['KA'],'き':['KI'],'く':['KU'],'け':['KE'],'こ':['KO'],
-        'さ':['SA'],'し':['SI','SHI'],'す':['SU'],'せ':['SE'],'そ':['SO'],
-        'た':['TA'],'ち':['CHI'],'つ':['TSU','TU'],'て':['TE'],'と':['TO'],
-        'な':['NA'],'に':['NI'],'ぬ':['NU'],'ね':['NE'],'の':['NO'],
-        'は':['HA'],'ひ':['HI'],'ふ':['FU'],'へ':['HE'],'ほ':['HO'],
-        'ま':['MA'],'み':['MI'],'む':['MU'],'め':['ME'],'も':['MO'],
-        'や':['YA'],'ゆ':['YU'],'よ':['YO'],
-        'ら':['RA'],'り':['RI'],'る':['RU'],'れ':['RE'],'ろ':['RO'],
-        'わ':['WA'],'を':['WO'],'ん':['N'],
-        'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
-        'カ':['KA'],'キ':['KI'],'ク':['KU'],'ケ':['KE'],'コ':['KO'],
-        'サ':['SA'],'シ':['SI','SHI'],'ス':['SU'],'セ':['SE'],'ソ':['SO'],
-        'タ':['TA'],'チ':['CHI'],'ツ':['TSU','TU'],'テ':['TE'],'ト':['TO'],
-        'ナ':['NA'],'ニ':['NI'],'ぬ':['NU'],'ネ':['NE'],'ノ':['NO'],
-        'ハ':['HA'],'ヒ':['HI'],'フ':['FU'],'ヘ':['HE'],'ホ':['HO'],
-        'マ':['MA'],'み':['MI'],'ム':['MU'],'メ':['ME'],'モ':['MO'],
-        'ヤ':['YA'],'ユ':['YU'],'ヨ':['YO'],
-        'ラ':['RA'],'リ':['RI'],'る':['RU'],'レ':['RE'],'ろ':['RO'],
-        'ワ':['WA'],'ヲ':['WO'],'ン':['N'],'ー':['-'],'パ':['PA']
+    const KANA_TO_ROMAJI = {
+        'ネ':['N','E'],'コ':['K','O'],'イ':['I'],'ヌ':['N','U'],'ウ':['U'],'ミ':['M','I'],
+        'ト':['T','O'],'リ':['R','I'],'ホ':['H','O'],'シ':['S','I'],'ア':['A'],'メ':['M','E'],
+        'ハ':['H','A'],'ナ':['N','A'],'ユ':['Y','U'],'キ':['K','I'],'ツ':['T','S','U'],
+        'モ':['M','O'],'ケ':['K','E'],'ー':['-'],'パ':['P','A'],'ン':['N']
     };
+    const WORDS = ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'];
 
-    const WORDS = {
-        abc: ['CAT','DOG','FISH','STAR','APPLE','SUN','MOON','RAIN','BIRD'],
-        '123': ['10','25','50','100','7','12','88','99'],
-        hira: ['ねこ','いぬ','とり','はな','ほし','つき','あめ','ゆき','うみ','もり','さくら'],
-        kata: ['ネコ','イヌ','トリ','ハナ','ホシ','ツキ','アメ','ユキ','ウミ','モリ','ケーキ','パン']
-    };
-
-    let score = 0, lives = 3, gameActive = false, activeWords = [], currentMode = '';
+    let score = 0, lives = 3, power = 0, activeWords = [], gameActive = true, spawnRate = 3000;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playNote(f) {
+    function playSfx(f, t, d) {
         const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.frequency.value = f; g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
-        o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);
-    }
-
-    function startGame(mode) {
-        currentMode = mode; gameActive = true;
-        document.getElementById('menu-screen').style.display = 'none';
-        buildKeys(); spawnWord(); update();
-    }
-
-    function buildKeys() {
-        const area = document.getElementById('input-area');
-        const layout = currentMode === '123' ? [["1","2","3"],["4","5","6"],["7","8","9"],["0"]] : 
-                      [["Q","W","E","R","T","Y","U","I","O","P"], ["A","S","D","F","G","H","J","K","L"], ["Z","X","C","V","B","N","M", "-"]];
-        area.innerHTML = '';
-        layout.forEach(row => {
-            const div = document.createElement('div');
-            div.className = currentMode === '123' ? 'keyboard-row numpad-row' : 'keyboard-row';
-            row.forEach(key => {
-                const b = document.createElement('button');
-                b.className = 'key'; b.innerText = key;
-                b.onpointerdown = (e) => { e.preventDefault(); handleInput(key); };
-                div.appendChild(b);
-            });
-            area.appendChild(div);
-        });
+        o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
     }
 
     function spawnWord() {
         if(!gameActive) return;
-        const text = WORDS[currentMode][Math.floor(Math.random() * WORDS[currentMode].length)];
+        const text = WORDS[Math.floor(Math.random() * WORDS.length)];
         const isGolden = Math.random() < 0.1;
         const el = document.createElement('div');
-        el.className = `falling-word ${isGolden ? 'golden' : ''}`;
-        el.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+        el.className = 'falling-word' + (isGolden ? ' golden' : '');
+        el.style.left = Math.random() * (window.innerWidth - 120) + 'px';
         el.style.top = '-50px';
         el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
         document.getElementById('sky').appendChild(el);
 
         let sequence = [];
-        text.split('').forEach((char, i) => {
-            const keys = KANA_MAP[char] || [char];
-            // Supports multiple romaji paths (like TSU vs TU)
-            sequence.push({ charIdx: i, options: keys.map(k => k.split('')) });
+        text.split('').forEach((char, idx) => {
+            const keys = KANA_TO_ROMAJI[char] || [char];
+            keys.forEach(k => sequence.push({ key: k.toUpperCase(), charIdx: idx }));
         });
 
-        activeWords.push({ el, text, sequence, y: -50, charIdx: 0, keyIdx: 0, isGolden });
-        setTimeout(spawnWord, Math.max(1200, 3000 - (score * 2)));
+        activeWords.push({ el, text, sequence, y: -50, progress: 0, isGolden });
+        setTimeout(spawnWord, spawnRate);
+        spawnRate = Math.max(1000, spawnRate - 50);
     }
 
-    function handleInput(key) {
-        if (activeWords.length === 0) return;
+    function handleInput(l) {
+        if(!gameActive) return;
+        if(audioCtx.state === 'suspended') audioCtx.resume();
 
-        // Target lowest word (highest Y value)
-        let target = activeWords.reduce((prev, curr) => (prev.y > curr.y) ? prev : curr);
+        // FOCUS LOGIC: Sort to find the word closest to the bottom
+        let targets = [...activeWords].sort((a, b) => b.y - a.y);
         
-        // Highlight target
-        activeWords.forEach(w => w.el.classList.toggle('target', w === target));
-
-        let currentChar = target.sequence[target.charIdx];
-        // Check if input matches any of the romaji options for this character
-        let matchFound = false;
-        currentChar.options.forEach(opt => {
-            if (opt[target.keyIdx] === key) matchFound = true;
-        });
-
-        if (matchFound) {
-            target.keyIdx++;
-            playNote(440 + (target.charIdx * 50));
+        for(let w of targets) {
+            let nextRequired = w.sequence[w.progress];
             
-            // If full romaji for this char is done
-            let shortestRomaji = Math.min(...currentChar.options.map(o => o.length));
-            if (target.keyIdx >= shortestRomaji) {
-                target.el.querySelectorAll('.char')[target.charIdx].classList.add('typed');
-                target.charIdx++;
-                target.keyIdx = 0;
+            // Special TSU handling (Allow T-U or T-S-U)
+            if(nextRequired && nextRequired.key === 'T' && l === 'T') {
+                const nextKey = w.sequence[w.progress + 1];
+                if(nextKey && nextKey.key === 'S') { 
+                    // If user types T, and next is S, we check if they skip S
+                }
             }
 
-            // Word Complete
-            if (target.charIdx >= target.sequence.length) {
-                score += target.isGolden ? 20 : 10;
-                document.getElementById('score').innerText = score;
-                target.el.remove();
-                activeWords = activeWords.filter(w => w !== target);
-                updateBackground();
-                playNote(880);
+            if(nextRequired && nextRequired.key === l.toUpperCase()) {
+                w.progress++;
+                playSfx(440 + (w.progress * 50), 'sine', 0.1);
+                
+                const isCharFinished = !w.sequence[w.progress] || w.sequence[w.progress].charIdx !== nextRequired.charIdx;
+                if (isCharFinished) {
+                    const chars = w.el.querySelectorAll('.char');
+                    if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
+                }
+
+                if(w.progress === w.sequence.length) popWord(w);
+                return; // Stop here so we only hit ONE word at a time
             }
         }
     }
 
-    function updateBackground() {
-        const bg = document.getElementById('game-wrapper');
-        if (score > 200) bg.style.background = '#1E293B'; // Night
-        else if (score > 100) bg.style.background = '#FB923C'; // Sunset
-        else bg.style.background = '#7DD3FC'; // Day
+    function popWord(w) {
+        if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; }
+        else { score += 10; }
+        
+        power = Math.min(100, power + 15);
+        document.getElementById('power-bar').style.width = power + '%';
+        document.getElementById('score').innerText = score;
+        document.getElementById('lives').innerText = lives;
+        
+        w.el.remove();
+        activeWords = activeWords.filter(item => item !== w);
+        playSfx(800, 'sine', 0.2);
     }
 
     function update() {
         if(!gameActive) return;
-        const skyH = document.getElementById('sky').clientHeight;
-        
+        const skyHeight = document.getElementById('sky').clientHeight;
         for (let i = activeWords.length - 1; i >= 0; i--) {
             let w = activeWords[i];
-            w.y += 1 + (score / 500);
+            w.y += 1.0 + (score / 500);
             w.el.style.top = w.y + 'px';
-            
-            if (w.y > skyH) {
+            if(w.y > skyHeight) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
-                w.el.remove();
+                w.el.remove(); 
                 activeWords.splice(i, 1);
-                if (lives <= 0) {
+                if(lives <= 0) {
                     gameActive = false;
                     document.getElementById('game-over').style.display = 'flex';
+                    document.getElementById('final-score').innerText = score;
                 }
             }
         }
         requestAnimationFrame(update);
     }
+
+    spawnWord();
+    update();
 </script>
 </body>
 </html>
