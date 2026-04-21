@@ -26,11 +26,44 @@
             box-shadow: 0 10px 0 rgba(0,0,0,0.06);
             text-align: center;
             position: relative;
+            min-height: 520px;
+        }
+
+        /* ── DIFFICULTY SCREEN ── */
+        #menu-screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 20px;
+        }
+
+        .menu-btn {
+            padding: 15px;
+            border-radius: 20px;
+            border: none;
+            background: #F5F3FF;
+            color: #8B5CF6;
+            font-weight: 900;
+            cursor: pointer;
+            border-bottom: 4px solid #C4B5FD;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.1s;
+        }
+
+        .menu-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+        .pb-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #2ED573;
+            margin-top: 5px;
         }
 
         /* ── STATUS BAR ── */
         #status-bar {
-            display: flex;
+            display: none;
             justify-content: space-between;
             margin-bottom: 15px;
             font-weight: bold;
@@ -44,6 +77,8 @@
         h1 { color: #FF784E; font-size: clamp(1.4rem, 5vw, 1.8rem); margin-bottom: 10px; }
 
         /* ── VAULT DISPLAY ── */
+        #game-play-area { display: none; }
+
         #display-screen {
             background: #F5F3FF;
             border: 3px solid #C4B5FD;
@@ -69,7 +104,6 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Color States */
         .correct { background: #2ED573 !important; color: white !important; border-color: #26af5f !important; }
         .present { background: #FFBC00 !important; color: white !important; border-color: #d49c00 !important; }
         .wrong { background: #FF5E5E !important; color: white !important; border-color: #d14d4d !important; }
@@ -92,7 +126,7 @@
         /* ── KEYPAD ── */
         #keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
-        button {
+        .key-btn {
             aspect-ratio: 1 / 1;
             font-size: 1.5rem;
             font-weight: 900;
@@ -105,45 +139,71 @@
             transition: transform 0.1s;
         }
 
-        button:active { transform: translateY(3px); border-bottom-width: 1px; }
+        .key-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
         .btn-red { background: #FFF1F1; color: #FF5E5E; border-bottom-color: #FFD1D1; font-size: 1.1rem; }
         .btn-green { background: #EDFFF5; color: #2ED573; border-bottom-color: #9FE8C0; }
 
-        .disabled { opacity: 0.5; pointer-events: none; }
+        .back-btn {
+            margin-top: 15px;
+            background: none;
+            border: none;
+            color: #8B5CF6;
+            font-size: 0.8rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="status-bar">
-            <div id="lives-display">❤️❤️❤️❤️❤️</div>
-            <div id="timer-display">Time: 60s</div>
-        </div>
-
         <h1>🔓 MARU-VAULT</h1>
-        
-        <div id="display-screen">
-            <div class="code-slot neutral" id="slot-0">?</div>
-            <div class="code-slot neutral" id="slot-1">?</div>
-            <div class="code-slot neutral" id="slot-2">?</div>
-        </div>
-        
-        <div id="feedback-log">
-            <p id="message">Quick! Crack the code before time runs out!</p>
+
+        <div id="menu-screen">
+            <button class="menu-btn" onclick="initGame('recruit')">
+                RECRUIT (90s / 6 ❤️)
+                <span id="pb-recruit" class="pb-text">PB: --</span>
+            </button>
+            <button class="menu-btn" onclick="initGame('agent')">
+                AGENT (60s / 5 ❤️)
+                <span id="pb-agent" class="pb-text">PB: --</span>
+            </button>
+            <button class="menu-btn" onclick="initGame('master')">
+                MASTER (40s / 3 ❤️)
+                <span id="pb-master" class="pb-text">PB: --</span>
+            </button>
         </div>
 
-        <div id="keypad">
-            <button onclick="press(1)">1</button>
-            <button onclick="press(2)">2</button>
-            <button onclick="press(3)">3</button>
-            <button onclick="press(4)">4</button>
-            <button onclick="press(5)">5</button>
-            <button onclick="press(6)">6</button>
-            <button onclick="press(7)">7</button>
-            <button onclick="press(8)">8</button>
-            <button onclick="press(9)">9</button>
-            <button onclick="clearCode()" class="btn-red">CLR</button>
-            <button onclick="press(0)">0</button>
-            <button onclick="checkCode()" id="go-btn" class="btn-green">GO</button>
+        <div id="game-play-area">
+            <div id="status-bar">
+                <div id="lives-display">❤️❤️❤️❤️❤️</div>
+                <div id="timer-display">Time: 60s</div>
+            </div>
+            
+            <div id="display-screen">
+                <div class="code-slot neutral" id="slot-0">?</div>
+                <div class="code-slot neutral" id="slot-1">?</div>
+                <div class="code-slot neutral" id="slot-2">?</div>
+            </div>
+            
+            <div id="feedback-log">
+                <p id="message">Mission Start!</p>
+            </div>
+
+            <div id="keypad">
+                <button class="key-btn" onclick="press(1)">1</button>
+                <button class="key-btn" onclick="press(2)">2</button>
+                <button class="key-btn" onclick="press(3)">3</button>
+                <button class="key-btn" onclick="press(4)">4</button>
+                <button class="key-btn" onclick="press(5)">5</button>
+                <button class="key-btn" onclick="press(6)">6</button>
+                <button class="key-btn" onclick="press(7)">7</button>
+                <button class="key-btn" onclick="press(8)">8</button>
+                <button class="key-btn" onclick="press(9)">9</button>
+                <button class="key-btn btn-red" onclick="clearCode()">CLR</button>
+                <button class="key-btn" onclick="press(0)">0</button>
+                <button class="key-btn btn-green" onclick="checkCode()">GO</button>
+            </div>
+            <button class="back-btn" onclick="showMenu()">Change Difficulty</button>
         </div>
     </div>
 
@@ -153,8 +213,45 @@
         let attempts = 0;
         let lives = 5;
         let timeLeft = 60;
-        let gameActive = true;
+        let startLimit = 60;
+        let currentDifficulty = '';
+        let gameActive = false;
         let timerInterval;
+
+        const config = {
+            recruit: { time: 90, lives: 6 },
+            agent:   { time: 60, lives: 5 },
+            master:  { time: 40, lives: 3 }
+        };
+
+        function showMenu() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            document.getElementById('menu-screen').style.display = 'flex';
+            document.getElementById('game-play-area').style.display = 'none';
+            document.getElementById('status-bar').style.display = 'none';
+            loadPBs();
+        }
+
+        function loadPBs() {
+            ['recruit', 'agent', 'master'].forEach(diff => {
+                const pb = localStorage.getItem(`maruvault_pb_${diff}`);
+                document.getElementById(`pb-${diff}`).innerText = pb ? `Best Time: ${pb}s left` : "Best: --";
+            });
+        }
+
+        function initGame(difficulty) {
+            currentDifficulty = difficulty;
+            timeLeft = config[difficulty].time;
+            startLimit = config[difficulty].time;
+            lives = config[difficulty].lives;
+            
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-play-area').style.display = 'block';
+            document.getElementById('status-bar').style.display = 'flex';
+            
+            startGame();
+        }
 
         function startGame() {
             secretCode = [
@@ -162,20 +259,21 @@
                 Math.floor(Math.random() * 10),
                 Math.floor(Math.random() * 10)
             ];
-            lives = 5;
-            timeLeft = 60;
             attempts = 0;
             gameActive = true;
             currentInput = [];
-            
+            resetSlotColors();
             updateStatus();
             updateDisplay();
             startTimer();
+            document.getElementById('message').innerText = "Crack the code!";
+            document.getElementById('message').style.color = "#B45309";
             console.log("Secret:", secretCode.join(''));
         }
 
         function startTimer() {
             clearInterval(timerInterval);
+            document.getElementById('timer-display').classList.remove('timer-low');
             timerInterval = setInterval(() => {
                 timeLeft--;
                 document.getElementById('timer-display').innerText = `Time: ${timeLeft}s`;
@@ -187,7 +285,6 @@
         function press(num) {
             if (!gameActive) return;
             if (currentInput.length < 3) {
-                // Reset colors if typing a new guess
                 if (currentInput.length === 0) resetSlotColors();
                 currentInput.push(num);
                 updateDisplay();
@@ -210,91 +307,85 @@
         function checkCode() {
             if (!gameActive || currentInput.length < 3) return;
 
-            const msgArea = document.getElementById('message');
-            const guess = [...currentInput];
-            const secret = [...secretCode];
-            
-            // Color Logic (Traffic Lights)
-            let correctCount = 0;
+            let guess = [...currentInput];
             let tempSecret = [...secretCode];
             let results = ["wrong", "wrong", "wrong"];
+            let correctCount = 0;
 
-            // 1st Pass: Check for Greens (Correct Position)
+            // Greens
             for (let i = 0; i < 3; i++) {
-                if (guess[i] === secret[i]) {
+                if (guess[i] === tempSecret[i]) {
                     results[i] = "correct";
                     tempSecret[i] = null;
                     guess[i] = "used";
                     correctCount++;
                 }
             }
-
-            // 2nd Pass: Check for Yellows (Present elsewhere)
+            // Yellows
             for (let i = 0; i < 3; i++) {
                 if (guess[i] !== "used") {
-                    let foundIndex = tempSecret.indexOf(guess[i]);
-                    if (foundIndex !== -1) {
+                    let idx = tempSecret.indexOf(guess[i]);
+                    if (idx !== -1) {
                         results[i] = "present";
-                        tempSecret[foundIndex] = null;
+                        tempSecret[idx] = null;
                     }
                 }
             }
 
-            // Apply colors
             for (let i = 0; i < 3; i++) {
                 document.getElementById(`slot-${i}`).className = `code-slot ${results[i]}`;
             }
 
             if (correctCount === 3) {
+                savePB();
                 endGame(true, "VAULT OPENED! MATH GENIUS!");
             } else {
                 lives--;
                 attempts++;
                 updateStatus();
-                if (lives <= 0) {
-                    endGame(false, `LOCKED! Code was ${secretCode.join('')}`);
-                } else {
-                    provideMathHint(currentInput, secretCode);
-                    currentInput = []; // Clear for next try
-                }
+                if (lives <= 0) endGame(false, `LOCKED! Code: ${secretCode.join('')}`);
+                else provideMathHint();
+                currentInput = [];
             }
         }
 
-        function provideMathHint(guess, secret) {
-            const msgArea = document.getElementById('message');
-            const secretSum = secretCode.reduce((a, b) => a + b, 0);
-            
-            // Educational cycle
-            if (attempts % 2 === 1) {
-                msgArea.innerText = `💡 Math Hint: The sum of all digits is ${secretSum}.`;
-            } else {
-                const evens = secretCode.filter(n => n % 2 === 0).length;
-                msgArea.innerText = `🕵️‍♂️ Spy Tip: There are ${evens} even numbers in the code.`;
-            }
+        function provideMathHint() {
+            const sum = secretCode.reduce((a, b) => a + b, 0);
+            const msg = document.getElementById('message');
+            if (attempts % 2 === 1) msg.innerText = `💡 Sum of all digits is ${sum}.`;
+            else msg.innerText = `🕵️‍♂️ ${secretCode.filter(n => n % 2 === 0).length} even numbers found.`;
         }
 
         function updateStatus() {
-            document.getElementById('lives-display').innerText = "❤️".repeat(lives) + "🖤".repeat(5 - lives);
+            document.getElementById('lives-display').innerText = "❤️".repeat(lives) + "🖤".repeat(config[currentDifficulty].lives - lives);
+        }
+
+        function savePB() {
+            const currentPB = localStorage.getItem(`maruvault_pb_${currentDifficulty}`);
+            // PB is "highest time left" (finishing fastest)
+            if (!currentPB || timeLeft > parseInt(currentPB)) {
+                localStorage.setItem(`maruvault_pb_${currentDifficulty}`, timeLeft);
+            }
         }
 
         function endGame(won, text) {
             gameActive = false;
             clearInterval(timerInterval);
             const msgArea = document.getElementById('message');
-            msgArea.innerHTML = `<b>${text}</b><br>Tap CLR to restart mission.`;
+            msgArea.innerHTML = `<b>${text}</b><br>Tap CLR to play again.`;
             msgArea.style.color = won ? "#2ED573" : "#FF5E5E";
         }
 
         function clearCode() {
             if (!gameActive) startGame();
-            currentInput = [];
-            resetSlotColors();
-            updateDisplay();
-            document.getElementById('message').innerText = "New Mission Started!";
-            document.getElementById('message').style.color = "#B45309";
+            else {
+                currentInput = [];
+                resetSlotColors();
+                updateDisplay();
+            }
         }
 
-        startGame();
+        loadPBs();
     </script>
 </body>
 </html>
