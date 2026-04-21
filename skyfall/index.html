@@ -24,10 +24,7 @@
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(5px);
             padding: 10px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
+            display: flex; flex-direction: column; gap: 10px; z-index: 100;
             border-bottom: 2px solid rgba(255,255,255,0.3);
         }
 
@@ -63,16 +60,20 @@
 
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
-            padding: 15px 5px 40px 5px; display: flex; flex-direction: column; gap: 6px;
+            padding: 15px 10px 40px 10px; display: flex; flex-direction: column; gap: 8px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
-        .keyboard-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
+        .keyboard-row { display: flex; justify-content: center; gap: 6px; width: 100%; }
+        
         .key {
-            background: #F1F5F9; border: none; border-radius: 6px; flex: 1;
-            height: 48px; max-width: 40px; font-size: 1.1rem; font-weight: 900; color: #475569;
+            background: #F1F5F9; border: none; border-radius: 8px; flex: 1;
+            height: 50px; max-width: 44px; font-size: 1.2rem; font-weight: 900; color: #475569;
             box-shadow: 0 4px 0 #CBD5E1; outline: none; display: flex; align-items: center; justify-content: center;
         }
         .key:active { background: var(--accent); transform: translateY(2px); box-shadow: 0 2px 0 #CBD5E1; }
+
+        /* Bigger Number Pad */
+        .numpad-row .key { max-width: 80px; height: 60px; font-size: 1.5rem; }
 
         #game-over {
             display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.9);
@@ -128,14 +129,13 @@
         'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
         'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
         'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
-        'タ':['T','A'],'チ':['T','I'],'ツ':['T','U'],'テ':['T','E'],'ト':['T','O'],
+        'タ':['T','A'],'チ':['T','I'],'つ':['T','U'],'て':['T','E'],'ト':['T','O'],
         'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
         'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+        'マ':['M','A'],'ミ':['M','I'],'む':['M','U'],'め':['M','E'],'も':['M','O'],
         'ヤ':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
         'ラ':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
-        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],
-        'ー':['-'], 'ケ':['K','E'], 'キ':['K','I'], 'パ':['P','A']
+        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-']
     };
 
     const DATA = {
@@ -145,8 +145,25 @@
         kata: { words: ['ネコ', 'イヌ', 'ウミ', 'トリ', 'ホシ', 'アメ', 'ハナ', 'ユキ', 'ツキ', 'モリ', 'ケーキ', 'パン'] }
     };
 
-    const QWERTY = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"],["-"]];
-    const NUMPAD = [["1","2","3"],["4","5","6"],["7","8","9"],["0"]];
+    // Integrated Romaji Layout with Dash for Katakana
+    const QWERTY_KATA = [
+        ["Q","W","E","R","T","Y","U","I","O","P"],
+        ["A","S","D","F","G","H","J","K","L"],
+        ["Z","X","C","V","B","N","M", "-"]
+    ];
+    
+    const QWERTY_STD = [
+        ["Q","W","E","R","T","Y","U","I","O","P"],
+        ["A","S","D","F","G","H","J","K","L"],
+        ["Z","X","C","V","B","N","M"]
+    ];
+
+    const NUMPAD = [
+        ["1","2","3"],
+        ["4","5","6"],
+        ["7","8","9"],
+        ["0"]
+    ];
 
     let score = 0, lives = 3, power = 0, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -164,17 +181,22 @@
         currentMode = mode;
         gameActive = true;
         document.getElementById('menu-screen').style.display = 'none';
-        buildKeyboard(mode === '123' ? NUMPAD : QWERTY);
+        
+        let layout = QWERTY_STD;
+        if(mode === '123') layout = NUMPAD;
+        else if(mode === 'kata') layout = QWERTY_KATA;
+        
+        buildKeyboard(layout, mode === '123');
         spawnWord();
         update();
     }
 
-    function buildKeyboard(layout) {
+    function buildKeyboard(layout, isNum) {
         const area = document.getElementById('input-area');
         area.innerHTML = '';
         layout.forEach(row => {
             const rowDiv = document.createElement('div');
-            rowDiv.className = 'keyboard-row';
+            rowDiv.className = isNum ? 'keyboard-row numpad-row' : 'keyboard-row';
             row.forEach(l => {
                 const b = document.createElement('button');
                 b.className = 'key'; b.innerText = l;
@@ -200,7 +222,6 @@
 
         let sequence = [];
         text.split('').forEach((char, idx) => {
-            // Check for katakana long vowel or mapping
             const keys = KANA_TO_ROMAJI[char] || [char];
             keys.forEach(k => sequence.push({ key: k.toUpperCase(), charIdx: idx }));
         });
@@ -211,7 +232,6 @@
     }
 
     function handleInput(l) {
-        // Iterate through words from bottom to top for better targeting
         for(let j = activeWords.length - 1; j >= 0; j--) {
             let w = activeWords[j];
             let nextRequired = w.sequence[w.progress];
@@ -235,7 +255,7 @@
                     w.el.remove();
                     activeWords.splice(j, 1);
                 }
-                return; // Input consumed
+                return;
             }
         }
     }
