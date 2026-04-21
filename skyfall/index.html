@@ -18,12 +18,14 @@
             width: 100vw; max-width: 420px; height: 100vh; position: relative;
             background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             display: flex; flex-direction: column; overflow: hidden;
+            transition: background 2s ease; /* Smooth transition for background shifts */
         }
 
+        /* Fixed: Changed from transparent rgba to solid white */
         .header-layer {
-            background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);
+            background: #FFFFFF; 
             padding: 10px 15px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
+            border-bottom: 3px solid #E2E8F0;
         }
 
         .stats-row { display: flex; justify-content: space-between; align-items: center; }
@@ -40,8 +42,8 @@
         }
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
 
-        .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
-        .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
+        .home-btn { background: #F1F5F9; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 #CBD5E1; color: #333; }
+        .stat-box { background: #F8FAFC; padding: 5px 12px; border-radius: 15px; font-weight: 900; border: 1px solid #E2E8F0; color: #0369A1; }
 
         #power-container { height: 10px; background: rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; width: 100%; }
         #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; box-shadow: 0 0 10px #4ADE80; }
@@ -128,13 +130,13 @@
         'わ':['W','A'],'を':['W','O'],'ん':['N'],
         'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
         'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
-        'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
-        'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
+        'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'そ':['S','O'],
+        'タ':['T','A'],'ち':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
         'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
         'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
-        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
-        'ラ':['R','A'],'リ':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'め':['M','E'],'も':['M','O'],
+        'ヤ':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
+        'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
         'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],'パ':['P','A']
     };
 
@@ -230,10 +232,8 @@
     function handleInput(l) {
         if(!gameActive || activeWords.length === 0) return;
         
-        // Find the lowest word (highest Y value)
         let targetWord = activeWords.reduce((prev, current) => (prev.y > current.y) ? prev : current);
         
-        // Visual indicator for target
         activeWords.forEach(w => w.el.classList.remove('target'));
         targetWord.el.classList.add('target');
 
@@ -242,7 +242,6 @@
             targetWord.progress++;
             playSfx(440 + (targetWord.progress * 50), 'sine', 0.1);
             
-            // Check if character is fully typed
             const isCharFinished = !targetWord.sequence[targetWord.progress] || targetWord.sequence[targetWord.progress].charIdx !== nextRequired.charIdx;
             if (isCharFinished) {
                 const chars = targetWord.el.querySelectorAll('.char');
@@ -269,6 +268,12 @@
         document.getElementById('score').innerText = score;
         document.getElementById('lives').innerText = lives;
         
+        // Re-added: Background Shift logic
+        const wrapper = document.getElementById('game-wrapper');
+        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
+        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
+        else wrapper.style.background = 'linear-gradient(to bottom, #7DD3FC, #BAE6FD)';
+
         w.el.remove();
         activeWords = activeWords.filter(item => item !== w);
     }
