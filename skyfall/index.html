@@ -410,6 +410,7 @@ color: var(--text-mid); transition: 0.15s;
 
 <script>
 const KANA_ROM = {
+  // Hiragana
   'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
   'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
   'さ':['S','A'],'し':['S','H','I'],'す':['S','U'],'せ':['S','E'],'そ':['S','O'],
@@ -420,21 +421,23 @@ const KANA_ROM = {
   'や':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
   'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
   'わ':['W','A'],'を':['W','O'],'ん':['N'],
+  // Katakana
   'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
   'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
   'サ':['S','A'],'シ':['S','H','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
-  'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'て':['T','E'],'と':['T','O'],
-  'ナ':['N','A'],'ニ':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
-  'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
-  'マ':['M','A'],'ミ':['M','I'],'む':['M','U'],'メ':['M','E'],'も':['M','O'],
-  'ヤ':['Y','A'],'ユ':['Y','U'],'よ':['Y','O'],
-  'ラ':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+  'タ':['T','A'],'チ':['C','H','I'],'ツ':['T','S','U'],'テ':['T','E'],'ト':['T','O'],
+  'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
+  'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
+  'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+  'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
+  'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
   'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-'],
-  'パ':['P','A'],'ピ':['P','I'],'プ':['P','U'],'ペ':['P','E'],'ポ':['P','O'],
-  'バ':['B','A'],'ビ':['B','I'],'ブ':['B','U'],'ベ':['B','E'],'ボ':['B','O'],
+  // Voiced/Plosives Katakana
   'ガ':['G','A'],'ギ':['G','I'],'グ':['G','U'],'ゲ':['G','E'],'ゴ':['G','O'],
-  'ダ':['D','A'],'デ':['D','O'],'ド':['D','O'],
   'ザ':['Z','A'],'ジ':['J','I'],'ズ':['Z','U'],'ゼ':['Z','E'],'ゾ':['Z','O'],
+  'ダ':['D','A'],'ヂ':['D','I'],'ヅ':['D','U'],'デ':['D','E'],'ド':['D','O'],
+  'バ':['B','A'],'ビ':['B','I'],'ブ':['B','U'],'ベ':['B','E'],'ボ':['B','O'],
+  'パ':['P','A'],'ピ':['P','I'],'プ':['P','U'],'ペ':['P','E'],'ポ':['P','O'],
 };
 
 const WORDS = {
@@ -511,17 +514,13 @@ function playSfx(type) {
 function vibrate(ms=20) { if(settings.haptic && navigator.vibrate) navigator.vibrate(ms); }
 
 function startGame(mode) {
-  // 1. CLEANUP PREVIOUS SESSION
   gameActive = false;
   if(frameId) cancelAnimationFrame(frameId);
   clearTimeout(spawnTimer);
   
-  // Clear the DOM of old words
   const sky = document.getElementById('sky');
-  const oldWords = sky.querySelectorAll('.falling-word');
-  oldWords.forEach(w => w.remove());
+  sky.querySelectorAll('.falling-word').forEach(w => w.remove());
   
-  // 2. RESET STATE
   currentMode = mode;
   score=0; lives=3; power=0; combo=0; maxCombo=0; wordsTyped=0;
   totalKeystrokes=0; correctKeystrokes=0;
@@ -530,7 +529,6 @@ function startGame(mode) {
   
   spawnInterval = settings.startSpeed==='fast' ? 1800 : settings.startSpeed==='slow' ? 4200 : 2800;
 
-  // 3. UI RESET
   document.getElementById('menu-screen').style.display='none';
   document.getElementById('game-over').style.display='none';
   document.getElementById('pause-overlay').classList.remove('visible');
@@ -552,7 +550,6 @@ function openMenu() {
   gameActive=false; paused=false;
   if(frameId) cancelAnimationFrame(frameId);
   clearTimeout(spawnTimer);
-  // Clear DOM words when returning to menu
   const sky = document.getElementById('sky');
   sky.querySelectorAll('.falling-word').forEach(w => w.remove());
   activeWords=[];
@@ -615,8 +612,12 @@ function scheduleSpawn() {
 function buildRomSequence(text) {
   const seq=[], romStr=[];
   text.split('').forEach((ch,idx) => {
+    // Check if it's Kana or alphanumeric
     const keys = KANA_ROM[ch] || [ch.toUpperCase()];
-    keys.forEach(k => { seq.push({key:k,charIdx:idx}); romStr.push(k); });
+    keys.forEach(k => { 
+      seq.push({key:k, charIdx:idx}); 
+      romStr.push(k); 
+    });
   });
   return { seq, romStr };
 }
@@ -645,21 +646,32 @@ function spawnWord() {
 function handleInput(l) {
   if(!gameActive || paused || activeWords.length === 0) return;
   resumeAudio(); totalKeystrokes++;
+  // Always target the lowest word first
   let target = activeWords.reduce((a,b) => a.y > b.y ? a : b);
   activeWords.forEach(w => w.el.classList.remove('target'));
   target.el.classList.add('target');
+  
   const next = target.sequence[target.progress];
   if(next && next.key === l.toUpperCase()) {
     correctKeystrokes++; target.progress++; vibrate(15); playSfx('key'); flashKey(l);
+    
+    // Check if we finished a whole character
     const nextStep = target.sequence[target.progress];
     if(!nextStep || nextStep.charIdx !== next.charIdx) {
       const chars = target.el.querySelectorAll('.char');
-      if(chars[next.charIdx]) { chars[next.charIdx].classList.add('typed'); if(target.isGolden) chars[next.charIdx].classList.add('typed-golden'); }
+      if(chars[next.charIdx]) { 
+        chars[next.charIdx].classList.add('typed'); 
+        if(target.isGolden) chars[next.charIdx].classList.add('typed-golden'); 
+      }
       const hint = target.el.querySelector('.rom-hint');
       if(hint && target.sequence[target.progress]) hint.textContent = target.sequence.slice(target.progress).map(s=>s.key).join('');
     }
     if(target.progress === target.sequence.length) popWord(target);
-  } else { playSfx('wrong'); combo = 0; updateComboUI(); }
+  } else { 
+    playSfx('wrong'); 
+    combo = 0; 
+    updateComboUI(); 
+  }
 }
 
 function popWord(w) {
@@ -761,7 +773,11 @@ function buildKeyboard(layout, isNum) {
       b.onclick = () => handleInput(l); rowDiv.appendChild(b);
     }); area.appendChild(rowDiv);
   });
-  document.onkeydown = e => { if(!gameActive || paused) return; const k = e.key.toUpperCase(); if(k.length===1 || k==='-') handleInput(k); };
+  document.onkeydown = e => { 
+    if(!gameActive || paused) return; 
+    const k = e.key.toUpperCase(); 
+    if(k.length===1 || k==='-') handleInput(k); 
+  };
 }
 
 function flashKey(l) {
