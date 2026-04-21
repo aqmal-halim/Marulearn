@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +8,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-font-family: ‘Comic Sans MS’, ‘Chalkboard SE’, ‘Trebuchet MS’, sans-serif;
+font-family: 'Comic Sans MS', 'Chalkboard SE', 'Trebuchet MS', sans-serif;
 background-color: #FFD9C6;
 color: #444;
 padding: 14px;
@@ -140,6 +139,7 @@ font-size: 1.8rem; flex-shrink: 0;
 .cat-life  { background: #F4EEFF; border-bottom-color: #D4B8FF; }
 .cat-quest { background: #FFFBEB; border-bottom-color: #FDE68A; }
 .cat-forest { background: #F0FFF4; border-bottom-color: #86EFAC; }
+.cat-sky { background: #E0F2FE; border-bottom-color: #7DD3FC; }
 
 .icon-lang   { background: #D0E9FF; }
 .icon-read   { background: #FFE5C0; }
@@ -147,6 +147,7 @@ font-size: 1.8rem; flex-shrink: 0;
 .icon-life   { background: #E6D8FF; }
 .icon-quest  { background: #FEF3C7; border: 2px solid #F59E0B; }
 .icon-forest { background: #DCFCE7; border: 2px solid #22C55E; }
+.icon-sky    { background: #BAE6FD; border: 2px solid #60A5FA; }
 
 /* Badge */
 .badge {
@@ -184,8 +185,6 @@ footer strong { color: #FF784E; }
 <body>
 <div class="app-container">
 
-  <!-- HERO -->
-
   <div class="hero-card">
     <div class="hero-blue-panel"></div>
     <div class="header-top">
@@ -201,7 +200,7 @@ footer strong { color: #FF784E; }
         <div class="hero-title">MARU<span>LEARN</span></div>
         <div class="hero-tagline">Fun learning for awesome kids! 🚀</div>
         <div class="hero-chips">
-          <span class="hero-chip">🎮 13+ Games</span>
+          <span class="hero-chip">🎮 14+ Games</span>
           <span class="hero-chip">🇯🇵 Japanese</span>
           <span class="hero-chip">🆓 Free</span>
         </div>
@@ -265,49 +264,42 @@ footer strong { color: #FF784E; }
     </div>
   </div>
 
-  <!-- NEW ADVENTURE -->
-
   <div class="section-title">
     <div class="dot" style="background:#F59E0B;"></div>
     NEW ADVENTURE!
   </div>
   <div class="grid">
 
-```
-<!-- ★ NEW: Alphabet Forest -->
-<a href="alphabetforest/" class="card cat-forest">
-  <span class="badge baby">✨ AGE 4+</span>
-  <div class="icon-box icon-forest">🌲</div>
-  <div class="card-info">
-    <h3>MaruQuest: Alphabet Forest</h3>
-    <p>Trace letters & numbers with a magic glowing trail! 🦊✨</p>
-    <div class="jp-tags">
-      <span class="tag green">🔤 A–Z Tracing</span>
-      <span class="tag green">🔢 1–20 Numbers</span>
-      <span class="tag green">🎌 Watch & Copy</span>
-      <span class="tag green">🌟 Firefly Rewards</span>
-    </div>
-  </div>
-</a>
+    <a href="alphabetforest/" class="card cat-forest">
+      <span class="badge baby">✨ AGE 4+</span>
+      <div class="icon-box icon-forest">🌲</div>
+      <div class="card-info">
+        <h3>MaruQuest: Alphabet Forest</h3>
+        <p>Trace letters & numbers with a magic glowing trail! 🦊✨</p>
+        <div class="jp-tags">
+          <span class="tag green">🔤 A–Z Tracing</span>
+          <span class="tag green">🔢 1–20 Numbers</span>
+          <span class="tag green">🎌 Watch & Copy</span>
+          <span class="tag green">🌟 Firefly Rewards</span>
+        </div>
+      </div>
+    </a>
 
-<a href="maruquest/" class="card cat-quest">
-  <span class="badge new">RPG</span>
-  <div class="icon-box icon-quest">⚔️</div>
-  <div class="card-info">
-    <h3>MaruQuest: Math Tower</h3>
-    <p>Defeat monsters using your Math skills! 🛡️</p>
-    <div class="jp-tags">
-      <span class="tag" style="border-color:#F59E0B;color:#B45309;">Unlimited tower level</span>
-      <span class="tag">Fast thinker</span>
-      <span class="tag">Boss Battle</span>
-    </div>
-  </div>
-</a>
-```
+    <a href="maruquest/" class="card cat-quest">
+      <span class="badge new">RPG</span>
+      <div class="icon-box icon-quest">⚔️</div>
+      <div class="card-info">
+        <h3>MaruQuest: Math Tower</h3>
+        <p>Defeat monsters using your Math skills! 🛡️</p>
+        <div class="jp-tags">
+          <span class="tag" style="border-color:#F59E0B;color:#B45309;">Unlimited tower level</span>
+          <span class="tag">Fast thinker</span>
+          <span class="tag">Boss Battle</span>
+        </div>
+      </div>
+    </a>
 
   </div>
-
-  <!-- LANGUAGES -->
 
   <div class="section-title">
     <div class="dot" style="background:#5BBAFF;"></div>
@@ -332,13 +324,19 @@ footer strong { color: #FF784E; }
     </a>
   </div>
 
-  <!-- READING & ABC -->
-
   <div class="section-title">
     <div class="dot" style="background:#FFAA33;"></div>
     READING & ABC
   </div>
   <div class="grid">
+    <a href="skyfall/" class="card cat-sky">
+      <span class="badge new">NEW</span>
+      <div class="icon-box icon-sky">☁️</div>
+      <div class="card-info">
+        <h3>MaruQuest: Sky Fall</h3>
+        <p>Catch falling words before they hit the ground! 🔠</p>
+      </div>
+    </a>
     <a href="abc/" class="card cat-read">
       <div class="icon-box icon-read">🔤</div>
       <div class="card-info">
@@ -354,8 +352,6 @@ footer strong { color: #FF784E; }
       </div>
     </a>
   </div>
-
-  <!-- MATH MAGIC -->
 
   <div class="section-title">
     <div class="dot" style="background:#2ED573;"></div>
@@ -405,8 +401,6 @@ footer strong { color: #FF784E; }
       </div>
     </a>
   </div>
-
-  <!-- LIFE SKILLS -->
 
   <div class="section-title">
     <div class="dot" style="background:#A55EEA;"></div>
