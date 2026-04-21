@@ -3,12 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maru-Vault Prototype</title>
-    <link rel="stylesheet" href="style.css">
+    <title>MaruVault: Code Breaker 🕵️‍♂️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-color: #FFD9C6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #game-container {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 20px;
+            border-radius: 32px;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        h1 {
+            color: #FF784E;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* ── VAULT DISPLAY ── */
+        #display-screen {
+            background: #F5F3FF; /* Light Purple to match MaruLearn index */
+            border: 3px solid #C4B5FD;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .code-slot {
+            width: 60px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            border-bottom: 4px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #8B5CF6; /* Purple accent */
+        }
+
+        /* ── LOG & FEEDBACK ── */
+        #feedback-log {
+            min-height: 50px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #FFFBEB;
+            border-radius: 12px;
+            color: #B45309;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* ── KEYPAD ── */
+        #keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            border: none;
+            border-radius: 16px;
+            background: #EBF5FF;
+            color: #5BBAFF;
+            border-bottom: 5px solid #B8DBFF;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        button:active {
+            transform: translateY(3px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-red {
+            background: #FFF1F1;
+            color: #FF5E5E;
+            border-bottom-color: #FFD1D1;
+        }
+
+        .btn-green {
+            background: #EDFFF5;
+            color: #2ED573;
+            border-bottom-color: #9FE8C0;
+        }
+
+        /* Responsive tweak for smaller phones */
+        @media (max-width: 360px) {
+            .code-slot { width: 50px; height: 70px; font-size: 2rem; }
+            button { padding: 14px; }
+        }
+    </style>
 </head>
 <body>
     <div id="game-container">
         <h1>🔓 MARU-VAULT</h1>
+        
         <div id="display-screen">
             <div class="code-slot" id="slot-0">?</div>
             <div class="code-slot" id="slot-1">?</div>
@@ -16,7 +128,7 @@
         </div>
         
         <div id="feedback-log">
-            <p>Enter 3 digits to crack the safe!</p>
+            <p>Ready to crack the code? Enter 3 digits!</p>
         </div>
 
         <div id="keypad">
