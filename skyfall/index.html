@@ -7,9 +7,7 @@
     <style>
         * { 
             box-sizing: border-box; 
-            /* Prevents the grey highlight box on tap */
             -webkit-tap-highlight-color: transparent; 
-            /* Disables double-tap to zoom on elements */
             touch-action: manipulation; 
         }
         
@@ -20,10 +18,8 @@
             margin: 0; overflow: hidden;
             display: flex; justify-content: center;
             background: #000;
-            /* Extra layer of protection against accidental scrolling/zoom */
             position: fixed;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
         }
 
         #game-wrapper {
@@ -31,12 +27,15 @@
             position: relative; transition: background 2s ease;
             background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Power Bar */
         #power-container {
-            position: absolute; top: 55px; left: 15px; right: 15px;
+            position: absolute; top: 60px; left: 15px; right: 15px;
             height: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; overflow: hidden;
+            z-index: 50;
         }
         #power-bar {
             width: 0%; height: 100%; background: #4ADE80;
@@ -59,14 +58,14 @@
             font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1;
         }
 
-        #sky { width: 100%; height: 65%; position: relative; }
+        #sky { flex: 1; position: relative; width: 100%; }
 
         .falling-word {
             position: absolute; background: white; padding: 8px 15px;
             border-radius: 20px; font-weight: 900; font-size: 1.2rem;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1); white-space: nowrap;
             display: flex; gap: 2px; z-index: 10;
-            user-select: none; /* Prevents text selection while typing */
+            user-select: none;
         }
         
         .falling-word.golden {
@@ -77,19 +76,35 @@
 
         .char.typed { color: #4ADE80; transform: scale(1.2); display: inline-block; }
 
+        /* Keyboard Area Fixes */
         #input-area {
-            height: 35%; background: white; border-top-left-radius: 30px;
-            border-top-right-radius: 30px; padding: 15px;
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
-            /* Prevents long-press context menus */
+            background: white;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            padding: 15px 10px 30px 10px; /* Added bottom padding for visibility */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             -webkit-user-select: none;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            width: 100%;
         }
 
         .key {
-            background: #F1F5F9; border: none; border-radius: 10px;
+            background: #F1F5F9; border: none; border-radius: 8px;
+            flex: 1;
+            height: 50px;
+            max-width: 40px;
             font-size: 1.1rem; font-weight: 900; color: #475569;
             box-shadow: 0 4px 0 #CBD5E1;
             outline: none;
+            display: flex; align-items: center; justify-content: center;
         }
         .key:active { transform: translateY(2px); background: var(--accent); box-shadow: 0 2px 0 #CBD5E1; }
 
@@ -102,8 +117,7 @@
             display: none; position: absolute; inset: 0;
             background: rgba(0,0,0,0.9); z-index: 200;
             flex-direction: column; align-items: center; justify-content: center;
-            color: white;
-            text-align: center;
+            color: white; text-align: center;
         }
     </style>
 </head>
@@ -119,8 +133,14 @@
     </div>
 
     <div id="power-container"><div id="power-bar"></div></div>
+    
     <div id="sky"></div>
-    <div id="input-area"></div>
+
+    <div id="input-area">
+        <div class="keyboard-row" id="row-1"></div>
+        <div class="keyboard-row" id="row-2"></div>
+        <div class="keyboard-row" id="row-3"></div>
+    </div>
 
     <div id="game-over">
         <h1>MARU POWER! 🚀</h1>
@@ -131,7 +151,13 @@
 
 <script>
     const WORDS = ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'GREEN', 'HAPPY', 'CAKE', 'RAIN'];
-    const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    
+    // QWERTY Rows
+    const ROWS = [
+        "QWERTYUIOP".split(""),
+        "ASDFGHJKL".split(""),
+        "ZXCVBNM".split("")
+    ];
     
     let score = 0, lives = 3, power = 0;
     let activeWords = [], gameActive = true, spawnRate = 3000;
@@ -149,20 +175,22 @@
     const sky = document.getElementById('sky');
     const wrapper = document.getElementById('game-wrapper');
 
-    ALPHABET.forEach(l => {
-        const b = document.createElement('button');
-        b.className = 'key'; b.innerText = l;
-        // preventDefault on touchstart is another way to kill the zoom/delay
-        b.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            handleInput(l);
+    // Build QWERTY Keyboard
+    ROWS.forEach((row, index) => {
+        const rowDiv = document.getElementById(`row-${index + 1}`);
+        row.forEach(l => {
+            const b = document.createElement('button');
+            b.className = 'key'; b.innerText = l;
+            b.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                handleInput(l);
+            });
+            b.onclick = (e) => {
+                if(e.pointerType !== 'touch') handleInput(l);
+            };
+            rowDiv.appendChild(b);
         });
-        // Also keep onclick for desktop mouse testing
-        b.onclick = (e) => {
-            if(e.pointerType !== 'touch') handleInput(l);
-        };
-        document.getElementById('input-area').appendChild(b);
     });
 
     function createParticles(x, y, color) {
@@ -183,11 +211,6 @@
             };
             move();
         }
-    }
-
-    function updateBackground() {
-        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
-        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
     }
 
     function spawnWord() {
@@ -231,7 +254,11 @@
 
         document.getElementById('score').innerText = score;
         document.getElementById('lives').innerText = lives;
-        updateBackground();
+        
+        // Background Shift
+        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
+        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
+
         w.el.remove();
         activeWords = activeWords.filter(item => item !== w);
     }
