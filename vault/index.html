@@ -72,7 +72,7 @@
         #game-container {
             background: var(--surface);
             width: 100%;
-            max-width: 440px; /* Slightly wider for better mobile fit */
+            max-width: 440px; 
             max-height: 92vh;
             border-radius: 28px;
             border: 1px solid var(--border);
@@ -203,17 +203,36 @@
         #overlay {
             display: none; position: absolute; inset: 0; background: rgba(15,14,23,0.97);
             backdrop-filter: blur(10px); z-index: 10; flex-direction: column;
-            align-items: center; justify-content: center; padding: 24px; gap: 16px; border-radius: 28px;
+            align-items: center; justify-content: center; padding: 24px; gap: 20px; border-radius: 28px;
         }
         #overlay.show { display: flex; }
-        .overlay-emoji { font-size: 3.5rem; }
-        #overlay-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; }
-        .stat-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; text-align: center; min-width: 75px; }
-        .stat-chip .val { font-family: var(--font-display); font-size: 1rem; color: var(--accent2); }
-        .stat-chip .lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; }
-        .overlay-btns { display: flex; gap: 10px; width: 100%; margin-top: 12px; }
-        .overlay-btn { flex: 1; padding: 14px; border-radius: 16px; border: none; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
-        .overlay-btn.primary { background: var(--accent); color: white; }
+        .overlay-emoji { font-size: 3.5rem; margin-bottom: -10px; }
+        #overlay-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: var(--text); }
+        
+        /* UPDATED: Horizontal Stats Layout */
+        #overlay-stats { 
+            display: flex; 
+            flex-direction: row; 
+            gap: 12px; 
+            width: 100%; 
+            justify-content: center;
+        }
+        .stat-chip { 
+            background: var(--surface2); 
+            border: 1px solid var(--border); 
+            border-radius: 14px; 
+            padding: 10px; 
+            text-align: center; 
+            flex: 1; 
+            max-width: 90px;
+        }
+        .stat-chip .val { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--accent2); margin-bottom: 2px; }
+        .stat-chip .lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
+        
+        .overlay-btns { display: flex; gap: 12px; width: 100%; margin-top: 10px; }
+        .overlay-btn { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; font-size: 0.95rem; transition: transform 0.1s; }
+        .overlay-btn:active { transform: scale(0.96); }
+        .overlay-btn.primary { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(255,107,53,0.3); }
         .overlay-btn.secondary { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
 
         #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; padding: 10px 20px; border-radius: 20px; z-index: 100; transition: transform 0.3s; }
@@ -321,11 +340,11 @@
                 <div class="overlay-emoji" id="overlay-emoji">🎉</div>
                 <div id="overlay-title">VAULT CRACKED!</div>
                 <div id="overlay-stats">
-                    <div class="stat-chip"><div class="val" id="stat-time">0s</div><div class="lbl">Time</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Tries</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-lives">0</div><div class="lbl">Lives</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-time">0:18</div><div class="lbl">Time</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-attempts">4</div><div class="lbl">Tries</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-lives">7</div><div class="lbl">Lives</div></div>
                 </div>
-                <div id="overlay-code" style="font-family: var(--font-display); color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;"></div>
+                <div id="overlay-code" style="font-family: var(--font-display); color: var(--text-muted); font-size: 0.85rem;"></div>
                 <div class="overlay-btns">
                     <button class="overlay-btn primary" onclick="restartGame()">Try Again</button>
                     <button class="overlay-btn secondary" onclick="showMenu()">Main Menu</button>
