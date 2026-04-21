@@ -14,13 +14,13 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 10px; /* Reduced padding for mobile */
+            padding: 10px;
         }
 
         #game-container {
             background: white;
             width: 100%;
-            max-width: 380px; /* Slightly tighter for better mobile fit */
+            max-width: 380px;
             padding: 20px;
             border-radius: 32px;
             box-shadow: 0 10px 0 rgba(0,0,0,0.06);
@@ -36,7 +36,6 @@
             letter-spacing: 1px;
         }
 
-        /* ── VAULT DISPLAY ── */
         #display-screen {
             background: #F5F3FF;
             border: 3px solid #C4B5FD;
@@ -63,22 +62,20 @@
             color: #8B5CF6;
         }
 
-        /* ── LOG & FEEDBACK ── */
         #feedback-log {
-            min-height: 44px;
+            min-height: 55px;
             margin-bottom: 15px;
             padding: 8px;
             background: #FFFBEB;
             border-radius: 12px;
             color: #B45309;
             font-weight: 700;
-            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            font-size: clamp(0.8rem, 3.5vw, 0.95rem);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* ── RESPONSIVE KEYPAD ── */
         #keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -87,7 +84,6 @@
         }
 
         button {
-            /* aspect-ratio ensures buttons are always square */
             aspect-ratio: 1 / 1; 
             width: 100%;
             font-size: clamp(1.2rem, 6vw, 1.6rem);
@@ -113,17 +109,13 @@
             background: #FFF1F1;
             color: #FF5E5E;
             border-bottom-color: #FFD1D1;
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
         }
 
         .btn-green {
             background: #EDFFF5;
             color: #2ED573;
             border-bottom-color: #9FE8C0;
-        }
-
-        /* Specific fix for text on CLR button */
-        .btn-red {
-            font-size: clamp(0.9rem, 4vw, 1.2rem);
         }
     </style>
 </head>
@@ -138,7 +130,7 @@
         </div>
         
         <div id="feedback-log">
-            <p>Ready to crack the code? Enter 3 digits!</p>
+            <p id="message">Ready to crack the code? Enter 3 digits!</p>
         </div>
 
         <div id="keypad">
@@ -156,6 +148,81 @@
             <button onclick="checkCode()" class="btn-green">GO</button>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        let currentInput = [];
+        let secretCode = [];
+
+        // Generate a random 3-digit code
+        function generateNewCode() {
+            secretCode = [
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10),
+                Math.floor(Math.random() * 10)
+            ];
+            console.log("Secret Code is:", secretCode.join('')); // For debugging
+        }
+
+        function press(num) {
+            if (currentInput.length < 3) {
+                currentInput.push(num);
+                updateDisplay();
+            }
+        }
+
+        function clearCode() {
+            currentInput = [];
+            updateDisplay();
+            document.getElementById('message').innerText = "Ready to try again?";
+        }
+
+        function updateDisplay() {
+            for (let i = 0; i < 3; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.innerText = currentInput[i] !== undefined ? currentInput[i] : "?";
+                slot.style.color = currentInput[i] !== undefined ? "#FF784E" : "#8B5CF6";
+            }
+        }
+
+        function checkCode() {
+            if (currentInput.length < 3) {
+                document.getElementById('message').innerText = "Enter all 3 digits first!";
+                return;
+            }
+
+            const guessStr = currentInput.join('');
+            const secretStr = secretCode.join('');
+            const msgArea = document.getElementById('message');
+
+            if (guessStr === secretStr) {
+                msgArea.innerText = "🎉 CONGRATS! You opened the vault!";
+                msgArea.style.color = "#2ED573";
+                // Reset game after 3 seconds
+                setTimeout(() => {
+                    generateNewCode();
+                    clearCode();
+                    msgArea.style.color = "#B45309";
+                }, 3000);
+            } else {
+                // Math Logic Clue: Compare Sums
+                const guessSum = currentInput.reduce((a, b) => a + b, 0);
+                const secretSum = secretCode.reduce((a, b) => a + b, 0);
+
+                if (guessSum < secretSum) {
+                    msgArea.innerText = "❌ Wrong! Hint: The sum of numbers is HIGHER.";
+                } else if (guessSum > secretSum) {
+                    msgArea.innerText = "❌ Wrong! Hint: The sum of numbers is LOWER.";
+                } else {
+                    msgArea.innerText = "❌ So close! The sum is right, but digits are wrong!";
+                }
+                
+                currentInput = [];
+                updateDisplay();
+            }
+        }
+
+        // Initialize game
+        generateNewCode();
+    </script>
 </body>
 </html>
