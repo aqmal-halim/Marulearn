@@ -33,11 +33,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         html, body {
-            height: 100%;
+            min-height: 100%;
             background: var(--bg);
             font-family: var(--font-body);
             color: var(--text);
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         /* ── BACKGROUND ── */
@@ -68,7 +68,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 100dvh;
             padding: 12px;
         }
 
@@ -316,27 +316,28 @@
             padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid var(--border);
-            white-space: nowrap;
-            flex-shrink: 0;
+            min-width: 0;
         }
 
-        #timer-icon { font-size: 0.85rem; }
+        #timer-icon { font-size: 0.85rem; flex-shrink: 0; }
 
         #timer-display {
             font-family: var(--font-display);
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--text);
-            min-width: 45px;
+            min-width: 42px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         #timer-progress {
-            width: 50px;
+            width: 60px;
             height: 4px;
             background: var(--border);
             border-radius: 2px;
             overflow: hidden;
+            flex-shrink: 1;
         }
 
         #timer-bar {
@@ -843,7 +844,7 @@
                     </button>
                 </div>
 
-                <a href="index.html" class="home-link">🏠 Back to Marulearn Home</a>
+                <a href="Marulearn/index.html" class="home-link">🏠 Back to Marulearn Home</a>
             </div>
 
             <div id="game-screen" class="screen">
@@ -1089,10 +1090,16 @@
             const pct = (timeLeft / totalTime) * 100;
             const bar = document.getElementById('timer-bar');
             bar.style.width = pct + '%';
-            bar.className = 'bar';
-            if (pct <= 15) { bar.className = 'danger'; document.getElementById('timer-display').style.color = 'var(--red)'; }
-            else if (pct <= 35) { bar.className = 'warn'; document.getElementById('timer-display').style.color = 'var(--yellow)'; }
-            else { bar.className = ''; document.getElementById('timer-display').style.color = 'var(--text)'; }
+            if (pct <= 15) { 
+                bar.className = 'danger'; 
+                document.getElementById('timer-display').style.color = 'var(--red)'; 
+            } else if (pct <= 35) { 
+                bar.className = 'warn'; 
+                document.getElementById('timer-display').style.color = 'var(--yellow)'; 
+            } else { 
+                bar.className = ''; 
+                document.getElementById('timer-display').style.color = 'var(--text)'; 
+            }
         }
 
         // ── LIVES ──
@@ -1274,7 +1281,6 @@
 
         function provideFeedback(results, correctCount) {
             const presentCount = results.filter(r => r === 'present').length;
-            const wrongCount = results.filter(r => r === 'wrong').length;
             const sum = secretCode.reduce((a, b) => a + b, 0);
             const evens = secretCode.filter(n => n % 2 === 0).length;
 
@@ -1288,7 +1294,6 @@
                 setFeedback('🔍', `${correctCount} correct, ${presentCount} misplaced. Getting warmer!`);
             }
 
-            // Math hints every 2 attempts
             if (attempts % 3 === 2) {
                 setFeedback('💡', `Hint: All digits sum to ${sum}.`);
             } else if (attempts % 3 === 1 && attempts > 1) {
