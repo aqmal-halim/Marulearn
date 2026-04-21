@@ -152,6 +152,7 @@
     <script>
         let currentInput = [];
         let secretCode = [];
+        let attempts = 0;
 
         // Generate a random 3-digit code
         function generateNewCode() {
@@ -160,10 +161,16 @@
                 Math.floor(Math.random() * 10),
                 Math.floor(Math.random() * 10)
             ];
-            console.log("Secret Code is:", secretCode.join('')); // For debugging
+            attempts = 0;
+            console.log("Secret Code is:", secretCode.join('')); 
         }
 
         function press(num) {
+            // If user starts typing again after a wrong guess, clear slots automatically
+            if (currentInput.length === 3) {
+                currentInput = [];
+            }
+            
             if (currentInput.length < 3) {
                 currentInput.push(num);
                 updateDisplay();
@@ -173,7 +180,9 @@
         function clearCode() {
             currentInput = [];
             updateDisplay();
-            document.getElementById('message').innerText = "Ready to try again?";
+            const msg = document.getElementById('message');
+            msg.innerText = "Ready to try again?";
+            msg.style.color = "#B45309";
         }
 
         function updateDisplay() {
@@ -190,34 +199,56 @@
                 return;
             }
 
+            const msgArea = document.getElementById('message');
             const guessStr = currentInput.join('');
             const secretStr = secretCode.join('');
-            const msgArea = document.getElementById('message');
 
             if (guessStr === secretStr) {
-                msgArea.innerText = "🎉 CONGRATS! You opened the vault!";
+                msgArea.innerHTML = "🎉 <b>CRACKED!</b> You opened the vault!";
                 msgArea.style.color = "#2ED573";
-                // Reset game after 3 seconds
                 setTimeout(() => {
                     generateNewCode();
                     clearCode();
-                    msgArea.style.color = "#B45309";
-                }, 3000);
+                }, 4000);
             } else {
-                // Math Logic Clue: Compare Sums
-                const guessSum = currentInput.reduce((a, b) => a + b, 0);
-                const secretSum = secretCode.reduce((a, b) => a + b, 0);
+                attempts++;
+                provideSmartHint(currentInput, secretCode);
+            }
+        }
 
+        function provideSmartHint(guess, secret) {
+            const msgArea = document.getElementById('message');
+            const guessSum = guess.reduce((a, b) => a + b, 0);
+            const secretSum = secret.reduce((a, b) => a + b, 0);
+            
+            // Cycle through different hints to keep them learning
+            let hintType = attempts % 3;
+
+            if (hintType === 1) {
+                // Hint 1: Addition
                 if (guessSum < secretSum) {
-                    msgArea.innerText = "❌ Wrong! Hint: The sum of numbers is HIGHER.";
+                    msgArea.innerText = `💡 Hint: The sum of the digits is HIGHER than ${guessSum}.`;
                 } else if (guessSum > secretSum) {
-                    msgArea.innerText = "❌ Wrong! Hint: The sum of numbers is LOWER.";
+                    msgArea.innerText = `💡 Hint: The sum of the digits is LOWER than ${guessSum}.`;
                 } else {
-                    msgArea.innerText = "❌ So close! The sum is right, but digits are wrong!";
+                    msgArea.innerText = `💡 Hint: The sum is exactly ${guessSum}, but the numbers are wrong!`;
+                }
+            } else if (hintType === 2) {
+                // Hint 2: Even/Odd count
+                const evens = secret.filter(n => n % 2 === 0).length;
+                msgArea.innerText = `🕵️‍♂️ Spy Tip: There are ${evens} even numbers in the code.`;
+            } else {
+                // Hint 3: Placement
+                let correctPos = 0;
+                for(let i=0; i<3; i++) {
+                    if(guess[i] === secret[i]) correctPos++;
                 }
                 
-                currentInput = [];
-                updateDisplay();
+                if(correctPos > 0) {
+                    msgArea.innerText = `🎯 Good job! ${correctPos} number(s) are in the CORRECT spot.`;
+                } else {
+                    msgArea.innerText = "❌ None of those numbers are in the right spot!";
+                }
             }
         }
 
