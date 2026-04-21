@@ -20,6 +20,20 @@
             display: flex; flex-direction: column; overflow: hidden;
         }
 
+        /* Fixed Upper Layer (HUD) */
+        .header-layer {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .stats-row { display: flex; justify-content: space-between; align-items: center; }
+
         #menu-screen {
             position: absolute; inset: 0; background: #7DD3FC; z-index: 300;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
@@ -33,14 +47,15 @@
         .mode-btn:active { transform: translateY(4px); box-shadow: none; }
         .hub-btn { margin-top: 25px; background: white !important; color: #333 !important; width: 60%; padding: 12px; font-size: 1rem; }
 
-        .header {
-            position: absolute; top: 10px; left: 0; width: 100%;
-            padding: 0 15px; display: flex; justify-content: space-between; align-items: center; z-index: 100;
-        }
         .home-btn { background: white; border-radius: 12px; padding: 8px 12px; font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #333; }
         .stat-box { background: white; padding: 5px 12px; border-radius: 15px; font-weight: 900; box-shadow: 0 4px 0 rgba(0,0,0,0.1); color: #0369A1; }
 
-        #sky { flex: 1; position: relative; width: 100%; }
+        /* Power Bar inside the Header */
+        #power-container { height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; width: 100%; }
+        #power-bar { width: 0%; height: 100%; background: #4ADE80; transition: width 0.3s ease; }
+
+        /* Separated Game Window */
+        #sky { flex: 1; position: relative; width: 100%; overflow: hidden; }
 
         .falling-word {
             position: absolute; background: white; padding: 8px 15px; border-radius: 20px;
@@ -49,10 +64,11 @@
         }
         .char.typed { color: #4ADE80; transform: scale(1.1); display: inline-block; }
 
+        /* Bottom Keyboard Layer */
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
             padding: 15px 5px 40px 5px; display: flex; flex-direction: column; gap: 6px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
         .keyboard-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
         .key {
@@ -80,15 +96,19 @@
         <a href="../index.html" class="mode-btn hub-btn">🏠 Marulearn Hub</a>
     </div>
 
-    <div class="header">
-        <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
-        <div style="display:flex; gap:8px;">
-            <div class="stat-box">⭐ <span id="score">0</span></div>
-            <div class="stat-box">❤️ <span id="lives">3</span></div>
+    <div class="header-layer">
+        <div class="stats-row">
+            <a href="#" onclick="location.reload()" class="home-btn">🏠</a>
+            <div style="display:flex; gap:8px;">
+                <div class="stat-box">⭐ <span id="score">0</span></div>
+                <div class="stat-box">❤️ <span id="lives">3</span></div>
+            </div>
         </div>
+        <div id="power-container"><div id="power-bar"></div></div>
     </div>
 
     <div id="sky"></div>
+
     <div id="input-area"></div>
 
     <div id="game-over">
@@ -99,7 +119,6 @@
 </div>
 
 <script>
-    // Maps each Japanese character to its Romaji parts for accurate typing tracking
     const KANA_TO_ROMAJI = {
         'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
         'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
@@ -114,13 +133,13 @@
         'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
         'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
         'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
-        'タ':['T','A'],'チ':['T','I'],'ツ':['T','U'],'テ':['T','E'],'ト':['T','O'],
+        'タ':['T','A'],'チ':['T','I'],'つ':['T','U'],'テ':['T','E'],'ト':['T','O'],
         'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
-        'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
-        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
-        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
-        'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
-        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-']
+        'ハ':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
+        'マ':['M','A'],'ミ':['M','I'],'む':['M','U'],'メ':['M','E'],'も':['M','O'],
+        'ヤ':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
+        'ラ':['R','A'],'リ':['R','I'],'る':['R','U'],'レ':['R','E'],'ろ':['R','O'],
+        'ワ':['W','A'],'を':['W','O'],'ン':['N'],'ー':['-']
     };
 
     const DATA = {
@@ -133,7 +152,7 @@
     const QWERTY = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
     const NUMPAD = [["1","2","3"],["4","5","6"],["7","8","9"],["0"]];
 
-    let score = 0, lives = 3, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
+    let score = 0, lives = 3, power = 0, gameActive = false, activeWords = [], spawnRate = 3000, currentMode = '';
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function playSfx(f, t, d) {
@@ -183,7 +202,6 @@
         el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
         document.getElementById('sky').appendChild(el);
 
-        // Define tracking sequence
         let sequence = [];
         if (currentMode === 'hira' || currentMode === 'kata') {
             text.split('').forEach((char, idx) => {
@@ -195,7 +213,6 @@
         }
 
         activeWords.push({ el, text, sequence, y: -50, progress: 0 });
-        
         setTimeout(spawnWord, spawnRate);
         spawnRate = Math.max(1000, spawnRate - 50);
     }
@@ -207,9 +224,7 @@
                 w.progress++;
                 playSfx(440 + (w.progress * 60), 'sine', 0.1);
                 
-                // Check if we finished all keys for a specific character
                 const isCharFinished = !w.sequence[w.progress] || w.sequence[w.progress].charIdx !== nextRequired.charIdx;
-                
                 if (isCharFinished) {
                     const chars = w.el.querySelectorAll('.char');
                     if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
@@ -217,7 +232,9 @@
 
                 if(w.progress === w.sequence.length) {
                     score += 10;
+                    power = Math.min(100, power + 10);
                     document.getElementById('score').innerText = score;
+                    document.getElementById('power-bar').style.width = power + '%';
                     playSfx(800, 'sine', 0.2);
                     w.el.remove();
                     activeWords = activeWords.filter(item => item !== w);
@@ -229,10 +246,11 @@
 
     function update() {
         if(!gameActive) return;
+        const skyHeight = document.getElementById('sky').clientHeight;
         activeWords.forEach((w, i) => {
             w.y += 1.2 + (score / 600);
             w.el.style.top = w.y + 'px';
-            if(w.y > window.innerHeight * 0.6) {
+            if(w.y > skyHeight) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
                 playSfx(150, 'sawtooth', 0.2);
