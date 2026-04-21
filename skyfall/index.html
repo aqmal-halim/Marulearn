@@ -47,7 +47,7 @@
             font-weight: 900; font-size: 1.4rem; box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             display: flex; gap: 2px; z-index: 10; user-select: none;
         }
-        .char.typed { color: #4ADE80; }
+        .char.typed { color: #4ADE80; transform: scale(1.1); display: inline-block; }
 
         #input-area {
             background: white; border-top-left-radius: 30px; border-top-right-radius: 30px;
@@ -99,14 +99,28 @@
 </div>
 
 <script>
-    // Romaji Map for typing Hiragana/Katakana with QWERTY
-    const ROMAJI_MAP = {
-        'ねこ': 'NEKO', 'いぬ': 'INU', 'うみ': 'UMI', 'とり': 'TORI', 'ほし': 'HOSHI',
-        'あめ': 'AME', 'はな': 'HANA', 'ゆき': 'YUKI', 'つき': 'TSUKI', 'もり': 'MORI',
-        'さくら': 'SAKURA', 'くも': 'KUMO',
-        'ネコ': 'NEKO', 'イヌ': 'INU', 'ウミ': 'UMI', 'トリ': 'TORI', 'ホシ': 'HOSHI',
-        'アメ': 'AME', 'ハナ': 'HANA', 'ユキ': 'YUKI', 'ツキ': 'TSUKI', 'モリ': 'MORI',
-        'ケーキ': 'K-KI', 'パン': 'PAN'
+    // Maps each Japanese character to its Romaji parts for accurate typing tracking
+    const KANA_TO_ROMAJI = {
+        'あ':['A'],'い':['I'],'う':['U'],'え':['E'],'お':['O'],
+        'か':['K','A'],'き':['K','I'],'く':['K','U'],'け':['K','E'],'こ':['K','O'],
+        'さ':['S','A'],'し':['S','I'],'す':['S','U'],'せ':['S','E'],'そ':['S','O'],
+        'た':['T','A'],'ち':['T','I'],'つ':['T','U'],'て':['T','E'],'と':['T','O'],
+        'な':['N','A'],'に':['N','I'],'ぬ':['N','U'],'ね':['N','E'],'の':['N','O'],
+        'は':['H','A'],'ひ':['H','I'],'ふ':['F','U'],'へ':['H','E'],'ほ':['H','O'],
+        'ま':['M','A'],'み':['M','I'],'む':['M','U'],'め':['M','E'],'も':['M','O'],
+        'や':['Y','A'],'ゆ':['Y','U'],'よ':['Y','O'],
+        'ら':['R','A'],'り':['R','I'],'る':['R','U'],'れ':['R','E'],'ろ':['R','O'],
+        'わ':['W','A'],'を':['W','O'],'ん':['N'],
+        'ア':['A'],'イ':['I'],'ウ':['U'],'エ':['E'],'オ':['O'],
+        'カ':['K','A'],'キ':['K','I'],'ク':['K','U'],'ケ':['K','E'],'コ':['K','O'],
+        'サ':['S','A'],'シ':['S','I'],'ス':['S','U'],'セ':['S','E'],'ソ':['S','O'],
+        'タ':['T','A'],'チ':['T','I'],'ツ':['T','U'],'テ':['T','E'],'ト':['T','O'],
+        'ナ':['N','A'],'ニ':['N','I'],'ヌ':['N','U'],'ネ':['N','E'],'ノ':['N','O'],
+        'ハ':['H','A'],'ヒ':['H','I'],'フ':['F','U'],'ヘ':['H','E'],'ホ':['H','O'],
+        'マ':['M','A'],'ミ':['M','I'],'ム':['M','U'],'メ':['M','E'],'モ':['M','O'],
+        'ヤ':['Y','A'],'ユ':['Y','U'],'ヨ':['Y','O'],
+        'ラ':['R','A'],'リ':['R','I'],'ル':['R','U'],'レ':['R','E'],'ロ':['R','O'],
+        'ワ':['W','A'],'ヲ':['W','O'],'ン':['N'],'ー':['-']
     };
 
     const DATA = {
@@ -162,19 +176,25 @@
         if(audioCtx.state === 'suspended') audioCtx.resume();
         
         const text = DATA[currentMode].words[Math.floor(Math.random() * DATA[currentMode].words.length)];
-        const targetString = (currentMode === 'hira' || currentMode === 'kata') ? ROMAJI_MAP[text] : text;
-        
         const el = document.createElement('div');
         el.className = 'falling-word';
         el.style.left = Math.random() * (window.innerWidth - 120) + 'px';
         el.style.top = '-50px';
-        
-        // We show the Japanese/Full word, but check against the letters
         el.innerHTML = text.split('').map(c => `<span class="char">${c}</span>`).join('');
-        
         document.getElementById('sky').appendChild(el);
-        // We store 'targetString' so typing 'N-E-K-O' pops 'ねこ'
-        activeWords.push({ el, text, target: targetString, y: -50, progress: 0 });
+
+        // Define tracking sequence
+        let sequence = [];
+        if (currentMode === 'hira' || currentMode === 'kata') {
+            text.split('').forEach((char, idx) => {
+                const keys = KANA_TO_ROMAJI[char] || [char];
+                keys.forEach(k => sequence.push({ key: k, charIdx: idx }));
+            });
+        } else {
+            text.split('').forEach((char, idx) => sequence.push({ key: char, charIdx: idx }));
+        }
+
+        activeWords.push({ el, text, sequence, y: -50, progress: 0 });
         
         setTimeout(spawnWord, spawnRate);
         spawnRate = Math.max(1000, spawnRate - 50);
@@ -182,17 +202,20 @@
 
     function handleInput(l) {
         for(let w of activeWords) {
-            if(w.target[w.progress] === l || (w.target[w.progress] === '-' && l === 'K')) { // Handle long vowels like ケーキ
+            let nextRequired = w.sequence[w.progress];
+            if(nextRequired && nextRequired.key === l) {
                 w.progress++;
                 playSfx(440 + (w.progress * 60), 'sine', 0.1);
                 
-                // Visual feedback: highlight the Japanese character as the Romaji is typed
-                // (Rough approximation: 2 romaji letters per 1 kana)
-                const charIndex = Math.floor((w.progress / w.target.length) * w.text.length);
-                const chars = w.el.querySelectorAll('.char');
-                if(chars[charIndex]) chars[charIndex].classList.add('typed');
+                // Check if we finished all keys for a specific character
+                const isCharFinished = !w.sequence[w.progress] || w.sequence[w.progress].charIdx !== nextRequired.charIdx;
+                
+                if (isCharFinished) {
+                    const chars = w.el.querySelectorAll('.char');
+                    if(chars[nextRequired.charIdx]) chars[nextRequired.charIdx].classList.add('typed');
+                }
 
-                if(w.progress === w.target.length) {
+                if(w.progress === w.sequence.length) {
                     score += 10;
                     document.getElementById('score').innerText = score;
                     playSfx(800, 'sine', 0.2);
