@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaruQuest: Sky Fall ULTRA</title>
     <style>
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+            /* Prevents the grey highlight box on tap */
+            -webkit-tap-highlight-color: transparent; 
+            /* Disables double-tap to zoom on elements */
+            touch-action: manipulation; 
+        }
+        
         :root { --primary: #60A5FA; --accent: #FCD34D; --gold: #FFD700; }
         
         body { 
@@ -13,12 +20,17 @@
             margin: 0; overflow: hidden;
             display: flex; justify-content: center;
             background: #000;
+            /* Extra layer of protection against accidental scrolling/zoom */
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
 
         #game-wrapper {
             width: 100vw; max-width: 420px; height: 100vh;
             position: relative; transition: background 2s ease;
-            background: linear-gradient(to bottom, #7DD3FC, #BAE6FD); /* Day */
+            background: linear-gradient(to bottom, #7DD3FC, #BAE6FD);
+            overflow: hidden;
         }
 
         /* Power Bar */
@@ -39,6 +51,7 @@
         .home-btn {
             background: white; border-radius: 12px; padding: 8px 12px;
             font-size: 1.2rem; text-decoration: none; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            color: #333;
         }
 
         .stat-box {
@@ -53,9 +66,9 @@
             border-radius: 20px; font-weight: 900; font-size: 1.2rem;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1); white-space: nowrap;
             display: flex; gap: 2px; z-index: 10;
+            user-select: none; /* Prevents text selection while typing */
         }
         
-        /* Golden Word Style */
         .falling-word.golden {
             background: var(--gold); border: 3px solid #FFF;
             animation: glow 1s infinite alternate;
@@ -68,16 +81,18 @@
             height: 35%; background: white; border-top-left-radius: 30px;
             border-top-right-radius: 30px; padding: 15px;
             display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+            /* Prevents long-press context menus */
+            -webkit-user-select: none;
         }
 
         .key {
             background: #F1F5F9; border: none; border-radius: 10px;
             font-size: 1.1rem; font-weight: 900; color: #475569;
             box-shadow: 0 4px 0 #CBD5E1;
+            outline: none;
         }
-        .key:active { transform: translateY(2px); background: var(--accent); }
+        .key:active { transform: translateY(2px); background: var(--accent); box-shadow: 0 2px 0 #CBD5E1; }
 
-        /* Particles */
         .particle {
             position: absolute; width: 6px; height: 6px; border-radius: 2px;
             pointer-events: none; z-index: 5;
@@ -88,6 +103,7 @@
             background: rgba(0,0,0,0.9); z-index: 200;
             flex-direction: column; align-items: center; justify-content: center;
             color: white;
+            text-align: center;
         }
     </style>
 </head>
@@ -108,16 +124,16 @@
 
     <div id="game-over">
         <h1>MARU POWER! 🚀</h1>
-        <p>Final Score: <span id="final-score">0</span></p>
-        <button onclick="location.reload()" style="padding: 15px; border-radius: 10px; background: var(--accent); border:none; font-weight:900;">Play Again</button>
+        <p style="font-size: 1.5rem; margin: 10px 0;">Final Score: <span id="final-score">0</span></p>
+        <button onclick="location.reload()" style="padding: 15px 25px; border-radius: 10px; background: var(--accent); border:none; font-weight:900; cursor:pointer;">Play Again</button>
     </div>
 </div>
 
 <script>
-    const WORDS = ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'GREEN', 'HAPPY'];
+    const WORDS = ['CAT', 'DOG', 'SUN', 'MOON', 'FISH', 'BIRD', 'STAR', 'APPLE', 'BLUE', 'RED', 'GREEN', 'HAPPY', 'CAKE', 'RAIN'];
     const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     
-    let score = 0, lives = 3, combo = 0, power = 0;
+    let score = 0, lives = 3, power = 0;
     let activeWords = [], gameActive = true, spawnRate = 3000;
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -136,7 +152,16 @@
     ALPHABET.forEach(l => {
         const b = document.createElement('button');
         b.className = 'key'; b.innerText = l;
-        b.onclick = () => { if(audioCtx.state === 'suspended') audioCtx.resume(); handleInput(l); };
+        // preventDefault on touchstart is another way to kill the zoom/delay
+        b.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            handleInput(l);
+        });
+        // Also keep onclick for desktop mouse testing
+        b.onclick = (e) => {
+            if(e.pointerType !== 'touch') handleInput(l);
+        };
         document.getElementById('input-area').appendChild(b);
     });
 
@@ -161,8 +186,8 @@
     }
 
     function updateBackground() {
-        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; // Night
-        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)'; // Sunset
+        if(score > 300) wrapper.style.background = 'linear-gradient(to bottom, #1E1B4B, #312E81)'; 
+        else if(score > 100) wrapper.style.background = 'linear-gradient(to bottom, #FB923C, #F43F5E)';
     }
 
     function spawnWord() {
@@ -177,10 +202,11 @@
         sky.appendChild(el);
         activeWords.push({ el, text, y: -50, progress: 0, isGolden });
         setTimeout(spawnWord, spawnRate);
-        spawnRate = Math.max(800, spawnRate - 30);
+        spawnRate = Math.max(800, spawnRate - 40);
     }
 
     function handleInput(l) {
+        if(!gameActive) return;
         for(let w of activeWords) {
             if(w.text[w.progress] === l) {
                 w.progress++;
@@ -194,7 +220,7 @@
 
     function popWord(w) {
         const rect = w.el.getBoundingClientRect();
-        createParticles(rect.left + rect.width/2, rect.top - 50, w.isGolden ? '#FFD700' : '#FFF');
+        createParticles(rect.left + rect.width/2, rect.top, w.isGolden ? '#FFD700' : '#4ADE80');
         
         if(w.isGolden) { lives = Math.min(5, lives + 1); score += 50; playSfx(880, 'triangle', 0.4); }
         else { score += 10; playSfx(600, 'sine', 0.1); }
@@ -227,7 +253,7 @@
     function update() {
         if(!gameActive) return;
         activeWords.forEach((w, i) => {
-            w.y += 1.2 + (score / 400);
+            w.y += 1.2 + (score / 450);
             w.el.style.top = w.y + 'px';
             if(w.y > sky.clientHeight) {
                 playSfx(100, 'sawtooth', 0.2);
@@ -244,7 +270,8 @@
         requestAnimationFrame(update);
     }
 
-    spawnWord(); update();
+    spawnWord(); 
+    update();
 </script>
 </body>
 </html>
