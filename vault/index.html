@@ -171,19 +171,19 @@
         <div id="menu-screen">
             <button class="menu-btn" onclick="initGame('beginner')">
                 BEGINNER (3m / 10 ❤️)
-                <span id="pb-beginner" class="pb-text">PB: --</span>
+                <span id="pb-beginner" class="pb-text">Best: --</span>
             </button>
             <button class="menu-btn" onclick="initGame('intermediate')">
                 INTERMEDIATE (2m / 7 ❤️)
-                <span id="pb-intermediate" class="pb-text">PB: --</span>
+                <span id="pb-intermediate" class="pb-text">Best: --</span>
             </button>
             <button class="menu-btn" onclick="initGame('hard')">
                 HARD (1.5m / 5 ❤️)
-                <span id="pb-hard" class="pb-text">PB: --</span>
+                <span id="pb-hard" class="pb-text">Best: --</span>
             </button>
             <button class="menu-btn" onclick="initGame('veryhard')">
                 VERY HARD (1m / 3 ❤️)
-                <span id="pb-veryhard" class="pb-text">PB: --</span>
+                <span id="pb-veryhard" class="pb-text">Best: --</span>
             </button>
             
             <a href="index.html" class="home-link">🏠 Back to Marulearn Home</a>
@@ -251,10 +251,10 @@
 
         function loadPBs() {
             Object.keys(config).forEach(diff => {
-                const pb = localStorage.getItem(`maruvault_pb_${diff}`);
+                const pb = localStorage.getItem(`maruvault_pb_taken_${diff}`);
                 const element = document.getElementById(`pb-${diff}`);
                 if (element) {
-                    element.innerText = pb ? `Best Time: ${pb}s left` : "Best: --";
+                    element.innerText = pb ? `Best Time: ${pb}s taken` : "Best: --";
                 }
             });
         }
@@ -329,7 +329,6 @@
             let results = ["wrong", "wrong", "wrong"];
             let correctCount = 0;
 
-            // Greens
             for (let i = 0; i < 3; i++) {
                 if (guess[i] === tempSecret[i]) {
                     results[i] = "correct";
@@ -338,7 +337,6 @@
                     correctCount++;
                 }
             }
-            // Yellows
             for (let i = 0; i < 3; i++) {
                 if (guess[i] !== "used") {
                     let idx = tempSecret.indexOf(guess[i]);
@@ -379,9 +377,12 @@
         }
 
         function savePB() {
-            const currentPB = localStorage.getItem(`maruvault_pb_${currentDifficulty}`);
-            if (!currentPB || timeLeft > parseInt(currentPB)) {
-                localStorage.setItem(`maruvault_pb_${currentDifficulty}`, timeLeft);
+            const timeTaken = config[currentDifficulty].time - timeLeft;
+            const currentBest = localStorage.getItem(`maruvault_pb_taken_${currentDifficulty}`);
+            
+            // PB is "lowest time taken"
+            if (!currentBest || timeTaken < parseInt(currentBest)) {
+                localStorage.setItem(`maruvault_pb_taken_${currentDifficulty}`, timeTaken);
             }
         }
 
