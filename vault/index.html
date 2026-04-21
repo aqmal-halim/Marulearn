@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaruVault: Mission Critical</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link href="[https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap)" rel="stylesheet">
     <style>
         :root {
             --bg: #0f0e17;
@@ -31,1356 +30,635 @@
             --transition: 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-```
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-    html, body {
-        height: 100%;
-        background: var(--bg);
-        font-family: var(--font-body);
-        color: var(--text);
-        overflow: hidden;
-    }
-
-    /* ── BACKGROUND ── */
-    body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background:
-            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,58,237,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 40% at 10% 80%, rgba(255,107,53,0.12) 0%, transparent 60%);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    /* ── SCANLINES ── */
-    body::after {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    #app {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 12px;
-    }
-
-    #game-container {
-        background: var(--surface);
-        width: 100%;
-        max-width: 420px;
-        border-radius: 28px;
-        border: 1px solid var(--border);
-        box-shadow: 0 0 0 1px rgba(124,58,237,0.15), 0 24px 80px rgba(0,0,0,0.6);
-        overflow: hidden;
-        position: relative;
-    }
-
-    /* ── HEADER ── */
-    #header {
-        background: linear-gradient(135deg, #1a1828 0%, #1e1b34 100%);
-        padding: 18px 22px 16px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .logo-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .vault-icon {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, var(--accent), #ff8c5a);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        box-shadow: 0 4px 12px rgba(255,107,53,0.4);
-        flex-shrink: 0;
-    }
-
-    .logo-text {
-        font-family: var(--font-display);
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        color: var(--text);
-    }
-
-    .logo-sub {
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        margin-top: 1px;
-    }
-
-    #sound-toggle {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        color: var(--text-muted);
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-
-    #sound-toggle:hover { color: var(--text); border-color: var(--purple-light); }
-    #sound-toggle.muted { opacity: 0.5; }
-
-    /* ── SCREENS ── */
-    .screen { padding: 20px 22px 22px; }
-
-    /* ── MENU ── */
-    #menu-screen { display: flex; flex-direction: column; gap: 0; }
-
-    .menu-intro {
-        text-align: center;
-        margin-bottom: 18px;
-    }
-
-    .menu-intro p {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        line-height: 1.5;
-    }
-
-    .diff-label {
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 10px;
-        padding-left: 2px;
-    }
-
-    .diff-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 16px;
-    }
-
-    .menu-btn {
-        padding: 13px 16px;
-        border-radius: 14px;
-        border: 1px solid var(--border);
-        background: var(--surface2);
-        color: var(--text);
-        font-family: var(--font-body);
-        font-weight: 800;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        transition: all 0.2s ease;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .menu-btn::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-
-    .menu-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .menu-btn:active { transform: translateY(0); }
-
-    .diff-badge {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-    }
-
-    .menu-btn[data-diff="beginner"] .diff-badge { background: rgba(16,217,140,0.15); }
-    .menu-btn[data-diff="intermediate"] .diff-badge { background: rgba(251,191,36,0.15); }
-    .menu-btn[data-diff="hard"] .diff-badge { background: rgba(255,107,53,0.15); }
-    .menu-btn[data-diff="veryhard"] .diff-badge { background: rgba(244,63,94,0.15); }
-
-    .menu-btn[data-diff="beginner"]:hover { border-color: var(--green); }
-    .menu-btn[data-diff="intermediate"]:hover { border-color: var(--yellow); }
-    .menu-btn[data-diff="hard"]:hover { border-color: var(--accent); }
-    .menu-btn[data-diff="veryhard"]:hover { border-color: var(--red); }
-
-    .menu-btn-info { flex: 1; }
-
-    .menu-btn-title {
-        font-size: 0.95rem;
-        font-weight: 900;
-        font-family: var(--font-display);
-        letter-spacing: -0.02em;
-    }
-
-    .menu-btn-meta {
-        font-size: 0.72rem;
-        color: var(--text-muted);
-        margin-top: 2px;
-        font-weight: 700;
-    }
-
-    .pb-pill {
-        background: rgba(16,217,140,0.1);
-        color: var(--green);
-        font-size: 0.68rem;
-        font-weight: 800;
-        padding: 3px 8px;
-        border-radius: 20px;
-        border: 1px solid rgba(16,217,140,0.2);
-        white-space: nowrap;
-        font-family: var(--font-display);
-    }
-
-    .pb-pill.empty { background: rgba(122,116,142,0.1); color: var(--text-muted); border-color: var(--border); }
-
-    .home-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 10px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-decoration: none;
-        transition: all 0.2s;
-        margin-top: 4px;
-    }
-
-    .home-link:hover { color: var(--text); border-color: var(--purple-light); }
-
-    /* ── GAME SCREEN ── */
-    #game-screen { display: none; flex-direction: column; gap: 14px; }
-
-    /* Status Bar */
-    #status-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #lives-display {
-        display: flex;
-        gap: 4px;
-        align-items: center;
-    }
-
-    .heart {
-        font-size: 1.1rem;
-        transition: all 0.3s var(--transition);
-    }
-
-    .heart.lost {
-        opacity: 0.2;
-        transform: scale(0.7);
-        filter: grayscale(1);
-    }
-
-    #timer-wrap {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--surface2);
-        padding: 6px 12px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-    }
-
-    #timer-icon { font-size: 0.85rem; }
-
-    #timer-display {
-        font-family: var(--font-display);
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--text);
-        min-width: 48px;
-        text-align: right;
-    }
-
-    #timer-progress {
-        width: 60px;
-        height: 4px;
-        background: var(--border);
-        border-radius: 2px;
-        overflow: hidden;
-    }
-
-    #timer-bar {
-        height: 100%;
-        background: var(--green);
-        border-radius: 2px;
-        transition: width 1s linear, background 0.5s;
-    }
-
-    #timer-bar.warn { background: var(--yellow); }
-    #timer-bar.danger { background: var(--red); animation: pulse-bar 0.8s infinite; }
-
-    @keyframes pulse-bar { 50% { opacity: 0.5; } }
-
-    /* Attempt counter */
-    #attempt-counter {
-        text-align: center;
-        font-size: 0.72rem;
-        color: var(--text-muted);
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-
-    /* Code Display */
-    #display-screen {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        padding: 16px;
-        min-height: 100px;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    #display-screen::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(124,58,237,0.5), transparent);
-    }
-
-    .code-slot {
-        width: clamp(44px, 14vw, 62px);
-        height: clamp(62px, 18vw, 80px);
-        background: var(--surface);
-        border-radius: 14px;
-        border: 2px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--font-display);
-        font-size: 1.8rem;
-        font-weight: 700;
-        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        position: relative;
-    }
-
-    .code-slot.filled {
-        border-color: var(--purple-light);
-        background: rgba(124,58,237,0.12);
-        color: var(--purple-light);
-        transform: scale(1.04);
-    }
-
-    .code-slot.empty { color: var(--border); }
-
-    .code-slot.correct {
-        background: rgba(16,217,140,0.15);
-        border-color: var(--correct);
-        color: var(--correct);
-        transform: scale(1.05);
-        box-shadow: 0 0 16px rgba(16,217,140,0.3);
-    }
-
-    .code-slot.present {
-        background: rgba(251,191,36,0.15);
-        border-color: var(--present);
-        color: var(--present);
-        transform: scale(1.02);
-        box-shadow: 0 0 12px rgba(251,191,36,0.25);
-    }
-
-    .code-slot.wrong {
-        background: rgba(244,63,94,0.12);
-        border-color: var(--wrong);
-        color: var(--wrong);
-    }
-
-    @keyframes flip-in {
-        0% { transform: scaleY(0) scale(1.05); opacity: 0; }
-        100% { transform: scaleY(1) scale(1.05); opacity: 1; }
-    }
-
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20% { transform: translateX(-6px); }
-        40% { transform: translateX(6px); }
-        60% { transform: translateX(-4px); }
-        80% { transform: translateX(4px); }
-    }
-
-    @keyframes pop {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.25); }
-        100% { transform: scale(1); }
-    }
-
-    .shake { animation: shake 0.4s ease; }
-    .pop { animation: pop 0.3s var(--transition); }
-    .flip { animation: flip-in 0.25s ease forwards; }
-
-    /* History */
-    #history-section {
-        display: none;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    #history-label {
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--text-muted);
-    }
-
-    #history-log {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        max-height: 72px;
-        overflow-y: auto;
-    }
-
-    .history-row {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-        animation: slideIn 0.2s ease;
-    }
-
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateX(-8px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-
-    .hist-dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 6px;
-        font-family: var(--font-display);
-        font-size: 0.7rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-    }
-
-    .hist-dot.correct { background: rgba(16,217,140,0.2); color: var(--correct); }
-    .hist-dot.present { background: rgba(251,191,36,0.2); color: var(--present); }
-    .hist-dot.wrong { background: rgba(244,63,94,0.1); color: var(--wrong); }
-
-    .hist-label {
-        font-size: 0.68rem;
-        color: var(--text-muted);
-        font-weight: 700;
-    }
-
-    /* Feedback */
-    #feedback-box {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 11px 14px;
-        min-height: 52px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    #feedback-icon { font-size: 1.1rem; flex-shrink: 0; }
-
-    #message {
-        font-size: 0.82rem;
-        font-weight: 800;
-        color: var(--text);
-        line-height: 1.4;
-        flex: 1;
-    }
-
-    /* Keypad */
-    #keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-
-    .key-btn {
-        aspect-ratio: 1.15 / 1;
-        font-family: var(--font-display);
-        font-size: 1.3rem;
-        font-weight: 700;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        background: var(--surface2);
-        color: var(--text);
-        cursor: pointer;
-        transition: all 0.12s ease;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .key-btn::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: white;
-        opacity: 0;
-        border-radius: 14px;
-        transition: opacity 0.15s;
-    }
-
-    .key-btn:hover { background: var(--border); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .key-btn:active { transform: translateY(1px); box-shadow: none; }
-    .key-btn:active::after { opacity: 0.08; }
-
-    .key-btn.btn-clear {
-        background: rgba(244,63,94,0.1);
-        color: var(--red);
-        border-color: rgba(244,63,94,0.25);
-        font-size: 0.75rem;
-        letter-spacing: 0.05em;
-    }
-
-    .key-btn.btn-clear:hover { background: rgba(244,63,94,0.2); }
-
-    .key-btn.btn-go {
-        background: rgba(16,217,140,0.12);
-        color: var(--green);
-        border-color: rgba(16,217,140,0.3);
-        font-size: 0.85rem;
-        letter-spacing: 0.1em;
-    }
-
-    .key-btn.btn-go:hover { background: rgba(16,217,140,0.2); }
-    .key-btn.btn-go:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
-
-    /* ── OVERLAYS (Win / Lose) ── */
-    #overlay {
-        display: none;
-        position: absolute;
-        inset: 0;
-        background: rgba(15,14,23,0.94);
-        backdrop-filter: blur(8px);
-        z-index: 10;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 28px;
-        gap: 16px;
-        border-radius: 28px;
-    }
-
-    #overlay.show { display: flex; animation: fadeIn 0.3s ease; }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .overlay-emoji {
-        font-size: 4rem;
-        animation: bounceIn 0.5s var(--transition);
-    }
-
-    @keyframes bounceIn {
-        0% { transform: scale(0); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
-    }
-
-    #overlay-title {
-        font-family: var(--font-display);
-        font-size: 1.5rem;
-        font-weight: 700;
-        text-align: center;
-        letter-spacing: -0.03em;
-    }
-
-    #overlay-title.win { color: var(--green); }
-    #overlay-title.lose { color: var(--red); }
-
-    #overlay-stats {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .stat-chip {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 8px 14px;
-        text-align: center;
-    }
-
-    .stat-chip .val {
-        font-family: var(--font-display);
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--accent2);
-    }
-
-    .stat-chip .lbl {
-        font-size: 0.65rem;
-        color: var(--text-muted);
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-top: 1px;
-    }
-
-    #pb-banner {
-        background: linear-gradient(135deg, rgba(16,217,140,0.15), rgba(16,217,140,0.05));
-        border: 1px solid rgba(16,217,140,0.3);
-        border-radius: 12px;
-        padding: 10px 18px;
-        font-size: 0.82rem;
-        font-weight: 800;
-        color: var(--green);
-        text-align: center;
-        display: none;
-    }
-
-    #pb-banner.show { display: block; animation: pop 0.4s var(--transition); }
-
-    #overlay-code {
-        font-family: var(--font-display);
-        font-size: 0.82rem;
-        color: var(--text-muted);
-    }
-
-    .overlay-btns {
-        display: flex;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .overlay-btn {
-        flex: 1;
-        padding: 13px;
-        border-radius: 14px;
-        border: none;
-        font-family: var(--font-body);
-        font-size: 0.9rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .overlay-btn.primary {
-        background: linear-gradient(135deg, var(--accent), #ff8c5a);
-        color: white;
-        box-shadow: 0 4px 16px rgba(255,107,53,0.35);
-    }
-
-    .overlay-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,107,53,0.45); }
-
-    .overlay-btn.secondary {
-        background: var(--surface2);
-        color: var(--text-muted);
-        border: 1px solid var(--border);
-    }
-
-    .overlay-btn.secondary:hover { color: var(--text); border-color: var(--purple-light); }
-
-    /* ── LEGEND ── */
-    #legend {
-        display: flex;
-        justify-content: center;
-        gap: 14px;
-        padding: 0 4px;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 0.68rem;
-        color: var(--text-muted);
-        font-weight: 700;
-    }
-
-    .legend-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 3px;
-    }
-
-    .legend-dot.correct { background: var(--correct); }
-    .legend-dot.present { background: var(--present); }
-    .legend-dot.wrong { background: rgba(244,63,94,0.5); }
-
-    /* ── KEYBOARD SUPPORT ── */
-    .key-btn.key-active { transform: translateY(1px); filter: brightness(1.2); }
-
-    /* Responsive tweaks */
-    @media (max-height: 680px) {
-        .screen { padding: 14px 18px 16px; }
-        #game-screen { gap: 10px; }
-        .code-slot { height: 58px !important; }
-    }
-
-    /* Scrollbar */
-    #history-log::-webkit-scrollbar { width: 3px; }
-    #history-log::-webkit-scrollbar-track { background: transparent; }
-    #history-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-    /* Toast */
-    #toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(80px);
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        color: var(--text);
-        font-size: 0.82rem;
-        font-weight: 700;
-        padding: 10px 20px;
-        border-radius: 20px;
-        z-index: 100;
-        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        white-space: nowrap;
-    }
-
-    #toast.show { transform: translateX(-50%) translateY(0); }
-</style>
-```
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            font-family: var(--font-body);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 80% 20%, rgba(124,58,237,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 10% 80%, rgba(255,107,53,0.12) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #app {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        #game-container {
+            background: var(--surface);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 0 1px rgba(124,58,237,0.15), 0 24px 80px rgba(0,0,0,0.6);
+            overflow: hidden;
+            position: relative;
+        }
+
+        #header {
+            background: linear-gradient(135deg, #1a1828 0%, #1e1b34 100%);
+            padding: 18px 22px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vault-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #ff8c5a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(255,107,53,0.4);
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .logo-sub {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        #sound-toggle {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        #sound-toggle:hover { color: var(--text); border-color: var(--purple-light); }
+        #sound-toggle.muted { opacity: 0.5; }
+
+        .screen { padding: 20px 22px 22px; }
+        #menu-screen { display: flex; flex-direction: column; gap: 0; }
+
+        .menu-intro {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .menu-intro p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .diff-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+
+        .diff-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .menu-btn {
+            padding: 13px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .diff-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .menu-btn[data-diff="beginner"] .diff-badge { background: rgba(16,217,140,0.15); }
+        .menu-btn[data-diff="intermediate"] .diff-badge { background: rgba(251,191,36,0.15); }
+        .menu-btn[data-diff="hard"] .diff-badge { background: rgba(255,107,53,0.15); }
+        .menu-btn[data-diff="veryhard"] .diff-badge { background: rgba(244,63,94,0.15); }
+
+        .menu-btn-info { flex: 1; }
+        .menu-btn-title { font-size: 0.95rem; font-weight: 900; font-family: var(--font-display); }
+        .menu-btn-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+        .pb-pill {
+            background: rgba(16,217,140,0.1);
+            color: var(--green);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(16,217,140,0.2);
+            white-space: nowrap;
+        }
+
+        .pb-pill.empty { background: rgba(122,116,142,0.1); color: var(--text-muted); border-color: var(--border); }
+
+        .home-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+
+        #game-screen { display: none; flex-direction: column; gap: 14px; }
+        #status-bar { display: flex; justify-content: space-between; align-items: center; }
+        #lives-display { display: flex; gap: 4px; align-items: center; }
+        .heart { font-size: 1.1rem; transition: all 0.3s var(--transition); }
+        .heart.lost { opacity: 0.2; transform: scale(0.7); filter: grayscale(1); }
+
+        #timer-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        #timer-display { font-family: var(--font-display); font-size: 0.85rem; min-width: 48px; text-align: right; }
+        #timer-progress { width: 60px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        #timer-bar { height: 100%; background: var(--green); transition: width 1s linear; }
+        #timer-bar.warn { background: var(--yellow); }
+        #timer-bar.danger { background: var(--red); animation: pulse-bar 0.8s infinite; }
+        @keyframes pulse-bar { 50% { opacity: 0.5; } }
+
+        #display-screen {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px;
+            min-height: 100px;
+            align-items: center;
+        }
+
+        .code-slot {
+            width: clamp(44px, 14vw, 62px);
+            height: clamp(62px, 18vw, 80px);
+            background: var(--surface);
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .code-slot.filled { border-color: var(--purple-light); background: rgba(124,58,237,0.12); color: var(--purple-light); }
+        .code-slot.correct { background: rgba(16,217,140,0.15); border-color: var(--correct); color: var(--correct); }
+        .code-slot.present { background: rgba(251,191,36,0.15); border-color: var(--present); color: var(--present); }
+        .code-slot.wrong { background: rgba(244,63,94,0.12); border-color: var(--wrong); color: var(--wrong); }
+
+        #history-section { display: none; flex-direction: column; gap: 4px; }
+        #history-log { display: flex; flex-direction: column; gap: 4px; max-height: 72px; overflow-y: auto; }
+        .history-row { display: flex; gap: 6px; align-items: center; }
+        .hist-dot { width: 20px; height: 20px; border-radius: 6px; font-family: var(--font-display); font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .hist-dot.correct { background: rgba(16,217,140,0.2); color: var(--correct); }
+        .hist-dot.present { background: rgba(251,191,36,0.2); color: var(--present); }
+        .hist-dot.wrong { background: rgba(244,63,94,0.1); color: var(--wrong); }
+
+        #keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .key-btn { aspect-ratio: 1.15 / 1; font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; border: 1px solid var(--border); border-radius: 14px; background: var(--surface2); color: var(--text); cursor: pointer; transition: all 0.12s ease; }
+        .key-btn:hover { background: var(--border); transform: translateY(-2px); }
+        .key-btn.btn-clear { background: rgba(244,63,94,0.1); color: var(--red); font-size: 0.75rem; }
+        .key-btn.btn-go { background: rgba(16,217,140,0.12); color: var(--green); font-size: 0.85rem; }
+        .key-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        #overlay { display: none; position: absolute; inset: 0; background: rgba(15,14,23,0.94); backdrop-filter: blur(8px); z-index: 10; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 16px; border-radius: 28px; }
+        #overlay.show { display: flex; }
+        .overlay-emoji { font-size: 4rem; }
+        #overlay-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+        .win { color: var(--green); }
+        .lose { color: var(--red); }
+        .overlay-btns { display: flex; gap: 10px; width: 100%; }
+        .overlay-btn { flex: 1; padding: 13px; border-radius: 14px; font-weight: 800; cursor: pointer; border: none; }
+        .overlay-btn.primary { background: linear-gradient(135deg, var(--accent), #ff8c5a); color: white; }
+        .overlay-btn.secondary { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+        
+        #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); padding: 10px 20px; border-radius: 20px; z-index: 100; transition: transform 0.35s; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+
+        #feedback-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 11px 14px; min-height: 52px; display: flex; align-items: center; gap: 10px; }
+        #legend { display: flex; justify-content: center; gap: 14px; padding: 0 4px; font-size: 0.68rem; color: var(--text-muted); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 4px; }
+        .legend-dot.correct { background: var(--correct); }
+        .legend-dot.present { background: var(--present); }
+        .legend-dot.wrong { background: rgba(244,63,94,0.5); }
+    </style>
 </head>
 <body>
     <div id="app">
         <div id="game-container">
+            <div id="header">
+                <div class="logo-group">
+                    <div class="vault-icon">🔐</div>
+                    <div>
+                        <div class="logo-text">MaruVault</div>
+                        <div class="logo-sub">Mission Critical</div>
+                    </div>
+                </div>
+                <button id="sound-toggle" onclick="toggleSound()">🔊</button>
+            </div>
 
-```
-        <!-- Header -->
-        <div id="header">
-            <div class="logo-group">
-                <div class="vault-icon">🔐</div>
-                <div>
-                    <div class="logo-text">MaruVault</div>
-                    <div class="logo-sub">Mission Critical</div>
+            <div id="menu-screen" class="screen">
+                <div class="menu-intro">
+                    <p>Crack the code before time runs out.<br>Green = right place · Yellow = wrong place</p>
+                </div>
+                <div class="diff-label">Select Difficulty</div>
+                <div class="diff-grid">
+                    <button class="menu-btn" data-diff="beginner" onclick="initGame('beginner')">
+                        <div class="diff-badge">🟢</div>
+                        <div class="menu-btn-info">
+                            <div class="menu-btn-title">BEGINNER</div>
+                            <div class="menu-btn-meta">3 min · 3 digits · 10 lives</div>
+                        </div>
+                        <div class="pb-pill empty" id="pb-beginner">--</div>
+                    </button>
+                    <button class="menu-btn" data-diff="intermediate" onclick="initGame('intermediate')">
+                        <div class="diff-badge">🟡</div>
+                        <div class="menu-btn-info">
+                            <div class="menu-btn-title">INTERMEDIATE</div>
+                            <div class="menu-btn-meta">2 min · 3 digits · 5 lives</div>
+                        </div>
+                        <div class="pb-pill empty" id="pb-intermediate">--</div>
+                    </button>
+                    <button class="menu-btn" data-diff="hard" onclick="initGame('hard')">
+                        <div class="diff-badge">🟠</div>
+                        <div class="menu-btn-info">
+                            <div class="menu-btn-title">HARD</div>
+                            <div class="menu-btn-meta">2 min · 4 digits · 5 lives</div>
+                        </div>
+                        <div class="pb-pill empty" id="pb-hard">--</div>
+                    </button>
+                    <button class="menu-btn" data-diff="veryhard" onclick="initGame('veryhard')">
+                        <div class="diff-badge">🔴</div>
+                        <div class="menu-btn-info">
+                            <div class="menu-btn-title">VERY HARD</div>
+                            <div class="menu-btn-meta">2 min · 5 digits · 5 lives</div>
+                        </div>
+                        <div class="pb-pill empty" id="pb-veryhard">--</div>
+                    </button>
+                </div>
+                <a href="index.html" class="home-link">🏠 Back to Marulearn Home</a>
+            </div>
+
+            <div id="game-screen" class="screen">
+                <div id="status-bar">
+                    <div id="lives-display"></div>
+                    <div id="timer-wrap">
+                        <span id="timer-icon">⏱</span>
+                        <div id="timer-progress"><div id="timer-bar"></div></div>
+                        <div id="timer-display">2:00</div>
+                    </div>
+                </div>
+                <div id="attempt-counter" style="text-align: center; font-size: 0.72rem; color: var(--text-muted);">Attempt 1</div>
+                <div id="display-screen"></div>
+                <div id="history-section">
+                    <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">Guess History</div>
+                    <div id="history-log"></div>
+                </div>
+                <div id="legend">
+                    <div><span class="legend-dot correct"></span>Correct spot</div>
+                    <div><span class="legend-dot present"></span>Wrong spot</div>
+                    <div><span class="legend-dot wrong"></span>Not in code</div>
+                </div>
+                <div id="feedback-box">
+                    <div id="feedback-icon">🎯</div>
+                    <div id="message">Mission Start!</div>
+                </div>
+                <div id="keypad">
+                    <button class="key-btn" onclick="press(1)" data-key="1">1</button>
+                    <button class="key-btn" onclick="press(2)" data-key="2">2</button>
+                    <button class="key-btn" onclick="press(3)" data-key="3">3</button>
+                    <button class="key-btn" onclick="press(4)" data-key="4">4</button>
+                    <button class="key-btn" onclick="press(5)" data-key="5">5</button>
+                    <button class="key-btn" onclick="press(6)" data-key="6">6</button>
+                    <button class="key-btn" onclick="press(7)" data-key="7">7</button>
+                    <button class="key-btn" onclick="press(8)" data-key="8">8</button>
+                    <button class="key-btn" onclick="press(9)" data-key="9">9</button>
+                    <button class="key-btn btn-clear" onclick="handleClear()" id="btn-clear">⌫ CLR</button>
+                    <button class="key-btn" onclick="press(0)" data-key="0">0</button>
+                    <button class="key-btn btn-go" onclick="checkCode()" id="btn-go" disabled>GO ▶</button>
                 </div>
             </div>
-            <button id="sound-toggle" onclick="toggleSound()" title="Toggle Sound">🔊</button>
-        </div>
 
-        <!-- MENU SCREEN -->
-        <div id="menu-screen" class="screen">
-            <div class="menu-intro">
-                <p>Crack the code before time runs out.<br>Green = right place · Yellow = wrong place</p>
-            </div>
-
-            <div class="diff-label">Select Difficulty</div>
-            <div class="diff-grid">
-                <button class="menu-btn" data-diff="beginner" onclick="initGame('beginner')">
-                    <div class="diff-badge">🟢</div>
-                    <div class="menu-btn-info">
-                        <div class="menu-btn-title">BEGINNER</div>
-                        <div class="menu-btn-meta">3 min · 3 digits · 10 lives</div>
-                    </div>
-                    <div class="pb-pill empty" id="pb-beginner">--</div>
-                </button>
-
-                <button class="menu-btn" data-diff="intermediate" onclick="initGame('intermediate')">
-                    <div class="diff-badge">🟡</div>
-                    <div class="menu-btn-info">
-                        <div class="menu-btn-title">INTERMEDIATE</div>
-                        <div class="menu-btn-meta">2 min · 3 digits · 5 lives</div>
-                    </div>
-                    <div class="pb-pill empty" id="pb-intermediate">--</div>
-                </button>
-
-                <button class="menu-btn" data-diff="hard" onclick="initGame('hard')">
-                    <div class="diff-badge">🟠</div>
-                    <div class="menu-btn-info">
-                        <div class="menu-btn-title">HARD</div>
-                        <div class="menu-btn-meta">2 min · 4 digits · 5 lives</div>
-                    </div>
-                    <div class="pb-pill empty" id="pb-hard">--</div>
-                </button>
-
-                <button class="menu-btn" data-diff="veryhard" onclick="initGame('veryhard')">
-                    <div class="diff-badge">🔴</div>
-                    <div class="menu-btn-info">
-                        <div class="menu-btn-title">VERY HARD</div>
-                        <div class="menu-btn-meta">2 min · 5 digits · 5 lives</div>
-                    </div>
-                    <div class="pb-pill empty" id="pb-veryhard">--</div>
-                </button>
-            </div>
-
-            <a href="index.html" class="home-link">🏠 Back to Marulearn Home</a>
-        </div>
-
-        <!-- GAME SCREEN -->
-        <div id="game-screen" class="screen">
-
-            <!-- Status -->
-            <div id="status-bar">
-                <div id="lives-display"></div>
-                <div id="timer-wrap">
-                    <span id="timer-icon">⏱</span>
-                    <div id="timer-progress"><div id="timer-bar"></div></div>
-                    <div id="timer-display">2:00</div>
+            <div id="overlay">
+                <div class="overlay-emoji" id="overlay-emoji">🎉</div>
+                <div id="overlay-title">VAULT CRACKED!</div>
+                <div id="overlay-stats" style="display: flex; gap: 12px; color: white;">
+                    <div id="stat-time">0s</div> | <div id="stat-attempts">0</div> Attempts
+                </div>
+                <div id="pb-banner" style="display:none; color: var(--green);">🏆 New Personal Best!</div>
+                <div id="overlay-code" style="color: var(--text-muted);"></div>
+                <div class="overlay-btns">
+                    <button class="overlay-btn primary" onclick="restartGame()">Play Again</button>
+                    <button class="overlay-btn secondary" onclick="showMenu()">Change Mode</button>
                 </div>
             </div>
-
-            <div id="attempt-counter">Attempt 1</div>
-
-            <!-- Code Slots -->
-            <div id="display-screen"></div>
-
-            <!-- Guess History -->
-            <div id="history-section">
-                <div id="history-label">Guess History</div>
-                <div id="history-log"></div>
-            </div>
-
-            <!-- Legend -->
-            <div id="legend">
-                <div class="legend-item"><div class="legend-dot correct"></div>Correct spot</div>
-                <div class="legend-item"><div class="legend-dot present"></div>Wrong spot</div>
-                <div class="legend-item"><div class="legend-dot wrong"></div>Not in code</div>
-            </div>
-
-            <!-- Feedback -->
-            <div id="feedback-box">
-                <div id="feedback-icon">🎯</div>
-                <div id="message">Mission Start!</div>
-            </div>
-
-            <!-- Keypad -->
-            <div id="keypad">
-                <button class="key-btn" onclick="press(1)" data-key="1">1</button>
-                <button class="key-btn" onclick="press(2)" data-key="2">2</button>
-                <button class="key-btn" onclick="press(3)" data-key="3">3</button>
-                <button class="key-btn" onclick="press(4)" data-key="4">4</button>
-                <button class="key-btn" onclick="press(5)" data-key="5">5</button>
-                <button class="key-btn" onclick="press(6)" data-key="6">6</button>
-                <button class="key-btn" onclick="press(7)" data-key="7">7</button>
-                <button class="key-btn" onclick="press(8)" data-key="8">8</button>
-                <button class="key-btn" onclick="press(9)" data-key="9">9</button>
-                <button class="key-btn btn-clear" onclick="handleClear()" id="btn-clear">⌫ CLR</button>
-                <button class="key-btn" onclick="press(0)" data-key="0">0</button>
-                <button class="key-btn btn-go" onclick="checkCode()" id="btn-go" disabled>GO ▶</button>
-            </div>
         </div>
-
-        <!-- Result Overlay -->
-        <div id="overlay">
-            <div class="overlay-emoji" id="overlay-emoji">🎉</div>
-            <div id="overlay-title" class="win">VAULT CRACKED!</div>
-            <div id="overlay-stats">
-                <div class="stat-chip"><div class="val" id="stat-time">0s</div><div class="lbl">Time Taken</div></div>
-                <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Attempts</div></div>
-                <div class="stat-chip"><div class="val" id="stat-lives">0</div><div class="lbl">Lives Left</div></div>
-            </div>
-            <div id="pb-banner">🏆 New Personal Best!</div>
-            <div id="overlay-code"></div>
-            <div class="overlay-btns">
-                <button class="overlay-btn primary" onclick="restartGame()">Play Again</button>
-                <button class="overlay-btn secondary" onclick="showMenu()">Change Mode</button>
-            </div>
-        </div>
-
     </div>
-</div>
+    <div id="toast"></div>
 
-<div id="toast"></div>
+    <script>
+        let currentInput = [], secretCode = [], attempts = 0, lives = 5, maxLives = 5;
+        let timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false;
+        let timerInterval, soundOn = true, guessHistory = [];
 
-<script>
-    // ── STATE ──
-    let currentInput = [];
-    let secretCode = [];
-    let attempts = 0;
-    let lives = 5;
-    let maxLives = 5;
-    let timeLeft = 120;
-    let totalTime = 120;
-    let currentDifficulty = '';
-    let gameActive = false;
-    let timerInterval;
-    let soundOn = true;
-    let guessHistory = [];
+        const config = {
+            beginner:     { time: 180, lives: 10, slots: 3 },
+            intermediate: { time: 120, lives: 5,  slots: 3 },
+            hard:         { time: 120, lives: 5,  slots: 4 },
+            veryhard:     { time: 120, lives: 5,  slots: 5 }
+        };
 
-    const config = {
-        beginner:     { time: 180, lives: 10, slots: 3, label: 'BEGINNER' },
-        intermediate: { time: 120, lives: 5,  slots: 3, label: 'INTERMEDIATE' },
-        hard:         { time: 120, lives: 5,  slots: 4, label: 'HARD' },
-        veryhard:     { time: 120, lives: 5,  slots: 5, label: 'VERY HARD' }
-    };
+        let audioCtx = null;
+        function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+        function playTone(freq, type = 'sine', duration = 0.08, vol = 0.15) {
+            if (!soundOn) return;
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.start(); osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
+        }
 
-    // ── AUDIO ENGINE ──
-    let audioCtx = null;
+        const sounds = {
+            keyPress: () => playTone(600, 'square', 0.05, 0.08),
+            backspace: () => playTone(300, 'square', 0.06, 0.08),
+            submit: () => playTone(440, 'sine', 0.1, 0.12),
+            correct: () => playTone(880, 'sine', 0.1, 0.1),
+            present: () => playTone(480, 'sine', 0.12, 0.1),
+            wrong: () => playTone(180, 'sawtooth', 0.15, 0.15),
+            win: () => { playTone(523, 'sine', 0.3); setTimeout(()=>playTone(1047, 'sine', 0.5), 100); },
+            lose: () => playTone(100, 'sawtooth', 0.5, 0.2),
+            tick: () => playTone(800, 'sine', 0.04, 0.06)
+        };
 
-    function getAudioCtx() {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        return audioCtx;
-    }
+        function formatTime(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`; }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+        function toggleSound() { soundOn = !soundOn; document.getElementById('sound-toggle').textContent = soundOn ? '🔊' : '🔇'; }
 
-    function playTone(freq, type = 'sine', duration = 0.08, vol = 0.15) {
-        if (!soundOn) return;
-        try {
-            const ctx = getAudioCtx();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            gain.gain.setValueAtTime(vol, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + duration);
-        } catch(e) {}
-    }
+        function showMenu() {
+            gameActive = false; clearInterval(timerInterval);
+            document.getElementById('menu-screen').style.display = 'flex';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('overlay').classList.remove('show');
+            loadPBs();
+        }
 
-    function playChord(freqs, duration = 0.15) {
-        freqs.forEach((f, i) => setTimeout(() => playTone(f, 'sine', duration, 0.1), i * 40));
-    }
+        function loadPBs() {
+            Object.keys(config).forEach(diff => {
+                const pb = localStorage.getItem(`maruvault_pb_${diff}`);
+                const el = document.getElementById(`pb-${diff}`);
+                if (el) el.textContent = pb ? formatTime(parseInt(pb)) + ' left' : '--';
+            });
+        }
 
-    const sounds = {
-        keyPress: () => playTone(600, 'square', 0.05, 0.08),
-        backspace: () => playTone(300, 'square', 0.06, 0.08),
-        submit: () => playTone(440, 'sine', 0.1, 0.12),
-        correct: () => playChord([523, 659, 784, 1047], 0.25),
-        present: () => playTone(480, 'sine', 0.12, 0.1),
-        wrong: () => playTone(180, 'sawtooth', 0.15, 0.15),
-        win: () => { playChord([523, 659, 784], 0.3); setTimeout(() => playChord([784, 1047, 1319], 0.4), 200); },
-        lose: () => playChord([220, 196, 165, 147], 0.35),
-        tick: () => playTone(800, 'sine', 0.04, 0.06),
-    };
+        function initGame(difficulty) {
+            currentDifficulty = difficulty;
+            const cfg = config[difficulty];
+            timeLeft = totalTime = cfg.time;
+            lives = maxLives = cfg.lives;
+            attempts = 0; guessHistory = []; currentInput = [];
+            
+            const display = document.getElementById('display-screen');
+            display.innerHTML = '';
+            for (let i = 0; i < cfg.slots; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'code-slot empty'; slot.id = `slot-${i}`; slot.textContent = '·';
+                display.appendChild(slot);
+            }
 
-    // ── UTILS ──
-    function formatTime(s) {
-        const m = Math.floor(s / 60);
-        const sec = s % 60;
-        return `${m}:${sec.toString().padStart(2, '0')}`;
-    }
+            document.getElementById('menu-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('history-log').innerHTML = '';
+            document.getElementById('history-section').style.display = 'none';
+            
+            secretCode = Array.from({ length: cfg.slots }, () => Math.floor(Math.random() * 10));
+            gameActive = true;
+            updateLivesDisplay(); updateTimerDisplay(); updateAttemptCounter(); updateGoButton();
+            startTimer();
+        }
 
-    function showToast(msg, duration = 1800) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), duration);
-    }
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--; updateTimerDisplay();
+                if (timeLeft <= 10 && timeLeft > 0) sounds.tick();
+                if (timeLeft <= 0) endGame(false, 'TIME OUT');
+            }, 1000);
+        }
 
-    function toggleSound() {
-        soundOn = !soundOn;
-        const btn = document.getElementById('sound-toggle');
-        btn.textContent = soundOn ? '🔊' : '🔇';
-        btn.classList.toggle('muted', !soundOn);
-        showToast(soundOn ? 'Sound ON' : 'Sound OFF');
-    }
+        function updateTimerDisplay() {
+            document.getElementById('timer-display').textContent = formatTime(timeLeft);
+            const bar = document.getElementById('timer-bar');
+            const pct = (timeLeft / totalTime) * 100;
+            bar.style.width = pct + '%';
+            bar.className = pct < 20 ? 'danger' : pct < 50 ? 'warn' : '';
+        }
 
-    // ── NAVIGATION ──
-    function showMenu() {
-        gameActive = false;
-        clearInterval(timerInterval);
-        document.getElementById('menu-screen').style.display = 'flex';
-        document.getElementById('game-screen').style.display = 'none';
-        document.getElementById('overlay').classList.remove('show');
+        function updateLivesDisplay() {
+            const container = document.getElementById('lives-display');
+            container.innerHTML = '';
+            for (let i = 0; i < maxLives; i++) {
+                const h = document.createElement('span');
+                h.className = 'heart' + (i >= lives ? ' lost' : '');
+                h.textContent = '❤'; container.appendChild(h);
+            }
+        }
+
+        function updateAttemptCounter() { document.getElementById('attempt-counter').textContent = `Attempt ${attempts + 1}`; }
+
+        function press(num) {
+            if (!gameActive || currentInput.length >= config[currentDifficulty].slots) return;
+            sounds.keyPress(); currentInput.push(num); updateDisplay(); updateGoButton();
+        }
+
+        function handleClear() {
+            if (!gameActive || currentInput.length === 0) return;
+            sounds.backspace(); currentInput.pop(); updateDisplay(); updateGoButton();
+        }
+
+        function updateDisplay() {
+            const slots = config[currentDifficulty].slots;
+            for (let i = 0; i < slots; i++) {
+                const el = document.getElementById(`slot-${i}`);
+                if (currentInput[i] !== undefined) {
+                    el.textContent = currentInput[i]; el.className = 'code-slot filled';
+                } else {
+                    el.textContent = '·'; el.className = 'code-slot empty';
+                }
+            }
+        }
+
+        function updateGoButton() {
+            document.getElementById('btn-go').disabled = currentInput.length < config[currentDifficulty].slots || !gameActive;
+        }
+
+        function checkCode() {
+            const slots = config[currentDifficulty].slots;
+            let guess = [...currentInput], tempSecret = [...secretCode], results = new Array(slots).fill('wrong'), correctCount = 0;
+
+            for (let i = 0; i < slots; i++) {
+                if (guess[i] === tempSecret[i]) { results[i] = 'correct'; tempSecret[i] = null; guess[i] = null; correctCount++; }
+            }
+            for (let i = 0; i < slots; i++) {
+                if (guess[i] !== null) {
+                    let idx = tempSecret.indexOf(guess[i]);
+                    if (idx !== -1) { results[i] = 'present'; tempSecret[idx] = null; }
+                }
+            }
+
+            results.forEach((res, i) => {
+                const el = document.getElementById(`slot-${i}`);
+                setTimeout(() => { el.className = `code-slot ${res}`; if(res === 'correct') sounds.correct(); }, i * 100);
+            });
+
+            addToHistory([...currentInput], results);
+            attempts++;
+
+            if (correctCount === slots) {
+                setTimeout(() => { sounds.win(); endGame(true, 'VAULT CRACKED!'); }, slots * 100 + 200);
+            } else {
+                lives--; updateLivesDisplay();
+                if (lives <= 0) {
+                    setTimeout(() => { sounds.lose(); endGame(false, 'LOCKED OUT'); }, slots * 100 + 200);
+                } else {
+                    setTimeout(() => {
+                        sounds.wrong(); currentInput = []; updateDisplay(); updateGoButton(); updateAttemptCounter();
+                    }, slots * 100 + 400);
+                }
+            }
+        }
+
+        function addToHistory(guess, results) {
+            document.getElementById('history-section').style.display = 'flex';
+            const row = document.createElement('div'); row.className = 'history-row';
+            guess.forEach((n, i) => {
+                const dot = document.createElement('div'); dot.className = `hist-dot ${results[i]}`; dot.textContent = n;
+                row.appendChild(dot);
+            });
+            document.getElementById('history-log').prepend(row);
+        }
+
+        function endGame(won, title) {
+            gameActive = false; clearInterval(timerInterval);
+            const overlay = document.getElementById('overlay');
+            document.getElementById('overlay-emoji').textContent = won ? '🔓' : '🔒';
+            document.getElementById('overlay-title').textContent = title;
+            document.getElementById('overlay-title').className = won ? 'win' : 'lose';
+            document.getElementById('stat-time').textContent = formatTime(totalTime - timeLeft);
+            document.getElementById('stat-attempts').textContent = attempts;
+            document.getElementById('overlay-code').textContent = won ? '' : `Code was: ${secretCode.join('')}`;
+            if(won) {
+                const oldPb = localStorage.getItem(`maruvault_pb_${currentDifficulty}`);
+                if(!oldPb || timeLeft > parseInt(oldPb)) {
+                    localStorage.setItem(`maruvault_pb_${currentDifficulty}`, timeLeft);
+                    document.getElementById('pb-banner').style.display = 'block';
+                }
+            }
+            overlay.classList.add('show');
+        }
+
+        function restartGame() { document.getElementById('overlay').classList.remove('show'); initGame(currentDifficulty); }
+        
         loadPBs();
-    }
-
-    function loadPBs() {
-        Object.keys(config).forEach(diff => {
-            const pb = localStorage.getItem(`maruvault_pb_${diff}`);
-            const el = document.getElementById(`pb-${diff}`);
-            if (!el) return;
-            if (pb) {
-                el.textContent = formatTime(parseInt(pb)) + ' left';
-                el.classList.remove('empty');
-            } else {
-                el.textContent = '--';
-                el.classList.add('empty');
-            }
-        });
-    }
-
-    // ── GAME INIT ──
-    function initGame(difficulty) {
-        currentDifficulty = difficulty;
-        const cfg = config[difficulty];
-        timeLeft = cfg.time;
-        totalTime = cfg.time;
-        lives = cfg.lives;
-        maxLives = cfg.lives;
-        attempts = 0;
-        guessHistory = [];
-
-        // Build slots
-        const display = document.getElementById('display-screen');
-        display.innerHTML = '';
-        for (let i = 0; i < cfg.slots; i++) {
-            const slot = document.createElement('div');
-            slot.className = 'code-slot empty';
-            slot.id = `slot-${i}`;
-            slot.textContent = '·';
-            display.appendChild(slot);
-        }
-
-        document.getElementById('menu-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'flex';
-        document.getElementById('overlay').classList.remove('show');
-        document.getElementById('history-section').style.display = 'none';
-        document.getElementById('history-log').innerHTML = '';
-
-        startGame();
-    }
-
-    function startGame() {
-        const slotCount = config[currentDifficulty].slots;
-        secretCode = Array.from({ length: slotCount }, () => Math.floor(Math.random() * 10));
-        currentInput = [];
-        gameActive = true;
-
-        updateLivesDisplay();
-        updateTimerDisplay();
-        updateAttemptCounter();
-        updateGoButton();
-        setFeedback('🎯', 'Crack the ' + slotCount + '-digit vault code!');
-        startTimer();
-    }
-
-    function restartGame() {
-        document.getElementById('overlay').classList.remove('show');
-        initGame(currentDifficulty);
-    }
-
-    // ── TIMER ──
-    function startTimer() {
-        clearInterval(timerInterval);
-        updateTimerDisplay();
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-            if (timeLeft <= 10 && timeLeft > 0) sounds.tick();
-            if (timeLeft <= 0) endGame(false, 'TIME OUT');
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        document.getElementById('timer-display').textContent = formatTime(timeLeft);
-        const pct = (timeLeft / totalTime) * 100;
-        const bar = document.getElementById('timer-bar');
-        bar.style.width = pct + '%';
-        bar.className = 'bar';
-        if (pct <= 15) { bar.className = 'danger'; document.getElementById('timer-display').style.color = 'var(--red)'; }
-        else if (pct <= 35) { bar.className = 'warn'; document.getElementById('timer-display').style.color = 'var(--yellow)'; }
-        else { bar.className = ''; document.getElementById('timer-display').style.color = 'var(--text)'; }
-    }
-
-    // ── LIVES ──
-    function updateLivesDisplay() {
-        const container = document.getElementById('lives-display');
-        container.innerHTML = '';
-        for (let i = 0; i < maxLives; i++) {
-            const h = document.createElement('span');
-            h.className = 'heart' + (i >= lives ? ' lost' : '');
-            h.textContent = '❤';
-            container.appendChild(h);
-        }
-    }
-
-    function animateLoseHeart() {
-        const hearts = document.querySelectorAll('.heart:not(.lost)');
-        const last = hearts[hearts.length - 1];
-        if (last) last.classList.add('pop');
-    }
-
-    // ── ATTEMPT COUNTER ──
-    function updateAttemptCounter() {
-        document.getElementById('attempt-counter').textContent = `Attempt ${attempts + 1}`;
-    }
-
-    // ── INPUT ──
-    function press(num) {
-        if (!gameActive) return;
-        const maxSlots = config[currentDifficulty].slots;
-        if (currentInput.length >= maxSlots) return;
-
-        sounds.keyPress();
-        currentInput.push(num);
-        updateDisplay();
-        updateGoButton();
-    }
-
-    function handleClear() {
-        if (!gameActive) return;
-        if (currentInput.length > 0) {
-            sounds.backspace();
-            currentInput.pop();
-            updateDisplay();
-            updateGoButton();
-        }
-    }
-
-    function updateGoButton() {
-        const maxSlots = config[currentDifficulty].slots;
-        document.getElementById('btn-go').disabled = currentInput.length < maxSlots || !gameActive;
-    }
-
-    function updateDisplay() {
-        const maxSlots = config[currentDifficulty].slots;
-        for (let i = 0; i < maxSlots; i++) {
-            const slot = document.getElementById(`slot-${i}`);
-            if (!slot) continue;
-            if (currentInput[i] !== undefined) {
-                slot.textContent = currentInput[i];
-                if (!slot.classList.contains('correct') && !slot.classList.contains('present') && !slot.classList.contains('wrong')) {
-                    slot.className = 'code-slot filled';
-                }
-            } else {
-                slot.textContent = '·';
-                if (!slot.classList.contains('correct') && !slot.classList.contains('present') && !slot.classList.contains('wrong')) {
-                    slot.className = 'code-slot empty';
-                }
-            }
-        }
-    }
-
-    function resetSlots() {
-        const maxSlots = config[currentDifficulty].slots;
-        for (let i = 0; i < maxSlots; i++) {
-            const slot = document.getElementById(`slot-${i}`);
-            if (slot) slot.className = 'code-slot empty';
-        }
-    }
-
-    // ── CHECK ──
-    function checkCode() {
-        const maxSlots = config[currentDifficulty].slots;
-        if (!gameActive || currentInput.length < maxSlots) return;
-
-        sounds.submit();
-
-        let guess = [...currentInput];
-        let tempSecret = [...secretCode];
-        let results = new Array(maxSlots).fill('wrong');
-        let correctCount = 0;
-
-        for (let i = 0; i < maxSlots; i++) {
-            if (guess[i] === tempSecret[i]) {
-                results[i] = 'correct';
-                tempSecret[i] = null;
-                guess[i] = null;
-                correctCount++;
-            }
-        }
-        for (let i = 0; i < maxSlots; i++) {
-            if (guess[i] !== null && guess[i] !== undefined) {
-                const idx = tempSecret.indexOf(guess[i]);
-                if (idx !== -1) {
-                    results[i] = 'present';
-                    tempSecret[idx] = null;
-                }
-            }
-        }
-
-        // Animate slots
-        for (let i = 0; i < maxSlots; i++) {
-            const slot = document.getElementById(`slot-${i}`);
-            if (slot) {
-                setTimeout(() => {
-                    slot.className = `code-slot ${results[i]} flip`;
-                    if (results[i] === 'correct') sounds.correct();
-                    else if (results[i] === 'present') sounds.present();
-                }, i * 80);
-            }
-        }
-
-        // Record history
-        addToHistory([...currentInput], results);
-        attempts++;
-
-        if (correctCount === maxSlots) {
-            setTimeout(() => { sounds.win(); endGame(true, 'VAULT CRACKED!'); }, maxSlots * 80 + 200);
-        } else {
-            animateLoseHeart();
-            lives--;
-            updateLivesDisplay();
-            updateAttemptCounter();
-
-            if (lives <= 0) {
-                setTimeout(() => { sounds.lose(); endGame(false, 'LOCKED OUT'); }, maxSlots * 80 + 200);
-            } else {
-                sounds.wrong();
-                setTimeout(() => {
-                    provideFeedback(results, correctCount);
-                    currentInput = [];
-                    setTimeout(() => { resetSlots(); updateDisplay(); updateGoButton(); }, 250);
-                }, maxSlots * 80 + 100);
-            }
-        }
-    }
-
-    // ── HISTORY ──
-    function addToHistory(guess, results) {
-        guessHistory.push({ guess, results });
-        const section = document.getElementById('history-section');
-        const log = document.getElementById('history-log');
-        section.style.display = 'flex';
-
-        const row = document.createElement('div');
-        row.className = 'history-row';
-
-        guess.forEach((num, i) => {
-            const dot = document.createElement('div');
-            dot.className = `hist-dot ${results[i]}`;
-            dot.textContent = num;
-            row.appendChild(dot);
-        });
-
-        const correctCount = results.filter(r => r === 'correct').length;
-        const presentCount = results.filter(r => r === 'present').length;
-        const label = document.createElement('div');
-        label.className = 'hist-label';
-        label.textContent = `${correctCount}🟢 ${presentCount}🟡`;
-        row.appendChild(label);
-
-        log.insertBefore(row, log.firstChild);
-    }
-
-    // ── FEEDBACK ──
-    function setFeedback(icon, text) {
-        document.getElementById('feedback-icon').textContent = icon;
-        document.getElementById('message').textContent = text;
-    }
-
-    function provideFeedback(results, correctCount) {
-        const presentCount = results.filter(r => r === 'present').length;
-        const wrongCount = results.filter(r => r === 'wrong').length;
-        const sum = secretCode.reduce((a, b) => a + b, 0);
-        const evens = secretCode.filter(n => n % 2 === 0).length;
-
-        if (correctCount === 0 && presentCount === 0) {
-            setFeedback('❌', `None of those digits are in the code. Try new numbers!`);
-        } else if (correctCount > 0 && presentCount === 0) {
-            setFeedback('🟢', `${correctCount} digit${correctCount > 1 ? 's are' : ' is'} in the right spot! Keep going.`);
-        } else if (correctCount === 0 && presentCount > 0) {
-            setFeedback('🟡', `${presentCount} digit${presentCount > 1 ? 's exist' : ' exists'} but in wrong positions.`);
-        } else {
-            setFeedback('🔍', `${correctCount} correct, ${presentCount} misplaced. Getting warmer!`);
-        }
-
-        // Math hints every 2 attempts
-        if (attempts % 3 === 2) {
-            setFeedback('💡', `Hint: All digits sum to ${sum}.`);
-        } else if (attempts % 3 === 1 && attempts > 1) {
-            setFeedback('🔢', `Hint: ${evens} even number${evens !== 1 ? 's' : ''} in the code.`);
-        }
-    }
-
-    // ── END GAME ──
-    function savePB() {
-        const remaining = timeLeft;
-        const current = localStorage.getItem(`maruvault_pb_${currentDifficulty}`);
-        if (!current || remaining > parseInt(current)) {
-            localStorage.setItem(`maruvault_pb_${currentDifficulty}`, remaining);
-            return true;
-        }
-        return false;
-    }
-
-    function endGame(won, title) {
-        gameActive = false;
-        clearInterval(timerInterval);
-
-        const timeTaken = totalTime - timeLeft;
-        let isNewPB = false;
-        if (won) isNewPB = savePB();
-
-        const overlay = document.getElementById('overlay');
-        document.getElementById('overlay-emoji').textContent = won ? '🔓' : '🔒';
-        const titleEl = document.getElementById('overlay-title');
-        titleEl.textContent = title;
-        titleEl.className = won ? 'win' : 'lose';
-
-        document.getElementById('stat-time').textContent = formatTime(timeTaken);
-        document.getElementById('stat-attempts').textContent = attempts;
-        document.getElementById('stat-lives').textContent = lives;
-
-        const pb = document.getElementById('pb-banner');
-        pb.className = isNewPB ? 'show' : '';
-
-        const codeEl = document.getElementById('overlay-code');
-        codeEl.textContent = won ? '' : `The code was: ${secretCode.join(' · ')}`;
-
-        overlay.classList.add('show');
-    }
-
-    // ── KEYBOARD SUPPORT ──
-    document.addEventListener('keydown', (e) => {
-        if (!gameActive) return;
-
-        const num = parseInt(e.key);
-        if (!isNaN(num) && e.key >= '0' && e.key <= '9') {
-            press(num);
-            flashKey(e.key);
-        } else if (e.key === 'Backspace' || e.key === 'Delete') {
-            handleClear();
-            flashKey('clear');
-        } else if (e.key === 'Enter') {
-            checkCode();
-            flashKey('go');
-        }
-    });
-
-    function flashKey(key) {
-        let btn;
-        if (key === 'clear') btn = document.getElementById('btn-clear');
-        else if (key === 'go') btn = document.getElementById('btn-go');
-        else btn = document.querySelector(`[data-key="${key}"]`);
-        if (btn) {
-            btn.classList.add('key-active');
-            setTimeout(() => btn.classList.remove('key-active'), 120);
-        }
-    }
-
-    // ── INIT ──
-    loadPBs();
-    showMenu();
-</script>
-```
-
+        showMenu();
+    </script>
 </body>
 </html>
