@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruVault: Kids Edition</title>
+    <title>MaruVault: Kids Logic Quest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Playful & High-Contrast Kids Palette */
-            --bg: #fdf4ff; /* Soft Lavender Tint */
+            /* Vibrant Kids-Friendly Palette */
+            --bg: #e0f2fe; /* Light Sky */
             --surface: #ffffff;
-            --surface2: #fff7ed;
-            --border: #e2e8f0;
-            --accent: #ff477e; /* Bright Pink */
-            --accent2: #00d2ff; /* Sky Blue */
-            --purple: #a855f7;
-            --green: #4ade80; /* Lime Green */
-            --yellow: #fbbf24;
-            --red: #ff5a5f;
-            --text: #2d3436;
-            --text-muted: #636e72;
+            --surface2: #fdfcf0;
+            --border: #bae6fd;
+            --accent: #f472b6; /* Pink */
+            --accent2: #fbbf24; /* Yellow */
+            --blue: #38bdf8;
+            --purple: #a78bfa;
+            --green: #4ade80;
+            --red: #fb7185;
+            --text: #1e293b;
+            --text-muted: #64748b;
             --correct: #4ade80;
-            --present: #ffb142;
-            --wrong: #ff5252;
-            --font-display: 'Nunito', sans-serif;
-            --font-body: 'Nunito', sans-serif;
+            --present: #fbbf24;
+            --wrong: #f43f5e; 
+            --font-main: 'Nunito', sans-serif;
             --radius: 24px;
-            --transition: 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --shadow: 0 8px 0px rgba(0,0,0,0.05);
         }
 
         * { 
@@ -37,231 +36,169 @@
         }
 
         html, body {
-            height: 100%;
-            width: 100%;
+            height: 100%; width: 100%;
             background: var(--bg);
-            font-family: var(--font-body);
+            font-family: var(--font-main);
             color: var(--text);
             overflow: hidden;
         }
 
-        /* Decorative Bubbles Background */
+        /* Fun Background Pattern */
         body::before {
             content: '';
-            position: fixed;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 10% 10%, rgba(255, 71, 126, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 20%, rgba(0, 210, 255, 0.1) 0%, transparent 25%),
-                radial-gradient(circle at 50% 90%, rgba(168, 85, 247, 0.1) 0%, transparent 30%);
-            pointer-events: none;
+            position: fixed; inset: 0;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
             z-index: 0;
         }
 
         #app {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100dvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative; z-index: 1;
+            width: 100%; height: 100dvh;
+            display: flex; justify-content: center; align-items: center;
         }
 
         #game-container {
             background: var(--surface);
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             overflow: hidden;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
         }
 
-        @media (min-height: 700px) and (min-width: 500px) {
+        @media (min-height: 600px) and (min-width: 450px) {
             #game-container {
-                height: 92vh;
-                width: 440px;
-                border-radius: 50px;
-                border: 12px solid #ffffff;
-                box-shadow: 0 30px 60px rgba(255, 71, 126, 0.15);
+                height: 90vh; width: 400px;
+                border-radius: 45px;
+                border: 10px solid #ffffff;
             }
         }
 
         #header {
-            background: #ffffff;
             padding: 20px;
-            border-bottom: 4px solid #f8fafc;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            background: #fff; border-bottom: 3px solid #f1f5f9;
         }
 
         .logo-group { display: flex; align-items: center; gap: 12px; }
         .vault-icon {
-            width: 45px; height: 45px;
-            background: linear-gradient(135deg, var(--accent), #ff8fa3);
-            border-radius: 16px;
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; box-shadow: 0 4px 0px #d6336c;
+            font-size: 1.4rem; box-shadow: 0 4px 0 #be185d;
         }
 
-        .logo-text { font-size: 1.3rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
-        .logo-sub { font-size: 0.7rem; color: var(--accent2); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .logo-text { font-size: 1.2rem; font-weight: 900; color: var(--text); }
+        .logo-sub { font-size: 0.7rem; color: var(--blue); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
         .header-controls { display: flex; gap: 10px; }
-
         #sound-toggle, #back-btn {
-            background: #f1f5f9; border: none;
-            color: var(--text); width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            box-shadow: 0 3px 0 #cbd5e1;
+            background: #f1f5f9; border: none; font-size: 1.1rem;
+            width: 40px; height: 40px; border-radius: 12px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-        #sound-toggle:active, #back-btn:active { transform: translateY(2px); box-shadow: none; }
 
-        #back-btn { display: none; background: #ffe4e6; color: var(--accent); box-shadow: 0 3px 0 #fecaca; }
-
-        .screen { padding: 25px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .screen { padding: 20px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
         
-        #menu-screen { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .menu-intro { text-align: center; margin-bottom: 15px; }
-        .menu-intro p { font-size: 1rem; color: var(--text-muted); font-weight: 700; line-height: 1.4; }
+        /* Menu Styling */
+        #menu-screen { gap: 15px; }
+        .menu-intro { text-align: center; margin-bottom: 5px; }
+        .menu-intro h2 { font-weight: 900; color: var(--purple); margin-bottom: 5px; }
+        .menu-intro p { font-size: 0.9rem; color: var(--text-muted); font-weight: 700; }
 
-        .diff-label { font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; text-align: center; letter-spacing: 1px; }
-        .diff-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-
+        .diff-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .menu-btn {
             padding: 18px; border-radius: 24px; border: 3px solid #f1f5f9;
-            background: #ffffff; color: var(--text); cursor: pointer;
-            display: flex; align-items: center; gap: 18px; transition: all 0.2s ease;
+            background: #fff; cursor: pointer;
+            display: flex; align-items: center; gap: 15px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 6px 0 #f1f5f9;
         }
         .menu-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #f1f5f9; }
 
-        .diff-badge { width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; background: #fdf4ff; }
-        .menu-btn-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 2px; }
-        .menu-btn-meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; }
-        .pb-pill { background: #dcfce7; color: #16a34a; font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; font-weight: 900; margin-left: auto; }
-        .pb-pill.empty { background: #f1f5f9; color: var(--text-muted); }
-
-        .home-link {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 18px; border-radius: 24px; border: none;
-            color: #ffffff; font-weight: 900; font-size: 1rem; text-decoration: none; margin-top: auto;
-            background: #6366f1; box-shadow: 0 6px 0 #4338ca;
+        .diff-badge { 
+            width: 50px; height: 50px; border-radius: 18px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.8rem; background: var(--bg); 
         }
-
-        #game-screen { display: none; flex-direction: column; height: 100%; justify-content: space-between; }
+        .menu-btn-title { font-size: 1.1rem; font-weight: 900; color: var(--text); text-align: left; }
+        .menu-btn-meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-align: left; }
         
-        #status-bar { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: 20px; }
-        #lives-display { display: flex; gap: 8px; }
-        .heart { font-size: 1.5rem; color: var(--red); filter: drop-shadow(0 3px 0 #ffe4e6); }
-        .heart.lost { opacity: 0.15; filter: grayscale(1); }
+        .pb-pill { background: #dcfce7; color: #166534; font-size: 0.7rem; padding: 5px 12px; border-radius: 12px; font-weight: 800; margin-left: auto; }
+        .pb-pill.empty { background: #f8fafc; color: #94a3b8; }
 
-        #timer-wrap {
-            display: flex; align-items: center; gap: 10px;
-            background: #fff; padding: 10px 16px;
-            border-radius: 30px; border: 3px solid #f1f5f9;
-        }
-        #timer-display { font-size: 1rem; font-weight: 900; min-width: 50px; color: var(--text); }
-        #timer-progress { width: 70px; height: 12px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
-        #timer-bar { height: 100%; background: var(--green); transition: width 1s linear; }
+        /* Game Screen */
+        #game-screen { display: none; justify-content: space-between; padding-top: 10px; }
+        
+        #status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .heart { font-size: 1.4rem; color: var(--red); margin-right: 2px; }
+        .heart.lost { opacity: 0.2; filter: grayscale(1); }
 
-        #attempt-counter { text-align: center; font-size: 0.9rem; color: var(--accent); text-transform: uppercase; font-weight: 900; margin-bottom: 12px; }
+        #timer-wrap { display: flex; align-items: center; gap: 10px; background: #fff; padding: 6px 12px; border-radius: 20px; border: 2px solid #f1f5f9; }
+        #timer-display { font-weight: 900; font-size: 0.9rem; min-width: 40px; }
+        #timer-bar-bg { width: 50px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        #timer-bar { height: 100%; background: var(--green); width: 100%; transition: width 1s linear; }
 
         #display-screen {
-            background: #fffaf0; border: 4px dashed #ffe4e6;
+            background: #fdfcf0; border: 4px dashed #fef3c7;
             border-radius: 30px; display: flex; justify-content: center;
-            gap: 15px; padding: 25px; min-height: 110px; align-items: center;
-            flex-shrink: 0; margin-bottom: 20px;
+            gap: 12px; padding: 25px 15px; margin-bottom: 10px;
         }
 
         .code-slot {
-            width: 55px; height: 75px; background: #ffffff;
-            border-radius: 20px; border: 4px solid #f1f5f9;
+            width: 55px; height: 75px; background: #fff;
+            border-radius: 20px; border: 4px solid #e2e8f0;
             display: flex; align-items: center; justify-content: center;
             font-size: 2.5rem; font-weight: 900; color: #e2e8f0;
-            box-shadow: 0 4px 0 #f1f5f9;
+            box-shadow: inset 0 -5px 0 rgba(0,0,0,0.05);
         }
+        .code-slot.filled { border-color: var(--blue); color: var(--text); }
+        .code-slot.correct { background: var(--green); border-color: #22c55e; color: white; }
+        .code-slot.present { background: var(--present); border-color: #d97706; color: white; }
+        .code-slot.wrong { background: var(--wrong); border-color: #be123c; color: white; }
 
-        .code-slot.filled { border-color: var(--accent); color: var(--text); box-shadow: 0 4px 0 #ffdae5; }
-        .code-slot.correct { background: #dcfce7; border-color: var(--correct); color: #15803d; box-shadow: 0 4px 0 #bbf7d0; }
-        .code-slot.present { background: #fef3c7; border-color: var(--present); color: #b45309; box-shadow: 0 4px 0 #fde68a; }
-        .code-slot.wrong { background: #ffe4e6; border-color: var(--red); color: #b91c1c; box-shadow: 0 4px 0 #fecaca; }
-
-        #feedback-box { 
-            background: #fdf4ff; border: 3px solid #fae8ff; 
-            border-radius: 30px; padding: 18px; display: flex; 
-            flex-direction: column; gap: 8px; min-height: 125px; flex-shrink: 0;
-            margin-bottom: 20px; text-align: center;
+        #feedback-box {
+            background: #f0f9ff; border: 3px solid #e0f2fe;
+            border-radius: 24px; padding: 15px; min-height: 100px;
+            text-align: center; margin-bottom: 15px;
         }
-        .feedback-header { font-size: 0.8rem; font-weight: 900; color: var(--purple); text-transform: uppercase; letter-spacing: 1px; }
-        #message { font-size: 1.1rem; font-weight: 800; line-height: 1.4; color: var(--text); }
-        
-        #last-guess-wrap {
-            display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto;
-            padding-top: 12px; border-top: 3px solid #fae8ff;
-        }
-        .lg-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 900; text-transform: uppercase; }
-        .lg-box { display: flex; gap: 8px; }
-        .lg-slot {
-            width: 28px; height: 28px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.9rem; font-weight: 900; color: white;
-        }
+        .feedback-header { font-size: 0.7rem; font-weight: 900; color: var(--blue); text-transform: uppercase; margin-bottom: 5px; }
+        #message { font-size: 1rem; font-weight: 800; color: var(--text); line-height: 1.3; }
 
-        #legend { display: flex; justify-content: center; gap: 18px; margin-bottom: 20px; flex-shrink: 0; }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); font-weight: 800; }
-        .legend-dot { width: 14px; height: 14px; border-radius: 5px; }
-        .legend-dot.correct { background: var(--correct); }
-        .legend-dot.present { background: var(--present); }
-        .legend-dot.wrong { background: var(--red); }
-
-        #keypad { 
-            display: grid; grid-template-columns: repeat(3, 1fr); 
-            gap: 12px; flex-shrink: 0;
+        #keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .key-btn {
+            height: 55px; border-radius: 20px; border: none;
+            background: #f8fafc; color: var(--text); font-size: 1.5rem; font-weight: 900;
+            box-shadow: 0 5px 0 #e2e8f0; cursor: pointer;
         }
-        .key-btn { 
-            height: 60px; font-size: 1.8rem; font-weight: 900; border-radius: 22px; border: none; 
-            background: #ffffff; color: var(--text); cursor: pointer;
-            box-shadow: 0 5px 0 #f1f5f9; border: 2px solid #f1f5f9;
-        }
-        .key-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #f1f5f9; }
-        
-        .btn-clear { background: #ffe4e6; color: var(--red); border-color: #fecaca; box-shadow: 0 5px 0 #fecaca; }
-        .btn-clear:active { box-shadow: 0 2px 0 #fecaca; }
+        .key-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #e2e8f0; }
+        .btn-clear { background: #fee2e2; color: var(--red); box-shadow: 0 5px 0 #fecaca; }
+        .btn-go { background: #dcfce7; color: #166534; box-shadow: 0 5px 0 #bbf7d0; grid-column: span 1; }
+        .btn-go:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .btn-go { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; box-shadow: 0 5px 0 #bbf7d0; font-size: 1.1rem; }
-        .btn-go:active { box-shadow: 0 2px 0 #bbf7d0; }
-        .btn-go:disabled { opacity: 0.4; box-shadow: none; transform: none; border-color: #f1f5f9; }
-
+        /* Overlay */
         #overlay {
-            display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(10px); z-index: 10; flex-direction: column;
-            align-items: center; justify-content: center; padding: 40px; gap: 25px;
+            display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.95);
+            z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; text-align: center;
         }
-        #overlay.show { display: flex; }
-        .overlay-emoji { font-size: 5.5rem; filter: drop-shadow(0 15px 15px rgba(255, 71, 126, 0.2)); }
-        #overlay-title { font-size: 2.2rem; font-weight: 900; color: var(--text); text-align: center; line-height: 1; }
+        #overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+        .overlay-emoji { font-size: 5rem; margin-bottom: 10px; }
+        #overlay-title { font-size: 2rem; font-weight: 900; margin-bottom: 20px; }
         
-        #overlay-stats { display: flex; gap: 15px; width: 100%; justify-content: center; }
-        .stat-chip { background: #fffaf0; border: 3px solid #ffedd5; border-radius: 24px; padding: 18px; text-align: center; flex: 1; }
-        .stat-chip .val { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-bottom: 4px; }
-        .stat-chip .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; }
-        
-        .overlay-btns { display: flex; flex-direction: column; gap: 15px; width: 100%; margin-top: 15px; }
-        .overlay-btn { width: 100%; padding: 20px; border-radius: 25px; border: none; font-weight: 900; cursor: pointer; font-size: 1.2rem; }
-        .overlay-btn.primary { background: var(--accent); color: white; box-shadow: 0 8px 0 #d6336c; }
-        .overlay-btn.primary:active { transform: translateY(4px); box-shadow: 0 4px 0 #d6336c; }
-        .overlay-btn.secondary { background: #f1f5f9; color: var(--text-muted); box-shadow: 0 5px 0 #cbd5e1; }
-        .overlay-btn.secondary:active { transform: translateY(3px); box-shadow: 0 2px 0 #cbd5e1; }
+        .overlay-btn {
+            width: 100%; padding: 20px; border-radius: 24px; border: none;
+            font-size: 1.2rem; font-weight: 900; cursor: pointer; margin-top: 10px;
+        }
+        .primary-btn { background: var(--accent); color: white; box-shadow: 0 6px 0 #be185d; }
+        .secondary-btn { background: #f1f5f9; color: var(--text-muted); }
 
-        #toast { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3436; color: white; font-size: 1rem; padding: 14px 28px; border-radius: 50px; z-index: 100; transition: transform 0.3s; font-weight: 800; }
-        #toast.show { transform: translateX(-50%) translateY(0); }
-
-        @keyframes flip-in { from { transform: rotateX(90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
-        .flip { animation: flip-in 0.35s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .flip { animation: flip-in 0.4s ease forwards; }
+        @keyframes flip-in { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -272,81 +209,70 @@
                     <div class="vault-icon">⭐</div>
                     <div>
                         <div class="logo-text">MaruVault</div>
-                        <div class="logo-sub">Puzzle Fun!</div>
+                        <div class="logo-sub">Kids Edition</div>
                     </div>
                 </div>
                 <div class="header-controls">
-                    <button id="back-btn" onclick="showMenu()">⬅</button>
+                    <button id="back-btn" onclick="showMenu()" style="display:none">⬅</button>
                     <button id="sound-toggle" onclick="toggleSound()">🔊</button>
                 </div>
             </div>
 
             <div id="menu-screen" class="screen">
                 <div class="menu-intro">
-                    <p>Can you guess the secret code?<br>Pick a level to start your adventure!</p>
+                    <h2>Hi Explorer! 👋</h2>
+                    <p>Can you crack the secret code? Use the hints to unlock the vault!</p>
                 </div>
-                <div class="diff-label">Choose Your Quest</div>
                 <div class="diff-grid">
                     <button class="menu-btn" onclick="initGame('beginner')">
                         <div class="diff-badge">🌱</div>
                         <div>
-                            <div class="menu-btn-title">BEGINNER</div>
-                            <div class="menu-btn-meta">3 Digits · Super Easy</div>
+                            <div class="menu-btn-title">Junior Scout</div>
+                            <div class="menu-btn-meta">3 Numbers · Lots of Time</div>
                         </div>
                         <div class="pb-pill empty" id="pb-beginner">--</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('intermediate')">
                         <div class="diff-badge">🌟</div>
                         <div>
-                            <div class="menu-btn-title">INTERMEDIATE</div>
-                            <div class="menu-btn-meta">3 Digits · Fun Challenge</div>
+                            <div class="menu-btn-title">Star Solver</div>
+                            <div class="menu-btn-meta">3 Numbers · Tricky</div>
                         </div>
                         <div class="pb-pill empty" id="pb-intermediate">--</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('hard')">
                         <div class="diff-badge">💎</div>
                         <div>
-                            <div class="menu-btn-title">HARD</div>
-                            <div class="menu-btn-meta">4 Digits · Logic Pro</div>
+                            <div class="menu-btn-title">Diamond Mind</div>
+                            <div class="menu-btn-meta">4 Numbers · Pro</div>
                         </div>
                         <div class="pb-pill empty" id="pb-hard">--</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('veryhard')">
                         <div class="diff-badge">👑</div>
                         <div>
-                            <div class="menu-btn-title">VERY HARD</div>
-                            <div class="menu-btn-meta">5 Digits · Math Master</div>
+                            <div class="menu-btn-title">Vault Master</div>
+                            <div class="menu-btn-meta">5 Numbers · Genius!</div>
                         </div>
                         <div class="pb-pill empty" id="pb-veryhard">--</div>
                     </button>
                 </div>
-                <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-link">🏠 Back to Main Menu</a>
             </div>
 
             <div id="game-screen" class="screen">
                 <div id="status-bar">
                     <div id="lives-display"></div>
                     <div id="timer-wrap">
-                        <div id="timer-progress"><div id="timer-bar"></div></div>
-                        <div id="timer-display">2:00</div>
+                        <div id="timer-bar-bg"><div id="timer-bar"></div></div>
+                        <div id="timer-display">0:00</div>
                     </div>
-                </div>
-                <div id="attempt-counter">Round 1</div>
-                <div id="display-screen"></div>
-                
-                <div id="legend">
-                    <div class="legend-item"><div class="legend-dot correct"></div>Yes!</div>
-                    <div class="legend-item"><div class="legend-dot present"></div>Almost</div>
-                    <div class="legend-item"><div class="legend-dot wrong"></div>Not Yet</div>
                 </div>
 
+                <div id="display-screen"></div>
+
                 <div id="feedback-box">
-                    <div class="feedback-header" id="hint-header">Hint Station</div>
-                    <div id="message">Type a code to start!</div>
-                    <div id="last-guess-wrap" style="display: none;">
-                        <span class="lg-label">Last Try:</span>
-                        <div id="lg-container" class="lg-box"></div>
-                    </div>
+                    <div class="feedback-header" id="hint-header">HINT STATION</div>
+                    <div id="message">Pick a number to begin!</div>
                 </div>
 
                 <div id="keypad">
@@ -361,259 +287,251 @@
                     <button class="key-btn" onclick="press(9)">9</button>
                     <button class="key-btn btn-clear" onclick="handleClear()">⌫</button>
                     <button class="key-btn" onclick="press(0)">0</button>
-                    <button class="key-btn btn-go" onclick="checkCode()" id="btn-go" disabled>CHECK</button>
+                    <button class="key-btn btn-go" onclick="checkCode()" id="btn-go" disabled>GO!</button>
                 </div>
             </div>
 
             <div id="overlay">
                 <div class="overlay-emoji" id="overlay-emoji">🎉</div>
-                <div id="overlay-title">YOU WIN!</div>
-                <div id="overlay-stats">
-                    <div class="stat-chip"><div class="val" id="stat-time">0:00</div><div class="lbl">Time</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Tries</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-lives">0</div><div class="lbl">Hearts</div></div>
-                </div>
-                <div id="overlay-code" style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-top: 5px;"></div>
-                <div class="overlay-btns">
-                    <button class="overlay-btn primary" onclick="restartGame()">Play Again!</button>
-                    <button class="overlay-btn secondary" onclick="showMenu()">Main Menu</button>
-                </div>
+                <h1 id="overlay-title">YOU WON!</h1>
+                <p id="overlay-msg" style="font-weight: 800; color: var(--text-muted); margin-bottom: 20px;"></p>
+                <button class="overlay-btn primary-btn" onclick="restartGame()">Try Again!</button>
+                <button class="overlay-btn secondary-btn" onclick="showMenu()">Main Menu</button>
             </div>
         </div>
     </div>
 
-    <div id="toast"></div>
-
     <script>
-        let currentInput = [], secretCode = [], attempts = 0, lives = 5, maxLives = 5, timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false, timerInterval, soundOn = true;
-        const config = { beginner: { time: 180, lives: 10, slots: 3 }, intermediate: { time: 120, lives: 5, slots: 3 }, hard: { time: 120, lives: 5, slots: 4 }, veryhard: { time: 120, lives: 5, slots: 5 } };
-        
-        let audioCtx = null;
-        function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
-        function playTone(freq, type = 'sine', duration = 0.08, vol = 0.1) { if (!soundOn) return; try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime); gain.gain.setValueAtTime(vol, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration); osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration); } catch(e) {} }
-        const sounds = { keyPress: () => playTone(500, 'sine', 0.05, 0.05), backspace: () => playTone(300, 'sine', 0.06, 0.05), submit: () => playTone(440, 'sine', 0.1, 0.08), correct: () => playTone(880, 'sine', 0.2, 0.08), present: () => playTone(480, 'sine', 0.12, 0.08), wrong: () => playTone(200, 'sine', 0.15, 0.1), win: () => { playTone(523, 'sine', 0.1); setTimeout(() => playTone(659, 'sine', 0.1), 100); setTimeout(() => playTone(783, 'sine', 0.3), 200); }, lose: () => playTone(150, 'sawtooth', 0.5, 0.1) };
+        const config = {
+            beginner: { time: 240, lives: 10, slots: 3 },
+            intermediate: { time: 180, lives: 6, slots: 3 },
+            hard: { time: 150, lives: 6, slots: 4 },
+            veryhard: { time: 120, lives: 5, slots: 5 }
+        };
 
-        function formatTime(s) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}`; }
-        function toggleSound() { soundOn = !soundOn; document.getElementById('sound-toggle').textContent = soundOn ? '🔊' : '🔇'; }
+        let currentInput = [], secretCode = [], currentDifficulty = '', lives = 0, timeLeft = 0, totalTime = 0, timerInterval, gameActive = false, soundOn = true;
 
-        function loadPBs() { 
-            Object.keys(config).forEach(diff => { 
-                const pb = localStorage.getItem(`maruvault_pb_${diff}`); 
-                const el = document.getElementById(`pb-${diff}`); 
-                if (el) el.textContent = pb ? formatTime(parseInt(pb)) + ' left' : '--'; 
-            }); 
+        // Simple Sound Engine
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playNote(freq, dur) {
+            if (!soundOn) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + dur);
+            osc.start(); osc.stop(audioCtx.currentTime + dur);
         }
 
-        function showMenu() { 
-            gameActive = false; clearInterval(timerInterval); 
-            document.getElementById('menu-screen').style.display = 'flex'; 
-            document.getElementById('game-screen').style.display = 'none'; 
+        function toggleSound() {
+            soundOn = !soundOn;
+            document.getElementById('sound-toggle').textContent = soundOn ? '🔊' : '🔇';
+        }
+
+        function showMenu() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            document.getElementById('menu-screen').style.display = 'flex';
+            document.getElementById('game-screen').style.display = 'none';
             document.getElementById('back-btn').style.display = 'none';
-            document.getElementById('overlay').classList.remove('show'); 
-            loadPBs(); 
+            document.getElementById('overlay').classList.remove('show');
+            loadPBs();
         }
 
-        function initGame(difficulty) {
-            currentDifficulty = difficulty;
-            const cfg = config[difficulty];
-            timeLeft = cfg.time; totalTime = cfg.time;
-            lives = cfg.lives; maxLives = cfg.lives;
-            attempts = 0; currentInput = [];
-            
-            const display = document.getElementById('display-screen');
-            display.innerHTML = '';
-            for (let i = 0; i < cfg.slots; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'code-slot empty';
-                slot.id = `slot-${i}`;
-                slot.textContent = '?';
-                display.appendChild(slot);
-            }
+        function loadPBs() {
+            Object.keys(config).forEach(diff => {
+                const pb = localStorage.getItem(`maruvault_kids_pb_${diff}`);
+                const el = document.getElementById(`pb-${diff}`);
+                if (el) el.textContent = pb ? pb + 's left' : '--';
+            });
+        }
 
-            secretCode = Array.from({ length: cfg.slots }, () => Math.floor(Math.random() * 10));
+        function initGame(diff) {
+            currentDifficulty = diff;
+            const cfg = config[diff];
+            lives = cfg.lives;
+            timeLeft = cfg.time;
+            totalTime = cfg.time;
+            currentInput = [];
+            secretCode = Array.from({length: cfg.slots}, () => Math.floor(Math.random() * 10));
             
+            gameActive = true;
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             document.getElementById('back-btn').style.display = 'flex';
-            document.getElementById('overlay').classList.remove('show');
-            document.getElementById('last-guess-wrap').style.display = 'none';
             
-            gameActive = true;
-            updateLivesDisplay();
-            updateTimerDisplay();
-            updateAttemptCounter();
-            updateGoButton();
-            document.getElementById('hint-header').textContent = "Hint Station";
-            document.getElementById('message').textContent = "Type a code to start!";
+            setupDisplay(cfg.slots);
+            updateStatus();
             startTimer();
+            document.getElementById('message').textContent = "I'm thinking of " + cfg.slots + " numbers...";
         }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) endGame(false, 'TIME RAN OUT!');
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            document.getElementById('timer-display').textContent = formatTime(timeLeft);
-            const pct = (timeLeft / totalTime) * 100;
-            const bar = document.getElementById('timer-bar');
-            bar.style.width = pct + '%';
-            bar.style.background = pct <= 20 ? 'var(--red)' : (pct <= 40 ? 'var(--yellow)' : 'var(--green)');
-        }
-
-        function updateLivesDisplay() {
-            const container = document.getElementById('lives-display');
+        function setupDisplay(slots) {
+            const container = document.getElementById('display-screen');
             container.innerHTML = '';
-            for (let i = 0; i < maxLives; i++) {
-                const h = document.createElement('span');
-                h.className = 'heart' + (i >= lives ? ' lost' : '');
-                h.textContent = '❤';
-                container.appendChild(h);
+            for(let i=0; i<slots; i++) {
+                const div = document.createElement('div');
+                div.className = 'code-slot';
+                div.id = `slot-${i}`;
+                div.textContent = '?';
+                container.appendChild(div);
             }
         }
 
-        function updateAttemptCounter() { document.getElementById('attempt-counter').textContent = `Round ${attempts + 1}`; }
-
-        function press(num) {
-            if (!gameActive || currentInput.length >= config[currentDifficulty].slots) return;
-            sounds.keyPress();
-            currentInput.push(num);
-            updateDisplay();
-            updateGoButton();
+        function press(n) {
+            if (!gameActive || currentInput.length >= secretCode.length) return;
+            playNote(400 + (n * 20), 0.1);
+            currentInput.push(n);
+            updateSlots();
         }
 
         function handleClear() {
-            if (!gameActive || currentInput.length === 0) return;
-            sounds.backspace();
             currentInput.pop();
-            updateDisplay();
-            updateGoButton();
+            playNote(200, 0.1);
+            updateSlots();
         }
 
-        function updateGoButton() { document.getElementById('btn-go').disabled = currentInput.length < config[currentDifficulty].slots || !gameActive; }
-
-        function updateDisplay() {
-            const max = config[currentDifficulty].slots;
-            for (let i = 0; i < max; i++) {
+        function updateSlots() {
+            for(let i=0; i<secretCode.length; i++) {
                 const slot = document.getElementById(`slot-${i}`);
                 if (currentInput[i] !== undefined) {
                     slot.textContent = currentInput[i];
                     slot.className = 'code-slot filled';
                 } else {
                     slot.textContent = '?';
-                    slot.className = 'code-slot empty';
+                    slot.className = 'code-slot';
                 }
+            }
+            document.getElementById('btn-go').disabled = currentInput.length !== secretCode.length;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                if (timeLeft <= 0) endGame(false);
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer-display').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+            const pct = (timeLeft / totalTime) * 100;
+            document.getElementById('timer-bar').style.width = pct + '%';
+        }
+
+        function updateStatus() {
+            const div = document.getElementById('lives-display');
+            div.innerHTML = '';
+            for(let i=0; i<config[currentDifficulty].lives; i++) {
+                const h = document.createElement('span');
+                h.className = 'heart' + (i >= lives ? ' lost' : '');
+                h.textContent = '❤️';
+                div.appendChild(h);
             }
         }
 
-        function updateLastGuessDisplay(guessArr, resultsArr) {
-            const wrap = document.getElementById('last-guess-wrap');
-            const container = document.getElementById('lg-container');
-            container.innerHTML = '';
-            guessArr.forEach((num, i) => {
-                const slot = document.createElement('div');
-                slot.className = `lg-slot`;
-                slot.style.background = `var(--${resultsArr[i]})`;
-                slot.textContent = num;
-                container.appendChild(slot);
-            });
-            wrap.style.display = 'flex';
-        }
-
-        function generateMathHint() {
-            const sum = secretCode.reduce((a, b) => a + b, 0);
-            const evens = secretCode.filter(n => n % 2 === 0).length;
-            const hintPool = [
-                `All numbers added together = ${sum}.`,
-                `There are ${evens} even numbers!`,
-                `There are ${secretCode.length - evens} odd numbers!`,
-                `The first number is ${secretCode[0] > 4 ? 'big (> 4)' : 'small (≤ 4)'}.`,
-                `The last number is ${secretCode[secretCode.length-1] % 2 === 0 ? 'even' : 'odd'}.`
-            ];
-            return hintPool[Math.floor(Math.random() * hintPool.length)];
+        function generateHint() {
+            const rand = Math.random();
+            if (rand < 0.3) {
+                const sum = secretCode.reduce((a,b) => a+b, 0);
+                return `Tip: All the numbers add up to ${sum}!`;
+            } else if (rand < 0.6) {
+                const evens = secretCode.filter(n => n % 2 === 0).length;
+                return `Tip: There are ${evens} even numbers in the code.`;
+            } else {
+                const first = secretCode[0];
+                return `Tip: The first number is ${first > 4 ? 'bigger than 4' : '4 or smaller'}.`;
+            }
         }
 
         function checkCode() {
-            const max = config[currentDifficulty].slots;
-            const originalGuess = [...currentInput];
-            let guess = [...currentInput];
+            gameActive = false;
+            let correct = 0;
             let tempSecret = [...secretCode];
-            let results = new Array(max).fill('wrong');
-            let correctCount = 0;
+            let results = new Array(secretCode.length).fill('wrong');
 
-            for (let i = 0; i < max; i++) {
-                if (guess[i] === tempSecret[i]) {
+            // Pass 1: Correct position
+            currentInput.forEach((val, i) => {
+                if (val === secretCode[i]) {
                     results[i] = 'correct';
                     tempSecret[i] = null;
-                    guess[i] = null;
-                    correctCount++;
+                    correct++;
                 }
-            }
+            });
 
-            for (let i = 0; i < max; i++) {
-                if (guess[i] !== null) {
-                    const idx = tempSecret.indexOf(guess[i]);
+            // Pass 2: Present but wrong spot
+            currentInput.forEach((val, i) => {
+                if (results[i] === 'wrong') {
+                    const idx = tempSecret.indexOf(val);
                     if (idx !== -1) {
                         results[i] = 'present';
                         tempSecret[idx] = null;
                     }
                 }
-            }
+            });
 
-            for (let i = 0; i < max; i++) {
-                const slot = document.getElementById(`slot-${i}`);
+            // Animate Reveal
+            results.forEach((res, i) => {
                 setTimeout(() => {
-                    slot.className = `code-slot ${results[i]} flip`;
-                    if (results[i] === 'correct') sounds.correct();
-                }, i * 80);
-            }
+                    const slot = document.getElementById(`slot-${i}`);
+                    slot.className = `code-slot ${res} flip`;
+                    playNote(300 + (i * 100), 0.1);
+                }, i * 150);
+            });
 
-            attempts++;
-
-            if (correctCount === max) {
-                setTimeout(() => { sounds.win(); endGame(true, 'YOU DID IT!'); }, max * 100);
-            } else {
-                lives--;
-                updateLivesDisplay();
-                if (lives <= 0) {
-                    setTimeout(() => { sounds.lose(); endGame(false, 'STAY POSITIVE!'); }, max * 100);
+            setTimeout(() => {
+                if (correct === secretCode.length) {
+                    endGame(true);
                 } else {
-                    sounds.wrong();
-                    setTimeout(() => {
-                        updateLastGuessDisplay(originalGuess, results);
-                        document.getElementById('hint-header').textContent = "New Logic Hint:";
-                        document.getElementById('message').textContent = generateMathHint();
+                    lives--;
+                    updateStatus();
+                    if (lives <= 0) {
+                        endGame(false);
+                    } else {
+                        gameActive = true;
+                        document.getElementById('message').textContent = generateHint();
                         currentInput = [];
-                        updateDisplay();
-                        updateGoButton();
-                        updateAttemptCounter();
-                    }, 600);
+                        setTimeout(updateSlots, 1000);
+                    }
                 }
-            }
+            }, secretCode.length * 200);
         }
 
-        function endGame(won, title) {
+        function endGame(won) {
             gameActive = false;
             clearInterval(timerInterval);
-            document.getElementById('overlay-emoji').textContent = won ? '🏆' : '🎈';
-            document.getElementById('overlay-title').textContent = title;
-            document.getElementById('stat-time').textContent = formatTime(totalTime - timeLeft);
-            document.getElementById('stat-attempts').textContent = attempts;
-            document.getElementById('stat-lives').textContent = lives;
-            document.getElementById('overlay-code').textContent = won ? 'You solved it!' : `The code was: ${secretCode.join(' ')}`;
-            document.getElementById('overlay').classList.add('show');
+            const overlay = document.getElementById('overlay');
+            const emoji = document.getElementById('overlay-emoji');
+            const title = document.getElementById('overlay-title');
+            const msg = document.getElementById('overlay-msg');
+
+            overlay.classList.add('show');
             if (won) {
-                const key = `maruvault_pb_${currentDifficulty}`;
-                const currentPB = localStorage.getItem(key);
-                if (!currentPB || timeLeft > parseInt(currentPB)) localStorage.setItem(key, timeLeft);
+                emoji.textContent = '🏆';
+                title.textContent = 'SUPER SOLVER!';
+                msg.textContent = `You cracked the code in ${totalTime - timeLeft} seconds!`;
+                playNote(523, 0.1); setTimeout(()=>playNote(659, 0.1), 100); setTimeout(()=>playNote(783, 0.3), 200);
+                
+                const key = `maruvault_kids_pb_${currentDifficulty}`;
+                const best = localStorage.getItem(key);
+                if (!best || timeLeft > best) localStorage.setItem(key, timeLeft);
+            } else {
+                emoji.textContent = '🎈';
+                title.textContent = 'Nice Try!';
+                msg.textContent = `The secret code was ${secretCode.join(' ')}. Try again?`;
+                playNote(150, 0.5);
             }
         }
 
-        function restartGame() { initGame(currentDifficulty); }
+        function restartGame() {
+            document.getElementById('overlay').classList.remove('show');
+            initGame(currentDifficulty);
+        }
+
         window.onload = loadPBs;
     </script>
 </body>
