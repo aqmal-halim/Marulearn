@@ -5,29 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaruVault: Kids Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Playful & Bright Palette */
-            --bg: #e0f2fe;
+            /* Playful & High-Contrast Kids Palette */
+            --bg: #fdf4ff; /* Soft Lavender Tint */
             --surface: #ffffff;
-            --surface2: #f0fdf4;
-            --border: #cbd5e1;
-            --accent: #f472b6; /* Pink */
-            --accent2: #fbbf24; /* Yellow */
-            --purple: #8b5cf6;
-            --purple-light: #c4b5fd;
-            --green: #22c55e;
+            --surface2: #fff7ed;
+            --border: #e2e8f0;
+            --accent: #ff477e; /* Bright Pink */
+            --accent2: #00d2ff; /* Sky Blue */
+            --purple: #a855f7;
+            --green: #4ade80; /* Lime Green */
             --yellow: #fbbf24;
-            --red: #ef4444;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --correct: #22c55e;
-            --present: #f59e0b;
-            --wrong: #ef4444; /* Changed to Red */
+            --red: #ff5a5f;
+            --text: #2d3436;
+            --text-muted: #636e72;
+            --correct: #4ade80;
+            --present: #ffb142;
+            --wrong: #ff5252;
             --font-display: 'Nunito', sans-serif;
             --font-body: 'Nunito', sans-serif;
-            --radius: 20px;
+            --radius: 24px;
             --transition: 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -46,13 +45,15 @@
             overflow: hidden;
         }
 
+        /* Decorative Bubbles Background */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background:
-                radial-gradient(circle at 20% 20%, rgba(244, 114, 182, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.15) 0%, transparent 40%);
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(255, 71, 126, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 20%, rgba(0, 210, 255, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 90%, rgba(168, 85, 247, 0.1) 0%, transparent 30%);
             pointer-events: none;
             z-index: 0;
         }
@@ -79,185 +80,188 @@
 
         @media (min-height: 700px) and (min-width: 500px) {
             #game-container {
-                height: 90vh;
-                width: 420px;
-                border-radius: 40px;
-                border: 8px solid #ffffff;
-                box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+                height: 92vh;
+                width: 440px;
+                border-radius: 50px;
+                border: 12px solid #ffffff;
+                box-shadow: 0 30px 60px rgba(255, 71, 126, 0.15);
             }
         }
 
         #header {
             background: #ffffff;
-            padding: 16px;
-            border-bottom: 2px solid #f1f5f9;
+            padding: 20px;
+            border-bottom: 4px solid #f8fafc;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
         }
 
-        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-group { display: flex; align-items: center; gap: 12px; }
         .vault-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--accent), #ec4899);
-            border-radius: 12px;
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--accent), #ff8fa3);
+            border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; box-shadow: 0 4px 0px #be185d;
+            font-size: 1.5rem; box-shadow: 0 4px 0px #d6336c;
         }
 
-        .logo-text { font-size: 1.1rem; font-weight: 900; color: var(--text); }
-        .logo-sub { font-size: 0.65rem; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        .logo-text { font-size: 1.3rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+        .logo-sub { font-size: 0.7rem; color: var(--accent2); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
 
-        .header-controls { display: flex; gap: 8px; }
+        .header-controls { display: flex; gap: 10px; }
 
         #sound-toggle, #back-btn {
-            background: var(--bg); border: none;
-            color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+            background: #f1f5f9; border: none;
+            color: var(--text); width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            box-shadow: 0 3px 0 #cbd5e1;
         }
+        #sound-toggle:active, #back-btn:active { transform: translateY(2px); box-shadow: none; }
 
-        #back-btn { display: none; background: #fee2e2; color: var(--red); }
+        #back-btn { display: none; background: #ffe4e6; color: var(--accent); box-shadow: 0 3px 0 #fecaca; }
 
-        .screen { padding: 20px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .screen { padding: 25px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        #menu-screen { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-        .menu-intro { text-align: center; margin-bottom: 10px; }
-        .menu-intro p { font-size: 0.9rem; color: var(--text-muted); font-weight: 700; }
+        #menu-screen { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        .menu-intro { text-align: center; margin-bottom: 15px; }
+        .menu-intro p { font-size: 1rem; color: var(--text-muted); font-weight: 700; line-height: 1.4; }
 
-        .diff-label { font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; text-align: center; }
-        .diff-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        .diff-label { font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; text-align: center; letter-spacing: 1px; }
+        .diff-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
 
         .menu-btn {
-            padding: 16px; border-radius: 20px; border: 2px solid #f1f5f9;
+            padding: 18px; border-radius: 24px; border: 3px solid #f1f5f9;
             background: #ffffff; color: var(--text); cursor: pointer;
-            display: flex; align-items: center; gap: 15px; transition: all 0.2s ease;
-            box-shadow: 0 4px 0 #f1f5f9;
+            display: flex; align-items: center; gap: 18px; transition: all 0.2s ease;
+            box-shadow: 0 6px 0 #f1f5f9;
         }
-        .menu-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #f1f5f9; }
+        .menu-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 #f1f5f9; }
 
-        .diff-badge { width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; background: var(--bg); }
-        .menu-btn-title { font-size: 1.1rem; font-weight: 900; margin-bottom: 2px; }
-        .menu-btn-meta { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
-        .pb-pill { background: #dcfce7; color: var(--green); font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; font-weight: 800; margin-left: auto; }
+        .diff-badge { width: 50px; height: 50px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; background: #fdf4ff; }
+        .menu-btn-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 2px; }
+        .menu-btn-meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; }
+        .pb-pill { background: #dcfce7; color: #16a34a; font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; font-weight: 900; margin-left: auto; }
         .pb-pill.empty { background: #f1f5f9; color: var(--text-muted); }
 
         .home-link {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 15px; border-radius: 20px; border: none;
-            color: #6366f1; font-weight: 800; font-size: 0.9rem; text-decoration: none; margin-top: auto;
-            background: #e0e7ff;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 18px; border-radius: 24px; border: none;
+            color: #ffffff; font-weight: 900; font-size: 1rem; text-decoration: none; margin-top: auto;
+            background: #6366f1; box-shadow: 0 6px 0 #4338ca;
         }
 
         #game-screen { display: none; flex-direction: column; height: 100%; justify-content: space-between; }
         
-        #status-bar { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: 15px; }
-        #lives-display { display: flex; gap: 6px; }
-        .heart { font-size: 1.2rem; color: var(--red); filter: drop-shadow(0 2px 0 #fee2e2); }
-        .heart.lost { opacity: 0.2; filter: grayscale(1); }
+        #status-bar { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; margin-bottom: 20px; }
+        #lives-display { display: flex; gap: 8px; }
+        .heart { font-size: 1.5rem; color: var(--red); filter: drop-shadow(0 3px 0 #ffe4e6); }
+        .heart.lost { opacity: 0.15; filter: grayscale(1); }
 
         #timer-wrap {
-            display: flex; align-items: center; gap: 8px;
-            background: #f8fafc; padding: 8px 14px;
-            border-radius: 25px; border: 2px solid #f1f5f9;
+            display: flex; align-items: center; gap: 10px;
+            background: #fff; padding: 10px 16px;
+            border-radius: 30px; border: 3px solid #f1f5f9;
         }
-        #timer-display { font-size: 0.9rem; font-weight: 900; min-width: 45px; color: var(--text); }
-        #timer-progress { width: 60px; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; }
+        #timer-display { font-size: 1rem; font-weight: 900; min-width: 50px; color: var(--text); }
+        #timer-progress { width: 70px; height: 12px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
         #timer-bar { height: 100%; background: var(--green); transition: width 1s linear; }
 
-        #attempt-counter { text-align: center; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; margin-bottom: 10px; }
+        #attempt-counter { text-align: center; font-size: 0.9rem; color: var(--accent); text-transform: uppercase; font-weight: 900; margin-bottom: 12px; }
 
         #display-screen {
-            background: #f8fafc; border: 3px dashed #e2e8f0;
-            border-radius: 24px; display: flex; justify-content: center;
-            gap: 12px; padding: 20px; min-height: 100px; align-items: center;
-            flex-shrink: 0; margin-bottom: 15px;
+            background: #fffaf0; border: 4px dashed #ffe4e6;
+            border-radius: 30px; display: flex; justify-content: center;
+            gap: 15px; padding: 25px; min-height: 110px; align-items: center;
+            flex-shrink: 0; margin-bottom: 20px;
         }
 
         .code-slot {
-            width: 50px; height: 70px; background: #ffffff;
-            border-radius: 16px; border: 3px solid #e2e8f0;
+            width: 55px; height: 75px; background: #ffffff;
+            border-radius: 20px; border: 4px solid #f1f5f9;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2.2rem; font-weight: 900; color: #cbd5e1;
-            box-shadow: inset 0 4px 0 rgba(0,0,0,0.02);
+            font-size: 2.5rem; font-weight: 900; color: #e2e8f0;
+            box-shadow: 0 4px 0 #f1f5f9;
         }
 
-        .code-slot.filled { border-color: var(--accent); color: var(--text); }
-        .code-slot.correct { background: #dcfce7; border-color: var(--correct); color: var(--green); }
-        .code-slot.present { background: #fef3c7; border-color: var(--present); color: #d97706; }
-        .code-slot.wrong { background: #fee2e2; border-color: var(--red); color: var(--red); }
+        .code-slot.filled { border-color: var(--accent); color: var(--text); box-shadow: 0 4px 0 #ffdae5; }
+        .code-slot.correct { background: #dcfce7; border-color: var(--correct); color: #15803d; box-shadow: 0 4px 0 #bbf7d0; }
+        .code-slot.present { background: #fef3c7; border-color: var(--present); color: #b45309; box-shadow: 0 4px 0 #fde68a; }
+        .code-slot.wrong { background: #ffe4e6; border-color: var(--red); color: #b91c1c; box-shadow: 0 4px 0 #fecaca; }
 
         #feedback-box { 
-            background: #fdf2f8; border: 2px solid #fce7f3; 
-            border-radius: 24px; padding: 15px; display: flex; 
-            flex-direction: column; gap: 6px; min-height: 110px; flex-shrink: 0;
-            margin-bottom: 15px; text-align: center;
+            background: #fdf4ff; border: 3px solid #fae8ff; 
+            border-radius: 30px; padding: 18px; display: flex; 
+            flex-direction: column; gap: 8px; min-height: 125px; flex-shrink: 0;
+            margin-bottom: 20px; text-align: center;
         }
-        .feedback-header { font-size: 0.75rem; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
-        #message { font-size: 1rem; font-weight: 800; line-height: 1.4; color: var(--text); }
+        .feedback-header { font-size: 0.8rem; font-weight: 900; color: var(--purple); text-transform: uppercase; letter-spacing: 1px; }
+        #message { font-size: 1.1rem; font-weight: 800; line-height: 1.4; color: var(--text); }
         
         #last-guess-wrap {
-            display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto;
-            padding-top: 10px; border-top: 2px solid #fce7f3;
+            display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto;
+            padding-top: 12px; border-top: 3px solid #fae8ff;
         }
-        .lg-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 900; }
-        .lg-box { display: flex; gap: 6px; }
+        .lg-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 900; text-transform: uppercase; }
+        .lg-box { display: flex; gap: 8px; }
         .lg-slot {
-            width: 24px; height: 24px; border-radius: 6px;
+            width: 28px; height: 28px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 900; color: white;
+            font-size: 0.9rem; font-weight: 900; color: white;
         }
 
-        #legend { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; flex-shrink: 0; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-muted); font-weight: 800; }
-        .legend-dot { width: 12px; height: 12px; border-radius: 4px; }
+        #legend { display: flex; justify-content: center; gap: 18px; margin-bottom: 20px; flex-shrink: 0; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); font-weight: 800; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 5px; }
         .legend-dot.correct { background: var(--correct); }
         .legend-dot.present { background: var(--present); }
         .legend-dot.wrong { background: var(--red); }
 
         #keypad { 
             display: grid; grid-template-columns: repeat(3, 1fr); 
-            gap: 10px; flex-shrink: 0;
+            gap: 12px; flex-shrink: 0;
         }
         .key-btn { 
-            height: 55px; font-size: 1.5rem; font-weight: 900; border-radius: 18px; border: none; 
-            background: #f1f5f9; color: var(--text); cursor: pointer;
-            box-shadow: 0 4px 0 #e2e8f0;
+            height: 60px; font-size: 1.8rem; font-weight: 900; border-radius: 22px; border: none; 
+            background: #ffffff; color: var(--text); cursor: pointer;
+            box-shadow: 0 5px 0 #f1f5f9; border: 2px solid #f1f5f9;
         }
-        .key-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e2e8f0; }
+        .key-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #f1f5f9; }
         
-        .btn-clear { background: #fee2e2; color: var(--red); box-shadow: 0 4px 0 #fecaca; }
+        .btn-clear { background: #ffe4e6; color: var(--red); border-color: #fecaca; box-shadow: 0 5px 0 #fecaca; }
         .btn-clear:active { box-shadow: 0 2px 0 #fecaca; }
 
-        .btn-go { background: #dcfce7; color: var(--green); box-shadow: 0 4px 0 #bbf7d0; }
+        .btn-go { background: #dcfce7; color: #16a34a; border-color: #bbf7d0; box-shadow: 0 5px 0 #bbf7d0; font-size: 1.1rem; }
         .btn-go:active { box-shadow: 0 2px 0 #bbf7d0; }
-        .btn-go:disabled { opacity: 0.4; box-shadow: none; transform: none; }
+        .btn-go:disabled { opacity: 0.4; box-shadow: none; transform: none; border-color: #f1f5f9; }
 
         #overlay {
-            display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(8px); z-index: 10; flex-direction: column;
-            align-items: center; justify-content: center; padding: 30px; gap: 20px;
+            display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(10px); z-index: 10; flex-direction: column;
+            align-items: center; justify-content: center; padding: 40px; gap: 25px;
         }
         #overlay.show { display: flex; }
-        .overlay-emoji { font-size: 4.5rem; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
-        #overlay-title { font-size: 1.8rem; font-weight: 900; color: var(--text); text-align: center; }
+        .overlay-emoji { font-size: 5.5rem; filter: drop-shadow(0 15px 15px rgba(255, 71, 126, 0.2)); }
+        #overlay-title { font-size: 2.2rem; font-weight: 900; color: var(--text); text-align: center; line-height: 1; }
         
-        #overlay-stats { display: flex; gap: 12px; width: 100%; justify-content: center; }
-        .stat-chip { background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 20px; padding: 15px; text-align: center; flex: 1; }
-        .stat-chip .val { font-size: 1.3rem; font-weight: 900; color: var(--accent); margin-bottom: 4px; }
-        .stat-chip .lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
+        #overlay-stats { display: flex; gap: 15px; width: 100%; justify-content: center; }
+        .stat-chip { background: #fffaf0; border: 3px solid #ffedd5; border-radius: 24px; padding: 18px; text-align: center; flex: 1; }
+        .stat-chip .val { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-bottom: 4px; }
+        .stat-chip .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 900; }
         
-        .overlay-btns { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 10px; }
-        .overlay-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; font-weight: 900; cursor: pointer; font-size: 1.1rem; }
-        .overlay-btn.primary { background: var(--accent); color: white; box-shadow: 0 6px 0 #be185d; }
-        .overlay-btn.primary:active { transform: translateY(3px); box-shadow: 0 3px 0 #be185d; }
-        .overlay-btn.secondary { background: #f1f5f9; color: var(--text-muted); }
+        .overlay-btns { display: flex; flex-direction: column; gap: 15px; width: 100%; margin-top: 15px; }
+        .overlay-btn { width: 100%; padding: 20px; border-radius: 25px; border: none; font-weight: 900; cursor: pointer; font-size: 1.2rem; }
+        .overlay-btn.primary { background: var(--accent); color: white; box-shadow: 0 8px 0 #d6336c; }
+        .overlay-btn.primary:active { transform: translateY(4px); box-shadow: 0 4px 0 #d6336c; }
+        .overlay-btn.secondary { background: #f1f5f9; color: var(--text-muted); box-shadow: 0 5px 0 #cbd5e1; }
+        .overlay-btn.secondary:active { transform: translateY(3px); box-shadow: 0 2px 0 #cbd5e1; }
 
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #334155; color: white; font-size: 0.9rem; padding: 12px 24px; border-radius: 50px; z-index: 100; transition: transform 0.3s; font-weight: 700; }
+        #toast { position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2d3436; color: white; font-size: 1rem; padding: 14px 28px; border-radius: 50px; z-index: 100; transition: transform 0.3s; font-weight: 800; }
         #toast.show { transform: translateX(-50%) translateY(0); }
 
         @keyframes flip-in { from { transform: rotateX(90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
-        .flip { animation: flip-in 0.3s ease forwards; }
+        .flip { animation: flip-in 0.35s ease forwards; }
     </style>
 </head>
 <body>
@@ -268,7 +272,7 @@
                     <div class="vault-icon">⭐</div>
                     <div>
                         <div class="logo-text">MaruVault</div>
-                        <div class="logo-sub">Logic Quest!</div>
+                        <div class="logo-sub">Puzzle Fun!</div>
                     </div>
                 </div>
                 <div class="header-controls">
@@ -279,15 +283,15 @@
 
             <div id="menu-screen" class="screen">
                 <div class="menu-intro">
-                    <p>Find the secret code to win!<br>Follow the hints to solve the puzzle.</p>
+                    <p>Can you guess the secret code?<br>Pick a level to start your adventure!</p>
                 </div>
-                <div class="diff-label">Pick a Challenge</div>
+                <div class="diff-label">Choose Your Quest</div>
                 <div class="diff-grid">
                     <button class="menu-btn" onclick="initGame('beginner')">
                         <div class="diff-badge">🌱</div>
                         <div>
                             <div class="menu-btn-title">BEGINNER</div>
-                            <div class="menu-btn-meta">3 Digits · Easy</div>
+                            <div class="menu-btn-meta">3 Digits · Super Easy</div>
                         </div>
                         <div class="pb-pill empty" id="pb-beginner">--</div>
                     </button>
@@ -295,7 +299,7 @@
                         <div class="diff-badge">🌟</div>
                         <div>
                             <div class="menu-btn-title">INTERMEDIATE</div>
-                            <div class="menu-btn-meta">3 Digits · Tricky</div>
+                            <div class="menu-btn-meta">3 Digits · Fun Challenge</div>
                         </div>
                         <div class="pb-pill empty" id="pb-intermediate">--</div>
                     </button>
@@ -303,7 +307,7 @@
                         <div class="diff-badge">💎</div>
                         <div>
                             <div class="menu-btn-title">HARD</div>
-                            <div class="menu-btn-meta">4 Digits · Pro</div>
+                            <div class="menu-btn-meta">4 Digits · Logic Pro</div>
                         </div>
                         <div class="pb-pill empty" id="pb-hard">--</div>
                     </button>
@@ -311,12 +315,12 @@
                         <div class="diff-badge">👑</div>
                         <div>
                             <div class="menu-btn-title">VERY HARD</div>
-                            <div class="menu-btn-meta">5 Digits · Master</div>
+                            <div class="menu-btn-meta">5 Digits · Math Master</div>
                         </div>
                         <div class="pb-pill empty" id="pb-veryhard">--</div>
                     </button>
                 </div>
-                <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-link">🏠 Go Back Home</a>
+                <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-link">🏠 Back to Main Menu</a>
             </div>
 
             <div id="game-screen" class="screen">
@@ -331,9 +335,9 @@
                 <div id="display-screen"></div>
                 
                 <div id="legend">
-                    <div class="legend-item"><div class="legend-dot correct"></div>Correct</div>
-                    <div class="legend-item"><div class="legend-dot present"></div>Mix-up</div>
-                    <div class="legend-item"><div class="legend-dot wrong"></div>Try Again</div>
+                    <div class="legend-item"><div class="legend-dot correct"></div>Yes!</div>
+                    <div class="legend-item"><div class="legend-dot present"></div>Almost</div>
+                    <div class="legend-item"><div class="legend-dot wrong"></div>Not Yet</div>
                 </div>
 
                 <div id="feedback-box">
@@ -363,15 +367,15 @@
 
             <div id="overlay">
                 <div class="overlay-emoji" id="overlay-emoji">🎉</div>
-                <div id="overlay-title">AWESOME JOB!</div>
+                <div id="overlay-title">YOU WIN!</div>
                 <div id="overlay-stats">
                     <div class="stat-chip"><div class="val" id="stat-time">0:00</div><div class="lbl">Time</div></div>
                     <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Tries</div></div>
                     <div class="stat-chip"><div class="val" id="stat-lives">0</div><div class="lbl">Hearts</div></div>
                 </div>
-                <div id="overlay-code" style="font-weight: 800; color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;"></div>
+                <div id="overlay-code" style="font-weight: 800; color: var(--text-muted); font-size: 1rem; margin-top: 5px;"></div>
                 <div class="overlay-btns">
-                    <button class="overlay-btn primary" onclick="restartGame()">Play Again</button>
+                    <button class="overlay-btn primary" onclick="restartGame()">Play Again!</button>
                     <button class="overlay-btn secondary" onclick="showMenu()">Main Menu</button>
                 </div>
             </div>
@@ -576,7 +580,7 @@
                 lives--;
                 updateLivesDisplay();
                 if (lives <= 0) {
-                    setTimeout(() => { sounds.lose(); endGame(false, 'GAME OVER'); }, max * 100);
+                    setTimeout(() => { sounds.lose(); endGame(false, 'STAY POSITIVE!'); }, max * 100);
                 } else {
                     sounds.wrong();
                     setTimeout(() => {
