@@ -24,7 +24,7 @@
             --text-muted: #64748b;
             --correct: #22c55e;
             --present: #f59e0b;
-            --wrong: #94a3b8;
+            --wrong: #ef4444; /* Changed to Red */
             --font-display: 'Nunito', sans-serif;
             --font-body: 'Nunito', sans-serif;
             --radius: 20px;
@@ -109,11 +109,15 @@
         .logo-text { font-size: 1.1rem; font-weight: 900; color: var(--text); }
         .logo-sub { font-size: 0.65rem; color: var(--accent); font-weight: 800; text-transform: uppercase; }
 
-        #sound-toggle {
+        .header-controls { display: flex; gap: 8px; }
+
+        #sound-toggle, #back-btn {
             background: var(--bg); border: none;
             color: var(--text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
             display: flex; align-items: center; justify-content: center; font-size: 1rem;
         }
+
+        #back-btn { display: none; background: #fee2e2; color: var(--red); }
 
         .screen { padding: 20px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
@@ -181,7 +185,7 @@
         .code-slot.filled { border-color: var(--accent); color: var(--text); }
         .code-slot.correct { background: #dcfce7; border-color: var(--correct); color: var(--green); }
         .code-slot.present { background: #fef3c7; border-color: var(--present); color: #d97706; }
-        .code-slot.wrong { background: #f1f5f9; border-color: #cbd5e1; color: #94a3b8; }
+        .code-slot.wrong { background: #fee2e2; border-color: var(--red); color: var(--red); }
 
         #feedback-box { 
             background: #fdf2f8; border: 2px solid #fce7f3; 
@@ -209,7 +213,7 @@
         .legend-dot { width: 12px; height: 12px; border-radius: 4px; }
         .legend-dot.correct { background: var(--correct); }
         .legend-dot.present { background: var(--present); }
-        .legend-dot.wrong { background: #cbd5e1; }
+        .legend-dot.wrong { background: var(--red); }
 
         #keypad { 
             display: grid; grid-template-columns: repeat(3, 1fr); 
@@ -267,7 +271,10 @@
                         <div class="logo-sub">Logic Quest!</div>
                     </div>
                 </div>
-                <button id="sound-toggle" onclick="toggleSound()">🔊</button>
+                <div class="header-controls">
+                    <button id="back-btn" onclick="showMenu()">⬅</button>
+                    <button id="sound-toggle" onclick="toggleSound()">🔊</button>
+                </div>
             </div>
 
             <div id="menu-screen" class="screen">
@@ -374,7 +381,6 @@
     <div id="toast"></div>
 
     <script>
-        // JS remains identical to your functional logic but with updated sounds/messages
         let currentInput = [], secretCode = [], attempts = 0, lives = 5, maxLives = 5, timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false, timerInterval, soundOn = true;
         const config = { beginner: { time: 180, lives: 10, slots: 3 }, intermediate: { time: 120, lives: 5, slots: 3 }, hard: { time: 120, lives: 5, slots: 4 }, veryhard: { time: 120, lives: 5, slots: 5 } };
         
@@ -398,6 +404,7 @@
             gameActive = false; clearInterval(timerInterval); 
             document.getElementById('menu-screen').style.display = 'flex'; 
             document.getElementById('game-screen').style.display = 'none'; 
+            document.getElementById('back-btn').style.display = 'none';
             document.getElementById('overlay').classList.remove('show'); 
             loadPBs(); 
         }
@@ -423,6 +430,7 @@
             
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
+            document.getElementById('back-btn').style.display = 'flex';
             document.getElementById('overlay').classList.remove('show');
             document.getElementById('last-guess-wrap').style.display = 'none';
             
