@@ -181,6 +181,18 @@
         }
         .feedback-header { font-size: 0.65rem; font-weight: 800; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.08em; }
         #message { font-size: 0.85rem; font-weight: 700; line-height: 1.4; color: var(--text); }
+        
+        #last-guess-wrap {
+            display: flex; align-items: center; gap: 8px; margin-top: 2px;
+            padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .lg-label { font-size: 0.6rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+        .lg-box { display: flex; gap: 6px; }
+        .lg-slot {
+            width: 20px; height: 20px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 900; font-family: var(--font-display);
+        }
 
         #legend { display: flex; justify-content: center; gap: 12px; margin: 4px 0; }
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.65rem; color: var(--text-muted); font-weight: 700; }
@@ -203,7 +215,7 @@
         #overlay {
             display: none; position: absolute; inset: 0; background: rgba(15,14,23,0.97);
             backdrop-filter: blur(10px); z-index: 10; flex-direction: column;
-            align-items: center; justify-content: center; padding: 24px; gap: 16px; border-radius: 28px;
+            align-items: center; justify-content: center; padding: 24px; gap: 20px; border-radius: 28px;
         }
         #overlay.show { display: flex; }
         .overlay-emoji { font-size: 3.5rem; margin-bottom: -10px; }
@@ -227,16 +239,6 @@
         }
         .stat-chip .val { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--accent2); margin-bottom: 2px; }
         .stat-chip .lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; }
-
-        /* Last Guess Display */
-        #last-guess-section { width: 100%; text-align: center; }
-        .last-guess-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
-        #last-guess-container { display: flex; justify-content: center; gap: 8px; }
-        .mini-slot {
-            width: 38px; height: 48px; border-radius: 10px; border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-display); font-size: 1.2rem; font-weight: 700;
-        }
         
         .overlay-btns { display: flex; gap: 12px; width: 100%; margin-top: 10px; }
         .overlay-btn { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 900; cursor: pointer; font-size: 0.95rem; transition: transform 0.1s; }
@@ -327,6 +329,10 @@
                 <div id="feedback-box">
                     <div class="feedback-header" id="hint-header">System Status</div>
                     <div id="message">Enter the access code to begin decryption.</div>
+                    <div id="last-guess-wrap" style="display: none;">
+                        <span class="lg-label">Last:</span>
+                        <div id="lg-container" class="lg-box"></div>
+                    </div>
                 </div>
 
                 <div id="keypad">
@@ -348,20 +354,12 @@
             <div id="overlay">
                 <div class="overlay-emoji" id="overlay-emoji">🎉</div>
                 <div id="overlay-title">VAULT CRACKED!</div>
-                
                 <div id="overlay-stats">
-                    <div class="stat-chip"><div class="val" id="stat-time">0:00</div><div class="lbl">Time</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-attempts">0</div><div class="lbl">Tries</div></div>
-                    <div class="stat-chip"><div class="val" id="stat-lives">0</div><div class="lbl">Lives</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-time">0:18</div><div class="lbl">Time</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-attempts">4</div><div class="lbl">Tries</div></div>
+                    <div class="stat-chip"><div class="val" id="stat-lives">7</div><div class="lbl">Lives</div></div>
                 </div>
-
-                <div id="last-guess-section">
-                    <div class="last-guess-label">Final Guess Outcome</div>
-                    <div id="last-guess-container"></div>
-                </div>
-
                 <div id="overlay-code" style="font-family: var(--font-display); color: var(--text-muted); font-size: 0.85rem;"></div>
-                
                 <div class="overlay-btns">
                     <button class="overlay-btn primary" onclick="restartGame()">Try Again</button>
                     <button class="overlay-btn secondary" onclick="showMenu()">Main Menu</button>
@@ -389,8 +387,6 @@
         }, false);
 
         let currentInput = [], secretCode = [], attempts = 0, lives = 5, maxLives = 5, timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false, timerInterval, soundOn = true;
-        let lastGuessOutcome = []; // Store the results of the final guess
-        
         const config = { beginner: { time: 180, lives: 10, slots: 3 }, intermediate: { time: 120, lives: 5, slots: 3 }, hard: { time: 120, lives: 5, slots: 4 }, veryhard: { time: 120, lives: 5, slots: 5 } };
         
         let audioCtx = null;
@@ -425,7 +421,6 @@
             lives = cfg.lives; maxLives = cfg.lives;
             attempts = 0;
             currentInput = [];
-            lastGuessOutcome = [];
             
             const display = document.getElementById('display-screen');
             display.innerHTML = '';
@@ -442,6 +437,7 @@
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             document.getElementById('overlay').classList.remove('show');
+            document.getElementById('last-guess-wrap').style.display = 'none';
             
             gameActive = true;
             updateLivesDisplay();
@@ -519,6 +515,21 @@
             document.getElementById('message').textContent = text;
         }
 
+        function updateLastGuessDisplay(guessArr, resultsArr) {
+            const wrap = document.getElementById('last-guess-wrap');
+            const container = document.getElementById('lg-container');
+            container.innerHTML = '';
+            guessArr.forEach((num, i) => {
+                const slot = document.createElement('div');
+                slot.className = `lg-slot`;
+                slot.style.background = `var(--${resultsArr[i]})`;
+                slot.style.color = resultsArr[i] === 'wrong' ? 'rgba(255,255,255,0.7)' : 'var(--bg)';
+                slot.textContent = num;
+                container.appendChild(slot);
+            });
+            wrap.style.display = 'flex';
+        }
+
         function generateMathHint() {
             const sum = secretCode.reduce((a, b) => a + b, 0);
             const evens = secretCode.filter(n => n % 2 === 0).length;
@@ -542,6 +553,7 @@
 
         function checkCode() {
             const max = config[currentDifficulty].slots;
+            const originalGuess = [...currentInput];
             let guess = [...currentInput];
             let tempSecret = [...secretCode];
             let results = new Array(max).fill('wrong');
@@ -566,9 +578,6 @@
                 }
             }
 
-            // Save the outcome for the end screen
-            lastGuessOutcome = currentInput.map((val, idx) => ({ val: val, status: results[idx] }));
-
             for (let i = 0; i < max; i++) {
                 const slot = document.getElementById(`slot-${i}`);
                 setTimeout(() => {
@@ -590,6 +599,7 @@
                 } else {
                     sounds.wrong();
                     setTimeout(() => {
+                        updateLastGuessDisplay(originalGuess, results);
                         setHint("Logic Hint Received:", generateMathHint());
                         currentInput = [];
                         updateDisplay();
@@ -609,25 +619,7 @@
             document.getElementById('stat-time').textContent = formatTime(totalTime - timeLeft);
             document.getElementById('stat-attempts').textContent = attempts;
             document.getElementById('stat-lives').textContent = lives;
-            document.getElementById('overlay-code').textContent = won ? '' : `Sequence: ${secretCode.join(' ')}`;
-            
-            // Build the Last Guess display
-            const lgContainer = document.getElementById('last-guess-container');
-            const lgSection = document.getElementById('last-guess-section');
-            lgContainer.innerHTML = '';
-            
-            if (lastGuessOutcome.length > 0) {
-                lgSection.style.display = 'block';
-                lastGuessOutcome.forEach(item => {
-                    const mini = document.createElement('div');
-                    mini.className = `mini-slot ${item.status}`;
-                    mini.textContent = item.val;
-                    lgContainer.appendChild(mini);
-                });
-            } else {
-                lgSection.style.display = 'none';
-            }
-
+            document.getElementById('overlay-code').textContent = won ? '' : `Correct Sequence: ${secretCode.join(' ')}`;
             overlay.classList.add('show');
 
             if (won) {
