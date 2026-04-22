@@ -43,7 +43,6 @@
             overflow: hidden;
         }
 
-        /* Fun Background Pattern */
         body::before {
             content: '';
             position: fixed; inset: 0;
@@ -103,7 +102,6 @@
 
         .screen { padding: 20px; flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
         
-        /* Menu Styling */
         #menu-screen { gap: 15px; }
         .menu-intro { text-align: center; margin-bottom: 5px; }
         .menu-intro h2 { font-weight: 900; color: var(--purple); margin-bottom: 5px; }
@@ -127,7 +125,7 @@
         .menu-btn-title { font-size: 1.1rem; font-weight: 900; color: var(--text); text-align: left; }
         .menu-btn-meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-align: left; }
         
-        .pb-pill { background: #dcfce7; color: #166534; font-size: 0.7rem; padding: 5px 12px; border-radius: 12px; font-weight: 800; margin-left: auto; }
+        .pb-pill { background: #dcfce7; color: #166534; font-size: 0.7rem; padding: 5px 12px; border-radius: 12px; font-weight: 800; margin-left: auto; white-space: nowrap; }
         .pb-pill.empty { background: #f8fafc; color: #94a3b8; }
 
         .home-link {
@@ -139,7 +137,6 @@
         }
         .home-link:active { transform: scale(0.95); }
 
-        /* Game Screen */
         #game-screen { display: none; justify-content: space-between; padding-top: 10px; }
         
         #status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -201,7 +198,6 @@
         .btn-go { background: #dcfce7; color: #166534; box-shadow: 0 5px 0 #bbf7d0; grid-column: span 1; }
         .btn-go:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* Overlay */
         #overlay {
             display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.95);
             z-index: 100; flex-direction: column; align-items: center; justify-content: center;
@@ -252,7 +248,7 @@
                             <div class="menu-btn-title">Junior Scout</div>
                             <div class="menu-btn-meta">3 Numbers · Lots of Time</div>
                         </div>
-                        <div class="pb-pill empty" id="pb-beginner">--</div>
+                        <div class="pb-pill empty" id="pb-beginner">No Score</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('intermediate')">
                         <div class="diff-badge">🌟</div>
@@ -260,7 +256,7 @@
                             <div class="menu-btn-title">Star Solver</div>
                             <div class="menu-btn-meta">3 Numbers · Tricky</div>
                         </div>
-                        <div class="pb-pill empty" id="pb-intermediate">--</div>
+                        <div class="pb-pill empty" id="pb-intermediate">No Score</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('hard')">
                         <div class="diff-badge">💎</div>
@@ -268,7 +264,7 @@
                             <div class="menu-btn-title">Diamond Mind</div>
                             <div class="menu-btn-meta">4 Numbers · Pro</div>
                         </div>
-                        <div class="pb-pill empty" id="pb-hard">--</div>
+                        <div class="pb-pill empty" id="pb-hard">No Score</div>
                     </button>
                     <button class="menu-btn" onclick="initGame('veryhard')">
                         <div class="diff-badge">👑</div>
@@ -276,7 +272,7 @@
                             <div class="menu-btn-title">Vault Master</div>
                             <div class="menu-btn-meta">5 Numbers · Genius!</div>
                         </div>
-                        <div class="pb-pill empty" id="pb-veryhard">--</div>
+                        <div class="pb-pill empty" id="pb-veryhard">No Score</div>
                     </button>
                 </div>
                 <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-link">🏠 Go Back Home</a>
@@ -322,6 +318,7 @@
                 <div class="overlay-emoji" id="overlay-emoji">🎉</div>
                 <h1 id="overlay-title">YOU WON!</h1>
                 <p id="overlay-msg" style="font-weight: 800; color: var(--text-muted); margin-bottom: 20px;"></p>
+                <div id="score-display" style="font-size: 1.5rem; font-weight: 900; color: var(--purple); margin-bottom: 15px;"></div>
                 <button class="overlay-btn primary-btn" onclick="restartGame()">Try Again!</button>
                 <button class="overlay-btn secondary-btn" onclick="showMenu()">Main Menu</button>
             </div>
@@ -367,9 +364,17 @@
 
         function loadPBs() {
             Object.keys(config).forEach(diff => {
-                const pb = localStorage.getItem(`maruvault_kids_pb_${diff}`);
+                const pb = localStorage.getItem(`maruvault_kids_pb_score_${diff}`);
                 const el = document.getElementById(`pb-${diff}`);
-                if (el) el.textContent = pb ? pb + 's left' : '--';
+                if (el) {
+                    if (pb) {
+                        el.textContent = 'Best: ' + pb;
+                        el.classList.remove('empty');
+                    } else {
+                        el.textContent = 'No Score';
+                        el.classList.add('empty');
+                    }
+                }
             });
         }
 
@@ -550,21 +555,28 @@
             const emoji = document.getElementById('overlay-emoji');
             const title = document.getElementById('overlay-title');
             const msg = document.getElementById('overlay-msg');
+            const scoreDisplay = document.getElementById('score-display');
 
             overlay.classList.add('show');
             if (won) {
+                const finalScore = timeLeft * lives;
                 emoji.textContent = '🏆';
                 title.textContent = 'SUPER SOLVER!';
-                msg.textContent = `You cracked the code in ${totalTime - timeLeft} seconds!`;
+                msg.textContent = `You cracked the code!`;
+                scoreDisplay.textContent = `Score: ${finalScore}`;
+                
                 playNote(523, 0.1); setTimeout(()=>playNote(659, 0.1), 100); setTimeout(()=>playNote(783, 0.3), 200);
                 
-                const key = `maruvault_kids_pb_${currentDifficulty}`;
+                const key = `maruvault_kids_pb_score_${currentDifficulty}`;
                 const best = localStorage.getItem(key);
-                if (!best || timeLeft > best) localStorage.setItem(key, timeLeft);
+                if (!best || finalScore > parseInt(best)) {
+                    localStorage.setItem(key, finalScore);
+                }
             } else {
                 emoji.textContent = '🎈';
                 title.textContent = 'Nice Try!';
-                msg.textContent = `The secret code was ${secretCode.join(' ')}. Try again?`;
+                msg.textContent = `The secret code was ${secretCode.join(' ')}.`;
+                scoreDisplay.textContent = "";
                 playNote(150, 0.5);
             }
         }
