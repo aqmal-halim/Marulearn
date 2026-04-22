@@ -130,6 +130,15 @@
         .pb-pill { background: #dcfce7; color: #166534; font-size: 0.7rem; padding: 5px 12px; border-radius: 12px; font-weight: 800; margin-left: auto; }
         .pb-pill.empty { background: #f8fafc; color: #94a3b8; }
 
+        .home-link {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 18px; border-radius: 24px; border: none;
+            color: #6366f1; font-weight: 800; font-size: 1rem; text-decoration: none;
+            margin-top: auto; background: #e0e7ff;
+            transition: transform 0.2s ease;
+        }
+        .home-link:active { transform: scale(0.95); }
+
         /* Game Screen */
         #game-screen { display: none; justify-content: space-between; padding-top: 10px; }
         
@@ -169,7 +178,6 @@
         .feedback-header { font-size: 0.7rem; font-weight: 900; color: var(--blue); text-transform: uppercase; }
         #message { font-size: 0.95rem; font-weight: 800; color: var(--text); line-height: 1.3; }
 
-        /* Last Guess Styles */
         #last-guess-wrap {
             display: none; align-items: center; justify-content: center; gap: 8px;
             padding-top: 8px; border-top: 2px solid #e0f2fe; width: 100%;
@@ -271,6 +279,7 @@
                         <div class="pb-pill empty" id="pb-veryhard">--</div>
                     </button>
                 </div>
+                <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-link">🏠 Go Back Home</a>
             </div>
 
             <div id="game-screen" class="screen">
