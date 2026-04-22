@@ -179,7 +179,10 @@
             border-radius: 16px; padding: 14px; display: flex; 
             flex-direction: column; gap: 6px; min-height: 70px;
         }
+        .feedback-header-wrap { display: flex; justify-content: space-between; align-items: center; }
         .feedback-header { font-size: 0.65rem; font-weight: 800; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.08em; }
+        .last-guess-pill { font-family: var(--font-display); font-size: 0.65rem; background: var(--surface); color: var(--text-muted); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); }
+        
         #message { font-size: 0.85rem; font-weight: 700; line-height: 1.4; color: var(--text); }
 
         #legend { display: flex; justify-content: center; gap: 12px; margin: 4px 0; }
@@ -209,7 +212,6 @@
         .overlay-emoji { font-size: 3.5rem; margin-bottom: -10px; }
         #overlay-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; color: var(--text); }
         
-        /* UPDATED: Horizontal Stats Layout */
         #overlay-stats { 
             display: flex; 
             flex-direction: row; 
@@ -316,7 +318,10 @@
                 </div>
 
                 <div id="feedback-box">
-                    <div class="feedback-header" id="hint-header">System Status</div>
+                    <div class="feedback-header-wrap">
+                        <div class="feedback-header" id="hint-header">System Status</div>
+                        <div id="last-guess-display" class="last-guess-pill" style="display:none;">Last: 1 2 3</div>
+                    </div>
                     <div id="message">Enter the access code to begin decryption.</div>
                 </div>
 
@@ -371,7 +376,7 @@
             lastTouchEnd = now;
         }, false);
 
-        let currentInput = [], secretCode = [], attempts = 0, lives = 5, maxLives = 5, timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false, timerInterval, soundOn = true;
+        let currentInput = [], secretCode = [], lastGuess = [], attempts = 0, lives = 5, maxLives = 5, timeLeft = 120, totalTime = 120, currentDifficulty = '', gameActive = false, timerInterval, soundOn = true;
         const config = { beginner: { time: 180, lives: 10, slots: 3 }, intermediate: { time: 120, lives: 5, slots: 3 }, hard: { time: 120, lives: 5, slots: 4 }, veryhard: { time: 120, lives: 5, slots: 5 } };
         
         let audioCtx = null;
@@ -406,6 +411,7 @@
             lives = cfg.lives; maxLives = cfg.lives;
             attempts = 0;
             currentInput = [];
+            lastGuess = [];
             
             const display = document.getElementById('display-screen');
             display.innerHTML = '';
@@ -422,6 +428,7 @@
             document.getElementById('menu-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
             document.getElementById('overlay').classList.remove('show');
+            document.getElementById('last-guess-display').style.display = 'none';
             
             gameActive = true;
             updateLivesDisplay();
@@ -497,6 +504,14 @@
         function setHint(header, text) {
             document.getElementById('hint-header').textContent = header;
             document.getElementById('message').textContent = text;
+            
+            const lastDisplay = document.getElementById('last-guess-display');
+            if (lastGuess.length > 0) {
+                lastDisplay.textContent = `Last: ${lastGuess.join(' ')}`;
+                lastDisplay.style.display = 'block';
+            } else {
+                lastDisplay.style.display = 'none';
+            }
         }
 
         function generateMathHint() {
@@ -523,6 +538,7 @@
         function checkCode() {
             const max = config[currentDifficulty].slots;
             let guess = [...currentInput];
+            lastGuess = [...currentInput]; // Store the latest guess
             let tempSecret = [...secretCode];
             let results = new Array(max).fill('wrong');
             let correctCount = 0;
