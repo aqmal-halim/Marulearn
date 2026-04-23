@@ -282,32 +282,22 @@
             const tileObj = tiles[idx];
             const tileEl = gridEl.children[idx];
             const waterPath = tileEl.querySelector('.water-path');
-            const conns = getConnectors(tileObj);
-
-            // Calculation of the internal side from which water enters the SVG coordinate space
-            // fromDir (0=Top, 1=Right, 2=Bottom, 3=Left) is the direction it enters from the neighbor.
-            // Since SVG rotations are clockwise, we subtract rotation to get internal side.
-            let internalEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
             
+            // Calculate flow direction
+            // fromDir is where water COMES FROM (0:Top, 1:Right, 2:Bottom, 3:Left)
+            // Logic: Normal flow is Start->End, Top->Right, Left->Right. 
+            // We reverse if entry is from the "target" side of the base SVG.
             let reverse = false;
-            if (tileObj.type === 'straight') {
-                // Straight internal is Left(3) <-> Right(1). 
-                // SVG path is drawn Left to Right. So if entering from internal Right, reverse.
-                if (internalEntry === 1) reverse = true;
-                // Vertical straight: entering from Bottom (which is internal Top/0 or Bottom/2 depending on rot)
-                // The logic holds: if internal entry side is the "destination" side of SVG path, reverse it.
-            } else if (tileObj.type === 'elbow') {
-                // Elbow internal is Top(0) <-> Right(1).
-                // SVG path is drawn Top to Right. So if entering from internal Right, reverse.
-                if (internalEntry === 1) reverse = true;
-            }
+            let entry = (fromDir - tileObj.rotation + 4) % 4;
+            
+            if (tileObj.type === 'straight' && entry === 1) reverse = true;
+            if (tileObj.type === 'elbow' && entry === 1) reverse = true;
+            if (tileObj.type === 'end' && entry === 3) reverse = false; // End piece always flows in
 
-            // Set animation
             waterPath.style.transition = 'none';
-            waterPath.style.strokeDasharray = "100";
             waterPath.style.strokeDashoffset = reverse ? "-100" : "100";
             
-            // Force reflow
+            // Force reflow for smooth start
             waterPath.getBoundingClientRect();
             
             waterPath.style.transition = 'stroke-dashoffset 0.4s linear';
@@ -319,6 +309,7 @@
             visited.add(idx);
             if(tileObj.isEnd) { won = true; break; }
 
+            const conns = getConnectors(tileObj);
             const r = Math.floor(idx/size), c = idx%size;
             const neighbors = [
                 {nIdx: idx-size, dir: 0, opp: 2, ok: r > 0},
