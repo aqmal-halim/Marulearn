@@ -204,29 +204,11 @@ body{
 .tile.spawning{animation:pop-in .35s cubic-bezier(.175,.885,.32,1.275)}
 @keyframes pop-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 
-/* ── CURRENT SUM INDICATOR ──────────────────────────────────── */
-.sum-bar{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  padding:8px 20px;
-  background:rgba(255,255,255,0.08);
-  border:1.5px solid rgba(255,255,255,0.15);
-  border-radius:50px;
-  font-family:'Fredoka One',cursive;
-  font-size:1.1rem;
-  min-width:200px;
-  text-align:center;
-  transition:all .2s;
-}
-.sum-label{color:rgba(255,255,255,.5);font-size:.9rem}
-.sum-value{font-size:1.4rem;color:var(--white);transition:color .15s}
-.sum-value.sum-match{color:var(--mint);text-shadow:0 0 15px var(--mint)}
-.sum-value.sum-over{color:var(--coral);text-shadow:0 0 15px var(--coral)}
-.sum-arrow{font-size:1.2rem}
-
 /* ── SCORE FOOTER ─────────────────────────────────────────────── */
 .score-footer{
   width:100%;
   display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-top: 10px;
 }
 .score-card{
   background:rgba(255,255,255,0.08);
@@ -377,7 +359,6 @@ body{
 <div id="toast" class="toast">✨ Brilliant!</div>
 <div id="confetti-container" class="confetti-container"></div>
 
-<!-- ── START OVERLAY ── -->
 <div id="start-overlay" class="overlay">
   <div class="overlay-card">
     <div class="emoji-big">🌟</div>
@@ -402,7 +383,6 @@ body{
   </div>
 </div>
 
-<!-- ── GAME OVER OVERLAY ── -->
 <div id="gameover-overlay" class="overlay hidden">
   <div class="overlay-card">
     <div class="emoji-big" id="go-emoji">💫</div>
@@ -415,17 +395,14 @@ body{
   </div>
 </div>
 
-<!-- ── MAIN PAGE ── -->
 <div class="page">
 
-  <!-- Nav -->
   <div class="nav-top">
     <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-btn">🏠</a>
     <div class="logo">Number<span>Quest</span></div>
     <div style="width:46px"></div>
   </div>
 
-  <!-- Stats -->
   <div class="stats-bar">
     <div class="stat-card">
       <span class="stat-label">🎯 Target</span>
@@ -451,7 +428,6 @@ body{
     </div>
   </div>
 
-  <!-- Progress -->
   <div class="progress-wrap">
     <div class="progress-track">
       <div id="progress" class="progress-fill"></div>
@@ -461,20 +437,10 @@ body{
     </div>
   </div>
 
-  <!-- Grid -->
   <div class="grid-wrap">
     <div id="grid" class="grid"></div>
   </div>
 
-  <!-- Sum indicator -->
-  <div class="sum-bar">
-    <span class="sum-label">Sum:</span>
-    <span id="sum-value" class="sum-value">0</span>
-    <span class="sum-arrow" id="sum-arrow">→</span>
-    <span id="sum-target-echo" style="color:rgba(255,255,255,.45);font-size:1rem">?</span>
-  </div>
-
-  <!-- Score footer -->
   <div class="score-footer">
     <div class="score-card">
       <div class="score-icon">🏆</div>
@@ -492,9 +458,7 @@ body{
     </div>
   </div>
 
-</div><!-- .page -->
-
-<script>
+</div><script>
 /* ─── STATE ────────────────────────────────────────────────────── */
 const S = {
   target:0, score:0, level:1, lives:5,
@@ -546,7 +510,6 @@ function initStarfield(){
 
   function draw(){
     ctx.clearRect(0,0,W,H);
-    // gradient bg
     const grad = ctx.createLinearGradient(0,0,0,H);
     grad.addColorStop(0,'#0d0d2b');
     grad.addColorStop(.5,'#0f1d3a');
@@ -654,7 +617,6 @@ function newTarget(){
   const maxT = 15 + S.level*4;
   S.target = Math.floor(Math.random()*(maxT-minT))+minT;
   document.getElementById('target').textContent = S.target;
-  document.getElementById('sum-target-echo').textContent = S.target;
   S.maxTime = Math.max(10, 20 - Math.floor(S.level/2));
   startTimer();
 }
@@ -675,7 +637,6 @@ function updateTimerDisplay(){
   const el = document.getElementById('timer');
   el.textContent = S.timeLeft;
   el.className = 'timer-inner-text' + (S.timeLeft<=5?' urgent':'');
-  // ring
   const ring = document.getElementById('timer-ring');
   const pct = S.timeLeft / S.maxTime;
   const circ = 125.66;
@@ -704,14 +665,12 @@ function endGame(){
   S.active = false;
   clearInterval(S.timerId);
   playSound('gameover');
-
   const isNew = S.score > S.personalBest && S.score > 0;
   if(isNew){
     S.personalBest = S.score;
     localStorage.setItem('nq_best_v2', S.personalBest);
     updateBestDisplays();
   }
-
   const ol = document.getElementById('gameover-overlay');
   document.getElementById('go-emoji').textContent = isNew?'🏆':S.score>100?'🌟':'💫';
   document.getElementById('go-title').textContent = isNew?'New Best!':S.score>200?'Amazing!':S.score>100?'Great Run!':'Nice Try!';
@@ -719,7 +678,6 @@ function endGame(){
   document.getElementById('go-best-wrap').classList.toggle('hidden', !isNew);
   document.getElementById('go-best-score').textContent = isNew?'':`Personal Best: ${S.personalBest}`;
   ol.classList.remove('hidden');
-
   if(isNew) launchConfetti(120);
   else if(S.score>100) launchConfetti(40);
 }
@@ -765,7 +723,6 @@ function startDrag(e, tile){
 
 function enterTile(tile){
   if(!S.isDragging || S.selected.includes(tile)||tile.classList.contains('clearing')) return;
-
   if(S.selected.length>0){
     const last = S.selected[S.selected.length-1];
     const i1 = parseInt(last.dataset.index);
@@ -774,26 +731,13 @@ function enterTile(tile){
     const sameRow = Math.floor(i1/5)===Math.floor(i2/5);
     if(!((diff===1&&sameRow)||diff===5)) return;
   }
-
   S.selected.push(tile);
   S.currentSum += parseInt(tile.textContent);
   playSound('select');
-
-  updateSumBar();
   S.selected.forEach(t=>t.classList.remove('selected','match-glow','over-glow'));
   S.selected.forEach(t=>t.classList.add('selected'));
-
   if(S.currentSum===S.target) S.selected.forEach(t=>t.classList.add('match-glow'));
   else if(S.currentSum>S.target) S.selected.forEach(t=>t.classList.add('over-glow'));
-}
-
-function updateSumBar(){
-  const sv = document.getElementById('sum-value');
-  sv.textContent = S.currentSum;
-  sv.className = 'sum-value';
-  if(S.currentSum===S.target) sv.classList.add('sum-match');
-  else if(S.currentSum>S.target) sv.classList.add('sum-over');
-  document.getElementById('sum-arrow').textContent = S.currentSum>S.target?'✗':S.currentSum===S.target?'✓':'→';
 }
 
 function endDrag(){
@@ -806,7 +750,6 @@ function endDrag(){
 function clearSelection(){
   S.selected.forEach(t=>t.classList.remove('selected','match-glow','over-glow'));
   S.selected=[]; S.currentSum=0;
-  updateSumBar();
 }
 
 function handleMatch(){
@@ -817,19 +760,14 @@ function handleMatch(){
   S.score += pts;
   S.totalCleared++;
   S.clearedInLevel++;
-
-  // Score popup
   showScorePop(`+${pts}`, S.consecutiveMatches>2?'🔥':'');
   if(S.consecutiveMatches>1) showChainBadge(`🔗 x${S.consecutiveMatches}`);
-
   S.selected.forEach(t=>t.classList.add('clearing'));
   launchTileConfetti(S.selected);
-
   setTimeout(()=>{
     replenishTiles();
     S.selected=[];
     updateUI();
-
     if(S.clearedInLevel>=S.levelUpAt){
       S.level++; S.clearedInLevel=0;
       S.levelUpAt = 5+S.level;
