@@ -1,300 +1,375 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marulearn: Math Pathfinder</title>
-    <style>
-        :root {
-            --primary: #4a90e2;
-            --success: #4caf50;
-            --error: #f44336;
-            --bg: #f8f9fa;
-            --tile-bg: #ffffff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Marulearn – Math Pathfinder Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sky: #e0f2ff;
+      --yellow: #ffd93d;
+      --orange: #ff9f43;
+      --coral: #ff6b6b;
+      --mint: #6bcb77;
+      --teal: #4db6e8;
+      --purple: #a678f0;
+      --white: #ffffff;
+      --ink: #2d3a4a;
+      --card-shadow: 0 8px 0 rgba(0,0,0,0.06);
+      --tile-size: 68px;
+      --gap: 12px;
+      --r: 20px;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            touch-action: none; /* Prevents scrolling while dragging on mobile */
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--sky);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      touch-action: none;
+      color: var(--ink);
+    }
 
-        .stats-container {
-            display: flex;
-            gap: 20px;
-            background: white;
-            padding: 15px 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
+    /* ── BACKGROUND ── */
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; }
 
-        .stat-box {
-            text-align: center;
-        }
+    .page {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      height: 100vh;
+      justify-content: space-between;
+    }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: #666;
-            text-transform: uppercase;
-        }
+    /* ── HEADER ── */
+    .header { text-align: center; width: 100%; }
+    .logo {
+      font-family: 'Baloo 2', cursive;
+      font-size: 2.2rem; font-weight: 800;
+      margin-bottom: 15px;
+    }
+    .logo span { color: var(--orange); }
 
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
+    .stats-bar {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
 
-        #current-sum {
-            color: #333;
-        }
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: var(--card-shadow);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 70px);
-            grid-template-rows: repeat(5, 70px);
-            gap: 12px;
-            padding: 15px;
-            background: #e0e0e0;
-            border-radius: 12px;
-            user-select: none;
-            touch-action: none;
-        }
+    .stat-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #a0aec0; }
+    .stat-value { font-family: 'Baloo 2', cursive; font-size: 1.8rem; line-height: 1; }
+    .stat-value.target { color: var(--purple); font-size: 2.2rem; }
 
-        .tile {
-            width: 70px;
-            height: 70px;
-            background: var(--tile-bg);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #444;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: 0 4px 0 #ccc;
-        }
+    /* ── GRID ── */
+    .grid-container {
+      background: rgba(255, 255, 255, 0.4);
+      padding: 15px;
+      border-radius: 24px;
+      backdrop-filter: blur(10px);
+      border: 4px solid var(--white);
+    }
 
-        .tile.active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #ccc;
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, var(--tile-size));
+      grid-template-rows: repeat(5, var(--tile-size));
+      gap: var(--gap);
+    }
 
-        .tile.selected {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 0 #2a6dbd;
-        }
+    .tile {
+      width: var(--tile-size); height: var(--tile-size);
+      background: var(--white);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.8rem; font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
 
-        .tile.is-target {
-            background: var(--success);
-            color: white;
-            box-shadow: 0 4px 0 #388e3c;
-        }
+    .tile::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 16px; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
+    }
 
-        .tile.too-high {
-            background: var(--error);
-            color: white;
-            box-shadow: 0 4px 0 #d32f2f;
-        }
+    /* States */
+    .tile.selected { background: var(--teal) !important; color: white; transform: scale(0.95); }
+    .tile.match { background: var(--mint) !important; color: white; animation: pulse 0.5s infinite; }
+    .tile.over { background: var(--coral) !important; color: white; animation: shake 0.3s; }
+    .tile.hidden { visibility: hidden; pointer-events: none; opacity: 0; transform: scale(0); }
 
-        .tile.hidden {
-            visibility: hidden;
-            pointer-events: none;
-        }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(0.95); }
+      50% { transform: scale(1.05); }
+    }
 
-        .controls {
-            margin-top: 30px;
-        }
+    /* ── UI ELEMENTS ── */
+    .progress-container { width: 100%; height: 12px; background: #cbd5e0; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--mint), var(--teal)); width: 0%; transition: width 0.4s ease; }
 
-        button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
+    .btn-group { display: flex; gap: 15px; width: 100%; margin-bottom: 10px; }
+    .btn {
+      flex: 1; padding: 15px; border: none; border-radius: 18px;
+      font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
+      cursor: pointer; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+      transition: all 0.1s;
+    }
+    .btn-shuffle { background: var(--orange); }
+    .btn-new { background: var(--purple); }
+    .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
 
-        button:hover {
-            opacity: 0.9;
-        }
+    /* ── OVERLAYS ── */
+    .toast {
+      position: fixed; top: 30px; background: var(--white); padding: 12px 30px;
+      border-radius: 50px; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transform: translateY(-100px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+    }
+    .toast.show { transform: translateY(0); }
 
-        #message {
-            margin-top: 15px;
-            font-weight: bold;
-            height: 20px;
-            color: var(--success);
-        }
-    </style>
+    @media (max-width: 400px) {
+      :root { --tile-size: 55px; --gap: 8px; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="game-header">
-        <h1>Math Pathfinder</h1>
-        <div id="message"></div>
-    </div>
+<canvas id="bg-canvas"></canvas>
+<div id="toast" class="toast">Brilliant! ✨</div>
 
-    <div class="stats-container">
-        <div class="stat-box">
-            <div class="stat-label">Target</div>
-            <div id="target-value" class="stat-value">15</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-label">Your Sum</div>
-            <div id="current-sum" class="stat-value">0</div>
-        </div>
+<div class="page">
+  <div class="header">
+    <div class="logo">Maru<span>learn</span> Math</div>
+    <div class="stats-bar">
+      <div class="stat-card">
+        <span class="stat-label">Target</span>
+        <span id="target" class="stat-value target">10</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Level</span>
+        <span id="level" class="stat-value">1</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Score</span>
+        <span id="score" class="stat-value">0</span>
+      </div>
     </div>
+    <div class="progress-container">
+      <div id="progress" class="progress-bar"></div>
+    </div>
+  </div>
 
+  <div class="grid-container">
     <div id="grid" class="grid"></div>
+  </div>
 
-    <div class="controls">
-        <button onclick="resetGame()">Shuffle Board</button>
+  <div class="footer" style="width: 100%;">
+    <div class="btn-group">
+      <button class="btn btn-shuffle" onclick="shuffle()">🔀 Shuffle</button>
+      <button class="btn btn-new" onclick="initGame()">🌟 Reset</button>
     </div>
+    <p style="text-align:center; font-size:0.8rem; color:#718096; font-weight:700;">Find a path that equals the target!</p>
+  </div>
+</div>
 
-    <script>
-        const gridElement = document.getElementById('grid');
-        const targetDisplay = document.getElementById('target-value');
-        const sumDisplay = document.getElementById('current-sum');
-        const messageDisplay = document.getElementById('message');
+<script>
+  const state = {
+    target: 0,
+    score: 0,
+    level: 1,
+    currentSum: 0,
+    selected: [],
+    clearedInLevel: 0,
+    levelUpAt: 5,
+    isDragging: false
+  };
 
-        let target = 0;
-        let currentSum = 0;
-        let selectedTiles = [];
-        let isDragging = false;
-        const gridSize = 5;
+  const colors = ['#ffeaa7', '#fab1a0', '#a29bfe', '#81ecec', '#55efc4', '#ff7675'];
 
-        function initGame() {
-            createGrid();
-            setNewTarget();
-        }
+  function initGame() {
+    state.score = 0; state.level = 1; state.clearedInLevel = 0;
+    updateUI();
+    buildGrid();
+    newTarget();
+  }
 
-        function createGrid() {
-            gridElement.innerHTML = '';
-            for (let i = 0; i < gridSize * gridSize; i++) {
-                const val = Math.floor(Math.random() * 9) + 1;
-                const tile = document.createElement('div');
-                tile.classList.add('tile');
-                tile.innerText = val;
-                tile.dataset.index = i;
-                
-                // Mouse Events
-                tile.addEventListener('mousedown', (e) => handleStart(e, tile));
-                tile.addEventListener('mouseenter', () => handleMove(tile));
-                
-                // Touch Events
-                tile.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    handleStart(e, tile);
-                });
+  function buildGrid() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 25; i++) {
+      const val = Math.floor(Math.random() * 9) + 1;
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.textContent = val;
+      tile.dataset.index = i;
+      tile.style.backgroundColor = colors[val % colors.length];
+      
+      tile.addEventListener('mousedown', (e) => startDrag(e, tile));
+      tile.addEventListener('mouseenter', () => enterTile(tile));
+      tile.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e, tile); });
+      grid.appendChild(tile);
+    }
+  }
 
-                gridElement.appendChild(tile);
-            }
+  function newTarget() {
+    const min = 5 + (state.level * 2);
+    const max = 15 + (state.level * 3);
+    state.target = Math.floor(Math.random() * (max - min)) + min;
+    document.getElementById('target').textContent = state.target;
+  }
 
-            // Universal End
-            window.addEventListener('mouseup', handleEnd);
-            window.addEventListener('touchend', handleEnd);
-            
-            // Touch move support
-            gridElement.addEventListener('touchmove', (e) => {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                if (element && element.classList.contains('tile')) {
-                    handleMove(element);
-                }
-            });
-        }
+  function startDrag(e, tile) {
+    state.isDragging = true;
+    state.selected = [];
+    state.currentSum = 0;
+    enterTile(tile);
+  }
 
-        function setNewTarget() {
-            // Pick a random target between 10 and 30
-            target = Math.floor(Math.random() * 21) + 10;
-            targetDisplay.innerText = target;
-            messageDisplay.innerText = "";
-        }
+  function enterTile(tile) {
+    if (!state.isDragging || state.selected.includes(tile) || tile.classList.contains('hidden')) return;
 
-        function handleStart(e, tile) {
-            isDragging = true;
-            currentSum = 0;
-            selectedTiles = [];
-            handleMove(tile);
-        }
+    // Check adjacency
+    if (state.selected.length > 0) {
+      const last = state.selected[state.selected.length - 1];
+      const idx1 = parseInt(last.dataset.index);
+      const idx2 = parseInt(tile.dataset.index);
+      const diff = Math.abs(idx1 - idx2);
+      const isAdj = diff === 1 || diff === 5;
+      const sameRow = Math.floor(idx1/5) === Math.floor(idx2/5);
+      if (!( (diff === 1 && sameRow) || diff === 5 )) return;
+    }
 
-        function handleMove(tile) {
-            if (!isDragging || selectedTiles.includes(tile) || tile.classList.contains('hidden')) return;
+    state.selected.push(tile);
+    state.currentSum += parseInt(tile.textContent);
+    tile.classList.add('selected');
 
-            const tileVal = parseInt(tile.innerText);
-            
-            // Path Logic: Only allow adjacent tiles (Up, Down, Left, Right)
-            if (selectedTiles.length > 0) {
-                const lastTile = selectedTiles[selectedTiles.length - 1];
-                const lastIdx = parseInt(lastTile.dataset.index);
-                const currIdx = parseInt(tile.dataset.index);
-                
-                const rowDiff = Math.abs(Math.floor(lastIdx / gridSize) - Math.floor(currIdx / gridSize));
-                const colDiff = Math.abs((lastIdx % gridSize) - (currIdx % gridSize));
-                
-                if (!((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1))) {
-                    return; 
-                }
-            }
+    // Feedback logic (Invisible sum tracking)
+    state.selected.forEach(t => t.classList.remove('match', 'over'));
+    if (state.currentSum === state.target) {
+      state.selected.forEach(t => t.classList.add('match'));
+    } else if (state.currentSum > state.target) {
+      state.selected.forEach(t => t.classList.add('over'));
+    }
+  }
 
-            tile.classList.add('selected');
-            selectedTiles.push(tile);
-            currentSum += tileVal;
-            sumDisplay.innerText = currentSum;
+  function endDrag() {
+    if (!state.isDragging) return;
+    state.isDragging = false;
 
-            // Visual feedback if over target
-            if (currentSum > target) {
-                selectedTiles.forEach(t => t.classList.add('too-high'));
-            } else if (currentSum === target) {
-                selectedTiles.forEach(t => t.classList.add('is-target'));
-            }
-        }
+    if (state.currentSum === state.target) {
+      handleMatch();
+    } else {
+      state.selected.forEach(t => t.classList.remove('selected', 'match', 'over'));
+    }
+  }
 
-        function handleEnd() {
-            if (!isDragging) return;
-            isDragging = false;
+  function handleMatch() {
+    state.score += (state.selected.length * 10 * state.level);
+    state.clearedInLevel++;
+    
+    state.selected.forEach(t => {
+      t.classList.add('hidden');
+    });
 
-            if (currentSum === target) {
-                messageDisplay.innerText = "Awesome! +1 Target Met";
-                selectedTiles.forEach(t => {
-                    t.classList.add('hidden');
-                });
-                setTimeout(setNewTarget, 600);
-            }
+    showToast();
+    
+    if (state.clearedInLevel >= state.levelUpAt) {
+      state.level++;
+      state.clearedInLevel = 0;
+      state.levelUpAt += 2;
+      showToast("LEVEL UP! 🚀");
+    }
 
-            // Reset classes
-            selectedTiles.forEach(t => {
-                t.classList.remove('selected', 'too-high', 'is-target');
-            });
-            
-            currentSum = 0;
-            sumDisplay.innerText = currentSum;
-            selectedTiles = [];
-        }
+    updateUI();
+    newTarget();
+  }
 
-        function resetGame() {
-            initGame();
-        }
+  function updateUI() {
+    document.getElementById('score').textContent = state.score;
+    document.getElementById('level').textContent = state.level;
+    const prog = (state.clearedInLevel / state.levelUpAt) * 100;
+    document.getElementById('progress').style.width = prog + '%';
+  }
 
-        initGame();
-    </script>
+  function showToast(msg = "Perfect! ✨") {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1500);
+  }
+
+  function shuffle() {
+    buildGrid();
+    newTarget();
+  }
+
+  // Global touch support
+  window.addEventListener('mouseup', endDrag);
+  window.addEventListener('touchend', endDrag);
+  window.addEventListener('touchmove', (e) => {
+    if (!state.isDragging) return;
+    const touch = e.touches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el && el.classList.contains('tile')) enterTile(el);
+  });
+
+  // Background Animation
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const circles = Array(15).fill().map(() => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 100 + 50,
+    v: Math.random() * 0.5 + 0.2
+  }));
+
+  function draw() {
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    circles.forEach(c => {
+      c.y -= c.v;
+      if (c.y < -c.r) c.y = canvas.height + c.r;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  initGame();
+  draw();
+</script>
+
 </body>
 </html>
