@@ -3,297 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruPlumber: Water Quest</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <title>MaruPlumber: Hydro Quest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f0f9ff;
-            --surface: #ffffff;
-            --pipe-bg: #cbd5e1;
-            --pipe-water: #38bdf8;
-            --accent: #0ea5e9;
-            --danger: #ef4444;
-            --font-main: 'Nunito', sans-serif;
-            --radius: 24px;
+            --primary: #00a8ff;
+            --primary-dark: #0097e6;
+            --accent: #fbc531;
+            --bg-gradient: linear-gradient(135deg, #74b9ff, #a29bfe);
+            --tile-bg: rgba(255, 255, 255, 0.8);
+            --pipe-metal: #dcdde1;
+            --pipe-shadow: #718093;
+            --water: #00d2ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 15px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            height: 100dvh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; padding: 10px;
+        }
 
-        #game-container {
-            background: var(--surface);
-            width: 100%; max-width: 420px;
-            border-radius: 35px; padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        #game-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(255,255,255,0.5);
             text-align: center;
             position: relative;
         }
 
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .back-btn { 
-            background: #f1f5f9; border: none; width: 45px; height: 45px; 
-            border-radius: 15px; font-size: 1.2rem; cursor: pointer; color: #64748b;
-            display: flex; align-items: center; justify-content: center; text-decoration: none;
-        }
-        .level-tag { font-weight: 900; color: var(--accent); background: #e0f2fe; padding: 5px 15px; border-radius: 12px; font-size: 0.9rem; }
+        .header { margin-bottom: 15px; }
+        h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
+        .stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
-        /* Countdown Timer Style */
-        #countdown-container {
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #64748b;
+        .level-pill {
+            background: var(--primary);
+            color: white; padding: 5px 15px;
+            border-radius: 20px; font-weight: 600;
+            box-shadow: 0 4px 0 var(--primary-dark);
         }
-        #timer-sec { color: var(--danger); font-size: 1.5rem; display: inline-block; min-width: 30px; transition: transform 0.2s; }
-        .pulse { transform: scale(1.3); }
+
+        #timer-container {
+            width: 100%; height: 12px;
+            background: #eee; border-radius: 6px;
+            overflow: hidden; margin-bottom: 20px;
+            border: 2px solid white;
+        }
+        #timer-bar {
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, #4cd137, #fbc531);
+            transition: width 1s linear;
+        }
 
         #grid {
-            display: grid; gap: 8px; background: #f8fafc; padding: 12px;
-            border-radius: var(--radius); margin-bottom: 20px; aspect-ratio: 1 / 1;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            display: grid; gap: 10px;
+            margin-bottom: 25px;
+            aspect-ratio: 1;
         }
 
         .tile {
-            background: #e2e8f0; border-radius: 12px; cursor: pointer;
-            position: relative; transition: transform 0.1s;
+            background: var(--tile-bg);
+            border-radius: 18px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.05);
             display: flex; align-items: center; justify-content: center;
         }
-        .tile:active { transform: scale(0.94); }
+        .tile:active { transform: scale(0.9) rotate(10deg); }
+        .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
+        .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; }
 
-        /* Child-Friendly Fixtures */
-        .fixture { 
-            position: absolute; 
-            font-size: 2rem; 
-            z-index: 10; 
-            filter: drop-shadow(0 3px 3px rgba(0,0,0,0.15)); 
-            pointer-events: none;
+        /* Pipe SVG styling */
+        svg.pipe { width: 80%; height: 80%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .pipe-path { fill: none; stroke: var(--pipe-metal); stroke-width: 20; stroke-linecap: round; }
+        .pipe-cap { fill: var(--pipe-shadow); }
+        
+        /* Water flow styling */
+        .water-path {
+            fill: none; stroke: var(--water); stroke-width: 12;
+            stroke-linecap: round; stroke-dasharray: 100;
+            stroke-dashoffset: 100; transition: stroke-dashoffset 0.5s ease-in-out;
         }
-        .is-start .fixture { top: -15px; left: -10px; }
-        .is-end .fixture { bottom: -15px; right: -10px; }
+        .tile.flow .water-path { stroke-dashoffset: 0; }
 
-        .pipe-base, .pipe-water { position: absolute; background: var(--pipe-bg); border-radius: 6px; z-index: 1; }
-        .pipe-water { background: var(--pipe-water); z-index: 2; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease-in-out; }
-        .tile.flow .pipe-water { clip-path: inset(0 0 0 0); }
+        .controls { display: flex; gap: 15px; }
+        button {
+            flex: 1; padding: 15px; border-radius: 20px;
+            border: none; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-main { background: var(--primary); color: white; box-shadow: 0 6px 0 var(--primary-dark); }
+        .btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--primary-dark); }
+        .btn-sec { background: #f5f6fa; color: #7f8fa6; }
 
-        .type-straight .pipe-base, .type-straight .pipe-water { width: 100%; height: 25%; }
-        .type-elbow .p1 { width: 65%; height: 25%; left: 35%; top: 37.5%; }
-        .type-elbow .p2 { width: 25%; height: 65%; left: 37.5%; top: 0; }
-
-        .is-start, .is-end { outline: 4px solid var(--danger); background: #fef2f2; }
-
-        .controls { display: flex; gap: 12px; }
-        button { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; }
-        .btn-test { background: var(--accent); color: white; box-shadow: 0 4px 0 #0369a1; }
-        .btn-test:active { transform: translateY(2px); box-shadow: 0 2px 0 #0369a1; }
-        .btn-test:disabled { background: #cbd5e1; box-shadow: none; opacity: 0.7; }
-        .btn-reset { background: #f1f5f9; color: #64748b; }
-
-        #message { margin-top: 20px; font-weight: 800; font-size: 1rem; min-height: 1.5rem; }
-        .success { color: #16a34a; }
-        .error { color: #dc2626; }
+        /* Celebration Overlay */
+        #celebration {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; color: white; backdrop-filter: blur(5px);
+        }
+        #celebration.active { display: flex; }
+        .modal { 
+            background: white; padding: 40px; border-radius: 30px; 
+            color: #2f3640; text-align: center; transform: scale(0);
+            animation: popIn 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { to { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div class="top-nav">
-        <button class="back-btn" onclick="window.history.back()">←</button>
-        <div id="difficulty-display" class="level-tag">Level 1</div>
+<div id="celebration">
+    <div class="modal">
+        <h2 style="font-size: 2.5rem;">Splashtastic! 💦</h2>
+        <p style="margin: 10px 0 20px;">The garden is watered!</p>
+        <button class="btn-main" onclick="nextLevel()">Next Level</button>
+    </div>
+</div>
+
+<div id="game-card">
+    <div class="header">
+        <div class="stats">
+            <span class="level-pill" id="level-txt">Level 1</span>
+            <span style="font-weight:700; color:#7f8fa6" id="timer-text">10s</span>
+        </div>
+        <h1>Hydro Quest 💧</h1>
     </div>
 
-    <h1>MaruPlumber 💧</h1>
-    <div id="countdown-container">Water flows in: <span id="timer-sec">10</span>s</div>
+    <div id="timer-container"><div id="timer-bar"></div></div>
 
     <div id="grid"></div>
 
     <div class="controls">
-        <button class="btn-reset" onclick="initGame()">Shuffle</button>
-        <button id="valve-btn" class="btn-test" onclick="checkFlow()">Open Valve!</button>
+        <button class="btn-sec" onclick="initGame()">Shuffle</button>
+        <button class="btn-main" id="valve-btn" onclick="startFlow()">Open Valve!</button>
     </div>
-
-    <div id="message"></div>
 </div>
 
 <script>
-    let currentSize = 3;
-    const gridEl = document.getElementById('grid');
-    const msgEl = document.getElementById('message');
-    const timerEl = document.getElementById('timer-sec');
-    const valveBtn = document.getElementById('valve-btn');
-    const diffDisplay = document.getElementById('difficulty-display');
+    let size = 3;
     let tiles = [];
-    let countdownInterval;
-    let secondsLeft = 10;
-    let isAnimating = false;
+    let isFlowing = false;
+    let timer;
+    let timeLeft = 10;
+    const gridEl = document.getElementById('grid');
 
-    const PIPE_TYPES = {
-        straight: { connections: [0, 1, 0, 1], html: '<div class="pipe-base"></div><div class="pipe-water"></div>' },
-        elbow: { connections: [1, 1, 0, 0], html: '<div class="pipe-base p1"></div><div class="pipe-base p2"></div><div class="pipe-water p1"></div><div class="pipe-water p2"></div>' }
+    const SVG_PIPES = {
+        straight: `<svg viewBox="0 0 100 100" class="pipe">
+            <path class="pipe-path" d="M 0 50 L 100 50"/>
+            <path class="water-path" d="M 0 50 L 100 50"/>
+        </svg>`,
+        elbow: `<svg viewBox="0 0 100 100" class="pipe">
+            <path class="pipe-path" d="M 50 0 Q 50 50 100 50"/>
+            <path class="water-path" d="M 50 0 Q 50 50 100 50"/>
+        </svg>`
     };
 
-    function generateGuaranteedGrid() {
-        const total = currentSize * currentSize;
-        const tempGrid = new Array(total).fill(null);
+    function generatePath() {
+        const total = size * size;
+        const grid = Array(total).fill(null);
         let path = [];
         let curr = 0;
         let visited = new Set([0]);
 
-        while (curr !== total - 1) {
+        while(curr !== total - 1) {
             path.push(curr);
-            let r = Math.floor(curr / currentSize), c = curr % currentSize;
-            let options = [];
-            if (r > 0) options.push(curr - currentSize);
-            if (r < currentSize - 1) options.push(curr + currentSize);
-            if (c > 0) options.push(curr - 1);
-            if (c < currentSize - 1) options.push(curr + 1);
-            options = options.filter(n => !visited.has(n));
-            if (options.length === 0) return generateGuaranteedGrid(); 
-            curr = options[Math.floor(Math.random() * options.length)];
+            let neighbors = [];
+            let r = Math.floor(curr/size), c = curr%size;
+            if(r > 0) neighbors.push(curr-size);
+            if(r < size-1) neighbors.push(curr+size);
+            if(c > 0) neighbors.push(curr-1);
+            if(c < size-1) neighbors.push(curr+1);
+            
+            neighbors = neighbors.filter(n => !visited.has(n));
+            if(neighbors.length === 0) return generatePath(); // Retry
+            curr = neighbors[Math.floor(Math.random() * neighbors.length)];
             visited.add(curr);
         }
-        path.push(total - 1);
-
-        for (let i = 0; i < path.length; i++) {
-            const idx = path[i];
-            const prev = path[i - 1];
-            const next = path[i + 1];
-            if (i === 0 || i === path.length - 1) {
-                tempGrid[idx] = { type: Math.random() > 0.5 ? 'straight' : 'elbow' };
-            } else {
-                const d1 = prev - idx, d2 = next - idx;
-                tempGrid[idx] = { type: Math.abs(d1) === Math.abs(d2) ? 'straight' : 'elbow' };
-            }
-        }
-
-        for (let i = 0; i < total; i++) {
-            if (!tempGrid[i]) tempGrid[i] = { type: Math.random() > 0.5 ? 'straight' : 'elbow' };
-            tempGrid[i].rotation = Math.floor(Math.random() * 4);
-        }
-        return tempGrid;
+        path.push(total-1);
+        return path;
     }
 
     function initGame() {
-        if (isAnimating) return;
-        clearInterval(countdownInterval);
+        clearInterval(timer);
+        isFlowing = false;
+        timeLeft = 10 + (size - 3) * 5;
+        document.getElementById('timer-text').innerText = timeLeft + 's';
+        document.getElementById('level-txt').innerText = `Level ${size-2}`;
+        document.getElementById('celebration').classList.remove('active');
+        
         gridEl.innerHTML = '';
-        msgEl.textContent = '';
-        valveBtn.disabled = false;
-        secondsLeft = 10;
-        timerEl.textContent = secondsLeft;
+        gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         
-        gridEl.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`;
-        diffDisplay.textContent = `Level ${currentSize - 2}: ${currentSize}x${currentSize}`;
-        
-        const solvedLayout = generateGuaranteedGrid();
-        tiles = solvedLayout.map((t, i) => ({
-            ...t, id: i, isStart: i === 0, isEnd: i === (currentSize * currentSize - 1), flow: false
-        }));
+        const path = generatePath();
+        tiles = [];
 
-        tiles.forEach(renderTile);
-        startCountdown();
-    }
-
-    function startCountdown() {
-        countdownInterval = setInterval(() => {
-            secondsLeft--;
-            timerEl.textContent = secondsLeft;
+        for(let i=0; i<size*size; i++) {
+            const isPath = path.includes(i);
+            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
             
-            // Animation pulse
-            timerEl.classList.add('pulse');
-            setTimeout(() => timerEl.classList.remove('pulse'), 200);
-
-            if (secondsLeft <= 0) {
-                clearInterval(countdownInterval);
-                if (!isAnimating) checkFlow();
+            // Force correct type for path to ensure solvability
+            if(isPath && i !== 0 && i !== size*size-1) {
+                const idx = path.indexOf(i);
+                const prev = path[idx-1], next = path[idx+1];
+                const diff = Math.abs(prev - next);
+                type = (diff === 2 || diff === size*2) ? 'straight' : 'elbow';
             }
-        }, 1000);
+
+            const tile = {
+                id: i,
+                type: type,
+                rotation: Math.floor(Math.random() * 4),
+                isStart: i === 0,
+                isEnd: i === size*size-1
+            };
+            tiles.push(tile);
+            renderTile(tile);
+        }
+        startTimer();
     }
 
     function renderTile(tile) {
         const div = document.createElement('div');
-        div.className = `tile type-${tile.type} ${tile.isStart ? 'is-start' : ''} ${tile.isEnd ? 'is-end' : ''}`;
-        div.id = `tile-${tile.id}`;
-        div.innerHTML = PIPE_TYPES[tile.type].html;
+        div.className = `tile ${tile.isStart?'is-start':''} ${tile.isEnd?'is-end':''}`;
+        div.innerHTML = SVG_PIPES[tile.type];
+        const svg = div.querySelector('svg');
+        svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
         
-        if (tile.isStart) div.innerHTML += '<span class="fixture">🗼</span>'; // Tower
-        if (tile.isEnd) div.innerHTML += '<span class="fixture">🏊</span>'; // Pool
-        
-        div.style.transform = `rotate(${tile.rotation * 90}deg)`;
         div.onclick = () => {
-            if (isAnimating) return;
+            if(isFlowing) return;
             tile.rotation = (tile.rotation + 1) % 4;
-            div.style.transform = `rotate(${tile.rotation * 90}deg)`;
-            clearFlow();
+            svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
         };
         gridEl.appendChild(div);
     }
 
-    function clearFlow() {
-        tiles.forEach(t => t.flow = false);
-        document.querySelectorAll('.tile').forEach(el => el.classList.remove('flow'));
-        msgEl.textContent = '';
+    function startTimer() {
+        const bar = document.getElementById('timer-bar');
+        bar.style.transition = 'none';
+        bar.style.width = '100%';
+        setTimeout(() => {
+            bar.style.transition = `width ${timeLeft}s linear`;
+            bar.style.width = '0%';
+        }, 50);
+
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + 's';
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                startFlow();
+            }
+        }, 1000);
     }
 
     function getConnectors(tile) {
-        let conn = [...PIPE_TYPES[tile.type].connections];
-        for (let i = 0; i < tile.rotation; i++) conn.unshift(conn.pop());
-        return conn;
+        // [top, right, bottom, left]
+        let base = tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0];
+        for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
+        return base;
     }
 
-    async function checkFlow() {
-        if (isAnimating) return;
-        clearInterval(countdownInterval);
-        clearFlow();
-        isAnimating = true;
-        valveBtn.disabled = true;
+    async function startFlow() {
+        if(isFlowing) return;
+        isFlowing = true;
+        clearInterval(timer);
         
-        const visited = new Set();
-        const queue = [0]; 
+        let current = 0;
+        let queue = [0];
+        let visited = new Set();
         let won = false;
 
-        while (queue.length > 0) {
-            const currentIdx = queue.shift();
-            if (visited.has(currentIdx)) continue;
-            visited.add(currentIdx);
-            const currentTile = tiles[currentIdx];
-            currentTile.flow = true;
-            document.getElementById(`tile-${currentIdx}`).classList.add('flow');
-            await new Promise(r => setTimeout(r, 450)); 
+        while(queue.length > 0) {
+            let currIdx = queue.shift();
+            if(visited.has(currIdx)) continue;
+            visited.add(currIdx);
 
-            if (currentTile.isEnd) { won = true; break; }
+            const tileEl = gridEl.children[currIdx];
+            tileEl.classList.add('flow');
+            await new Promise(r => setTimeout(r, 400));
 
-            const connectors = getConnectors(currentTile);
-            const row = Math.floor(currentIdx / currentSize), col = currentIdx % currentSize;
+            if(tiles[currIdx].isEnd) { won = true; break; }
+
+            const conns = getConnectors(tiles[currIdx]);
+            const r = Math.floor(currIdx/size), c = currIdx%size;
+            
             const neighbors = [
-                { idx: currentIdx - currentSize, dir: 0, opp: 2, valid: row > 0 },
-                { idx: currentIdx + 1, dir: 1, opp: 3, valid: col < currentSize - 1 },
-                { idx: currentIdx + currentSize, dir: 2, opp: 0, valid: row < currentSize - 1 },
-                { idx: currentIdx - 1, dir: 3, opp: 1, valid: col > 0 }
+                {idx: currIdx-size, dir: 0, opp: 2, ok: r > 0},
+                {idx: currIdx+1, dir: 1, opp: 3, ok: c < size-1},
+                {idx: currIdx+size, dir: 2, opp: 0, ok: r < size-1},
+                {idx: currIdx-1, dir: 3, opp: 1, ok: c > 0}
             ];
 
             neighbors.forEach(n => {
-                if (n.valid && connectors[n.dir] === 1) {
-                    const neighborConnectors = getConnectors(tiles[n.idx]);
-                    if (neighborConnectors[n.opp] === 1) queue.push(n.idx);
+                if(n.ok && conns[n.dir] === 1) {
+                    const nextConns = getConnectors(tiles[n.idx]);
+                    if(nextConns[n.opp] === 1) queue.push(n.idx);
                 }
             });
         }
 
-        isAnimating = false;
-        if (won) {
-            msgEl.textContent = "Great job, Plumber! 💧✨";
-            msgEl.className = "success";
-            setTimeout(() => { if (currentSize < 6) currentSize++; initGame(); }, 2000);
+        if(won) {
+            document.getElementById('celebration').classList.add('active');
         } else {
-            msgEl.textContent = "Leak detected! Keep trying.";
-            msgEl.className = "error";
-            valveBtn.disabled = false;
+            isFlowing = false;
+            tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow'));
+            startTimer();
         }
+    }
+
+    function nextLevel() {
+        if(size < 6) size++;
+        initGame();
     }
 
     initGame();
 </script>
-
 </body>
 </html>
