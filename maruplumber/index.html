@@ -284,25 +284,32 @@
             const waterPath = tileEl.querySelector('.water-path');
             const conns = getConnectors(tileObj);
 
-            // Corrected Reverse Logic
-            // The unrotatedEntry calculates which side of the SVG path (start vs end) the water enters.
-            let unrotatedEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
+            // Calculation of the internal side from which water enters the SVG coordinate space
+            // fromDir (0=Top, 1=Right, 2=Bottom, 3=Left) is the direction it enters from the neighbor.
+            // Since SVG rotations are clockwise, we subtract rotation to get internal side.
+            let internalEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
             
             let reverse = false;
-            if (tileObj.type === 'straight' || tileObj.type === 'elbow') {
-                // In both SVGs, the path naturally flows FROM internal side index 3 (Left) or 0 (Top)
-                // TO internal side index 1 (Right).
-                // If it enters from side 1, we must reverse dashoffset.
-                if (unrotatedEntry === 1) reverse = true;
+            if (tileObj.type === 'straight') {
+                // Straight internal is Left(3) <-> Right(1). 
+                // SVG path is drawn Left to Right. So if entering from internal Right, reverse.
+                if (internalEntry === 1) reverse = true;
+                // Vertical straight: entering from Bottom (which is internal Top/0 or Bottom/2 depending on rot)
+                // The logic holds: if internal entry side is the "destination" side of SVG path, reverse it.
+            } else if (tileObj.type === 'elbow') {
+                // Elbow internal is Top(0) <-> Right(1).
+                // SVG path is drawn Top to Right. So if entering from internal Right, reverse.
+                if (internalEntry === 1) reverse = true;
             }
 
+            // Set animation
             waterPath.style.transition = 'none';
             waterPath.style.strokeDasharray = "100";
             waterPath.style.strokeDashoffset = reverse ? "-100" : "100";
             
             // Force reflow
-            waterPath.getBoundingClientRect(); 
-
+            waterPath.getBoundingClientRect();
+            
             waterPath.style.transition = 'stroke-dashoffset 0.4s linear';
             waterPath.style.strokeDashoffset = "0";
             
