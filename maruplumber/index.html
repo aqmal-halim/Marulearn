@@ -73,7 +73,6 @@
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
             box-shadow: 0 6px 0 rgba(0,0,0,0.05);
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
         }
         .tile:active { transform: scale(0.9) rotate(10deg); }
         .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
@@ -85,8 +84,9 @@
         .water-path {
             fill: none; stroke: var(--water); stroke-width: 12;
             stroke-linecap: round; stroke-dasharray: 100;
-            stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s linear;
+            stroke-dashoffset: 100; transition: stroke-dashoffset 0.5s ease-in-out;
         }
+        .tile.flow .water-path { stroke-dashoffset: 0; }
 
         .controls { display: flex; gap: 15px; }
         button {
@@ -255,92 +255,43 @@
     }
 
     function getConnectors(tile) {
-        let base;
-        if (tile.type === 'start') base = [0, 1, 0, 0];
-        else if (tile.type === 'end') base = [0, 0, 0, 1];
-        else if (tile.type === 'straight') base = [0, 1, 0, 1];
-        else base = [1, 1, 0, 0];
-
-        for(let i=0; i<tile.rotation; i++) {
-            base.unshift(base.pop());
-        }
+        let base = (tile.type === 'start') ? [0, 1, 0, 0] : 
+                   (tile.type === 'end' ? [0, 0, 0, 1] : 
+                   (tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0]));
+        for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
         return base;
     }
 
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        
-        let queue = [{idx: 0, fromDir: -1}]; 
-        let visited = new Set(); 
-        let won = false;
-
+        let queue = [0]; let visited = new Set(); let won = false;
         while(queue.length > 0) {
-            let {idx, fromDir} = queue.shift();
-            if(visited.has(idx)) continue;
-            
-            const tileObj = tiles[idx];
-            const tileEl = gridEl.children[idx];
-            const waterPath = tileEl.querySelector('.water-path');
-            
-            // Calculate flow direction
-            // fromDir is where water COMES FROM (0:Top, 1:Right, 2:Bottom, 3:Left)
-            // Logic: Normal flow is Start->End, Top->Right, Left->Right. 
-            // We reverse if entry is from the "target" side of the base SVG.
-            let reverse = false;
-            let entry = (fromDir - tileObj.rotation + 4) % 4;
-            
-            if (tileObj.type === 'straight' && entry === 1) reverse = true;
-            if (tileObj.type === 'elbow' && entry === 1) reverse = true;
-            if (tileObj.type === 'end' && entry === 3) reverse = false; // End piece always flows in
-
-            waterPath.style.transition = 'none';
-            waterPath.style.strokeDashoffset = reverse ? "-100" : "100";
-            
-            // Force reflow for smooth start
-            waterPath.getBoundingClientRect();
-            
-            waterPath.style.transition = 'stroke-dashoffset 0.4s linear';
-            waterPath.style.strokeDashoffset = "0";
-            
+            let currIdx = queue.shift();
+            if(visited.has(currIdx)) continue;
+            visited.add(currIdx);
+            const tileEl = gridEl.children[currIdx];
+            tileEl.classList.add('flow');
             AudioEngine.playBubble();
             await new Promise(r => setTimeout(r, 400));
-            
-            visited.add(idx);
-            if(tileObj.isEnd) { won = true; break; }
-
-            const conns = getConnectors(tileObj);
-            const r = Math.floor(idx/size), c = idx%size;
+            if(tiles[currIdx].isEnd) { won = true; break; }
+            const conns = getConnectors(tiles[currIdx]);
+            const r = Math.floor(currIdx/size), c = currIdx%size;
             const neighbors = [
-                {nIdx: idx-size, dir: 0, opp: 2, ok: r > 0},
-                {nIdx: idx+1,    dir: 1, opp: 3, ok: c < size-1},
-                {nIdx: idx+size, dir: 2, opp: 0, ok: r < size-1},
-                {nIdx: idx-1,    dir: 3, opp: 1, ok: c > 0}
+                {idx: currIdx-size, dir: 0, opp: 2, ok: r > 0},
+                {idx: currIdx+1, dir: 1, opp: 3, ok: c < size-1},
+                {idx: currIdx+size, dir: 2, opp: 0, ok: r < size-1},
+                {idx: currIdx-1, dir: 3, opp: 1, ok: c > 0}
             ];
-
             neighbors.forEach(n => {
-                if(n.ok && conns[n.dir] === 1 && n.dir !== fromDir) {
-                    const nextConns = getConnectors(tiles[n.nIdx]);
-                    if(nextConns[n.opp] === 1) {
-                        queue.push({idx: n.nIdx, fromDir: n.opp});
-                    }
+                if(n.ok && conns[n.dir] === 1) {
+                    const nextConns = getConnectors(tiles[n.idx]);
+                    if(nextConns[n.opp] === 1) queue.push(n.idx);
                 }
             });
         }
-
-        if(won) { 
-            AudioEngine.playWin(); 
-            document.getElementById('celebration').classList.add('active'); 
-        } else { 
-            AudioEngine.playFail(); 
-            isFlowing = false; 
-            tiles.forEach((_, i) => {
-                const wp = gridEl.children[i].querySelector('.water-path');
-                wp.style.transition = 'none';
-                wp.style.strokeDashoffset = "100";
-            }); 
-            initGame(); 
-        }
+        if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
+        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); initGame(); }
     }
 
     function nextLevel() { if(size < 6) size++; initGame(); }
