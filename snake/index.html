@@ -147,14 +147,12 @@
     .progress-container { width: 100%; height: 10px; background: #cbd5e0; border-radius: 5px; overflow: hidden; margin: 10px 0; }
     .progress-bar { height: 100%; background: linear-gradient(90deg, var(--mint), var(--teal)); width: 0%; transition: width 0.4s ease; }
 
-    .btn-group { display: flex; gap: 10px; width: 100%; margin-bottom: 8px; }
     .btn {
       flex: 1; padding: 12px; border: none; border-radius: 18px;
       font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800;
       cursor: pointer; color: white; box-shadow: 0 5px 0 rgba(0,0,0,0.1);
       transition: all 0.1s;
     }
-    .btn-shuffle { background: var(--orange); }
     .btn-new { background: var(--purple); }
     .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
 
@@ -233,14 +231,16 @@
     <div id="grid" class="grid"></div>
   </div>
 
-  <div class="footer" style="width: 100%;">
-    <div class="btn-group">
-      <button class="btn btn-shuffle" onclick="shuffle()">🔀 Shuffle</button>
-      <button class="btn btn-new" onclick="resetCurrentGame()">🌟 Reset</button>
-    </div>
-    <div style="display:flex; justify-content: space-between; align-items:center; padding: 0 10px;">
-        <p style="font-size:0.8rem; color:#718096; font-weight:700;">Score: <span id="score-text">0</span></p>
-        <p style="font-size:0.8rem; color:var(--orange); font-weight:800;">Best: <span id="best-text">0</span></p>
+  <div class="footer" style="width: 100%; padding-bottom: 20px;">
+    <div style="display:flex; justify-content: space-between; align-items:center; padding: 15px 15px; background: rgba(255,255,255,0.3); border-radius: 20px; backdrop-filter: blur(5px);">
+        <div>
+          <p style="font-size:0.7rem; color:#718096; font-weight:800; text-transform: uppercase; margin-bottom: 2px;">Score</p>
+          <p style="font-size:1.4rem; color:var(--ink); font-family: 'Baloo 2', cursive; line-height: 1;"><span id="score-text">0</span></p>
+        </div>
+        <div style="text-align: right;">
+          <p style="font-size:0.7rem; color:var(--orange); font-weight:800; text-transform: uppercase; margin-bottom: 2px;">Personal Best</p>
+          <p style="font-size:1.4rem; color:var(--orange); font-family: 'Baloo 2', cursive; line-height: 1;"><span id="best-text">0</span></p>
+        </div>
     </div>
   </div>
 </div>
@@ -255,7 +255,6 @@
   const colors = ['#ffeaa7', '#fab1a0', '#a29bfe', '#81ecec', '#55efc4', '#ff7675'];
   let audioCtx;
 
-  // Load High Score on Load
   window.onload = () => {
     const saved = localStorage.getItem('marulearn_best');
     if (saved) {
@@ -334,7 +333,6 @@
     state.active = false;
     clearInterval(state.timerId);
     
-    // Check for Personal Best
     if (state.score > state.personalBest) {
       state.personalBest = state.score;
       localStorage.setItem('marulearn_best', state.personalBest);
@@ -415,7 +413,6 @@
     const oldScore = state.score;
     state.score += (state.selected.length * 10 * state.level);
     
-    // Live record update feedback
     if (state.score > state.personalBest && oldScore <= state.personalBest && state.personalBest > 0) {
       showToast("NEW BEST SCORE! 🏆");
     }
@@ -456,9 +453,6 @@
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 1500);
   }
-
-  function shuffle() { if(state.active) { buildGrid(); newTarget(); } }
-  function resetCurrentGame() { startGame(); }
 
   window.addEventListener('mouseup', endDrag);
   window.addEventListener('touchend', endDrag);
