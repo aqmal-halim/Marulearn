@@ -80,12 +80,10 @@
         .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
         .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; }
 
-        /* Pipe SVG styling */
         svg.pipe { width: 80%; height: 80%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .pipe-path { fill: none; stroke: var(--pipe-metal); stroke-width: 20; stroke-linecap: round; }
-        .pipe-cap { fill: var(--pipe-shadow); }
+        .pipe-accent { fill: var(--pipe-shadow); }
         
-        /* Water flow styling */
         .water-path {
             fill: none; stroke: var(--water); stroke-width: 12;
             stroke-linecap: round; stroke-dasharray: 100;
@@ -105,26 +103,32 @@
 
         /* Celebration Overlay */
         #celebration {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; color: white; backdrop-filter: blur(5px);
+            z-index: 100; color: white; backdrop-filter: blur(8px);
         }
         #celebration.active { display: flex; }
         .modal { 
-            background: white; padding: 40px; border-radius: 30px; 
+            background: white; padding: 35px; border-radius: 35px; 
             color: #2f3640; text-align: center; transform: scale(0);
             animation: popIn 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 85%; max-width: 340px;
         }
         @keyframes popIn { to { transform: scale(1); } }
+        
+        .modal-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div id="celebration">
     <div class="modal">
-        <h2 style="font-size: 2.5rem;">Splashtastic! 💦</h2>
-        <p style="margin: 10px 0 20px;">The garden is watered!</p>
-        <button class="btn-main" onclick="nextLevel()">Next Level</button>
+        <h2 style="font-size: 2.2rem;">Splashtastic! 💦</h2>
+        <p style="margin: 10px 0 10px; color: #7f8fa6;">The garden is perfectly watered!</p>
+        <div class="modal-btns">
+            <button class="btn-main" onclick="nextLevel()">Next Difficulty</button>
+            <button class="btn-sec" onclick="initGame()">Retry Level</button>
+        </div>
     </div>
 </div>
 
@@ -163,12 +167,16 @@
         elbow: `<svg viewBox="0 0 100 100" class="pipe">
             <path class="pipe-path" d="M 50 0 Q 50 50 100 50"/>
             <path class="water-path" d="M 50 0 Q 50 50 100 50"/>
+        </svg>`,
+        start: `<svg viewBox="0 0 100 100" class="pipe">
+            <circle cx="30" cy="50" r="15" fill="#718093" />
+            <path class="pipe-path" d="M 30 50 L 100 50"/>
+            <path class="water-path" d="M 30 50 L 100 50"/>
         </svg>`
     };
 
     function generatePath() {
         const total = size * size;
-        const grid = Array(total).fill(null);
         let path = [];
         let curr = 0;
         let visited = new Set([0]);
@@ -183,7 +191,7 @@
             if(c < size-1) neighbors.push(curr+1);
             
             neighbors = neighbors.filter(n => !visited.has(n));
-            if(neighbors.length === 0) return generatePath(); // Retry
+            if(neighbors.length === 0) return generatePath(); 
             curr = neighbors[Math.floor(Math.random() * neighbors.length)];
             visited.add(curr);
         }
@@ -209,8 +217,8 @@
             const isPath = path.includes(i);
             let type = Math.random() > 0.5 ? 'straight' : 'elbow';
             
-            // Force correct type for path to ensure solvability
-            if(isPath && i !== 0 && i !== size*size-1) {
+            if(i === 0) type = 'start';
+            else if(isPath && i !== size*size-1) {
                 const idx = path.indexOf(i);
                 const prev = path[idx-1], next = path[idx+1];
                 const diff = Math.abs(prev - next);
@@ -265,8 +273,11 @@
     }
 
     function getConnectors(tile) {
-        // [top, right, bottom, left]
-        let base = tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0];
+        let base;
+        if (tile.type === 'start') base = [0, 1, 0, 0]; // Only Right
+        else if (tile.type === 'straight') base = [0, 1, 0, 1];
+        else base = [1, 1, 0, 0]; // Elbow
+        
         for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
         return base;
     }
@@ -276,7 +287,6 @@
         isFlowing = true;
         clearInterval(timer);
         
-        let current = 0;
         let queue = [0];
         let visited = new Set();
         let won = false;
