@@ -255,34 +255,49 @@
     }
 
     function getConnectors(tile) {
-        let base = (tile.type === 'start') ? [0, 1, 0, 0] : 
-                   (tile.type === 'end' ? [0, 0, 0, 1] : 
-                   (tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0]));
-        for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
+        // [top, right, bottom, left]
+        let base;
+        if (tile.type === 'start') base = [0, 1, 0, 0];
+        else if (tile.type === 'end') base = [0, 0, 0, 1];
+        else if (tile.type === 'straight') base = [0, 1, 0, 1];
+        else base = [1, 1, 0, 0]; // elbow
+
+        for(let i=0; i<tile.rotation; i++) {
+            base.unshift(base.pop());
+        }
         return base;
     }
 
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        let queue = [0]; let visited = new Set(); let won = false;
+        let queue = [0]; 
+        let visited = new Set(); 
+        let won = false;
+
         while(queue.length > 0) {
             let currIdx = queue.shift();
             if(visited.has(currIdx)) continue;
-            visited.add(currIdx);
+            
             const tileEl = gridEl.children[currIdx];
             tileEl.classList.add('flow');
             AudioEngine.playBubble();
             await new Promise(r => setTimeout(r, 400));
+            
+            visited.add(currIdx);
+
             if(tiles[currIdx].isEnd) { won = true; break; }
+
             const conns = getConnectors(tiles[currIdx]);
             const r = Math.floor(currIdx/size), c = currIdx%size;
+            
             const neighbors = [
                 {idx: currIdx-size, dir: 0, opp: 2, ok: r > 0},
                 {idx: currIdx+1, dir: 1, opp: 3, ok: c < size-1},
                 {idx: currIdx+size, dir: 2, opp: 0, ok: r < size-1},
                 {idx: currIdx-1, dir: 3, opp: 1, ok: c > 0}
             ];
+
             neighbors.forEach(n => {
                 if(n.ok && conns[n.dir] === 1) {
                     const nextConns = getConnectors(tiles[n.idx]);
@@ -290,8 +305,16 @@
                 }
             });
         }
-        if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
-        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); initGame(); }
+
+        if(won) { 
+            AudioEngine.playWin(); 
+            document.getElementById('celebration').classList.add('active'); 
+        } else { 
+            AudioEngine.playFail(); 
+            isFlowing = false; 
+            tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); 
+            initGame(); 
+        }
     }
 
     function nextLevel() { if(size < 6) size++; initGame(); }
