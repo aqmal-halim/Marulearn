@@ -10,95 +10,111 @@
         :root {
             --bg: #f0f9ff;
             --surface: #ffffff;
-            --pipe-bg: #e2e8f0;
-            --pipe-active: #38bdf8;
+            --pipe-bg: #cbd5e1;
+            --pipe-water: #38bdf8;
             --accent: #0ea5e9;
-            --text: #1e293b;
             --font-main: 'Nunito', sans-serif;
-            --radius: 20px;
+            --radius: 24px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-main); }
-        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 10px; }
+        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100dvh; padding: 15px; }
 
         #game-container {
             background: var(--surface);
-            width: 100%; max-width: 400px;
-            border-radius: 30px; padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            width: 100%; max-width: 420px;
+            border-radius: 35px; padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             text-align: center;
+            position: relative;
         }
 
-        h1 { font-weight: 900; color: var(--accent); margin-bottom: 5px; }
-        p { font-weight: 700; color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
+        /* Top Navigation */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .back-btn { 
+            background: #f1f5f9; border: none; width: 45px; height: 45px; 
+            border-radius: 15px; font-size: 1.2rem; cursor: pointer; color: #64748b;
+            display: flex; align-items: center; justify-content: center; text-decoration: none;
+        }
+        .level-tag { font-weight: 900; color: var(--accent); background: #e0f2fe; padding: 5px 15px; border-radius: 12px; font-size: 0.9rem; }
 
+        h1 { font-weight: 900; color: #1e293b; font-size: 1.6rem; margin-bottom: 5px; }
+        .instruction { font-weight: 700; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px; }
+
+        /* Grid Setup */
         #grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
             gap: 8px;
-            background: #f1f5f9;
-            padding: 10px;
+            background: #f8fafc;
+            padding: 12px;
             border-radius: var(--radius);
             margin-bottom: 20px;
             aspect-ratio: 1 / 1;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .tile {
-            background: var(--pipe-bg);
+            background: #e2e8f0;
             border-radius: 12px;
-            aspect-ratio: 1 / 1;
             cursor: pointer;
             position: relative;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.1s;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
         }
+        .tile:active { transform: scale(0.94); }
 
-        .tile:active { transform: scale(0.9); }
-
-        .pipe-line {
+        /* Pipe Visuals with Water Layer */
+        .pipe-base, .pipe-water {
             position: absolute;
-            background: #94a3b8;
-            border-radius: 4px;
-            transition: background 0.4s ease, box-shadow 0.4s ease;
+            background: var(--pipe-bg);
+            border-radius: 6px;
             z-index: 1;
         }
 
-        /* Flow Animation */
-        .tile.flow .pipe-line { 
-            background: var(--pipe-active); 
-            box-shadow: 0 0 12px var(--pipe-active);
+        .pipe-water {
+            background: var(--pipe-water);
+            z-index: 2;
+            clip-path: inset(0 100% 0 0); /* Hidden initially */
+            transition: clip-path 0.6s ease-in-out;
         }
 
-        .type-straight .pipe-line { width: 100%; height: 25%; }
-        .type-elbow .pipe-1 { width: 62.5%; height: 25%; left: 50%; top: 37.5%; }
-        .type-elbow .pipe-2 { width: 25%; height: 62.5%; left: 37.5%; top: 0; }
+        /* Flow State Animation */
+        .tile.flow .pipe-water { clip-path: inset(0 0 0 0); }
 
-        .is-start { border: 4px solid #4ade80 !important; background: #dcfce7; }
-        .is-end { border: 4px solid #fb7185 !important; background: #ffe4e6; }
+        /* Pipe Shapes */
+        .type-straight .pipe-base, .type-straight .pipe-water { width: 100%; height: 25%; }
+        .type-elbow .p1 { width: 65%; height: 25%; left: 35%; top: 37.5%; }
+        .type-elbow .p2 { width: 25%; height: 65%; left: 37.5%; top: 0; }
 
-        .controls { display: flex; gap: 10px; }
+        .is-start { outline: 4px solid #4ade80; background: #f0fdf4; }
+        .is-end { outline: 4px solid #fb7185; background: #fff1f2; }
+
+        /* Controls */
+        .controls { display: flex; gap: 12px; }
         button {
-            flex: 1; padding: 15px; border-radius: 15px; border: none;
-            font-weight: 800; font-size: 1rem; cursor: pointer;
-            transition: all 0.2s;
+            flex: 1; padding: 16px; border-radius: 18px; border: none;
+            font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s;
         }
         .btn-test { background: var(--accent); color: white; box-shadow: 0 4px 0 #0369a1; }
         .btn-test:active { transform: translateY(2px); box-shadow: 0 2px 0 #0369a1; }
-        .btn-test:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
-        .btn-reset { background: #e2e8f0; color: #475569; }
+        .btn-test:disabled { background: #cbd5e1; box-shadow: none; opacity: 0.7; }
+        .btn-reset { background: #f1f5f9; color: #64748b; }
 
-        #message { margin-top: 15px; font-weight: 800; min-height: 1.2rem; }
+        #message { margin-top: 20px; font-weight: 800; font-size: 1rem; min-height: 1.5rem; }
         .success { color: #16a34a; }
         .error { color: #dc2626; }
-        .timer-info { font-size: 0.7rem; color: #94a3b8; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
+    <div class="top-nav">
+        <a href="../index.html" class="back-btn">←</a>
+        <div id="difficulty-display" class="level-tag">Level 1: 3x3</div>
+    </div>
+
     <h1>MaruPlumber 💧</h1>
-    <p>Connect the pipes! Flow starts in 5s...</p>
+    <p class="instruction">Connect the path! Auto-flow in 5s...</p>
 
     <div id="grid"></div>
 
@@ -111,47 +127,52 @@
 </div>
 
 <script>
-    const GRID_SIZE = 5;
+    let currentSize = 3;
     const gridEl = document.getElementById('grid');
     const msgEl = document.getElementById('message');
     const valveBtn = document.getElementById('valve-btn');
+    const diffDisplay = document.getElementById('difficulty-display');
     let tiles = [];
     let flowTimer;
+    let isAnimating = false;
 
     const PIPE_TYPES = {
-        straight: { connections: [0, 1, 0, 1], html: '<div class="pipe-line"></div>' },
-        elbow: { connections: [1, 1, 0, 0], html: '<div class="pipe-line pipe-1"></div><div class="pipe-line pipe-2"></div>' }
+        straight: { 
+            connections: [0, 1, 0, 1], 
+            html: '<div class="pipe-base"></div><div class="pipe-water"></div>' 
+        },
+        elbow: { 
+            connections: [1, 1, 0, 0], 
+            html: '<div class="pipe-base p1"></div><div class="pipe-base p2"></div><div class="pipe-water p1"></div><div class="pipe-water p2"></div>' 
+        }
     };
 
     function initGame() {
+        if (isAnimating) return;
         clearTimeout(flowTimer);
         tiles = [];
         gridEl.innerHTML = '';
         msgEl.textContent = '';
         valveBtn.disabled = false;
+
+        gridEl.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`;
+        diffDisplay.textContent = `Level ${currentSize - 2}: ${currentSize}x${currentSize}`;
         
-        for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            const typeKey = Math.random() > 0.5 ? 'straight' : 'elbow';
+        const totalTiles = currentSize * currentSize;
+
+        for (let i = 0; i < totalTiles; i++) {
+            const typeKey = Math.random() > 0.4 ? 'straight' : 'elbow';
             const rotation = Math.floor(Math.random() * 4);
             const isStart = (i === 0);
-            const isEnd = (i === GRID_SIZE * GRID_SIZE - 1);
+            const isEnd = (i === totalTiles - 1);
             
-            const tile = {
-                id: i,
-                type: typeKey,
-                rotation: rotation,
-                isStart: isStart,
-                isEnd: isEnd,
-                flow: false
-            };
-            
+            const tile = { id: i, type: typeKey, rotation: rotation, isStart, isEnd, flow: false };
             tiles.push(tile);
             renderTile(tile);
         }
 
-        // AUTO-FLOW after 5 seconds
         flowTimer = setTimeout(() => {
-            if (!msgEl.textContent) checkFlow();
+            if (!msgEl.textContent && !isAnimating) checkFlow();
         }, 5000);
     }
 
@@ -161,12 +182,12 @@
         div.id = `tile-${tile.id}`;
         div.innerHTML = PIPE_TYPES[tile.type].html;
         div.style.transform = `rotate(${tile.rotation * 90}deg)`;
-        
         div.onclick = () => rotateTile(tile.id);
         gridEl.appendChild(div);
     }
 
     function rotateTile(id) {
+        if (isAnimating) return;
         tiles[id].rotation = (tiles[id].rotation + 1) % 4;
         const el = document.getElementById(`tile-${id}`);
         el.style.transform = `rotate(${tiles[id].rotation * 90}deg)`;
@@ -181,18 +202,17 @@
 
     function getConnectors(tile) {
         let conn = [...PIPE_TYPES[tile.type].connections];
-        for (let i = 0; i < tile.rotation; i++) {
-            conn.unshift(conn.pop());
-        }
+        for (let i = 0; i < tile.rotation; i++) conn.unshift(conn.pop());
         return conn;
     }
 
-    // Helper for animation delay
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     async function checkFlow() {
+        if (isAnimating) return;
         clearTimeout(flowTimer);
         clearFlow();
+        isAnimating = true;
         valveBtn.disabled = true;
         
         const visited = new Set();
@@ -207,10 +227,9 @@
             const currentTile = tiles[currentIdx];
             currentTile.flow = true;
             
-            // ANIMATION TRIGGER
             const el = document.getElementById(`tile-${currentIdx}`);
             el.classList.add('flow');
-            await sleep(150); // Speed of the water flow animation
+            await sleep(400); // Wait for liquid clip-path animation
 
             if (currentTile.isEnd) {
                 won = true;
@@ -218,32 +237,35 @@
             }
 
             const connectors = getConnectors(currentTile);
-            const row = Math.floor(currentIdx / GRID_SIZE);
-            const col = currentIdx % GRID_SIZE;
+            const row = Math.floor(currentIdx / currentSize);
+            const col = currentIdx % currentSize;
 
             const neighbors = [
-                { idx: currentIdx - GRID_SIZE, dir: 0, opposite: 2, valid: row > 0 },
-                { idx: currentIdx + 1, dir: 1, opposite: 3, valid: col < GRID_SIZE - 1 },
-                { idx: currentIdx + GRID_SIZE, dir: 2, opposite: 0, valid: row < GRID_SIZE - 1 },
-                { idx: currentIdx - 1, dir: 3, opposite: 1, valid: col > 0 }
+                { idx: currentIdx - currentSize, dir: 0, opp: 2, valid: row > 0 },
+                { idx: currentIdx + 1, dir: 1, opp: 3, valid: col < currentSize - 1 },
+                { idx: currentIdx + currentSize, dir: 2, opp: 0, valid: row < currentSize - 1 },
+                { idx: currentIdx - 1, dir: 3, opp: 1, valid: col > 0 }
             ];
 
             neighbors.forEach(n => {
                 if (n.valid && connectors[n.dir] === 1) {
                     const neighborTile = tiles[n.idx];
                     const neighborConnectors = getConnectors(neighborTile);
-                    if (neighborConnectors[n.opposite] === 1) {
-                        queue.push(n.idx);
-                    }
+                    if (neighborConnectors[n.opp] === 1) queue.push(n.idx);
                 }
             });
         }
 
+        isAnimating = false;
         if (won) {
-            msgEl.textContent = "Hooray! The water reached the end! 💧✨";
+            msgEl.textContent = "Amazing! Ready for the next Level? 💧✨";
             msgEl.className = "success";
+            setTimeout(() => {
+                if (currentSize < 6) currentSize++;
+                initGame();
+            }, 2500);
         } else {
-            msgEl.textContent = "Oh no! There is a leak!";
+            msgEl.textContent = "Leak detected! Try rotating the pipes.";
             msgEl.className = "error";
             valveBtn.disabled = false;
         }
