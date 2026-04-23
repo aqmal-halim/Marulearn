@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marulearn: Math Pathfinder</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #4caf50;
+            --error: #f44336;
+            --bg: #f8f9fa;
+            --tile-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            touch-action: none; /* Prevents scrolling while dragging on mobile */
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        #current-sum {
+            color: #333;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 70px);
+            grid-template-rows: repeat(5, 70px);
+            gap: 12px;
+            padding: 15px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .tile {
+            width: 70px;
+            height: 70px;
+            background: var(--tile-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 0 #ccc;
+        }
+
+        .tile.active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #ccc;
+        }
+
+        .tile.selected {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 0 #2a6dbd;
+        }
+
+        .tile.is-target {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 0 #388e3c;
+        }
+
+        .tile.too-high {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 4px 0 #d32f2f;
+        }
+
+        .tile.hidden {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            height: 20px;
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-header">
+        <h1>Math Pathfinder</h1>
+        <div id="message"></div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-label">Target</div>
+            <div id="target-value" class="stat-value">15</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Your Sum</div>
+            <div id="current-sum" class="stat-value">0</div>
+        </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <div class="controls">
+        <button onclick="resetGame()">Shuffle Board</button>
+    </div>
+
+    <script>
+        const gridElement = document.getElementById('grid');
+        const targetDisplay = document.getElementById('target-value');
+        const sumDisplay = document.getElementById('current-sum');
+        const messageDisplay = document.getElementById('message');
+
+        let target = 0;
+        let currentSum = 0;
+        let selectedTiles = [];
+        let isDragging = false;
+        const gridSize = 5;
+
+        function initGame() {
+            createGrid();
+            setNewTarget();
+        }
+
+        function createGrid() {
+            gridElement.innerHTML = '';
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const val = Math.floor(Math.random() * 9) + 1;
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                tile.innerText = val;
+                tile.dataset.index = i;
+                
+                // Mouse Events
+                tile.addEventListener('mousedown', (e) => handleStart(e, tile));
+                tile.addEventListener('mouseenter', () => handleMove(tile));
+                
+                // Touch Events
+                tile.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    handleStart(e, tile);
+                });
+
+                gridElement.appendChild(tile);
+            }
+
+            // Universal End
+            window.addEventListener('mouseup', handleEnd);
+            window.addEventListener('touchend', handleEnd);
+            
+            // Touch move support
+            gridElement.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (element && element.classList.contains('tile')) {
+                    handleMove(element);
+                }
+            });
+        }
+
+        function setNewTarget() {
+            // Pick a random target between 10 and 30
+            target = Math.floor(Math.random() * 21) + 10;
+            targetDisplay.innerText = target;
+            messageDisplay.innerText = "";
+        }
+
+        function handleStart(e, tile) {
+            isDragging = true;
+            currentSum = 0;
+            selectedTiles = [];
+            handleMove(tile);
+        }
+
+        function handleMove(tile) {
+            if (!isDragging || selectedTiles.includes(tile) || tile.classList.contains('hidden')) return;
+
+            const tileVal = parseInt(tile.innerText);
+            
+            // Path Logic: Only allow adjacent tiles (Up, Down, Left, Right)
+            if (selectedTiles.length > 0) {
+                const lastTile = selectedTiles[selectedTiles.length - 1];
+                const lastIdx = parseInt(lastTile.dataset.index);
+                const currIdx = parseInt(tile.dataset.index);
+                
+                const rowDiff = Math.abs(Math.floor(lastIdx / gridSize) - Math.floor(currIdx / gridSize));
+                const colDiff = Math.abs((lastIdx % gridSize) - (currIdx % gridSize));
+                
+                if (!((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1))) {
+                    return; 
+                }
+            }
+
+            tile.classList.add('selected');
+            selectedTiles.push(tile);
+            currentSum += tileVal;
+            sumDisplay.innerText = currentSum;
+
+            // Visual feedback if over target
+            if (currentSum > target) {
+                selectedTiles.forEach(t => t.classList.add('too-high'));
+            } else if (currentSum === target) {
+                selectedTiles.forEach(t => t.classList.add('is-target'));
+            }
+        }
+
+        function handleEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (currentSum === target) {
+                messageDisplay.innerText = "Awesome! +1 Target Met";
+                selectedTiles.forEach(t => {
+                    t.classList.add('hidden');
+                });
+                setTimeout(setNewTarget, 600);
+            }
+
+            // Reset classes
+            selectedTiles.forEach(t => {
+                t.classList.remove('selected', 'too-high', 'is-target');
+            });
+            
+            currentSum = 0;
+            sumDisplay.innerText = currentSum;
+            selectedTiles = [];
+        }
+
+        function resetGame() {
+            initGame();
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
