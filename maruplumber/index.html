@@ -73,6 +73,7 @@
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
             box-shadow: 0 6px 0 rgba(0,0,0,0.05);
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
         .tile:active { transform: scale(0.9) rotate(10deg); }
         .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
@@ -84,9 +85,13 @@
         .water-path {
             fill: none; stroke: var(--water); stroke-width: 12;
             stroke-linecap: round; stroke-dasharray: 100;
-            stroke-dashoffset: 100; transition: stroke-dashoffset 0.5s ease-in-out;
+            stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s linear;
         }
+
+        /* Directional Flow Logic */
         .tile.flow .water-path { stroke-dashoffset: 0; }
+        .tile.rev-flow .water-path { stroke-dasharray: 100; stroke-dashoffset: -100; }
+        .tile.rev-flow.flow .water-path { stroke-dashoffset: 0; }
 
         .controls { display: flex; gap: 15px; }
         button {
@@ -271,37 +276,61 @@
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        let queue = [0]; 
+        
+        // Use a structure to track the direction water entered the tile
+        // Entry Dir: 0=top, 1=right, 2=bottom, 3=left
+        let queue = [{idx: 0, fromDir: -1}]; 
         let visited = new Set(); 
         let won = false;
 
         while(queue.length > 0) {
-            let currIdx = queue.shift();
-            if(visited.has(currIdx)) continue;
+            let {idx, fromDir} = queue.shift();
+            if(visited.has(idx)) continue;
             
-            const tileEl = gridEl.children[currIdx];
+            const tileObj = tiles[idx];
+            const tileEl = gridEl.children[idx];
+            const conns = getConnectors(tileObj);
+
+            // Calculate if the water needs to flow "backward" relative to the default SVG path
+            // For straight: default is Left to Right. If water comes from Right (fromDir=1), reverse it.
+            // For elbow: default is Top to Right. If water comes from Right (fromDir=1), reverse it.
+            let shouldReverse = false;
+            if (tileObj.type === 'straight') {
+                // Find which side of the unrotated pipe the water came from
+                let unrotatedEntry = (fromDir - tileObj.rotation + 4) % 4;
+                if (unrotatedEntry === 1) shouldReverse = true; 
+            } else if (tileObj.type === 'elbow') {
+                let unrotatedEntry = (fromDir - tileObj.rotation + 4) % 4;
+                if (unrotatedEntry === 1) shouldReverse = true;
+            }
+
+            if (shouldReverse) tileEl.classList.add('rev-flow');
+            else tileEl.classList.remove('rev-flow');
+
             tileEl.classList.add('flow');
             AudioEngine.playBubble();
             await new Promise(r => setTimeout(r, 400));
             
-            visited.add(currIdx);
+            visited.add(idx);
 
-            if(tiles[currIdx].isEnd) { won = true; break; }
+            if(tileObj.isEnd) { won = true; break; }
 
-            const conns = getConnectors(tiles[currIdx]);
-            const r = Math.floor(currIdx/size), c = currIdx%size;
-            
+            const r = Math.floor(idx/size), c = idx%size;
             const neighbors = [
-                {idx: currIdx-size, dir: 0, opp: 2, ok: r > 0},
-                {idx: currIdx+1, dir: 1, opp: 3, ok: c < size-1},
-                {idx: currIdx+size, dir: 2, opp: 0, ok: r < size-1},
-                {idx: currIdx-1, dir: 3, opp: 1, ok: c > 0}
+                {nIdx: idx-size, dir: 0, opp: 2, ok: r > 0}, // check Top
+                {nIdx: idx+1,    dir: 1, opp: 3, ok: c < size-1}, // check Right
+                {nIdx: idx+size, dir: 2, opp: 0, ok: r < size-1}, // check Bottom
+                {nIdx: idx-1,    dir: 3, opp: 1, ok: c > 0}  // check Left
             ];
 
             neighbors.forEach(n => {
-                if(n.ok && conns[n.dir] === 1) {
-                    const nextConns = getConnectors(tiles[n.idx]);
-                    if(nextConns[n.opp] === 1) queue.push(n.idx);
+                // If this tile has an opening in that direction, and it's NOT where water came from
+                if(n.ok && conns[n.dir] === 1 && n.dir !== fromDir) {
+                    const nextConns = getConnectors(tiles[n.nIdx]);
+                    // If neighbor has a matching opening
+                    if(nextConns[n.opp] === 1) {
+                        queue.push({idx: n.nIdx, fromDir: n.opp});
+                    }
                 }
             });
         }
@@ -312,7 +341,10 @@
         } else { 
             AudioEngine.playFail(); 
             isFlowing = false; 
-            tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); 
+            tiles.forEach((_, i) => {
+                gridEl.children[i].classList.remove('flow');
+                gridEl.children[i].classList.remove('rev-flow');
+            }); 
             initGame(); 
         }
     }
