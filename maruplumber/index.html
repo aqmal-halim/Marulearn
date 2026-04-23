@@ -29,6 +29,7 @@
             --text-muted: #64748b;
             --text-dim: #94a3b8;
             --radius: 16px;
+            --tile-size: 72px;
             --gap: 8px;
         }
 
@@ -52,224 +53,254 @@
         .bg-blob:nth-child(1) { width: 400px; height: 400px; background: var(--water); top: -100px; left: -100px; }
         .bg-blob:nth-child(2) { width: 300px; height: 300px; background: var(--accent); bottom: -80px; right: -80px; }
         @keyframes blobDrift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,30px) scale(1.15); } }
-        
         .bg-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px); background-size: 40px 40px; }
 
         #app { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
 
         .header { width: 100%; display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--water), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .logo { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--water), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .logo span { -webkit-text-fill-color: var(--text); }
-        
-        .back-btn { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 6px 12px; font-size: 0.8rem; font-weight: 700; color: var(--text-dim); text-decoration: none; transition: 0.2s; }
+        .header-right { display: flex; gap: 10px; align-items: center; }
+
         .badge { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 6px 14px; font-size: 0.8rem; font-weight: 700; color: var(--text-dim); font-family: 'Space Mono', monospace; }
         .badge.highlight { border-color: var(--border-bright); color: var(--water); }
 
         .stats-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
-        .stat-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+        .stat-item { text-align: center; }
+        .stat-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
         .stat-value { font-size: 1.2rem; font-weight: 900; font-family: 'Space Mono', monospace; }
         .stat-value.water { color: var(--water); }
         .stat-value.gold { color: var(--accent); }
-        .stat-divider { width: 1px; height: 30px; background: var(--border); }
+        .stat-value.green { color: var(--green); }
+        .stat-divider { width: 1px; height: 36px; background: var(--border); }
 
         .diff-row { display: flex; gap: 6px; width: 100%; }
-        .diff-btn { flex: 1; padding: 9px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; cursor: pointer; }
-        .diff-btn.active { background: var(--surface-3); border-color: var(--water); color: var(--water); }
+        .diff-btn { flex: 1; padding: 9px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .diff-btn.active { background: var(--surface-3); border-color: var(--water); color: var(--water); box-shadow: 0 0 12px var(--water-glow); }
 
-        .grid-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px; width: 100%; position: relative; }
+        .grid-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px; width: 100%; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.4); }
         #grid { display: grid; gap: var(--gap); width: 100%; aspect-ratio: 1; }
 
-        .tile { position: relative; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: transform 0.1s, border-color 0.2s; overflow: hidden; }
-        .tile:active { transform: scale(0.92); }
-        .tile.locked { cursor: default; }
-        .tile.is-start { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.4); }
-        .tile.is-end { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.4); }
-        .tile.flowing { border-color: var(--water); box-shadow: 0 0 15px var(--water-glow); }
+        .tile { position: relative; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s; display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none; }
+        .tile:active { transform: scale(0.87); }
+        .tile.is-start { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.4); }
+        .tile.is-end { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.4); }
+        .tile.flowing { border-color: rgba(56,189,248,0.5); box-shadow: 0 0 14px var(--water-glow); }
+        .tile.is-end.flowing { border-color: var(--green); box-shadow: 0 0 18px var(--green-glow); }
 
-        .pipe-svg { width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .p-bg { fill: none; stroke: var(--pipe-rim); stroke-linecap: round; opacity: 0.5; }
-        .p-tube { fill: none; stroke: var(--pipe); stroke-linecap: round; }
-        .p-inner { fill: none; stroke: var(--pipe-light); stroke-linecap: round; }
-        .p-water { fill: none; stroke: var(--water); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s ease-out; }
-        .tile.flowing .p-water { stroke-dashoffset: 0; }
+        .pipe-svg { width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: absolute; inset: 0; }
 
-        .controls { display: flex; gap: 10px; width: 100%; }
-        .btn { flex: 1; padding: 14px 0; border-radius: 14px; border: none; cursor: pointer; font-weight: 800; font-size: 0.95rem; }
-        .btn-primary { background: linear-gradient(135deg, var(--water-dark), var(--water)); color: #0a0e1a; }
+        .controls { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; }
+        .btn { flex: 1; min-width: 100px; padding: 14px 0; border-radius: 14px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; transition: all 0.18s; position: relative; }
+        .btn-primary { background: linear-gradient(135deg, var(--water-dark), var(--water)); color: #0a0e1a; box-shadow: 0 4px 20px var(--water-glow); }
         .btn-secondary { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+        .btn-back { width: 100%; flex: none; background: #1e293b; color: #cbd5e1; }
 
-        .flow-progress { width: 100%; height: 4px; background: var(--surface-2); border-radius: 2px; margin-top: 12px; overflow: hidden; }
-        .flow-bar { height: 100%; width: 0%; background: var(--water); transition: width 0.3s; }
+        .flow-bar { height: 4px; width: 0%; background: var(--water); transition: width 0.3s ease; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface-2); border-radius: 12px; padding: 12px 20px; z-index: 200; transition: all 0.3s; opacity: 0; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; }
-        .modal-backdrop.active { display: flex; }
-        .modal { background: var(--surface); border: 1px solid var(--water); border-radius: 24px; padding: 30px; text-align: center; max-width: 300px; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-backdrop.active { opacity: 1; pointer-events: all; }
+        .modal { background: var(--surface); border: 1px solid var(--border-bright); border-radius: 24px; padding: 32px; width: 90%; max-width: 360px; text-align: center; }
+        
+        .p-bg { fill: none; stroke: var(--pipe-rim); stroke-width: 14; opacity: 0.5; }
+        .p-tube { fill: none; stroke: var(--pipe); stroke-width: 12; }
+        .p-inner { fill: none; stroke: var(--pipe-light); stroke-width: 6; }
+        .p-water { fill: none; stroke: var(--water); stroke-width: 6; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.45s; }
+        .tile.flowing .p-water { stroke-dashoffset: 0; }
     </style>
 </head>
 <body>
 
 <div class="bg-layer"><div class="bg-blob"></div><div class="bg-blob"></div></div>
 <div class="bg-grid"></div>
+<div class="toast" id="toast"></div>
 
 <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
-        <h2 style="color: var(--water); margin-bottom: 10px;">Goal Reached!</h2>
-        <p style="margin-bottom: 20px;">The flow is perfect.</p>
-        <button class="btn btn-primary" style="width: 100%" onclick="Game.init()">Play Again</button>
+        <h2>Flow Complete!</h2>
+        <div id="modal-stats" style="margin: 20px 0; color: var(--text-dim);"></div>
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="Game.replay()">↺ Retry</button>
+            <button class="btn btn-primary" onclick="Game.nextLevel()">Next ›</button>
+        </div>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
         <div class="logo">Hydro<span>Quest</span></div>
-        <div class="badge highlight" id="level-badge">LVL 1</div>
+        <div class="header-right"><div class="badge highlight" id="level-badge">LVL 1</div></div>
     </div>
 
     <div class="stats-bar">
         <div class="stat-item"><div class="stat-label">Moves</div><div class="stat-value water" id="stat-moves">0</div></div>
         <div class="stat-divider"></div>
-        <div class="stat-item"><div class="stat-label">Streak</div><div class="stat-value gold" id="stat-streak">0</div></div>
+        <div class="stat-item"><div class="stat-label">Time</div><div class="stat-value gold" id="stat-time">0:00</div></div>
     </div>
 
     <div class="diff-row" id="diff-row"></div>
 
     <div class="grid-wrap">
         <div id="grid"></div>
-        <div class="flow-progress"><div class="flow-bar" id="flow-bar"></div></div>
+        <div style="height:4px; background:var(--surface-2); margin-top:12px;"><div class="flow-bar" id="flow-bar"></div></div>
     </div>
 
     <div class="controls">
-        <button class="btn btn-secondary" onclick="Game.init()">⟳ Shuffle</button>
+        <button class="btn btn-secondary" onclick="Game.undo()">↩ Undo</button>
+        <button class="btn btn-secondary" onclick="Game.shuffle()">⟳ Shuffle</button>
         <button class="btn btn-primary" id="btn-flow" onclick="Game.startFlow()">▶ Flow</button>
+        <a href="https://aqmal-halim.github.io/Marulearn/" class="btn btn-back" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">🏠 Back to Marulearn</a>
     </div>
 </div>
 
 <script>
 const PIPES = {
-    straight: { conns: [0, 1, 0, 1], svg: (s) => `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-bg" d="M 0 50 L 100 50" stroke-width="18"/><path class="p-tube" d="M 0 50 L 100 50" stroke-width="14"/><path class="p-water" d="M 0 50 L 100 50" stroke-width="8"/></svg>` },
-    elbow: { conns: [1, 1, 0, 0], svg: (s) => `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-bg" d="M 50 0 Q 50 50 100 50" stroke-width="18"/><path class="p-tube" d="M 50 0 Q 50 50 100 50" stroke-width="14"/><path class="p-water" d="M 50 0 Q 50 50 100 50" stroke-width="8"/></svg>` },
-    start: { conns: [0, 1, 0, 0], svg: (s) => `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="30" cy="50" r="12" fill="#f59e0b"/><path class="p-bg" d="M 30 50 L 100 50" stroke-width="18"/><path class="p-tube" d="M 30 50 L 100 50" stroke-width="14"/><path class="p-water" d="M 30 50 L 100 50" stroke-width="8"/></svg>` },
-    end: { conns: [0, 0, 0, 1], svg: (s) => `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-bg" d="M 0 50 L 70 50" stroke-width="18"/><path class="p-tube" d="M 0 50 L 70 50" stroke-width="14"/><path class="p-water" d="M 0 50 L 70 50" stroke-width="8"/><circle cx="70" cy="50" r="12" fill="#34d399"/></svg>` }
+    straight: { conns: [0,1,0,1], svg: (s) => `<svg viewBox="0 0 ${s} ${s}" class="pipe-svg"><path class="p-bg" d="M 0 ${s/2} L ${s} ${s/2}"/><path class="p-tube" d="M 0 ${s/2} L ${s} ${s/2}"/><path class="p-water" d="M 0 ${s/2} L ${s} ${s/2}"/></svg>` },
+    elbow: { conns: [1,1,0,0], svg: (s) => `<svg viewBox="0 0 ${s} ${s}" class="pipe-svg"><path class="p-bg" d="M ${s/2} 0 Q ${s/2} ${s/2} ${s} ${s/2}"/><path class="p-tube" d="M ${s/2} 0 Q ${s/2} ${s/2} ${s} ${s/2}"/><path class="p-water" d="M ${s/2} 0 Q ${s/2} ${s/2} ${s} ${s/2}"/></svg>` },
+    start: { conns: [0,1,0,0], svg: (s) => `<svg viewBox="0 0 ${s} ${s}" class="pipe-svg"><circle cx="${s*0.3}" cy="${s/2}" r="${s*0.15}" fill="orange"/><path class="p-bg" d="M ${s*0.3} ${s/2} L ${s} ${s/2}"/><path class="p-tube" d="M ${s*0.3} ${s/2} L ${s} ${s/2}"/><path class="p-water" d="M ${s*0.3} ${s/2} L ${s} ${s/2}"/></svg>` },
+    end: { conns: [0,0,0,1], svg: (s) => `<svg viewBox="0 0 ${s} ${s}" class="pipe-svg"><circle cx="${s*0.7}" cy="${s/2}" r="${s*0.15}" fill="green"/><path class="p-bg" d="M 0 ${s/2} L ${s*0.7} ${s/2}"/><path class="p-tube" d="M 0 ${s/2} L ${s*0.7} ${s/2}"/><path class="p-water" d="M 0 ${s/2} L ${s*0.7} ${s/2}"/></svg>` }
 };
 
+const DIFFICULTIES = [
+    { name: 'Easy', size: 3 }, { name: 'Medium', size: 4 }, { name: 'Hard', size: 5 }
+];
+
 const Game = (() => {
-    let state = { size: 3, tiles: [], moves: 0, streak: 0, isFlowing: false, startIdx: 0, endIdx: 0 };
-    const rotateConns = (c, r) => { let a = [...c]; for(let i=0; i<r; i++) a.unshift(a.pop()); return a; };
+    let state = { diffIdx: 0, size: 3, tiles: [], moves: 0, history: [], isFlowing: false, startTime: null };
 
-    const init = (sz = state.size) => {
-        state.size = sz; state.moves = 0; state.isFlowing = false;
-        document.getElementById('modal-backdrop').classList.remove('active');
-        document.getElementById('flow-bar').style.width = '0%';
-        
-        // 1. Force a path from top-left area to bottom-right area
-        state.startIdx = 0;
-        state.endIdx = (sz * sz) - 1;
-        
-        // Simple snake-like path generation for guaranteed solvability
-        const path = [];
-        for(let r=0; r<sz; r++) {
-            if(r % 2 === 0) for(let c=0; c<sz; c++) path.push(r*sz + c);
-            else for(let c=sz-1; c>=0; c--) path.push(r*sz + c);
-        }
-        
-        state.tiles = Array.from({length: sz*sz}, (_, i) => {
-            const pIdx = path.indexOf(i);
-            const isStart = i === state.startIdx, isEnd = i === state.endIdx;
-            let type = 'straight', rotation = 0;
-
-            if(isStart) {
-                type = 'start';
-                rotation = (path[1] === i+1) ? 0 : 1; // Point right or down
-            } else if(isEnd) {
-                type = 'end';
-                const prev = path[pIdx-1];
-                rotation = (prev === i-1) ? 0 : 3; // Receive from left or up
-            } else {
-                const prev = path[pIdx-1], next = path[pIdx+1];
-                const d1 = getDir(i, prev), d2 = getDir(i, next);
-                type = (Math.abs(d1-d2) === 2) ? 'straight' : 'elbow';
-                // Find correct rotation to satisfy the path
-                for(let r=0; r<4; r++) {
-                    const c = rotateConns(PIPES[type].conns, r);
-                    if(c[d1] && c[d2]) { rotation = (r + Math.floor(Math.random()*3)+1)%4; break; }
-                }
-            }
-            return { type, rotation, isStart, isEnd };
-        });
+    const init = (idx) => {
+        state.diffIdx = idx;
+        state.size = DIFFICULTIES[idx].size;
+        state.moves = 0;
+        state.history = [];
+        state.isFlowing = false;
+        state.startTime = null;
+        generateLevel();
         render();
     };
 
-    const getDir = (from, to) => {
-        const d = to - from;
-        if(d === -state.size) return 0; // Up
-        if(d === 1) return 1;          // Right
-        if(d === state.size) return 2; // Down
-        if(d === -1) return 3;         // Left
-        return 0;
+    const generateLevel = () => {
+        const size = state.size;
+        const total = size * size;
+        const path = [];
+        let curr = 0;
+        const visited = new Set([0]);
+        path.push(0);
+
+        // Simple Random Walk for path guarantee
+        while(curr !== total - 1) {
+            const r = Math.floor(curr/size), c = curr%size;
+            const adj = [];
+            if(r > 0) adj.push(curr - size);
+            if(r < size-1) adj.push(curr + size);
+            if(c > 0) adj.push(curr - 1);
+            if(c < size-1) adj.push(curr + 1);
+            const valid = adj.filter(n => !visited.has(n));
+            if(valid.length === 0) { visited.clear(); path.length = 0; curr = 0; path.push(0); visited.add(0); continue; }
+            curr = valid[Math.floor(Math.random()*valid.length)];
+            path.push(curr);
+            visited.add(curr);
+        }
+
+        state.tiles = Array(total).fill(0).map((_, i) => {
+            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
+            if(i === 0) type = 'start';
+            if(i === total - 1) type = 'end';
+            return { type, rotation: Math.floor(Math.random()*4), id: i };
+        });
     };
 
     const render = () => {
-        const g = document.getElementById('grid'); g.innerHTML = '';
-        g.style.gridTemplateColumns = `repeat(${state.size}, 1fr)`;
+        const grid = document.getElementById('grid');
+        grid.style.gridTemplateColumns = `repeat(${state.size}, 1fr)`;
+        grid.innerHTML = '';
         state.tiles.forEach((t, i) => {
             const d = document.createElement('div');
-            d.className = `tile ${t.isStart || t.isEnd ? 'locked' : ''} ${t.isStart ? 'is-start' : ''} ${t.isEnd ? 'is-end' : ''}`;
-            d.innerHTML = PIPES[t.type].svg();
-            d.querySelector('.pipe-svg').style.transform = `rotate(${t.rotation * 90}deg)`;
-            d.onclick = () => {
-                if(state.isFlowing || t.isStart || t.isEnd) return;
-                t.rotation = (t.rotation + 1) % 4;
-                state.moves++;
-                document.getElementById('stat-moves').textContent = state.moves;
-                d.querySelector('.pipe-svg').style.transform = `rotate(${t.rotation * 90}deg)`;
-            };
-            g.appendChild(d);
+            d.className = `tile ${t.type === 'start' ? 'is-start' : ''} ${t.type === 'end' ? 'is-end' : ''}`;
+            d.innerHTML = PIPES[t.type].svg(70);
+            d.querySelector('svg').style.transform = `rotate(${t.rotation * 90}deg)`;
+            d.onclick = () => rotate(i);
+            grid.appendChild(d);
         });
-        document.getElementById('stat-streak').textContent = state.streak;
+        document.getElementById('stat-moves').textContent = state.moves;
+        document.getElementById('level-badge').textContent = `LVL ${state.diffIdx + 1}`;
+    };
+
+    const rotate = (i) => {
+        if(state.isFlowing) return;
+        state.history.push({i, r: state.tiles[i].rotation});
+        state.tiles[i].rotation = (state.tiles[i].rotation + 1) % 4;
+        state.moves++;
+        render();
+    };
+
+    const undo = () => {
+        if(state.history.length === 0) return;
+        const last = state.history.pop();
+        state.tiles[last.i].rotation = last.r;
+        state.moves--;
+        render();
     };
 
     const startFlow = async () => {
-        if(state.isFlowing) return;
         state.isFlowing = true;
-        const visited = new Set(), flowOrder = [], queue = [state.startIdx];
-        
+        const size = state.size;
+        let current = 0;
+        let flowPath = [0];
+        let queue = [0];
+        let visited = new Set();
+
+        // BFS to check connectivity
         while(queue.length > 0) {
-            const curr = queue.shift();
-            if(visited.has(curr)) continue;
-            visited.add(curr); flowOrder.push(curr);
-            if(curr === state.endIdx) break;
-
-            const conns = rotateConns(PIPES[state.tiles[curr].type].conns, state.tiles[curr].rotation);
-            const r = Math.floor(curr/state.size), c = curr%state.size;
+            let u = queue.shift();
+            if(visited.has(u)) continue;
+            visited.add(u);
+            const t = state.tiles[u];
+            const conns = rotateArr(PIPES[t.type].conns, t.rotation);
             
-            [[curr-state.size,0,2,r>0],[curr+1,1,3,c<state.size-1],[curr+state.size,2,0,r<state.size-1],[curr-1,3,1,c>0]].forEach(([n,d,o,ok]) => {
-                if(ok && conns[d] && rotateConns(PIPES[state.tiles[n].type].conns, state.tiles[n].rotation)[o]) queue.push(n);
-            });
-        }
+            const neighbors = [
+                {idx: u - size, dir: 0, opp: 2, r: Math.floor(u/size) > 0},
+                {idx: u + 1,    dir: 1, opp: 3, r: u % size < size - 1},
+                {idx: u + size, dir: 2, opp: 0, r: Math.floor(u/size) < size - 1},
+                {idx: u - 1,    dir: 3, opp: 1, r: u % size > 0}
+            ];
 
-        for(let i=0; i<flowOrder.length; i++) {
-            const idx = flowOrder[i];
-            document.getElementById('grid').children[idx].classList.add('flowing');
-            document.getElementById('flow-bar').style.width = `${((i+1)/flowOrder.length)*100}%`;
-            await new Promise(r => setTimeout(r, 250));
-            if(idx === state.endIdx) {
-                state.streak++;
-                document.getElementById('modal-backdrop').classList.add('active');
-                return;
+            for(let n of neighbors) {
+                if(n.r && conns[n.dir] === 1) {
+                    const nt = state.tiles[n.idx];
+                    const nConns = rotateArr(PIPES[nt.type].conns, nt.rotation);
+                    if(nConns[n.opp] === 1 && !visited.has(n.idx)) {
+                        queue.push(n.idx);
+                        flowPath.push(n.idx);
+                        if(nt.type === 'end') { finish(true); return; }
+                    }
+                }
             }
         }
-        
-        setTimeout(() => {
-            flowOrder.forEach(i => document.getElementById('grid').children[i].classList.remove('flowing'));
-            document.getElementById('flow-bar').style.width = '0%';
-            state.isFlowing = false;
-        }, 800);
+        finish(false);
     };
 
-    return { init, startFlow };
+    const rotateArr = (arr, r) => {
+        let a = [...arr];
+        for(let i=0; i<r; i++) a.unshift(a.pop());
+        return a;
+    };
+
+    const finish = (win) => {
+        if(win) {
+            document.getElementById('modal-backdrop').classList.add('active');
+        } else {
+            alert("Disconnected! Try again.");
+            state.isFlowing = false;
+        }
+    };
+
+    return { init, rotate, undo, startFlow, shuffle: () => init(state.diffIdx), replay: () => { document.getElementById('modal-backdrop').classList.remove('active'); init(state.diffIdx); }, nextLevel: () => { document.getElementById('modal-backdrop').classList.remove('active'); init((state.diffIdx + 1) % 3); } };
 })();
 
-window.onload = () => Game.init(3);
+window.onload = () => Game.init(0);
 </script>
 </body>
 </html>
