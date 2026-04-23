@@ -284,31 +284,26 @@
             const waterPath = tileEl.querySelector('.water-path');
             const conns = getConnectors(tileObj);
 
-            // Normalized Entry Calculation
-            // SVG Original Sides: 0=Top, 1=Right, 2=Bottom, 3=Left
-            // Rotation is clockwise (0=0deg, 1=90deg, 2=180deg, 3=270deg)
+            // Corrected Reverse Logic
+            // The unrotatedEntry calculates which side of the SVG path (start vs end) the water enters.
             let unrotatedEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
             
             let reverse = false;
-            if (tileObj.type === 'straight') {
-                // Straight SVG is 0 (Left) to 100 (Right). Internal Left is index 3.
-                // If water enters from internal Right (index 1), reverse.
-                if (unrotatedEntry === 1) reverse = true;
-            } else if (tileObj.type === 'elbow') {
-                // Elbow SVG is Top (0) to Right (1).
-                // If water enters from internal Right (index 1), reverse.
+            if (tileObj.type === 'straight' || tileObj.type === 'elbow') {
+                // In both SVGs, the path naturally flows FROM internal side index 3 (Left) or 0 (Top)
+                // TO internal side index 1 (Right).
+                // If it enters from side 1, we must reverse dashoffset.
                 if (unrotatedEntry === 1) reverse = true;
             }
 
+            waterPath.style.transition = 'none';
             waterPath.style.strokeDasharray = "100";
-            if (reverse) {
-                waterPath.style.strokeDashoffset = "-100";
-            } else {
-                waterPath.style.strokeDashoffset = "100";
-            }
+            waterPath.style.strokeDashoffset = reverse ? "-100" : "100";
+            
+            // Force reflow
+            waterPath.getBoundingClientRect(); 
 
-            // Small delay to ensure the browser registers the offset before transitioning to 0
-            await new Promise(r => requestAnimationFrame(() => setTimeout(r, 20)));
+            waterPath.style.transition = 'stroke-dashoffset 0.4s linear';
             waterPath.style.strokeDashoffset = "0";
             
             AudioEngine.playBubble();
@@ -345,7 +340,6 @@
                 const wp = gridEl.children[i].querySelector('.water-path');
                 wp.style.transition = 'none';
                 wp.style.strokeDashoffset = "100";
-                setTimeout(() => wp.style.transition = 'stroke-dashoffset 0.4s linear', 10);
             }); 
             initGame(); 
         }
