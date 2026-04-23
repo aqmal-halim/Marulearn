@@ -38,27 +38,15 @@
             position: relative;
         }
 
-        .header { margin-bottom: 15px; }
+        .header { margin-bottom: 20px; }
         h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
-        .stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .stats { display: flex; justify-content: center; align-items: center; margin-bottom: 10px; }
 
         .level-pill {
             background: var(--primary);
-            color: white; padding: 5px 15px;
+            color: white; padding: 5px 20px;
             border-radius: 20px; font-weight: 600;
             box-shadow: 0 4px 0 var(--primary-dark);
-        }
-
-        #timer-container {
-            width: 100%; height: 12px;
-            background: #eee; border-radius: 6px;
-            overflow: hidden; margin-bottom: 20px;
-            border: 2px solid white;
-        }
-        #timer-bar {
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, #4cd137, #fbc531);
-            transition: width 1s linear;
         }
 
         #grid {
@@ -90,15 +78,19 @@
         }
         .tile.flow .water-path { stroke-dashoffset: 0; }
 
-        .controls { display: flex; gap: 15px; }
+        .controls { display: flex; flex-direction: column; gap: 10px; }
+        .btn-group { display: flex; gap: 10px; }
+        
         button {
-            flex: 1; padding: 15px; border-radius: 20px;
+            padding: 15px; border-radius: 20px;
             border: none; font-weight: 700; font-size: 1rem;
             cursor: pointer; transition: 0.2s;
+            flex: 1;
         }
         .btn-main { background: var(--primary); color: white; box-shadow: 0 6px 0 var(--primary-dark); }
         .btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--primary-dark); }
         .btn-sec { background: #f5f6fa; color: #7f8fa6; }
+        .btn-back { background: #ebf0f1; color: #95a5a6; max-width: 80px; }
 
         #celebration {
             position: fixed; inset: 0; background: rgba(0,0,0,0.7);
@@ -125,32 +117,34 @@
         <div class="modal-btns">
             <button class="btn-main" onclick="nextLevel()">Next Difficulty</button>
             <button class="btn-sec" onclick="initGame()">Retry Level</button>
+            <button class="btn-sec" style="font-size: 0.8rem;" onclick="goBack()">Back to Level 1</button>
         </div>
     </div>
 </div>
 
 <div id="game-card">
     <div class="header">
+        <h1>Hydro Quest 💧</h1>
         <div class="stats">
             <span class="level-pill" id="level-txt">Level 1</span>
-            <span style="font-weight:700; color:#7f8fa6" id="timer-text">10s</span>
         </div>
-        <h1>Hydro Quest 💧</h1>
     </div>
-    <div id="timer-container"><div id="timer-bar"></div></div>
+
     <div id="grid"></div>
+
     <div class="controls">
-        <button class="btn-sec" onclick="initGame()">Shuffle</button>
-        <button class="btn-main" id="valve-btn" onclick="startFlow()">Open Valve!</button>
+        <button class="btn-main" id="valve-btn" onclick="startFlow()">Open Valve! 🚀</button>
+        <div class="btn-group">
+            <button class="btn-back" onclick="goBack()">←</button>
+            <button class="btn-sec" onclick="initGame()">Shuffle 🎲</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- Audio Engine (Web Audio API) ---
     const AudioEngine = {
         ctx: null,
         init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-        
         playClick() {
             this.init();
             const osc = this.ctx.createOscillator();
@@ -163,7 +157,6 @@
             osc.connect(gain); gain.connect(this.ctx.destination);
             osc.start(); osc.stop(this.ctx.currentTime + 0.1);
         },
-
         playBubble() {
             this.init();
             const osc = this.ctx.createOscillator();
@@ -176,7 +169,6 @@
             osc.connect(gain); gain.connect(this.ctx.destination);
             osc.start(); osc.stop(this.ctx.currentTime + 0.2);
         },
-
         playWin() {
             this.init();
             [440, 554.37, 659.25, 880].forEach((f, i) => {
@@ -189,7 +181,6 @@
                 osc.start(this.ctx.currentTime + i*0.1); osc.stop(this.ctx.currentTime + i*0.1 + 0.5);
             });
         },
-
         playFail() {
             this.init();
             const osc = this.ctx.createOscillator();
@@ -206,8 +197,6 @@
     let size = 3;
     let tiles = [];
     let isFlowing = false;
-    let timer;
-    let timeLeft = 10;
     const gridEl = document.getElementById('grid');
 
     const SVG_PIPES = {
@@ -237,10 +226,7 @@
     }
 
     function initGame() {
-        clearInterval(timer);
         isFlowing = false;
-        timeLeft = 10 + (size - 3) * 5;
-        document.getElementById('timer-text').innerText = timeLeft + 's';
         document.getElementById('level-txt').innerText = `Level ${size-2}`;
         document.getElementById('celebration').classList.remove('active');
         gridEl.innerHTML = '';
@@ -261,7 +247,6 @@
             tiles.push(tile);
             renderTile(tile);
         }
-        startTimer();
     }
 
     function renderTile(tile) {
@@ -279,17 +264,6 @@
         gridEl.appendChild(div);
     }
 
-    function startTimer() {
-        const bar = document.getElementById('timer-bar');
-        bar.style.transition = 'none'; bar.style.width = '100%';
-        setTimeout(() => { bar.style.transition = `width ${timeLeft}s linear`; bar.style.width = '0%'; }, 50);
-        timer = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer-text').innerText = timeLeft + 's';
-            if(timeLeft <= 0) { clearInterval(timer); startFlow(); }
-        }, 1000);
-    }
-
     function getConnectors(tile) {
         let base = (tile.type === 'start') ? [0, 1, 0, 0] : (tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0]);
         for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
@@ -299,7 +273,6 @@
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        clearInterval(timer);
         let queue = [0]; let visited = new Set(); let won = false;
         while(queue.length > 0) {
             let currIdx = queue.shift();
@@ -325,11 +298,19 @@
                 }
             });
         }
-        if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
-        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); startTimer(); }
+        if(won) { 
+            AudioEngine.playWin(); 
+            document.getElementById('celebration').classList.add('active'); 
+        } else { 
+            AudioEngine.playFail(); 
+            isFlowing = false; 
+            tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); 
+        }
     }
 
     function nextLevel() { if(size < 6) size++; initGame(); }
+    function goBack() { size = 3; initGame(); }
+    
     initGame();
 </script>
 </body>
