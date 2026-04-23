@@ -13,7 +13,7 @@
             --pipe-bg: #cbd5e1;
             --pipe-water: #38bdf8;
             --accent: #0ea5e9;
-            --danger: #ef4444; /* Red for start/end */
+            --danger: #ef4444;
             --font-main: 'Nunito', sans-serif;
             --radius: 24px;
         }
@@ -38,61 +38,36 @@
         }
         .level-tag { font-weight: 900; color: var(--accent); background: #e0f2fe; padding: 5px 15px; border-radius: 12px; font-size: 0.9rem; }
 
-        h1 { font-weight: 900; color: #1e293b; font-size: 1.6rem; margin-bottom: 5px; }
-        .instruction { font-weight: 700; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px; }
-
         #grid {
-            display: grid;
-            gap: 8px;
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            aspect-ratio: 1 / 1;
+            display: grid; gap: 8px; background: #f8fafc; padding: 12px;
+            border-radius: var(--radius); margin-bottom: 20px; aspect-ratio: 1 / 1;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .tile {
-            background: #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.1s;
+            background: #e2e8f0; border-radius: 12px; cursor: pointer;
+            position: relative; transition: transform 0.1s;
             display: flex; align-items: center; justify-content: center;
         }
         .tile:active { transform: scale(0.94); }
 
-        .pipe-base, .pipe-water {
-            position: absolute;
-            background: var(--pipe-bg);
-            border-radius: 6px;
-            z-index: 1;
-        }
+        /* Fixture Styles */
+        .fixture { position: absolute; font-size: 1.4rem; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)); }
+        .is-start .fixture { top: -10px; left: -5px; }
+        .is-end .fixture { bottom: -10px; right: -5px; }
 
-        .pipe-water {
-            background: var(--pipe-water);
-            z-index: 2;
-            clip-path: inset(0 100% 0 0); 
-            transition: clip-path 0.6s ease-in-out;
-        }
-
+        .pipe-base, .pipe-water { position: absolute; background: var(--pipe-bg); border-radius: 6px; z-index: 1; }
+        .pipe-water { background: var(--pipe-water); z-index: 2; clip-path: inset(0 100% 0 0); transition: clip-path 0.5s ease-in-out; }
         .tile.flow .pipe-water { clip-path: inset(0 0 0 0); }
 
         .type-straight .pipe-base, .type-straight .pipe-water { width: 100%; height: 25%; }
         .type-elbow .p1 { width: 65%; height: 25%; left: 35%; top: 37.5%; }
         .type-elbow .p2 { width: 25%; height: 65%; left: 37.5%; top: 0; }
 
-        /* Goal Tiles - Bold Red Style */
-        .is-start, .is-end { 
-            outline: 4px solid var(--danger); 
-            background: #fef2f2; 
-        }
+        .is-start, .is-end { outline: 4px solid var(--danger); background: #fef2f2; }
 
         .controls { display: flex; gap: 12px; }
-        button {
-            flex: 1; padding: 16px; border-radius: 18px; border: none;
-            font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s;
-        }
+        button { flex: 1; padding: 16px; border-radius: 18px; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; }
         .btn-test { background: var(--accent); color: white; box-shadow: 0 4px 0 #0369a1; }
         .btn-test:active { transform: translateY(2px); box-shadow: 0 2px 0 #0369a1; }
         .btn-test:disabled { background: #cbd5e1; box-shadow: none; opacity: 0.7; }
@@ -112,7 +87,7 @@
     </div>
 
     <h1>MaruPlumber 💧</h1>
-    <p class="instruction">Connect the red markers! Flow starts in 5s...</p>
+    <p style="color: #94a3b8; font-weight: 700; font-size: 0.85rem; margin-bottom: 20px;">Connect the Faucet to the Drain!</p>
 
     <div id="grid"></div>
 
@@ -135,83 +110,78 @@
     let isAnimating = false;
 
     const PIPE_TYPES = {
-        straight: { 
-            connections: [0, 1, 0, 1], 
-            html: '<div class="pipe-base"></div><div class="pipe-water"></div>' 
-        },
-        elbow: { 
-            connections: [1, 1, 0, 0], 
-            html: '<div class="pipe-base p1"></div><div class="pipe-base p2"></div><div class="pipe-water p1"></div><div class="pipe-water p2"></div>' 
-        }
+        straight: { connections: [0, 1, 0, 1], html: '<div class="pipe-base"></div><div class="pipe-water"></div>' },
+        elbow: { connections: [1, 1, 0, 0], html: '<div class="pipe-base p1"></div><div class="pipe-base p2"></div><div class="pipe-water p1"></div><div class="pipe-water p2"></div>' }
     };
 
-    function generateSolvablePath() {
-        const path = [];
+    function generateGuaranteedGrid() {
+        const total = currentSize * currentSize;
+        const tempGrid = new Array(total).fill(null);
+        let path = [];
         let curr = 0;
-        const end = (currentSize * currentSize) - 1;
-        const visited = new Set([0]);
-        
-        while (curr !== end) {
+        let visited = new Set([0]);
+
+        // 1. Generate a valid geometric path
+        while (curr !== total - 1) {
             path.push(curr);
-            let neighbors = [];
-            let r = Math.floor(curr / currentSize);
-            let c = curr % currentSize;
+            let r = Math.floor(curr / currentSize), c = curr % currentSize;
+            let options = [];
+            if (r > 0) options.push(curr - currentSize);
+            if (r < currentSize - 1) options.push(curr + currentSize);
+            if (c > 0) options.push(curr - 1);
+            if (c < currentSize - 1) options.push(curr + 1);
+            options = options.filter(n => !visited.has(n));
 
-            if (r > 0) neighbors.push(curr - currentSize);
-            if (r < currentSize - 1) neighbors.push(curr + currentSize);
-            if (c > 0) neighbors.push(curr - 1);
-            if (c < currentSize - 1) neighbors.push(curr + 1);
-
-            neighbors = neighbors.filter(n => !visited.has(n));
-            
-            if (neighbors.length === 0) {
-                // Backtrack or restart if stuck
-                return generateSolvablePath();
-            }
-            
-            curr = neighbors[Math.floor(Math.random() * neighbors.length)];
+            if (options.length === 0) return generateGuaranteedGrid(); // Retry
+            curr = options[Math.floor(Math.random() * options.length)];
             visited.add(curr);
         }
-        path.push(end);
-        return path;
+        path.push(total - 1);
+
+        // 2. Assign pipe types based on path direction changes
+        for (let i = 0; i < path.length; i++) {
+            const idx = path[i];
+            const prev = path[i - 1];
+            const next = path[i + 1];
+
+            if (i === 0 || i === path.length - 1) {
+                // Extremes: pick a shape that has at least one connection toward the path
+                tempGrid[idx] = { type: Math.random() > 0.5 ? 'straight' : 'elbow' };
+            } else {
+                const d1 = prev - idx, d2 = next - idx;
+                // If directions are opposite (e.g. left and right), it's a straight pipe
+                if (Math.abs(d1) === Math.abs(d2)) {
+                    tempGrid[idx] = { type: 'straight' };
+                } else {
+                    tempGrid[idx] = { type: 'elbow' };
+                }
+            }
+        }
+
+        // 3. Fill the rest with random noise
+        for (let i = 0; i < total; i++) {
+            if (!tempGrid[i]) tempGrid[i] = { type: Math.random() > 0.5 ? 'straight' : 'elbow' };
+            tempGrid[i].rotation = Math.floor(Math.random() * 4);
+        }
+        return tempGrid;
     }
 
     function initGame() {
         if (isAnimating) return;
         clearTimeout(flowTimer);
-        tiles = [];
         gridEl.innerHTML = '';
         msgEl.textContent = '';
         valveBtn.disabled = false;
-
         gridEl.style.gridTemplateColumns = `repeat(${currentSize}, 1fr)`;
         diffDisplay.textContent = `Level ${currentSize - 2}: ${currentSize}x${currentSize}`;
         
-        const totalTiles = currentSize * currentSize;
-        const pathTiles = generateSolvablePath();
+        const solvedLayout = generateGuaranteedGrid();
+        tiles = solvedLayout.map((t, i) => ({
+            ...t, id: i, isStart: i === 0, isEnd: i === (currentSize * currentSize - 1), flow: false
+        }));
 
-        for (let i = 0; i < totalTiles; i++) {
-            // If part of the "solution path", it must be possible to connect it.
-            // For simplicity in this logic, we use random pieces but the grid is 
-            // naturally more solvable because we ensure a path EXISTS in the geometry.
-            const typeKey = Math.random() > 0.5 ? 'straight' : 'elbow';
-            const rotation = Math.floor(Math.random() * 4);
-            
-            const tile = { 
-                id: i, 
-                type: typeKey, 
-                rotation: rotation, 
-                isStart: (i === 0), 
-                isEnd: (i === totalTiles - 1), 
-                flow: false 
-            };
-            tiles.push(tile);
-            renderTile(tile);
-        }
-
-        flowTimer = setTimeout(() => {
-            if (!msgEl.textContent && !isAnimating) checkFlow();
-        }, 5000);
+        tiles.forEach(renderTile);
+        flowTimer = setTimeout(() => { if (!msgEl.textContent && !isAnimating) checkFlow(); }, 5000);
     }
 
     function renderTile(tile) {
@@ -219,17 +189,16 @@
         div.className = `tile type-${tile.type} ${tile.isStart ? 'is-start' : ''} ${tile.isEnd ? 'is-end' : ''}`;
         div.id = `tile-${tile.id}`;
         div.innerHTML = PIPE_TYPES[tile.type].html;
+        if (tile.isStart) div.innerHTML += '<span class="fixture">🚰</span>';
+        if (tile.isEnd) div.innerHTML += '<span class="fixture">🕳️</span>';
         div.style.transform = `rotate(${tile.rotation * 90}deg)`;
-        div.onclick = () => rotateTile(tile.id);
+        div.onclick = () => {
+            if (isAnimating) return;
+            tile.rotation = (tile.rotation + 1) % 4;
+            div.style.transform = `rotate(${tile.rotation * 90}deg)`;
+            clearFlow();
+        };
         gridEl.appendChild(div);
-    }
-
-    function rotateTile(id) {
-        if (isAnimating) return;
-        tiles[id].rotation = (tiles[id].rotation + 1) % 4;
-        const el = document.getElementById(`tile-${id}`);
-        el.style.transform = `rotate(${tiles[id].rotation * 90}deg)`;
-        clearFlow();
     }
 
     function clearFlow() {
@@ -243,8 +212,6 @@
         for (let i = 0; i < tile.rotation; i++) conn.unshift(conn.pop());
         return conn;
     }
-
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     async function checkFlow() {
         if (isAnimating) return;
@@ -261,23 +228,15 @@
             const currentIdx = queue.shift();
             if (visited.has(currentIdx)) continue;
             visited.add(currentIdx);
-
             const currentTile = tiles[currentIdx];
             currentTile.flow = true;
-            
-            const el = document.getElementById(`tile-${currentIdx}`);
-            el.classList.add('flow');
-            await sleep(450); 
+            document.getElementById(`tile-${currentIdx}`).classList.add('flow');
+            await new Promise(r => setTimeout(r, 450)); 
 
-            if (currentTile.isEnd) {
-                won = true;
-                break;
-            }
+            if (currentTile.isEnd) { won = true; break; }
 
             const connectors = getConnectors(currentTile);
-            const row = Math.floor(currentIdx / currentSize);
-            const col = currentIdx % currentSize;
-
+            const row = Math.floor(currentIdx / currentSize), col = currentIdx % currentSize;
             const neighbors = [
                 { idx: currentIdx - currentSize, dir: 0, opp: 2, valid: row > 0 },
                 { idx: currentIdx + 1, dir: 1, opp: 3, valid: col < currentSize - 1 },
@@ -287,8 +246,7 @@
 
             neighbors.forEach(n => {
                 if (n.valid && connectors[n.dir] === 1) {
-                    const neighborTile = tiles[n.idx];
-                    const neighborConnectors = getConnectors(neighborTile);
+                    const neighborConnectors = getConnectors(tiles[n.idx]);
                     if (neighborConnectors[n.opp] === 1) queue.push(n.idx);
                 }
             });
@@ -296,14 +254,11 @@
 
         isAnimating = false;
         if (won) {
-            msgEl.textContent = "Hooray! Connection Complete! 💧✨";
+            msgEl.textContent = "Great job, Plumber! 💧✨";
             msgEl.className = "success";
-            setTimeout(() => {
-                if (currentSize < 6) currentSize++;
-                initGame();
-            }, 2500);
+            setTimeout(() => { if (currentSize < 6) currentSize++; initGame(); }, 2000);
         } else {
-            msgEl.textContent = "Leak detected! Try rotating the pipes.";
+            msgEl.textContent = "Leak detected! Keep trying.";
             msgEl.className = "error";
             valveBtn.disabled = false;
         }
