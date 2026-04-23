@@ -26,7 +26,6 @@
             overflow: hidden; padding: 10px;
         }
 
-        /* Back Button Styling */
         .back-home {
             position: absolute; top: 20px; left: 20px;
             background: white; width: 45px; height: 45px;
@@ -49,27 +48,15 @@
             position: relative;
         }
 
-        .header { margin-bottom: 15px; }
-        h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
-        .stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header { margin-bottom: 25px; }
+        h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
+        .stats { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
 
         .level-pill {
             background: var(--primary);
-            color: white; padding: 5px 15px;
+            color: white; padding: 8px 20px;
             border-radius: 20px; font-weight: 600;
             box-shadow: 0 4px 0 var(--primary-dark);
-        }
-
-        #timer-container {
-            width: 100%; height: 12px;
-            background: #eee; border-radius: 6px;
-            overflow: hidden; margin-bottom: 20px;
-            border: 2px solid white;
-        }
-        #timer-bar {
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, #4cd137, #fbc531);
-            transition: width 1s linear;
         }
 
         #grid {
@@ -146,17 +133,17 @@
 
 <div id="game-card">
     <div class="header">
+        <h1>Hydro Quest 💧</h1>
         <div class="stats">
             <span class="level-pill" id="level-txt">Level 1</span>
-            <span style="font-weight:700; color:#7f8fa6" id="timer-text">--</span>
         </div>
-        <h1>Hydro Quest 💧</h1>
     </div>
-    <div id="timer-container"><div id="timer-bar"></div></div>
+
     <div id="grid"></div>
+
     <div class="controls">
         <button class="btn-sec" onclick="initGame()">Shuffle</button>
-        <button class="btn-main" id="valve-btn" onclick="startGame()">Start Quest!</button>
+        <button class="btn-main" id="valve-btn" onclick="startFlow()">Start Quest!</button>
     </div>
 </div>
 
@@ -197,9 +184,6 @@
     let size = 3;
     let tiles = [];
     let isFlowing = false;
-    let isGameActive = false;
-    let timer;
-    let timeLeft = 0;
     const gridEl = document.getElementById('grid');
 
     const SVG_PIPES = {
@@ -230,20 +214,10 @@
     }
 
     function initGame() {
-        clearInterval(timer);
         isFlowing = false;
-        isGameActive = false;
-        timeLeft = 10 + (size - 3) * 5;
-        
-        document.getElementById('timer-text').innerText = timeLeft + 's';
         document.getElementById('level-txt').innerText = `Level ${size-2}`;
         document.getElementById('celebration').classList.remove('active');
-        document.getElementById('valve-btn').innerText = "Start Quest!";
         
-        const bar = document.getElementById('timer-bar');
-        bar.style.transition = 'none';
-        bar.style.width = '100%';
-
         gridEl.innerHTML = '';
         gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         const path = generatePath();
@@ -280,25 +254,6 @@
         gridEl.appendChild(div);
     }
 
-    function startGame() {
-        if(isGameActive || isFlowing) {
-            startFlow();
-            return;
-        }
-        isGameActive = true;
-        document.getElementById('valve-btn').innerText = "Open Valve!";
-        
-        const bar = document.getElementById('timer-bar');
-        bar.style.transition = `width ${timeLeft}s linear`;
-        bar.style.width = '0%';
-        
-        timer = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer-text').innerText = timeLeft + 's';
-            if(timeLeft <= 0) { clearInterval(timer); startFlow(); }
-        }, 1000);
-    }
-
     function getConnectors(tile) {
         let base = (tile.type === 'start') ? [0, 1, 0, 0] : 
                    (tile.type === 'end' ? [0, 0, 0, 1] : 
@@ -310,7 +265,6 @@
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        clearInterval(timer);
         let queue = [0]; let visited = new Set(); let won = false;
         while(queue.length > 0) {
             let currIdx = queue.shift();
@@ -337,7 +291,7 @@
             });
         }
         if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
-        else { AudioEngine.playFail(); isFlowing = false; isGameActive = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); initGame(); }
+        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); initGame(); }
     }
 
     function nextLevel() { if(size < 6) size++; initGame(); }
