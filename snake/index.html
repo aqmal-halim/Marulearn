@@ -18,7 +18,7 @@
       --ink: #2d3a4a;
       --card-shadow: 0 8px 0 rgba(0,0,0,0.06);
       --tile-size: 68px;
-      --gap: 12px;
+      --gap: 10px;
       --r: 20px;
     }
 
@@ -36,7 +36,6 @@
       color: var(--ink);
     }
 
-    /* ── BACKGROUND ── */
     #bg-canvas { position: fixed; inset: 0; z-index: 0; }
 
     .page {
@@ -50,18 +49,17 @@
       justify-content: space-between;
     }
 
-    /* ── HEADER ── */
     .header { text-align: center; width: 100%; }
     .logo {
       font-family: 'Baloo 2', cursive;
       font-size: 2.2rem; font-weight: 800;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     .logo span { color: var(--orange); }
 
     .stats-bar {
       display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr;
+      grid-template-columns: 1.2fr 1fr 1fr;
       gap: 10px;
       width: 100%;
     }
@@ -70,20 +68,19 @@
       background: var(--white);
       border-radius: var(--r);
       box-shadow: var(--card-shadow);
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    .stat-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #a0aec0; }
-    .stat-value { font-family: 'Baloo 2', cursive; font-size: 1.8rem; line-height: 1; }
-    .stat-value.target { color: var(--purple); font-size: 2.2rem; }
+    .stat-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: #a0aec0; }
+    .stat-value { font-family: 'Baloo 2', cursive; font-size: 1.6rem; line-height: 1; }
+    .stat-value.target { color: var(--purple); font-size: 2rem; }
 
-    /* ── GRID ── */
     .grid-container {
       background: rgba(255, 255, 255, 0.4);
-      padding: 15px;
+      padding: 12px;
       border-radius: 24px;
       backdrop-filter: blur(10px);
       border: 4px solid var(--white);
@@ -105,7 +102,7 @@
       font-size: 1.8rem; font-weight: 800;
       cursor: pointer;
       user-select: none;
-      transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
       position: relative;
     }
 
@@ -114,40 +111,35 @@
       border-radius: 16px; box-shadow: inset 0 -5px 0 rgba(0,0,0,0.1);
     }
 
-    /* States */
-    .tile.selected { background: var(--teal) !important; color: white; transform: scale(0.95); }
-    .tile.match { background: var(--mint) !important; color: white; animation: pulse 0.5s infinite; }
+    .tile.selected { background: var(--teal) !important; color: white; transform: scale(0.9); }
+    .tile.match { background: var(--mint) !important; color: white; transform: scale(1.1); z-index: 10; }
     .tile.over { background: var(--coral) !important; color: white; animation: shake 0.3s; }
-    .tile.hidden { visibility: hidden; pointer-events: none; opacity: 0; transform: scale(0); }
+    
+    .tile.clearing { animation: pop-out 0.3s forwards; }
+    @keyframes pop-out { to { transform: scale(0); opacity: 0; } }
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-4px); }
       75% { transform: translateX(4px); }
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(0.95); }
-      50% { transform: scale(1.05); }
-    }
 
-    /* ── UI ELEMENTS ── */
-    .progress-container { width: 100%; height: 12px; background: #cbd5e0; border-radius: 6px; overflow: hidden; margin: 15px 0; }
+    .progress-container { width: 100%; height: 10px; background: #cbd5e0; border-radius: 5px; overflow: hidden; margin: 12px 0; }
     .progress-bar { height: 100%; background: linear-gradient(90deg, var(--mint), var(--teal)); width: 0%; transition: width 0.4s ease; }
 
-    .btn-group { display: flex; gap: 15px; width: 100%; margin-bottom: 10px; }
+    .btn-group { display: flex; gap: 12px; width: 100%; margin-bottom: 8px; }
     .btn {
-      flex: 1; padding: 15px; border: none; border-radius: 18px;
-      font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 800;
-      cursor: pointer; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+      flex: 1; padding: 12px; border: none; border-radius: 18px;
+      font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800;
+      cursor: pointer; color: white; box-shadow: 0 5px 0 rgba(0,0,0,0.1);
       transition: all 0.1s;
     }
     .btn-shuffle { background: var(--orange); }
     .btn-new { background: var(--purple); }
-    .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+    .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
 
-    /* ── OVERLAYS ── */
     .toast {
-      position: fixed; top: 30px; background: var(--white); padding: 12px 30px;
+      position: fixed; top: 20px; background: var(--white); padding: 10px 25px;
       border-radius: 50px; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       transform: translateY(-100px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 1000;
@@ -155,7 +147,7 @@
     .toast.show { transform: translateY(0); }
 
     @media (max-width: 400px) {
-      :root { --tile-size: 55px; --gap: 8px; }
+      :root { --tile-size: 58px; --gap: 8px; }
     }
   </style>
 </head>
@@ -195,7 +187,7 @@
       <button class="btn btn-shuffle" onclick="shuffle()">🔀 Shuffle</button>
       <button class="btn btn-new" onclick="initGame()">🌟 Reset</button>
     </div>
-    <p style="text-align:center; font-size:0.8rem; color:#718096; font-weight:700;">Find a path that equals the target!</p>
+    <p style="text-align:center; font-size:0.75rem; color:#718096; font-weight:700;">Find a path that equals the target!</p>
   </div>
 </div>
 
@@ -207,11 +199,53 @@
     currentSum: 0,
     selected: [],
     clearedInLevel: 0,
-    levelUpAt: 5,
+    levelUpAt: 6,
     isDragging: false
   };
 
   const colors = ['#ffeaa7', '#fab1a0', '#a29bfe', '#81ecec', '#55efc4', '#ff7675'];
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playSound(type) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'select') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440 + (state.selected.length * 50), now);
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      osc.start(); osc.stop(now + 0.1);
+    } else if (type === 'match') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.3); // C6
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+      osc.start(); osc.stop(now + 0.4);
+    } else if (type === 'error') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.linearRampToValueAtTime(0, now + 0.2);
+      osc.start(); osc.stop(now + 0.2);
+    } else if (type === 'levelup') {
+      const notes = [523, 659, 783, 1046];
+      notes.forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(f, now + (i * 0.1));
+        g.gain.setValueAtTime(0.1, now + (i * 0.1));
+        g.gain.exponentialRampToValueAtTime(0.01, now + (i * 0.1) + 0.3);
+        o.start(now + (i * 0.1)); o.stop(now + (i * 0.1) + 0.3);
+      });
+    }
+  }
 
   function initGame() {
     state.score = 0; state.level = 1; state.clearedInLevel = 0;
@@ -225,27 +259,33 @@
     grid.innerHTML = '';
     for (let i = 0; i < 25; i++) {
       const val = Math.floor(Math.random() * 9) + 1;
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      tile.textContent = val;
-      tile.dataset.index = i;
-      tile.style.backgroundColor = colors[val % colors.length];
-      
-      tile.addEventListener('mousedown', (e) => startDrag(e, tile));
-      tile.addEventListener('mouseenter', () => enterTile(tile));
-      tile.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e, tile); });
+      const tile = createTile(val, i);
       grid.appendChild(tile);
     }
   }
 
+  function createTile(val, index) {
+    const tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.textContent = val;
+    tile.dataset.index = index;
+    tile.style.backgroundColor = colors[val % colors.length];
+    
+    tile.addEventListener('mousedown', (e) => startDrag(e, tile));
+    tile.addEventListener('mouseenter', () => enterTile(tile));
+    tile.addEventListener('touchstart', (e) => { e.preventDefault(); startDrag(e, tile); });
+    return tile;
+  }
+
   function newTarget() {
-    const min = 5 + (state.level * 2);
-    const max = 15 + (state.level * 3);
+    const min = 8 + (state.level * 2);
+    const max = 15 + (state.level * 4);
     state.target = Math.floor(Math.random() * (max - min)) + min;
     document.getElementById('target').textContent = state.target;
   }
 
   function startDrag(e, tile) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     state.isDragging = true;
     state.selected = [];
     state.currentSum = 0;
@@ -253,15 +293,13 @@
   }
 
   function enterTile(tile) {
-    if (!state.isDragging || state.selected.includes(tile) || tile.classList.contains('hidden')) return;
+    if (!state.isDragging || state.selected.includes(tile) || tile.classList.contains('clearing')) return;
 
-    // Check adjacency
     if (state.selected.length > 0) {
       const last = state.selected[state.selected.length - 1];
       const idx1 = parseInt(last.dataset.index);
       const idx2 = parseInt(tile.dataset.index);
       const diff = Math.abs(idx1 - idx2);
-      const isAdj = diff === 1 || diff === 5;
       const sameRow = Math.floor(idx1/5) === Math.floor(idx2/5);
       if (!( (diff === 1 && sameRow) || diff === 5 )) return;
     }
@@ -269,13 +307,14 @@
     state.selected.push(tile);
     state.currentSum += parseInt(tile.textContent);
     tile.classList.add('selected');
+    playSound('select');
 
-    // Feedback logic (Invisible sum tracking)
     state.selected.forEach(t => t.classList.remove('match', 'over'));
     if (state.currentSum === state.target) {
       state.selected.forEach(t => t.classList.add('match'));
     } else if (state.currentSum > state.target) {
       state.selected.forEach(t => t.classList.add('over'));
+      playSound('error');
     }
   }
 
@@ -291,24 +330,48 @@
   }
 
   function handleMatch() {
+    playSound('match');
     state.score += (state.selected.length * 10 * state.level);
     state.clearedInLevel++;
     
-    state.selected.forEach(t => {
-      t.classList.add('hidden');
+    // Mark for clearing
+    state.selected.forEach(t => t.classList.add('clearing'));
+
+    setTimeout(() => {
+      replenishTiles();
+      checkLevelUp();
+      newTarget();
+    }, 300);
+  }
+
+  function replenishTiles() {
+    const grid = document.getElementById('grid');
+    const tiles = Array.from(grid.children);
+    
+    // Sort selected indices descending to handle removal correctly
+    const indicesToClear = state.selected.map(t => parseInt(t.dataset.index)).sort((a,b) => b-a);
+    
+    indicesToClear.forEach(idx => {
+      const val = Math.floor(Math.random() * 9) + 1;
+      const newTile = createTile(val, idx);
+      grid.replaceChild(newTile, tiles[idx]);
+      
+      // Kid-friendly animation
+      newTile.style.transform = 'scale(0)';
+      setTimeout(() => newTile.style.transform = 'scale(1)', 50);
     });
 
-    showToast();
-    
+    updateUI();
+  }
+
+  function checkLevelUp() {
     if (state.clearedInLevel >= state.levelUpAt) {
       state.level++;
       state.clearedInLevel = 0;
-      state.levelUpAt += 2;
+      state.levelUpAt = Math.min(state.levelUpAt + 1, 12);
       showToast("LEVEL UP! 🚀");
+      playSound('levelup');
     }
-
-    updateUI();
-    newTarget();
   }
 
   function updateUI() {
@@ -330,7 +393,6 @@
     newTarget();
   }
 
-  // Global touch support
   window.addEventListener('mouseup', endDrag);
   window.addEventListener('touchend', endDrag);
   window.addEventListener('touchmove', (e) => {
@@ -340,29 +402,25 @@
     if (el && el.classList.contains('tile')) enterTile(el);
   });
 
-  // Background Animation
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
   function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resize); resize();
 
-  const circles = Array(15).fill().map(() => ({
+  const circles = Array(12).fill().map(() => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    r: Math.random() * 100 + 50,
-    v: Math.random() * 0.5 + 0.2
+    r: Math.random() * 80 + 40,
+    v: Math.random() * 0.4 + 0.1
   }));
 
   function draw() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
     circles.forEach(c => {
       c.y -= c.v;
       if (c.y < -c.r) c.y = canvas.height + c.r;
-      ctx.beginPath();
-      ctx.arc(c.x, c.y, c.r, 0, Math.PI*2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI*2); ctx.fill();
     });
     requestAnimationFrame(draw);
   }
