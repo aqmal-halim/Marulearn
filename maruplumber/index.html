@@ -57,9 +57,21 @@
         @keyframes blobDrift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,30px) scale(1.15); } }
 
         #app { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+        
+        /* Header & Navigation Fixes */
         .header { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .logo-group { display: flex; align-items: center; gap: 12px; }
+        .home-link { 
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 10px;
+            background: var(--surface-2); border: 1px solid var(--border);
+            color: var(--text-dim); text-decoration: none; font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .home-link:hover { border-color: var(--water); color: var(--water); }
         .logo { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--water), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .logo span { -webkit-text-fill-color: var(--text); }
+        
         .badge { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 6px 14px; font-size: 0.8rem; font-family: 'Space Mono', monospace; }
         .badge.highlight { border-color: var(--border-bright); color: var(--water); }
 
@@ -84,8 +96,8 @@
         .tile.is-end.flowing { border-color: var(--green); box-shadow: 0 0 20px var(--green-glow); }
 
         .pipe-svg { width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .p-tube { fill: none; stroke: var(--pipe); stroke-width: 12; stroke-linecap: round; }
-        .p-water { fill: none; stroke: var(--water); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s; }
+        .p-tube { fill: none; stroke: var(--pipe); stroke-width: 14; stroke-linecap: round; }
+        .p-water { fill: none; stroke: var(--water); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s; }
         .tile.flowing .p-water { stroke-dashoffset: 0; }
 
         .controls { display: flex; gap: 10px; width: 100%; }
@@ -97,28 +109,27 @@
         .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; display: none; align-items: center; justify-content: center; }
         .modal-backdrop.active { display: flex; }
         .modal { background: var(--surface); padding: 30px; border-radius: 24px; text-align: center; border: 1px solid var(--water); max-width: 300px; }
-
-        .toast { position: fixed; top: 20px; background: var(--surface-2); padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); transition: 0.3s; opacity: 0; pointer-events: none; }
-        .toast.show { opacity: 1; top: 30px; }
     </style>
 </head>
 <body>
 
 <div class="bg-layer"><div class="bg-blob"></div><div class="bg-blob"></div></div>
 <div class="bg-grid"></div>
-<div class="toast" id="toast"></div>
 
 <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
         <h2 id="modal-title">Flow Complete!</h2>
-        <p style="margin: 15px 0; color: var(--text-dim)">Water is flowing smoothly!</p>
-        <button class="btn btn-primary" onclick="Game.init()" style="width: 100%">Play Again</button>
+        <p style="margin: 15px 0; color: var(--text-dim)">Excellent work, Engineer!</p>
+        <button class="btn btn-primary" onclick="Game.init()" style="width: 100%">Next Level</button>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
-        <div class="logo">Hydro<span>Quest</span></div>
+        <div class="logo-group">
+            <a href="https://aqmal-halim.github.io/Marulearn/" class="home-link">🏠</a>
+            <div class="logo">Hydro<span>Quest</span></div>
+        </div>
         <div class="header-right">
             <div class="badge highlight" id="level-badge">LVL 1</div>
         </div>
@@ -143,7 +154,7 @@
     </div>
 
     <div class="controls">
-        <button class="btn btn-secondary" onclick="Game.init()">⟳ Reset</button>
+        <button class="btn btn-secondary" onclick="Game.init()">⟳ Shuffle</button>
         <button class="btn btn-primary" id="btn-flow" onclick="Game.startFlow()">▶ Flow</button>
     </div>
 </div>
@@ -152,13 +163,11 @@
 const PIPES = {
     straight: { conns: [1,0,1,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-tube" d="M 50 0 L 50 100"/><path class="p-water" d="M 50 0 L 50 100"/></svg>` },
     elbow: { conns: [1,1,0,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-tube" d="M 50 0 Q 50 50 100 50"/><path class="p-water" d="M 50 0 Q 50 50 100 50"/></svg>` },
-    start: { conns: [0,1,0,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="20" cy="50" r="10" fill="#f59e0b"/><path class="p-tube" d="M 20 50 L 100 50"/><path class="p-water" d="M 20 50 L 100 50"/></svg>` },
-    end: { conns: [0,0,0,1], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="80" cy="50" r="10" fill="#34d399"/><path class="p-tube" d="M 0 50 L 80 50"/><path class="p-water" d="M 0 50 L 80 50"/></svg>` }
+    start: { conns: [0,1,0,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="25" cy="50" r="12" fill="#f59e0b"/><path class="p-tube" d="M 25 50 L 100 50"/><path class="p-water" d="M 25 50 L 100 50"/></svg>` },
+    end: { conns: [0,0,0,1], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="75" cy="50" r="12" fill="#34d399"/><path class="p-tube" d="M 0 50 L 75 50"/><path class="p-water" d="M 0 50 L 75 50"/></svg>` }
 };
 
-const DIFFICULTIES = [
-    { name: 'Easy', size: 3 }, { name: 'Medium', size: 4 }, { name: 'Hard', size: 5 }
-];
+const DIFFICULTIES = [{ name: 'Easy', size: 3 }, { name: 'Medium', size: 4 }, { name: 'Hard', size: 5 }];
 
 const Game = (() => {
     let state = { diffIdx: 0, tiles: [], moves: 0, isFlowing: false, startTime: null };
@@ -177,47 +186,20 @@ const Game = (() => {
     const generateLevel = () => {
         const size = DIFFICULTIES[state.diffIdx].size;
         const total = size * size;
-        const grid = document.getElementById('grid');
-        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        grid.innerHTML = '';
+        const startIdx = 0;
+        const endIdx = total - 1;
+
+        // Create Path using BFS to ensure solvability
+        let path = findValidPath(startIdx, endIdx, size);
         
-        // 1. Generate Solvable Path using DFS
-        let path = [];
-        const findPath = (curr, visited) => {
-            if (curr === total - 1) return true;
-            let neighbors = [];
-            let r = Math.floor(curr / size), c = curr % size;
-            if (r > 0) neighbors.push(curr - size);
-            if (r < size - 1) neighbors.push(curr + size);
-            if (c > 0) neighbors.push(curr - 1);
-            if (c < size - 1) neighbors.push(curr + 1);
-            neighbors.sort(() => Math.random() - 0.5);
-            for (let next of neighbors) {
-                if (!visited.has(next)) {
-                    visited.add(next);
-                    path.push(next);
-                    if (findPath(next, visited)) return true;
-                    path.pop();
-                }
-            }
-            return false;
-        };
-
-        let success = false;
-        while(!success) {
-            path = [0];
-            success = findPath(0, new Set([0]));
-        }
-
-        // 2. Create Tiles
         state.tiles = new Array(total).fill(null).map((_, i) => {
             let type = Math.random() > 0.5 ? 'straight' : 'elbow';
-            if (i === 0) type = 'start';
-            if (i === total - 1) type = 'end';
-            return { type, rotation: Math.floor(Math.random() * 4), isLocked: (i === 0 || i === total - 1) };
+            if (i === startIdx) return { type: 'start', rotation: 0, isLocked: true };
+            if (i === endIdx) return { type: 'end', rotation: 0, isLocked: true };
+            return { type, rotation: Math.floor(Math.random() * 4), isLocked: false };
         });
 
-        // 3. Ensure path tiles are correctly typed (elbow vs straight)
+        // Force tiles on the solution path to be the correct shapes
         for (let i = 1; i < path.length - 1; i++) {
             const prev = path[i-1], curr = path[i], next = path[i+1];
             const d1 = getDir(prev, curr, size), d2 = getDir(curr, next, size);
@@ -227,19 +209,44 @@ const Game = (() => {
         renderTiles();
     };
 
+    const findValidPath = (start, end, size) => {
+        let q = [[start]];
+        let visited = new Set([start]);
+        while(q.length) {
+            let path = q.shift();
+            let curr = path[path.length-1];
+            if (curr === end) return path;
+            
+            let neighbors = [];
+            let r = Math.floor(curr / size), c = curr % size;
+            if (r > 0) neighbors.push(curr - size);
+            if (r < size - 1) neighbors.push(curr + size);
+            if (c > 0) neighbors.push(curr - 1);
+            if (c < size - 1) neighbors.push(curr + 1);
+            
+            for (let n of neighbors.sort(() => Math.random() - 0.5)) {
+                if (!visited.has(n)) {
+                    visited.add(n);
+                    q.push([...path, n]);
+                }
+            }
+        }
+    };
+
     const getDir = (from, to, size) => {
-        if (to === from - size) return 0; // up
-        if (to === from + 1) return 1;    // right
-        if (to === from + size) return 2; // down
-        return 3;                         // left
+        if (to === from - size) return 0; // Up
+        if (to === from + 1) return 1;    // Right
+        if (to === from + size) return 2; // Down
+        return 3;                         // Left
     };
 
     const renderTiles = () => {
         const grid = document.getElementById('grid');
+        grid.style.gridTemplateColumns = `repeat(${DIFFICULTIES[state.diffIdx].size}, 1fr)`;
         grid.innerHTML = '';
         state.tiles.forEach((tile, i) => {
             const div = document.createElement('div');
-            div.className = `tile ${tile.isLocked ? 'locked' : ''}`;
+            div.className = `tile ${tile.isLocked ? 'locked' : ''} ${tile.type === 'end' ? 'is-end' : ''}`;
             div.innerHTML = PIPES[tile.type].svg;
             div.querySelector('.pipe-svg').style.transform = `rotate(${tile.rotation * 90}deg)`;
             if (!tile.isLocked) div.onclick = () => rotateTile(i);
@@ -260,21 +267,24 @@ const Game = (() => {
         document.getElementById('btn-flow').disabled = true;
         const size = DIFFICULTIES[state.diffIdx].size;
         let curr = 0;
-        let fromDir = -1; 
+        let fromDir = 3; // Start coming from the left wall
         const path = [];
 
         while (true) {
             const tile = state.tiles[curr];
             const div = document.getElementById('grid').children[curr];
+            
             const baseConns = PIPES[tile.type].conns;
             const conns = [...baseConns];
             for(let r=0; r<tile.rotation; r++) conns.unshift(conns.pop());
 
-            if (fromDir !== -1 && conns[(fromDir + 2) % 4] !== 1) break; 
+            // Check if current pipe connects to the incoming flow
+            if (conns[(fromDir + 2) % 4] !== 1) break; 
 
             path.push(curr);
             div.classList.add('flowing');
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 250));
+
             if (tile.type === 'end') {
                 document.getElementById('modal-backdrop').classList.add('active');
                 return;
@@ -297,7 +307,7 @@ const Game = (() => {
             path.forEach(idx => document.getElementById('grid').children[idx].classList.remove('flowing'));
             state.isFlowing = false;
             document.getElementById('btn-flow').disabled = false;
-        }, 500);
+        }, 600);
     };
 
     const renderDiffs = () => {
