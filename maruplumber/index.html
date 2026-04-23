@@ -255,12 +255,11 @@
     }
 
     function getConnectors(tile) {
-        // [top, right, bottom, left]
         let base;
         if (tile.type === 'start') base = [0, 1, 0, 0];
         else if (tile.type === 'end') base = [0, 0, 0, 1];
         else if (tile.type === 'straight') base = [0, 1, 0, 1];
-        else base = [1, 1, 0, 0]; // elbow
+        else base = [1, 1, 0, 0];
 
         for(let i=0; i<tile.rotation; i++) {
             base.unshift(base.pop());
@@ -285,24 +284,32 @@
             const waterPath = tileEl.querySelector('.water-path');
             const conns = getConnectors(tileObj);
 
-            // Determine flow direction relative to unrotated SVG state
-            // Directions: 0=top, 1=right, 2=bottom, 3=left
+            // Normalized Entry Calculation
+            // SVG Original Sides: 0=Top, 1=Right, 2=Bottom, 3=Left
+            // Rotation is clockwise (0=0deg, 1=90deg, 2=180deg, 3=270deg)
             let unrotatedEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
             
-            // Logic to reverse animation if entering from "End" side of original SVG
-            if (tileObj.type === 'straight' && unrotatedEntry === 1) {
-                waterPath.style.strokeDasharray = "100";
-                waterPath.style.strokeDashoffset = "-100";
-            } else if (tileObj.type === 'elbow' && unrotatedEntry === 1) {
-                waterPath.style.strokeDasharray = "100";
+            let reverse = false;
+            if (tileObj.type === 'straight') {
+                // Straight SVG is 0 (Left) to 100 (Right). Internal Left is index 3.
+                // If water enters from internal Right (index 1), reverse.
+                if (unrotatedEntry === 1) reverse = true;
+            } else if (tileObj.type === 'elbow') {
+                // Elbow SVG is Top (0) to Right (1).
+                // If water enters from internal Right (index 1), reverse.
+                if (unrotatedEntry === 1) reverse = true;
+            }
+
+            waterPath.style.strokeDasharray = "100";
+            if (reverse) {
                 waterPath.style.strokeDashoffset = "-100";
             } else {
-                waterPath.style.strokeDasharray = "100";
                 waterPath.style.strokeDashoffset = "100";
             }
 
-            // Trigger animation
-            setTimeout(() => { waterPath.style.strokeDashoffset = "0"; }, 10);
+            // Small delay to ensure the browser registers the offset before transitioning to 0
+            await new Promise(r => requestAnimationFrame(() => setTimeout(r, 20)));
+            waterPath.style.strokeDashoffset = "0";
             
             AudioEngine.playBubble();
             await new Promise(r => setTimeout(r, 400));
@@ -336,7 +343,9 @@
             isFlowing = false; 
             tiles.forEach((_, i) => {
                 const wp = gridEl.children[i].querySelector('.water-path');
+                wp.style.transition = 'none';
                 wp.style.strokeDashoffset = "100";
+                setTimeout(() => wp.style.transition = 'stroke-dashoffset 0.4s linear', 10);
             }); 
             initGame(); 
         }
