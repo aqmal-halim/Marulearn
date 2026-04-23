@@ -32,7 +32,6 @@
         h1 { font-weight: 900; color: var(--accent); margin-bottom: 5px; }
         p { font-weight: 700; color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
 
-        /* The Grid */
         #grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -52,28 +51,29 @@
             position: relative;
             transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
 
         .tile:active { transform: scale(0.9); }
 
-        /* Pipe Visuals */
         .pipe-line {
             position: absolute;
             background: #94a3b8;
             border-radius: 4px;
-            transition: background 0.3s;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            z-index: 1;
         }
 
-        .tile.flow .pipe-line { background: var(--pipe-active); box-shadow: 0 0 10px var(--pipe-active); }
+        /* Flow Animation */
+        .tile.flow .pipe-line { 
+            background: var(--pipe-active); 
+            box-shadow: 0 0 12px var(--pipe-active);
+        }
 
-        /* Straight Pipe */
         .type-straight .pipe-line { width: 100%; height: 25%; }
-        
-        /* Elbow Pipe */
         .type-elbow .pipe-1 { width: 62.5%; height: 25%; left: 50%; top: 37.5%; }
         .type-elbow .pipe-2 { width: 25%; height: 62.5%; left: 37.5%; top: 0; }
 
-        /* Start and End Indicators */
         .is-start { border: 4px solid #4ade80 !important; background: #dcfce7; }
         .is-end { border: 4px solid #fb7185 !important; background: #ffe4e6; }
 
@@ -85,24 +85,26 @@
         }
         .btn-test { background: var(--accent); color: white; box-shadow: 0 4px 0 #0369a1; }
         .btn-test:active { transform: translateY(2px); box-shadow: 0 2px 0 #0369a1; }
+        .btn-test:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
         .btn-reset { background: #e2e8f0; color: #475569; }
 
         #message { margin-top: 15px; font-weight: 800; min-height: 1.2rem; }
         .success { color: #16a34a; }
         .error { color: #dc2626; }
+        .timer-info { font-size: 0.7rem; color: #94a3b8; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
     <h1>MaruPlumber 💧</h1>
-    <p>Rotate the pipes to connect the source to the drain!</p>
+    <p>Connect the pipes! Flow starts in 5s...</p>
 
     <div id="grid"></div>
 
     <div class="controls">
         <button class="btn-reset" onclick="initGame()">Shuffle</button>
-        <button class="btn-test" onclick="checkFlow()">Open Valve!</button>
+        <button id="valve-btn" class="btn-test" onclick="checkFlow()">Open Valve!</button>
     </div>
 
     <div id="message"></div>
@@ -112,18 +114,21 @@
     const GRID_SIZE = 5;
     const gridEl = document.getElementById('grid');
     const msgEl = document.getElementById('message');
+    const valveBtn = document.getElementById('valve-btn');
     let tiles = [];
+    let flowTimer;
 
-    // Connections: [Top, Right, Bottom, Left]
     const PIPE_TYPES = {
         straight: { connections: [0, 1, 0, 1], html: '<div class="pipe-line"></div>' },
         elbow: { connections: [1, 1, 0, 0], html: '<div class="pipe-line pipe-1"></div><div class="pipe-line pipe-2"></div>' }
     };
 
     function initGame() {
+        clearTimeout(flowTimer);
         tiles = [];
         gridEl.innerHTML = '';
         msgEl.textContent = '';
+        valveBtn.disabled = false;
         
         for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
             const typeKey = Math.random() > 0.5 ? 'straight' : 'elbow';
@@ -143,6 +148,11 @@
             tiles.push(tile);
             renderTile(tile);
         }
+
+        // AUTO-FLOW after 5 seconds
+        flowTimer = setTimeout(() => {
+            if (!msgEl.textContent) checkFlow();
+        }, 5000);
     }
 
     function renderTile(tile) {
@@ -171,17 +181,22 @@
 
     function getConnectors(tile) {
         let conn = [...PIPE_TYPES[tile.type].connections];
-        // Rotate the connection array based on current rotation
         for (let i = 0; i < tile.rotation; i++) {
             conn.unshift(conn.pop());
         }
         return conn;
     }
 
-    function checkFlow() {
+    // Helper for animation delay
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function checkFlow() {
+        clearTimeout(flowTimer);
         clearFlow();
+        valveBtn.disabled = true;
+        
         const visited = new Set();
-        const queue = [0]; // Start at tile 0
+        const queue = [0]; 
         let won = false;
 
         while (queue.length > 0) {
@@ -191,7 +206,11 @@
 
             const currentTile = tiles[currentIdx];
             currentTile.flow = true;
-            document.getElementById(`tile-${currentIdx}`).classList.add('flow');
+            
+            // ANIMATION TRIGGER
+            const el = document.getElementById(`tile-${currentIdx}`);
+            el.classList.add('flow');
+            await sleep(150); // Speed of the water flow animation
 
             if (currentTile.isEnd) {
                 won = true;
@@ -202,7 +221,6 @@
             const row = Math.floor(currentIdx / GRID_SIZE);
             const col = currentIdx % GRID_SIZE;
 
-            // Check neighbors: Top, Right, Bottom, Left
             const neighbors = [
                 { idx: currentIdx - GRID_SIZE, dir: 0, opposite: 2, valid: row > 0 },
                 { idx: currentIdx + 1, dir: 1, opposite: 3, valid: col < GRID_SIZE - 1 },
@@ -222,11 +240,12 @@
         }
 
         if (won) {
-            msgEl.textContent = "Hooray! The water is flowing! 💧✨";
+            msgEl.textContent = "Hooray! The water reached the end! 💧✨";
             msgEl.className = "success";
         } else {
-            msgEl.textContent = "Oops! There is a leak somewhere.";
+            msgEl.textContent = "Oh no! There is a leak!";
             msgEl.className = "error";
+            valveBtn.disabled = false;
         }
     }
 
