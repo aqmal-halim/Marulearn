@@ -13,191 +13,336 @@
             --bg-gradient: linear-gradient(135deg, #74b9ff, #a29bfe);
             --tile-bg: rgba(255, 255, 255, 0.8);
             --pipe-metal: #dcdde1;
+            --pipe-shadow: #718093;
             --water: #00d2ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
-        body { background: var(--bg-gradient); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 10px; }
+        
+        body {
+            background: var(--bg-gradient);
+            height: 100dvh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; padding: 10px;
+        }
 
-        #game-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 40px; width: 100%; max-width: 400px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center; }
-        #grid { display: grid; gap: 10px; margin-bottom: 25px; aspect-ratio: 1; }
+        .back-home {
+            position: absolute; top: 20px; left: 20px;
+            background: white; width: 45px; height: 45px;
+            border-radius: 15px; display: flex; align-items: center;
+            justify-content: center; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 10; transition: 0.2s;
+        }
+        .back-home:active { transform: scale(0.9); }
 
-        .tile { background: var(--tile-bg); border-radius: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; transition: 0.2s; }
-        .tile.is-start { border: 3px solid var(--accent); }
-        .tile.is-end { border: 3px solid #4cd137; }
+        #game-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(255,255,255,0.5);
+            text-align: center;
+            position: relative;
+        }
 
-        svg.pipe { width: 85%; height: 85%; }
+        .header { margin-bottom: 25px; }
+        h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
+        .stats { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
+
+        .level-pill {
+            background: var(--primary);
+            color: white; padding: 8px 20px;
+            border-radius: 20px; font-weight: 600;
+            box-shadow: 0 4px 0 var(--primary-dark);
+        }
+
+        #grid {
+            display: grid; gap: 10px;
+            margin-bottom: 25px;
+            aspect-ratio: 1;
+        }
+
+        .tile {
+            background: var(--tile-bg);
+            border-radius: 18px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .tile:active { transform: scale(0.9) rotate(10deg); }
+        .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
+        .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; }
+
+        svg.pipe { width: 80%; height: 80%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .pipe-path { fill: none; stroke: var(--pipe-metal); stroke-width: 20; stroke-linecap: round; }
-        .water-path { fill: none; stroke: var(--water); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 120; stroke-dashoffset: 120; transition: stroke-dashoffset 0.5s linear; }
-        .flow .water-path { stroke-dashoffset: 0; }
+        
+        .water-path {
+            fill: none; stroke: var(--water); stroke-width: 12;
+            stroke-linecap: round; stroke-dasharray: 100;
+            stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s linear;
+        }
 
         .controls { display: flex; gap: 15px; }
-        button { flex: 1; padding: 15px; border-radius: 20px; border: none; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        button {
+            flex: 1; padding: 15px; border-radius: 20px;
+            border: none; font-weight: 700; font-size: 1rem;
+            cursor: pointer; transition: 0.2s;
+        }
         .btn-main { background: var(--primary); color: white; box-shadow: 0 6px 0 var(--primary-dark); }
+        .btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--primary-dark); }
         .btn-sec { background: #f5f6fa; color: #7f8fa6; }
 
-        #celebration { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(8px); }
+        #celebration {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; color: white; backdrop-filter: blur(8px);
+        }
         #celebration.active { display: flex; }
-        .modal { background: white; padding: 35px; border-radius: 35px; width: 85%; max-width: 340px; }
+        .modal { 
+            background: white; padding: 35px; border-radius: 35px; 
+            color: #2f3640; text-align: center; transform: scale(0);
+            animation: popIn 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 85%; max-width: 340px;
+        }
+        @keyframes popIn { to { transform: scale(1); } }
+        .modal-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
+<a href="https://aqmal-halim.github.io/Marulearn/" class="back-home">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2f3640" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+</a>
+
 <div id="celebration">
     <div class="modal">
-        <h2>Splashtastic! 💦</h2>
-        <div style="margin: 20px 0;">
-            <button class="btn-main" onclick="nextLevel()">Next Level</button>
+        <h2 style="font-size: 2.2rem;">Splashtastic! 💦</h2>
+        <p style="margin: 10px 0 10px; color: #7f8fa6;">The garden is perfectly watered!</p>
+        <div class="modal-btns">
+            <button class="btn-main" onclick="nextLevel()">Next Difficulty</button>
+            <button class="btn-sec" onclick="initGame()">Retry Level</button>
         </div>
     </div>
 </div>
 
 <div id="game-card">
-    <h1 style="margin-bottom: 15px;">Hydro Quest 💧</h1>
+    <div class="header">
+        <h1>Hydro Quest 💧</h1>
+        <div class="stats">
+            <span class="level-pill" id="level-txt">Level 1</span>
+        </div>
+    </div>
+
     <div id="grid"></div>
+
     <div class="controls">
         <button class="btn-sec" onclick="initGame()">Shuffle</button>
-        <button class="btn-main" onclick="startFlow()">Open Valve!</button>
+        <button class="btn-main" id="valve-btn" onclick="startFlow()">Start Quest!</button>
     </div>
 </div>
 
 <script>
-    // Audio Engine same as before
     const AudioEngine = {
-        ctx: null, init() { if(!this.ctx) this.ctx = new AudioContext(); },
-        playBubble() { this.init(); const o = this.ctx.createOscillator(), g = this.ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(300, this.ctx.currentTime); o.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime+0.2); g.gain.setValueAtTime(0.1, this.ctx.currentTime); o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime+0.2); }
+        ctx: null,
+        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+        playClick() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+        },
+        playBubble() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+        },
+        playWin() {
+            this.init(); [440, 554.37, 659.25, 880].forEach((f, i) => {
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.frequency.value = f; gain.gain.setValueAtTime(0.1, this.ctx.currentTime + i*0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i*0.1 + 0.5);
+                osc.connect(gain); gain.connect(this.ctx.destination); osc.start(this.ctx.currentTime + i*0.1); osc.stop(this.ctx.currentTime + i*0.1 + 0.5);
+            });
+        },
+        playFail() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.frequency.setValueAtTime(150, this.ctx.currentTime); osc.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.4);
+        }
     };
 
     let size = 3;
     let tiles = [];
     let isFlowing = false;
+    const gridEl = document.getElementById('grid');
 
-    // Define Paths for each direction [Top, Right, Bottom, Left]
-    const PATHS = {
-        "0-2": "M 50 0 L 50 100", // T to B
-        "2-0": "M 50 100 L 50 0", // B to T
-        "1-3": "M 100 50 L 0 50", // R to L
-        "3-1": "M 0 50 L 100 50", // L to R
-        "0-1": "M 50 0 Q 50 50 100 50", // T to R
-        "1-0": "M 100 50 Q 50 50 50 0", // R to T
-        "1-2": "M 100 50 Q 50 50 50 100", // R to B
-        "2-1": "M 50 100 Q 50 50 100 50", // B to R
-        "2-3": "M 50 100 Q 50 50 0 50", // B to L
-        "3-2": "M 0 50 Q 50 50 50 100", // L to B
-        "3-0": "M 0 50 Q 50 50 50 0", // L to T
-        "0-3": "M 50 0 Q 50 50 0 50", // T to L
-        "start": "M 30 50 L 100 50",
-        "end": "M 0 50 L 70 50"
+    const SVG_PIPES = {
+        straight: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 0 50 L 100 50"/><path class="water-path" d="M 0 50 L 100 50"/></svg>`,
+        elbow: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 50 0 Q 50 50 100 50"/><path class="water-path" d="M 50 0 Q 50 50 100 50"/></svg>`,
+        start: `<svg viewBox="0 0 100 100" class="pipe"><circle cx="30" cy="50" r="15" fill="#718093" /><path class="pipe-path" d="M 30 50 L 100 50"/><path class="water-path" d="M 30 50 L 100 50"/></svg>`,
+        end: `<svg viewBox="0 0 100 100" class="pipe"><circle cx="70" cy="50" r="15" fill="#718093" /><path class="pipe-path" d="M 0 50 L 70 50"/><path class="water-path" d="M 0 50 L 70 50"/></svg>`
     };
+
+    function generatePath() {
+        const total = size * size;
+        let path = []; let curr = 0; let visited = new Set([0]);
+        while(curr !== total - 1) {
+            path.push(curr);
+            let neighbors = [];
+            let r = Math.floor(curr/size), c = curr%size;
+            if(r > 0) neighbors.push(curr-size);
+            if(r < size-1) neighbors.push(curr+size);
+            if(c > 0) neighbors.push(curr-1);
+            if(c < size-1) neighbors.push(curr+1);
+            neighbors = neighbors.filter(n => !visited.has(n));
+            if(neighbors.length === 0) return generatePath(); 
+            curr = neighbors[Math.floor(Math.random() * neighbors.length)];
+            visited.add(curr);
+        }
+        path.push(total-1);
+        return path;
+    }
 
     function initGame() {
         isFlowing = false;
-        const grid = document.getElementById('grid');
-        grid.innerHTML = '';
-        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        document.getElementById('level-txt').innerText = `Level ${size-2}`;
         document.getElementById('celebration').classList.remove('active');
         
+        gridEl.innerHTML = '';
+        gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        const path = generatePath();
         tiles = [];
         for(let i=0; i<size*size; i++) {
+            const isPath = path.includes(i);
             let type = Math.random() > 0.5 ? 'straight' : 'elbow';
             if(i === 0) type = 'start';
-            if(i === size*size-1) type = 'end';
-            
-            tiles.push({ id: i, type, rotation: Math.floor(Math.random()*4), isStart: i===0, isEnd: i===size*size-1 });
-            renderTile(tiles[i]);
+            else if(i === size*size-1) type = 'end';
+            else if(isPath) {
+                const idx = path.indexOf(i);
+                const prev = path[idx-1], next = path[idx+1];
+                const diff = Math.abs(prev - next);
+                type = (diff === 2 || diff === size*2) ? 'straight' : 'elbow';
+            }
+            const tile = { id: i, type: type, rotation: Math.floor(Math.random() * 4), isStart: i === 0, isEnd: i === size*size-1 };
+            tiles.push(tile);
+            renderTile(tile);
         }
     }
 
     function renderTile(tile) {
         const div = document.createElement('div');
         div.className = `tile ${tile.isStart?'is-start':''} ${tile.isEnd?'is-end':''}`;
-        div.id = `tile-${tile.id}`;
-        
-        // Base SVG structure
-        div.innerHTML = `<svg viewBox="0 0 100 100" class="pipe">
-            <path class="pipe-path" d=""/>
-            <path class="water-path" d=""/>
-            ${tile.isStart ? '<circle cx="30" cy="50" r="15" fill="#718093"/>' : ''}
-            ${tile.isEnd ? '<circle cx="70" cy="50" r="15" fill="#718093"/>' : ''}
-        </svg>`;
-        
-        updateTileGraphics(tile, div);
-        div.onclick = () => { if(isFlowing) return; tile.rotation = (tile.rotation + 1) % 4; updateTileGraphics(tile, div); };
-        document.getElementById('grid').appendChild(div);
-    }
-
-    function updateTileGraphics(tile, el) {
-        const conns = getConnectors(tile);
-        const pipePath = el.querySelector('.pipe-path');
-        const svg = el.querySelector('svg');
-        
-        // We still rotate the visual container, but we'll manually set the water path later
+        div.innerHTML = SVG_PIPES[tile.type];
+        const svg = div.querySelector('svg');
         svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
-        
-        // Draw the static grey pipe
-        if(tile.type === 'start') pipePath.setAttribute('d', PATHS['start']);
-        else if(tile.type === 'end') pipePath.setAttribute('d', PATHS['end']);
-        else if(tile.type === 'straight') pipePath.setAttribute('d', "M 0 50 L 100 50");
-        else pipePath.setAttribute('d', "M 50 0 Q 50 50 100 50");
+        div.onclick = () => {
+            if(isFlowing) return;
+            AudioEngine.playClick();
+            tile.rotation = (tile.rotation + 1) % 4;
+            svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
+        };
+        gridEl.appendChild(div);
     }
 
     function getConnectors(tile) {
-        let base = (tile.type === 'straight') ? [0,1,0,1] : (tile.type === 'elbow') ? [1,1,0,0] : (tile.type === 'start') ? [0,1,0,0] : [0,0,0,1];
-        for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
+        // [top, right, bottom, left]
+        let base;
+        if (tile.type === 'start') base = [0, 1, 0, 0];
+        else if (tile.type === 'end') base = [0, 0, 0, 1];
+        else if (tile.type === 'straight') base = [0, 1, 0, 1];
+        else base = [1, 1, 0, 0]; // elbow
+
+        for(let i=0; i<tile.rotation; i++) {
+            base.unshift(base.pop());
+        }
         return base;
     }
 
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
-        let queue = [{idx: 0, fromDir: -1}]; // -1 means source
-        let visited = new Set();
+        
+        let queue = [{idx: 0, fromDir: -1}]; 
+        let visited = new Set(); 
+        let won = false;
 
         while(queue.length > 0) {
             let {idx, fromDir} = queue.shift();
-            const tile = tiles[idx];
-            const el = document.getElementById(`tile-${idx}`);
-            const conns = getConnectors(tile);
+            if(visited.has(idx)) continue;
             
-            // DYNAMIC WATER PATH LOGIC
-            const waterPath = el.querySelector('.water-path');
-            let toDir = conns.findIndex((c, i) => c === 1 && i !== fromDir);
-            
-            let pathKey = tile.isStart ? 'start' : tile.isEnd ? 'end' : `${fromDir}-${toDir}`;
-            
-            // To make PATHS work with CSS rotation, we calculate the "local" relative path
-            // but the easiest way is to just set the path based on absolute directions
-            // and TEMPORARILY reset SVG rotation to 0 during flow for that tile.
-            el.querySelector('svg').style.transform = 'none';
-            waterPath.setAttribute('d', PATHS[pathKey] || PATHS['start']);
-            el.querySelector('.pipe-path').setAttribute('d', PATHS[pathKey] || PATHS['start']);
+            const tileObj = tiles[idx];
+            const tileEl = gridEl.children[idx];
+            const waterPath = tileEl.querySelector('.water-path');
+            const conns = getConnectors(tileObj);
 
-            el.classList.add('flow');
+            // Determine flow direction relative to unrotated SVG state
+            // Directions: 0=top, 1=right, 2=bottom, 3=left
+            let unrotatedEntry = fromDir === -1 ? -1 : (fromDir - tileObj.rotation + 4) % 4;
+            
+            // Logic to reverse animation if entering from "End" side of original SVG
+            if (tileObj.type === 'straight' && unrotatedEntry === 1) {
+                waterPath.style.strokeDasharray = "100";
+                waterPath.style.strokeDashoffset = "-100";
+            } else if (tileObj.type === 'elbow' && unrotatedEntry === 1) {
+                waterPath.style.strokeDasharray = "100";
+                waterPath.style.strokeDashoffset = "-100";
+            } else {
+                waterPath.style.strokeDasharray = "100";
+                waterPath.style.strokeDashoffset = "100";
+            }
+
+            // Trigger animation
+            setTimeout(() => { waterPath.style.strokeDashoffset = "0"; }, 10);
+            
             AudioEngine.playBubble();
             await new Promise(r => setTimeout(r, 400));
+            
             visited.add(idx);
+            if(tileObj.isEnd) { won = true; break; }
 
-            if(tile.isEnd) { document.getElementById('celebration').classList.add('active'); return; }
-
+            const r = Math.floor(idx/size), c = idx%size;
             const neighbors = [
-                {i: idx-size, d: 0, opp: 2, ok: Math.floor(idx/size) > 0},
-                {i: idx+1, d: 1, opp: 3, ok: idx % size < size - 1},
-                {i: idx+size, d: 2, opp: 0, ok: Math.floor(idx/size) < size - 1},
-                {i: idx-1, d: 3, opp: 1, ok: idx % size > 0}
+                {nIdx: idx-size, dir: 0, opp: 2, ok: r > 0},
+                {nIdx: idx+1,    dir: 1, opp: 3, ok: c < size-1},
+                {nIdx: idx+size, dir: 2, opp: 0, ok: r < size-1},
+                {nIdx: idx-1,    dir: 3, opp: 1, ok: c > 0}
             ];
 
             neighbors.forEach(n => {
-                if(n.ok && conns[n.d] === 1 && n.d !== fromDir) {
-                    if(getConnectors(tiles[n.i])[n.opp] === 1) queue.push({idx: n.i, fromDir: n.opp});
+                if(n.ok && conns[n.dir] === 1 && n.dir !== fromDir) {
+                    const nextConns = getConnectors(tiles[n.nIdx]);
+                    if(nextConns[n.opp] === 1) {
+                        queue.push({idx: n.nIdx, fromDir: n.opp});
+                    }
                 }
             });
         }
-        
-        isFlowing = false;
-        setTimeout(initGame, 1000);
+
+        if(won) { 
+            AudioEngine.playWin(); 
+            document.getElementById('celebration').classList.add('active'); 
+        } else { 
+            AudioEngine.playFail(); 
+            isFlowing = false; 
+            tiles.forEach((_, i) => {
+                const wp = gridEl.children[i].querySelector('.water-path');
+                wp.style.strokeDashoffset = "100";
+            }); 
+            initGame(); 
+        }
     }
 
-    function nextLevel() { size = Math.min(size+1, 5); initGame(); }
+    function nextLevel() { if(size < 6) size++; initGame(); }
     initGame();
 </script>
 </body>
