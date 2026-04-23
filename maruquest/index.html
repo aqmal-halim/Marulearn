@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaruQuest ✨ Math Adventure</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap](https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,7 +28,7 @@
 
         html, body {
             width: 100%; min-height: 100vh;
-            font-family: 'Nunito', sans-serif;
+            font-family: 'Fredoka', sans-serif; /* Applied New Font */
             background: var(--bg);
             overflow-x: hidden;
         }
@@ -82,7 +82,7 @@
         .home-btn {
             background: var(--bg); border: 2px solid #EDE8DF;
             border-radius: 14px; padding: 6px 13px;
-            font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.82rem;
+            font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.82rem;
             color: var(--muted); cursor: pointer; -webkit-appearance: none;
             transition: all 0.15s; box-shadow: 0 2px 0 #EDE8DF;
         }
@@ -92,13 +92,13 @@
         .pill {
             background: var(--bg); border: 2px solid #EDE8DF;
             border-radius: 20px; padding: 5px 11px;
-            font-weight: 800; font-size: 0.82rem; color: var(--text);
+            font-weight: 700; font-size: 0.82rem; color: var(--text);
             display: flex; align-items: center; gap: 4px;
         }
         .pill .pill-icon { font-size: 1rem; }
         .pill.hp-pill .pip { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--red); margin-left: 1px; transition: all 0.3s; box-shadow: 0 0 5px rgba(255,71,87,0.4); }
         .pill.hp-pill .pip.empty { background: #E2E2E2; box-shadow: none; }
-        .best-label { font-size: 0.72rem; color: var(--muted); font-weight: 700; margin-top: 1px; }
+        .best-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
 
         .timer-track {
             height: 10px; background: #EDE8DF; border-radius: 10px;
@@ -121,7 +121,7 @@
 
         #combo-strip {
             text-align: center; height: 22px; line-height: 22px;
-            font-family: 'Fredoka One', cursive; font-size: 1rem;
+            font-family: 'Fredoka', cursive; font-size: 1rem; font-weight: 700;
             letter-spacing: 0.5px;
             transition: opacity 0.2s;
         }
@@ -154,7 +154,7 @@
         #monster-label {
             position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
             background: rgba(255,255,255,0.92); padding: 3px 14px; border-radius: 20px;
-            font-weight: 800; color: var(--muted); font-size: 0.72rem; z-index: 5;
+            font-weight: 700; color: var(--muted); font-size: 0.72rem; z-index: 5;
             border: 1.5px solid rgba(0,0,0,0.07); white-space: nowrap;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
@@ -162,7 +162,7 @@
             background: linear-gradient(135deg, var(--red), #CC0022);
             color: white; border-color: transparent;
             animation: bossGlow 1s ease-in-out infinite alternate;
-            font-family: 'Fredoka One', cursive; font-size: 0.8rem;
+            font-family: 'Fredoka', cursive; font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
         @keyframes bossGlow {
@@ -184,7 +184,7 @@
         .bubble {
             position: absolute; background: white;
             border-radius: 14px; padding: 5px 12px;
-            font-size: 0.76rem; font-weight: 800; color: var(--text);
+            font-size: 0.76rem; font-weight: 700; color: var(--text);
             box-shadow: 0 3px 12px rgba(0,0,0,0.12);
             opacity: 0; transition: opacity 0.2s;
             z-index: 20; pointer-events: none; white-space: nowrap;
@@ -204,7 +204,7 @@
         #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; border-radius: 25px; transition: opacity 0.12s; }
 
         .pop-num {
-            position: absolute; font-family: 'Fredoka One', cursive; font-size: 1.5rem;
+            position: absolute; font-family: 'Fredoka', cursive; font-size: 1.5rem; font-weight: 700;
             pointer-events: none; z-index: 30; animation: popRise 0.85s ease-out forwards;
             text-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
@@ -253,7 +253,7 @@
         #equation-box {
             background: linear-gradient(135deg, var(--orange) 0%, var(--orange2) 100%);
             border-radius: 24px; padding: 14px 18px;
-            font-family: 'Fredoka One', cursive; font-size: 2rem;
+            font-family: 'Fredoka', cursive; font-size: 2rem; font-weight: 600;
             color: white; text-align: center; letter-spacing: 1px;
             display: flex; justify-content: center; align-items: center; gap: 10px;
             min-height: 72px;
@@ -293,7 +293,7 @@
             background: linear-gradient(170deg, var(--blue) 0%, var(--blue2) 100%);
             color: white; border-radius: 20px;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Fredoka One', cursive; font-size: 1.7rem;
+            font-family: 'Fredoka', cursive; font-size: 1.7rem; font-weight: 600;
             cursor: pointer; border: 3px solid rgba(255,255,255,0.7);
             box-shadow: 0 5px 0 #2265B8, 0 8px 20px rgba(77,166,255,0.3);
             -webkit-appearance: none; transition: transform 0.1s, box-shadow 0.1s;
@@ -345,8 +345,8 @@
         }
         @keyframes goPop { from{transform:scale(0.3) rotate(-5deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
         .go-emoji  { font-size: 4.5rem; margin-bottom: 6px; display: block; animation: goPop 0.5s 0.1s both; }
-        .go-title  { font-family: 'Fredoka One', cursive; font-size: 1.75rem; color: var(--text); margin-bottom: 4px; }
-        .go-sub    { font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; font-weight: 700; }
+        .go-title  { font-family: 'Fredoka', cursive; font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+        .go-sub    { font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; font-weight: 600; }
         .go-stats  {
             background: var(--bg); border-radius: 18px; padding: 12px 16px;
             margin-bottom: 14px; border: 2px solid #EDE8DF;
@@ -356,19 +356,19 @@
             font-size: 0.9rem; border-bottom: 1.5px solid #F0EDE8;
         }
         .go-row:last-child { border: none; }
-        .go-row .lbl { color: var(--muted); font-weight: 700; }
-        .go-row .val { color: var(--text); font-weight: 900; }
+        .go-row .lbl { color: var(--muted); font-weight: 600; }
+        .go-row .val { color: var(--text); font-weight: 700; }
         .new-best-tag {
             background: linear-gradient(135deg, #FEF3C7, #FDE68A);
             color: #92400E; padding: 5px 16px; border-radius: 30px;
-            font-size: 0.8rem; font-weight: 900; display: inline-block;
+            font-size: 0.8rem; font-weight: 700; display: inline-block;
             margin-bottom: 14px; animation: tagBounce 0.5s 0.3s both;
             border: 2px solid #FCD34D;
         }
         @keyframes tagBounce { from{transform:scale(0)} to{transform:scale(1)} }
         .go-btn {
             width: 100%; padding: 14px; border: none; border-radius: 18px;
-            font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.05rem;
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.05rem;
             cursor: pointer; margin-bottom: 8px; -webkit-appearance: none;
             transition: transform 0.1s, box-shadow 0.1s;
         }
@@ -390,8 +390,8 @@
         #interstitial.show { display: flex; }
         @keyframes fadeInFast { from{opacity:0} to{opacity:1} }
         .int-icon  { font-size: 5.5rem; margin-bottom: 10px; animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1); }
-        .int-title { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: white; text-align: center; text-shadow: 0 3px 12px rgba(0,0,0,0.3); animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
-        .int-sub   { font-size: 1rem; color: rgba(255,255,255,0.85); margin-top: 8px; font-weight: 800; text-align: center; animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+        .int-title { font-family: 'Fredoka', cursive; font-size: 2.2rem; font-weight: 700; color: white; text-align: center; text-shadow: 0 3px 12px rgba(0,0,0,0.3); animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+        .int-sub   { font-size: 1rem; color: rgba(255,255,255,0.85); margin-top: 8px; font-weight: 600; text-align: center; animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
         .inter-bar { width: 200px; height: 6px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-top: 30px; overflow: hidden; }
         .inter-progress { height: 100%; background: white; border-radius: 10px; }
         @keyframes intPop { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
@@ -408,7 +408,7 @@
         .score-badge {
             background: linear-gradient(135deg, var(--yellow), #FFAA00);
             color: #7A4800; border-radius: 20px; padding: 5px 12px;
-            font-weight: 900; font-size: 0.82rem;
+            font-weight: 700; font-size: 0.82rem;
             box-shadow: 0 2px 0 rgba(0,0,0,0.1);
         }
 
@@ -452,7 +452,7 @@
         <div id="flash"></div>
         <div id="enemy">👾</div>
         <div id="hero-wrap">
-            <svg viewBox="0 0 160 160" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" style="width:100%;height:100%;transform:rotate(4deg)">
+            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(4deg)">
                 <defs>
                     <radialGradient id="gMaru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
                         <stop offset="0%" style="stop-color:#FFD4A1"/>
