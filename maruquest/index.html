@@ -1,218 +1,570 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruQuest: Master Speed</title>
+    <title>MaruQuest ✨ Math Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        /* THE FIX: Ensures padding and borders don't push width past 100% */
-        * { 
-            box-sizing: border-box; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        :root { --primary: #FF784E; --secondary: #60A5FA; --boss: #EF4444; }
-        
-        body { 
-            font-family: 'Comic Sans MS', sans-serif; 
-            background-color: #F8FAFC; 
-            margin: 0; 
-            padding: 12px; 
-            overflow-x: hidden; /* Prevents horizontal scrolling */
-            width: 100%;
-        }
+```
+    :root {
+        --orange:   #FF6B35;
+        --orange2:  #FF8C42;
+        --blue:     #4DA6FF;
+        --blue2:    #3B8EEA;
+        --green:    #3DD68C;
+        --green2:   #2BBD78;
+        --yellow:   #FFD166;
+        --red:      #FF4757;
+        --purple:   #A855F7;
+        --bg:       #FFF8F0;
+        --card-bg:  #FFFFFF;
+        --text:     #2D2D2D;
+        --muted:    #8A8A9A;
+        --shadow:   rgba(0,0,0,0.10);
+        --radius:   28px;
+    }
 
-        #game-container { 
-            width: 100%; 
-            max-width: 400px; 
-            background: white; 
-            border: 8px solid var(--primary); 
-            border-radius: 40px; 
-            padding: 20px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
-            position: relative; 
-            margin: 0 auto; 
-        }
+    html, body {
+        width: 100%; min-height: 100vh;
+        font-family: 'Nunito', sans-serif;
+        background: var(--bg);
+        overflow-x: hidden;
+    }
 
-        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .home-btn { background: white; border: 2px solid #CBD5E1; padding: 6px 10px; border-radius: 12px; font-weight: 900; color: #475569; text-decoration: none; font-size: 0.8rem; box-shadow: 0 2px 0 #CBD5E1; font-family: inherit; cursor: pointer; -webkit-appearance: none; }
-        .stats-col { text-align: right; font-weight: 900; color: #475569; font-size: 0.8rem; }
-        #best-stat { font-size: 0.65rem; color: #64748B; margin-top: 2px; }
-        
-        #timer-container { width: 100%; height: 8px; background: #E2E8F0; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-        #timer-fill { width: 100%; height: 100%; background: #4ADE80; transition: width 0.1s linear; }
-        #timer-fill.warning { background: #FB923C; }
-        #timer-fill.danger  { background: #EF4444; }
+    /* ─── Animated sky background ─── */
+    body::before {
+        content: '';
+        position: fixed; inset: 0; z-index: -2;
+        background: linear-gradient(160deg, #FFF3E4 0%, #FFF8F0 40%, #EDF6FF 100%);
+    }
+    body::after {
+        content: '';
+        position: fixed; inset: 0; z-index: -1;
+        background-image:
+            radial-gradient(circle 120px at 10% 20%, rgba(255,180,100,0.12) 0%, transparent 70%),
+            radial-gradient(circle 180px at 85% 10%, rgba(77,166,255,0.10) 0%, transparent 70%),
+            radial-gradient(circle 100px at 60% 85%, rgba(61,214,140,0.09) 0%, transparent 70%);
+        animation: bgShift 12s ease-in-out infinite alternate;
+    }
+    @keyframes bgShift {
+        from { transform: scale(1); }
+        to   { transform: scale(1.05) translateX(10px); }
+    }
 
-        #combo-strip { text-align: center; height: 16px; margin-bottom: 3px; font-size: 0.73rem; font-weight: 900; color: #F59E0B; }
-        
-        #stage { 
-            height: 230px; 
-            position: relative; 
-            border-radius: 25px; 
-            margin-bottom: 15px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border: 4px solid rgba(0,0,0,0.05); 
-            overflow: hidden; 
-            background: #F1F5F9; 
-            width: 100%; /* Ensure stage doesn't overflow */
-        }
+    /* ─── Floating decorative stars ─── */
+    .deco-star {
+        position: fixed; font-size: 1.2rem; opacity: 0.18; pointer-events: none; z-index: 0;
+        animation: floatStar linear infinite;
+    }
+    @keyframes floatStar {
+        0%   { transform: translateY(0)   rotate(0deg);   opacity: 0.18; }
+        50%  { transform: translateY(-18px) rotate(180deg); opacity: 0.28; }
+        100% { transform: translateY(0)   rotate(360deg); opacity: 0.18; }
+    }
 
-        #monster-label { position: absolute; top: 8px; background: rgba(255,255,255,0.9); padding: 2px 12px; border-radius: 15px; font-weight: 900; color: #94A3B8; font-size: 0.7rem; z-index: 5; border: 1px solid #E2E8F0; }
-        #monster-label.boss-label { background: var(--boss); color: white; animation: boss-glow 1s ease-in-out infinite alternate; }
-        @keyframes boss-glow { from{box-shadow:0 0 5px var(--boss)} to{box-shadow:0 0 15px var(--boss), 0 0 25px var(--boss)} }
+    /* ─── Main container ─── */
+    #game-container {
+        width: 100%; max-width: 420px;
+        margin: 0 auto;
+        padding: 16px 16px 24px;
+        position: relative; z-index: 1;
+        min-height: 100vh;
+        display: flex; flex-direction: column; gap: 10px;
+    }
 
-        #hp-bar-container { position: absolute; top: 35px; width: 100px; height: 10px; background: #E2E8F0; border-radius: 10px; display: none; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        #hp-fill { height: 100%; width: 100%; background: var(--boss); border-radius: 10px; transition: 0.3s; }
+    /* ─── Top nav ─── */
+    .top-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        background: white;
+        border-radius: 22px;
+        padding: 10px 16px;
+        box-shadow: 0 4px 16px var(--shadow);
+        border: 2px solid rgba(255,255,255,0.9);
+    }
+    .home-btn {
+        background: var(--bg); border: 2px solid #EDE8DF;
+        border-radius: 14px; padding: 6px 13px;
+        font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.82rem;
+        color: var(--muted); cursor: pointer; -webkit-appearance: none;
+        transition: all 0.15s; box-shadow: 0 2px 0 #EDE8DF;
+    }
+    .home-btn:active { transform: translateY(2px); box-shadow: none; }
 
-        .bubble { position: absolute; background: white; border-radius: 12px; padding: 6px 12px; font-size: 0.75rem; font-weight: 900; color: #1E293B; box-shadow: 0 4px 0 rgba(0,0,0,0.05); opacity: 0; transition: 0.2s; z-index: 20; border: 2px solid #E2E8F0; pointer-events: none; white-space: nowrap; }
-        .bubble::after { content: ''; position: absolute; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid white; bottom: -6px; left: 50%; transform: translateX(-50%); }
-        #hero-bubble { bottom: 125px; left: 20px; }
-        #enemy-bubble { bottom: 125px; right: 20px; }
+    .stat-pills { display: flex; gap: 8px; align-items: center; }
+    .pill {
+        background: var(--bg); border: 2px solid #EDE8DF;
+        border-radius: 20px; padding: 5px 11px;
+        font-weight: 800; font-size: 0.82rem; color: var(--text);
+        display: flex; align-items: center; gap: 4px;
+    }
+    .pill .pill-icon { font-size: 1rem; }
+    .pill.hp-pill .pip { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--red); margin-left: 1px; transition: all 0.3s; box-shadow: 0 0 5px rgba(255,71,87,0.4); }
+    .pill.hp-pill .pip.empty { background: #E2E2E2; box-shadow: none; }
+    .best-label { font-size: 0.72rem; color: var(--muted); font-weight: 700; margin-top: 1px; }
 
-        #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; transition: opacity 0.12s; border-radius: 20px; }
-        .pop-num { position: absolute; font-size: 1.4em; font-weight: 900; pointer-events: none; z-index: 30; animation: pop-rise 0.8s ease-out forwards; }
-        .pop-num.good { color: #EF4444; }
-        .pop-num.bad  { color: #94A3B8; }
-        @keyframes pop-rise { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(-50px);opacity:0} }
+    /* ─── Timer bar ─── */
+    .timer-track {
+        height: 10px; background: #EDE8DF; border-radius: 10px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+    #timer-fill {
+        height: 100%; width: 100%;
+        background: linear-gradient(90deg, var(--green) 0%, var(--green2) 100%);
+        border-radius: 10px; transition: width 0.1s linear;
+        position: relative;
+    }
+    #timer-fill::after {
+        content: ''; position: absolute; right: 0; top: 0; bottom: 0;
+        width: 12px; background: rgba(255,255,255,0.4); border-radius: 0 10px 10px 0;
+    }
+    #timer-fill.warning { background: linear-gradient(90deg, var(--yellow), #FFAA00); }
+    #timer-fill.danger  { background: linear-gradient(90deg, var(--red), #FF2233); animation: timerPulse 0.3s infinite alternate; }
+    @keyframes timerPulse { to { opacity: 0.7; } }
 
-        .star-pop { position: absolute; pointer-events: none; z-index: 25; font-size: 1.2em; animation: s-pop 0.7s ease-out forwards; }
-        @keyframes s-pop { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.2) rotate(180deg);opacity:0} }
+    /* ─── Combo strip ─── */
+    #combo-strip {
+        text-align: center; height: 22px; line-height: 22px;
+        font-family: 'Fredoka One', cursive; font-size: 1rem;
+        letter-spacing: 0.5px;
+        transition: opacity 0.2s;
+    }
 
-        #hero-wrap { position: absolute; bottom: 15px; left: 25px; width: 85px; transition: 0.3s; }
-        #enemy { position: absolute; bottom: 30px; right: 30px; font-size: 80px; transition: 0.3s; }
-        .hero-attack { transform: translateX(140px) rotate(15deg); }
-        .enemy-hit   { transform: translateX(-140px); }
-        .enemy-shake { animation: e-shake 0.4s; }
-        .hero-hurt   { animation: h-hurt 0.35s; }
-        @keyframes e-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-12px) rotate(-5deg)} 75%{transform:translateX(12px) rotate(5deg)} }
-        @keyframes h-hurt  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }
+    /* ─── Stage / arena ─── */
+    #stage {
+        width: 100%; height: 220px;
+        background: linear-gradient(175deg, #DBEAFE 0%, #EFF6FF 50%, #F0FDF4 100%);
+        border-radius: 28px;
+        border: 3px solid rgba(255,255,255,0.95);
+        box-shadow: 0 8px 30px rgba(77,166,255,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+        position: relative; overflow: hidden;
+        display: flex; align-items: flex-end;
+    }
+    /* Ground line */
+    #stage::before {
+        content: ''; position: absolute;
+        bottom: 55px; left: 0; right: 0; height: 2px;
+        background: rgba(0,0,0,0.05);
+    }
+    /* Cloud deco */
+    #stage::after {
+        content: '☁️';
+        position: absolute; top: 12px; left: 18px;
+        font-size: 1.8rem; opacity: 0.35;
+        animation: cloudFloat 7s ease-in-out infinite;
+    }
+    @keyframes cloudFloat {
+        0%,100% { transform: translateX(0); }
+        50%      { transform: translateX(12px); }
+    }
 
-        #equation-box { background: var(--primary); color: white; border-radius: 25px; padding: 15px; font-size: 1.8rem; font-weight: 900; text-align: center; margin-bottom: 15px; box-shadow: 0 6px 0 #E66A45; display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 45px; transition: all 0.3s; }
-        .slot { background: rgba(255,255,255,0.25); border: 3px dashed white; width: 50px; height: 55px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
-        .slot.filled { background: rgba(255,255,255,0.4); border-style: solid; }
-        .val-text { min-width: 40px; }
+    #monster-label {
+        position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+        background: rgba(255,255,255,0.92); padding: 3px 14px; border-radius: 20px;
+        font-weight: 800; color: var(--muted); font-size: 0.72rem; z-index: 5;
+        border: 1.5px solid rgba(0,0,0,0.07); white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    #monster-label.boss-label {
+        background: linear-gradient(135deg, var(--red), #CC0022);
+        color: white; border-color: transparent;
+        animation: bossGlow 1s ease-in-out infinite alternate;
+        font-family: 'Fredoka One', cursive; font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    @keyframes bossGlow {
+        from { box-shadow: 0 0 8px rgba(255,71,87,0.5); }
+        to   { box-shadow: 0 0 20px rgba(255,71,87,0.8), 0 0 35px rgba(255,71,87,0.3); }
+    }
 
-        .hand { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .card { height: 65px; background: var(--secondary); color: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 900; cursor: pointer; border: 4px solid white; box-shadow: 0 5px 0 #2563EB; font-family: inherit; -webkit-appearance: none; transition: 0.1s; width: 100%; }
-        .card:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #2563EB; }
-        .card.correct { background: #4ADE80; box-shadow: 0 5px 0 #16A34A; animation: c-pop 0.3s; }
-        .card.wrong   { background: #F87171; box-shadow: 0 5px 0 #DC2626; animation: c-shake 0.3s; }
-        .card:disabled { cursor: not-allowed; opacity: 0.8; }
-        @keyframes c-pop   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1) translateY(-3px)} }
-        @keyframes c-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+    /* ─── HP bar (boss) ─── */
+    #hp-bar-container {
+        position: absolute; top: 38px; left: 50%; transform: translateX(-50%);
+        width: 110px; height: 9px; background: rgba(0,0,0,0.1); border-radius: 10px;
+        display: none; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.7);
+    }
+    #hp-fill {
+        height: 100%; width: 100%;
+        background: linear-gradient(90deg, var(--red), #FF8888);
+        border-radius: 10px; transition: width 0.35s ease;
+    }
 
-        .confetti { position: fixed; width: 9px; height: 9px; pointer-events: none; z-index: 999; border-radius: 2px; animation: c-fall linear forwards; }
-        @keyframes c-fall { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+    /* ─── Speech bubbles ─── */
+    .bubble {
+        position: absolute; background: white;
+        border-radius: 14px; padding: 5px 12px;
+        font-size: 0.76rem; font-weight: 800; color: var(--text);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        opacity: 0; transition: opacity 0.2s;
+        z-index: 20; pointer-events: none; white-space: nowrap;
+        border: 2px solid #F0EDE8;
+    }
+    .bubble::after {
+        content: ''; position: absolute;
+        width: 0; height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 7px solid white;
+        bottom: -7px; left: 50%; transform: translateX(-50%);
+    }
+    #hero-bubble  { bottom: 118px; left: 22px; }
+    #enemy-bubble { bottom: 118px; right: 22px; }
 
-        #go-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 990; justify-content: center; align-items: center; }
-        #go-overlay.show { display: flex; }
-        #go-card { background: white; border-radius: 30px; padding: 26px 22px; width: 86%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 6px solid var(--primary); animation: go-pop 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-        @keyframes go-pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
-        .go-emoji { font-size: 4em; margin: 5px 0 8px; }
-        .go-title { font-size: 1.6em; font-weight: 900; color: #1E293B; margin-bottom: 4px; }
-        .go-sub   { font-size: 0.85em; color: #94A3B8; margin-bottom: 16px; }
-        .go-stats { background: #F8FAFC; border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; }
-        .go-row   { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.88em; border-bottom: 1px solid #E2E8F0; }
-        .go-row:last-child { border: none; }
-        .go-row .lbl { color: #94A3B8; font-weight: 700; }
-        .go-row .val { color: #1E293B; font-weight: 900; }
-        .new-best-tag { background: #FEF3C7; color: #D97706; padding: 4px 12px; border-radius: 20px; font-size: 0.78em; font-weight: 900; display: inline-block; margin-bottom: 12px; }
-        .go-btn { width: 100%; padding: 13px; border: none; border-radius: 15px; font-family: inherit; font-weight: 900; font-size: 1em; cursor: pointer; margin-bottom: 8px; -webkit-appearance: none; }
-        .go-btn.primary   { background: var(--primary); color: white; box-shadow: 0 5px 0 #D4623A; }
-        .go-btn.primary:active { transform: translateY(3px); box-shadow: 0 2px 0 #D4623A; }
-        .go-btn.secondary { background: white; color: #64748B; border: 2px solid #E2E8F0; }
+    /* ─── Flash overlay ─── */
+    #flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 10; border-radius: 25px; transition: opacity 0.12s; }
 
-        #interstitial { display: none; position: fixed; inset: 0; z-index: 998; justify-content: center; align-items: center; flex-direction: column; animation: fadeIn 0.2s ease-out; }
-        #interstitial.show { display: flex; }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        .int-icon  { font-size: 5em; margin-bottom: 10px; animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
-        .int-title { font-size: 2em; font-weight: 900; color: white; text-align: center; text-shadow: 0 3px 10px rgba(0,0,0,0.25); animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
-        .int-sub   { font-size: 1em; color: rgba(255,255,255,0.8); margin-top: 8px; font-weight: 700; text-align: center; animation: inter-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
-        .inter-bar   { width: 200px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-top: 30px; overflow: hidden; }
-        .inter-progress { height: 100%; background: white; border-radius: 10px; }
-        @keyframes inter-pop  { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
-        @keyframes inter-load { from{width:0%} to{width:100%} }
-        #interstitial.hiding { animation: opacity 0.3s forwards; }
-    </style>
+    /* ─── Floating damage numbers ─── */
+    .pop-num {
+        position: absolute; font-family: 'Fredoka One', cursive; font-size: 1.5rem;
+        pointer-events: none; z-index: 30; animation: popRise 0.85s ease-out forwards;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .pop-num.good { color: var(--red); }
+    .pop-num.bad  { color: var(--muted); }
+    @keyframes popRise {
+        0%   { transform: translateY(0) scale(1); opacity: 1; }
+        30%  { transform: translateY(-18px) scale(1.15); opacity: 1; }
+        100% { transform: translateY(-55px) scale(0.9); opacity: 0; }
+    }
+
+    .star-pop {
+        position: absolute; pointer-events: none; z-index: 25; font-size: 1.3rem;
+        animation: sPop 0.75s ease-out forwards;
+    }
+    @keyframes sPop {
+        0%   { transform: scale(0) rotate(0deg);   opacity: 1; }
+        100% { transform: scale(2.4) rotate(180deg); opacity: 0; }
+    }
+
+    /* ─── Hero SVG ─── */
+    #hero-wrap {
+        position: absolute; bottom: 10px; left: 18px;
+        width: 88px; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        filter: drop-shadow(0 6px 10px rgba(0,0,0,0.12));
+    }
+    #enemy {
+        position: absolute; bottom: 22px; right: 26px;
+        font-size: 78px; transition: transform 0.35s ease;
+        filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
+    }
+    .hero-attack { transform: translateX(148px) rotate(12deg) scale(1.1); }
+    .enemy-hit   { transform: translateX(-160px) scale(0.8) rotate(-15deg); opacity: 0.5; }
+    .enemy-shake { animation: eShake 0.4s; }
+    .hero-hurt   { animation: hHurt 0.35s; }
+    @keyframes eShake {
+        0%,100% { transform: translateX(0); }
+        25%     { transform: translateX(-14px) rotate(-6deg); }
+        75%     { transform: translateX(14px)  rotate(6deg); }
+    }
+    @keyframes hHurt {
+        0%,100% { transform: translateX(0); }
+        25%     { transform: translateX(-12px); }
+        75%     { transform: translateX(12px); }
+    }
+
+    /* ─── Equation box ─── */
+    #equation-box {
+        background: linear-gradient(135deg, var(--orange) 0%, var(--orange2) 100%);
+        border-radius: 24px; padding: 14px 18px;
+        font-family: 'Fredoka One', cursive; font-size: 2rem;
+        color: white; text-align: center; letter-spacing: 1px;
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+        min-height: 72px;
+        box-shadow: 0 6px 0 #D4572A, 0 12px 30px rgba(255,107,53,0.3);
+        position: relative; overflow: hidden;
+    }
+    #equation-box::before {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
+    .slot {
+        background: rgba(255,255,255,0.22); border: 3px dashed rgba(255,255,255,0.75);
+        width: 58px; height: 58px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.9rem; animation: slotPulse 1.2s ease-in-out infinite;
+        transition: all 0.2s;
+    }
+    .slot.filled {
+        background: rgba(255,255,255,0.35); border-style: solid; border-color: white;
+        animation: none;
+    }
+    @keyframes slotPulse {
+        0%,100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+        50%     { box-shadow: 0 0 14px rgba(255,255,255,0.5); }
+    }
+    .val-text { min-width: 38px; text-align: center; }
+    .op-text  { font-size: 1.6rem; opacity: 0.9; }
+    .eq-text  { font-size: 1.6rem; opacity: 0.9; }
+
+    /* ─── Card hand ─── */
+    .hand {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .card {
+        height: 68px;
+        background: linear-gradient(170deg, var(--blue) 0%, var(--blue2) 100%);
+        color: white; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Fredoka One', cursive; font-size: 1.7rem;
+        cursor: pointer; border: 3px solid rgba(255,255,255,0.7);
+        box-shadow: 0 5px 0 #2265B8, 0 8px 20px rgba(77,166,255,0.3);
+        font-family: 'Fredoka One', cursive;
+        -webkit-appearance: none; transition: transform 0.1s, box-shadow 0.1s;
+        position: relative; overflow: hidden; width: 100%;
+    }
+    .card::before {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 55%);
+        pointer-events: none;
+    }
+    .card:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 7px 0 #2265B8, 0 12px 24px rgba(77,166,255,0.4); }
+    .card:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 0 0 #2265B8; }
+    .card:disabled { cursor: not-allowed; opacity: 0.75; }
+    .card.correct {
+        background: linear-gradient(170deg, var(--green) 0%, var(--green2) 100%);
+        box-shadow: 0 5px 0 #198F55, 0 8px 20px rgba(61,214,140,0.4);
+        animation: cardPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .card.wrong {
+        background: linear-gradient(170deg, var(--red) 0%, #DD2233 100%);
+        box-shadow: 0 5px 0 #991122;
+        animation: cardShake 0.3s;
+    }
+    @keyframes cardPop   { 0%,100%{transform:scale(1)}  50%{transform:scale(1.12) translateY(-4px)} }
+    @keyframes cardShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+    /* ─── Confetti ─── */
+    .confetti {
+        position: fixed; width: 10px; height: 10px; pointer-events: none;
+        z-index: 999; border-radius: 3px;
+        animation: cFall linear forwards;
+    }
+    @keyframes cFall {
+        0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ─── Game Over overlay ─── */
+    #go-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(10,10,30,0.7); backdrop-filter: blur(6px);
+        z-index: 990; justify-content: center; align-items: center;
+    }
+    #go-overlay.show { display: flex; }
+    #go-card {
+        background: white; border-radius: 32px; padding: 28px 24px;
+        width: 88%; max-width: 350px; text-align: center;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        border: 4px solid rgba(255,255,255,0.9);
+        animation: goPop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes goPop { from{transform:scale(0.3) rotate(-5deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+    .go-emoji  { font-size: 4.5rem; margin-bottom: 6px; display: block; animation: goPop 0.5s 0.1s both; }
+    .go-title  { font-family: 'Fredoka One', cursive; font-size: 1.75rem; color: var(--text); margin-bottom: 4px; }
+    .go-sub    { font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; font-weight: 700; }
+    .go-stats  {
+        background: var(--bg); border-radius: 18px; padding: 12px 16px;
+        margin-bottom: 14px; border: 2px solid #EDE8DF;
+    }
+    .go-row {
+        display: flex; justify-content: space-between; padding: 6px 0;
+        font-size: 0.9rem; border-bottom: 1.5px solid #F0EDE8;
+    }
+    .go-row:last-child { border: none; }
+    .go-row .lbl { color: var(--muted); font-weight: 700; }
+    .go-row .val { color: var(--text); font-weight: 900; }
+    .new-best-tag {
+        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+        color: #92400E; padding: 5px 16px; border-radius: 30px;
+        font-size: 0.8rem; font-weight: 900; display: inline-block;
+        margin-bottom: 14px; animation: tagBounce 0.5s 0.3s both;
+        border: 2px solid #FCD34D;
+    }
+    @keyframes tagBounce { from{transform:scale(0)} to{transform:scale(1)} }
+    .go-btn {
+        width: 100%; padding: 14px; border: none; border-radius: 18px;
+        font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.05rem;
+        cursor: pointer; margin-bottom: 8px; -webkit-appearance: none;
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .go-btn.primary {
+        background: linear-gradient(135deg, var(--orange) 0%, var(--orange2) 100%);
+        color: white; box-shadow: 0 5px 0 #D4572A;
+    }
+    .go-btn.primary:active { transform: translateY(4px); box-shadow: 0 1px 0 #D4572A; }
+    .go-btn.secondary {
+        background: var(--bg); color: var(--muted);
+        border: 2px solid #EDE8DF;
+    }
+
+    /* ─── Level-up interstitial ─── */
+    #interstitial {
+        display: none; position: fixed; inset: 0; z-index: 998;
+        justify-content: center; align-items: center; flex-direction: column;
+        animation: fadeInFast 0.2s ease-out;
+    }
+    #interstitial.show { display: flex; }
+    @keyframes fadeInFast { from{opacity:0} to{opacity:1} }
+    .int-icon  { font-size: 5.5rem; margin-bottom: 10px; animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+    .int-title { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: white; text-align: center; text-shadow: 0 3px 12px rgba(0,0,0,0.3); animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+    .int-sub   { font-size: 1rem; color: rgba(255,255,255,0.85); margin-top: 8px; font-weight: 800; text-align: center; animation: intPop 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+    .inter-bar { width: 200px; height: 6px; background: rgba(255,255,255,0.25); border-radius: 10px; margin-top: 30px; overflow: hidden; }
+    .inter-progress { height: 100%; background: white; border-radius: 10px; }
+    @keyframes intPop { from{transform:scale(0) rotate(-10deg);opacity:0} to{transform:scale(1) rotate(0deg);opacity:1} }
+
+    /* ─── Sparkle burst for correct answers ─── */
+    .sparkle-burst {
+        position: absolute; font-size: 1.2rem; pointer-events: none; z-index: 40;
+        animation: sparkleOut 0.7s ease-out forwards;
+    }
+    @keyframes sparkleOut {
+        0%   { transform: translate(0,0) scale(0); opacity: 1; }
+        100% { transform: translate(var(--tx), var(--ty)) scale(1.2); opacity: 0; }
+    }
+
+    /* ─── Score tracker in top bar ─── */
+    .score-badge {
+        background: linear-gradient(135deg, var(--yellow), #FFAA00);
+        color: #7A4800; border-radius: 20px; padding: 5px 12px;
+        font-weight: 900; font-size: 0.82rem;
+        box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+    }
+
+    /* ─── Responsive tweak ─── */
+    @media (max-height: 700px) {
+        #stage { height: 185px; }
+        .card  { height: 58px; font-size: 1.5rem; }
+    }
+</style>
+```
+
 </head>
 <body>
 
+<!-- Floating deco stars in background -->
+
+<div class="deco-star" style="top:8%;  left:5%;  animation-duration:5s;  animation-delay:0s;">⭐</div>
+<div class="deco-star" style="top:15%; right:8%; animation-duration:7s;  animation-delay:1s;">✨</div>
+<div class="deco-star" style="top:40%; left:3%;  animation-duration:6s;  animation-delay:2s;">💫</div>
+<div class="deco-star" style="top:65%; right:5%; animation-duration:8s;  animation-delay:0.5s;">⭐</div>
+<div class="deco-star" style="top:80%; left:10%; animation-duration:5.5s;animation-delay:3s;">✨</div>
+
 <div id="game-container">
-    <div class="nav-bar">
-        <button type="button" class="home-btn" id="home-btn">🏠 Home</button>
-        <div class="stats-col">
-            <div>❤️ <span id="p-hp">3</span> | 🏰 F: <span id="floor">1</span></div>
-            <div id="best-stat">🏆 Best: F1</div>
+
+```
+<!-- Top bar -->
+<div class="top-bar">
+    <button type="button" class="home-btn" id="home-btn">🏠 Home</button>
+    <div class="stat-pills">
+        <!-- HP pips -->
+        <div class="pill hp-pill" id="hp-pill" title="Hearts">
+            <span id="pip1" class="pip"></span>
+            <span id="pip2" class="pip"></span>
+            <span id="pip3" class="pip"></span>
         </div>
+        <!-- Floor -->
+        <div class="pill">🏰 <span id="floor">1</span></div>
+        <!-- Score badge -->
+        <div class="score-badge">⭐ <span id="score-display">0</span></div>
     </div>
-    <div id="timer-container"><div id="timer-fill"></div></div>
-    <div id="combo-strip"></div>
-    <div id="stage">
-        <div id="monster-label">Zappy</div>
-        <div id="hp-bar-container"><div id="hp-fill"></div></div>
-        <div id="hero-bubble" class="bubble"></div>
-        <div id="enemy-bubble" class="bubble"></div>
-        <div id="flash"></div>
-        <div id="enemy">👾</div>
-        <div id="hero-wrap">
-            <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(5deg)">
-                <defs>
-                    <radialGradient id="grad_maru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
-                        <stop offset="0%" style="stop-color:#FFD4A1"/>
-                        <stop offset="100%" style="stop-color:#FFB15E"/>
-                    </radialGradient>
-                </defs>
-                <circle cx="80" cy="85" r="45" fill="url(#grad_maru)"/>
-                <g>
-                    <path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
-                    <path d="M46 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
-                    <path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
-                    <path d="M90 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFFFFF"/>
-                </g>
-                <g>
-                    <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                    <ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFFFFF"/>
-                    <ellipse cx="70" cy="82" rx="4" ry="5" fill="#333333"/>
-                    <ellipse cx="94" cy="82" rx="4" ry="5" fill="#333333"/>
-                    <circle cx="71" cy="79" r="1.5" fill="white"/>
-                    <circle cx="95" cy="79" r="1.5" fill="white"/>
-                </g>
-                <path d="M65 102 q15 12 30 0" stroke="#333333" stroke-width="4" fill="none" stroke-linecap="round"/>
-                <g>
-                    <path d="M50 40 L80 30 L110 40 L80 50 Z" fill="#333"/>
-                    <path d="M65 43 h30 q0 12-15 12 q-15 0-15-12" fill="#333"/>
-                    <line x1="110" y1="40" x2="116" y2="56" stroke="#FCD34D" stroke-width="2.5"/>
-                    <circle cx="116" cy="58" r="4" fill="#FCD34D"/>
-                </g>
-                <g>
-                    <circle cx="28" cy="95" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
-                    <circle cx="132" cy="70" r="12" fill="#FFFFFF" stroke="#F1F1F1" stroke-width="1.5"/>
-                </g>
-            </svg>
-        </div>
-    </div>
-    <div id="equation-box">
-        </div>
-    <div class="hand" id="card-hand"></div>
 </div>
+<div style="font-size:0.7rem;text-align:right;color:var(--muted);font-weight:700;margin-top:-4px;" id="best-stat">🏆 Best: F1</div>
+
+<!-- Timer -->
+<div class="timer-track"><div id="timer-fill"></div></div>
+
+<!-- Combo strip -->
+<div id="combo-strip"></div>
+
+<!-- Stage -->
+<div id="stage">
+    <div id="monster-label">Zappy</div>
+    <div id="hp-bar-container"><div id="hp-fill"></div></div>
+    <div id="hero-bubble"  class="bubble"></div>
+    <div id="enemy-bubble" class="bubble"></div>
+    <div id="flash"></div>
+    <div id="enemy">👾</div>
+    <div id="hero-wrap">
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;transform:rotate(4deg)">
+            <defs>
+                <radialGradient id="gMaru" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+                    <stop offset="0%" style="stop-color:#FFD4A1"/>
+                    <stop offset="100%" style="stop-color:#FFB15E"/>
+                </radialGradient>
+                <radialGradient id="gCheek" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" style="stop-color:#FFB3B3;stop-opacity:0.8"/>
+                    <stop offset="100%" style="stop-color:#FFB3B3;stop-opacity:0"/>
+                </radialGradient>
+            </defs>
+            <!-- Body -->
+            <circle cx="80" cy="85" r="45" fill="url(#gMaru)"/>
+            <!-- Cheeks -->
+            <ellipse cx="60" cy="94" rx="9" ry="6" fill="url(#gCheek)"/>
+            <ellipse cx="100" cy="94" rx="9" ry="6" fill="url(#gCheek)"/>
+            <!-- Legs -->
+            <path d="M50 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+            <path d="M46 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFF"/>
+            <path d="M94 118 h16 c2 0 4 2 4 4 v10 a4 4 0 0 1-4 4 h-16 a4 4 0 0 1-4-4 v-10 a4 4 0 0 1 4-4" fill="#FF5E5E"/>
+            <path d="M90 130 h18 c1 0 2 1 2 2 v4 h-22 v-4 c0-1 1-2 2-2" fill="#FFF"/>
+            <!-- Eyes -->
+            <ellipse cx="68" cy="80" rx="9" ry="11" fill="#FFF"/>
+            <ellipse cx="92" cy="80" rx="9" ry="11" fill="#FFF"/>
+            <ellipse cx="70" cy="82" rx="4" ry="5"  fill="#222"/>
+            <ellipse cx="94" cy="82" rx="4" ry="5"  fill="#222"/>
+            <circle cx="71" cy="79" r="1.8" fill="white"/>
+            <circle cx="95" cy="79" r="1.8" fill="white"/>
+            <!-- Smile -->
+            <path d="M65 102 q15 13 30 0" stroke="#333" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <!-- Wizard hat -->
+            <path d="M50 42 L80 26 L110 42 L80 52 Z" fill="#2D2D5E"/>
+            <path d="M65 45 h30 q0 12-15 12 q-15 0-15-12" fill="#2D2D5E"/>
+            <path d="M50 42 L110 42" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="80" cy="28" r="5" fill="#FFD166"/>
+            <!-- Wand sparkle -->
+            <line x1="110" y1="40" x2="118" y2="58" stroke="#FFD166" stroke-width="2.5"/>
+            <circle cx="118" cy="61" r="5" fill="#FFD166" opacity="0.9"/>
+            <circle cx="118" cy="61" r="3" fill="white"/>
+            <!-- Arms -->
+            <circle cx="27" cy="93" r="12" fill="#FFB15E" stroke="#F0A050" stroke-width="1.5"/>
+            <circle cx="133" cy="70" r="12" fill="#FFB15E" stroke="#F0A050" stroke-width="1.5"/>
+        </svg>
+    </div>
+</div>
+
+<!-- Equation -->
+<div id="equation-box"></div>
+
+<!-- Cards -->
+<div class="hand" id="card-hand"></div>
+```
+
+</div>
+
+<!-- Game Over modal -->
 
 <div id="go-overlay">
     <div id="go-card">
-        <div class="go-emoji" id="go-emoji">💀</div>
+        <span class="go-emoji" id="go-emoji">💀</span>
         <div class="go-title" id="go-title">Tower Broken!</div>
-        <div class="go-sub"   id="go-sub">Keep practising!</div>
+        <div class="go-sub"   id="go-sub">Keep practising — you've got this!</div>
         <div class="go-stats">
-            <div class="go-row"><span class="lbl">Floor Reached</span><span class="val" id="go-floor">1</span></div>
-            <div class="go-row"><span class="lbl">Score</span>        <span class="val" id="go-score">0</span></div>
-            <div class="go-row"><span class="lbl">Best Floor</span>   <span class="val" id="go-best">F1</span></div>
+            <div class="go-row"><span class="lbl">🏰 Floor Reached</span><span class="val" id="go-floor">1</span></div>
+            <div class="go-row"><span class="lbl">⭐ Score</span>        <span class="val" id="go-score">0</span></div>
+            <div class="go-row"><span class="lbl">🏆 Best Floor</span>   <span class="val" id="go-best">F1</span></div>
         </div>
-        <div id="new-best-tag" class="new-best-tag" style="display:none;">🌟 NEW BEST FLOOR!</div>
-        <button type="button" class="go-btn primary"   id="go-retry">⚔️ Try Again!</button>
-        <button type="button" class="go-btn secondary" id="go-home">🏠 Home</button>
+        <div id="new-best-tag" class="new-best-tag" style="display:none;">🌟 NEW RECORD! Amazing!</div>
+        <button type="button" class="go-btn primary"   id="go-retry">⚔️ Play Again!</button>
+        <button type="button" class="go-btn secondary" id="go-home">🏠 Back to Home</button>
     </div>
 </div>
+
+<!-- Level-up interstitial -->
 
 <div id="interstitial">
     <div class="int-icon"  id="int-icon"></div>
@@ -222,313 +574,434 @@
 </div>
 
 <script>
-    let _ac = null;
-    function ac() { if(!_ac) _ac = new (window.AudioContext||window.webkitAudioContext)(); return _ac; }
-    function tone(f,t,d,v,delay=0) {
-        try {
-            const c=ac(), o=c.createOscillator(), g=c.createGain();
-            o.connect(g); g.connect(c.destination);
-            o.type=t; o.frequency.setValueAtTime(f,c.currentTime+delay);
-            g.gain.setValueAtTime(v,c.currentTime+delay);
-            g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+delay+d);
-            o.start(c.currentTime+delay); o.stop(c.currentTime+delay+d+0.05);
-        } catch(e){}
-    }
-    const SFX = {
-        hit()     { tone(523,'square',0.07,0.28); tone(659,'square',0.07,0.28,0.09); tone(784,'square',0.13,0.25,0.18); },
-        combo()   { tone(880,'square',0.1,0.32); tone(1047,'square',0.12,0.32,0.11); },
-        wrong()   { tone(220,'sawtooth',0.09,0.38); tone(165,'sawtooth',0.13,0.38,0.11); },
-        timeout() { tone(330,'square',0.05,0.28); tone(247,'square',0.05,0.28,0.08); tone(196,'square',0.13,0.28,0.16); },
-        levelup() { [523,659,784,1047].forEach((f,i) => tone(f,'square',0.1,0.28,i*0.1)); },
-        boss()    { tone(110,'sawtooth',0.25,0.45); tone(88,'sawtooth',0.25,0.45,0.15); },
-        bossKill(){ [784,880,988,1047,1175].forEach((f,i) => tone(f,'square',0.13,0.3,i*0.08)); },
-        over()    { tone(330,'sawtooth',0.16,0.45); tone(220,'sawtooth',0.24,0.45,0.18); tone(165,'sawtooth',0.38,0.45,0.38); },
-    };
+/* ══════════════════════════════════════
+   AUDIO ENGINE
+══════════════════════════════════════ */
+let _ac = null;
+function ac() { if(!_ac) _ac = new (window.AudioContext||window.webkitAudioContext)(); return _ac; }
+function tone(f,t,d,v,delay=0) {
+    try {
+        const ctx=ac(),o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type=t; o.frequency.setValueAtTime(f,ctx.currentTime+delay);
+        g.gain.setValueAtTime(v,ctx.currentTime+delay);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+d);
+        o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+d+0.05);
+    } catch(e){}
+}
+const SFX = {
+    hit()      { tone(523,'square',0.07,0.25); tone(659,'square',0.07,0.25,0.09); tone(784,'square',0.12,0.22,0.18); },
+    combo()    { tone(880,'square',0.09,0.3); tone(1047,'square',0.11,0.3,0.11); tone(1175,'square',0.1,0.28,0.22); },
+    wrong()    { tone(220,'sawtooth',0.09,0.38); tone(165,'sawtooth',0.12,0.38,0.12); },
+    timeout()  { tone(330,'square',0.05,0.25); tone(247,'square',0.05,0.25,0.08); tone(196,'square',0.12,0.25,0.16); },
+    levelup()  { [523,659,784,1047].forEach((f,i)=>tone(f,'square',0.1,0.26,i*0.1)); },
+    boss()     { tone(110,'sawtooth',0.25,0.45); tone(88,'sawtooth',0.25,0.45,0.15); },
+    bossKill() { [784,880,988,1047,1175,1319].forEach((f,i)=>tone(f,'square',0.12,0.28,i*0.08)); },
+    over()     { tone(330,'sawtooth',0.15,0.45); tone(220,'sawtooth',0.22,0.45,0.18); tone(165,'sawtooth',0.35,0.45,0.38); },
+    unlock()   { [523,660,784].forEach((f,i)=>tone(f,'triangle',0.15,0.3,i*0.12)); },
+};
 
-    const MONSTERS = [
-        { name:'Zappy',  icon:'👾', taunts:['Zap!','Too slow!','Foolish!'],    deaths:['Zapped out!','Nooo!']        },
-        { name:'Dusty',  icon:'🐝', taunts:['Bzzzzt!','Miss me!','Ha!'],       deaths:['Not the honey!','Ouch!']     },
-        { name:'Gloop',  icon:'🐙', taunts:['Slippery!','Glub!','Got ya!'],    deaths:['Deflated!','Popped!']        },
-        { name:'Sparky', icon:'🦖', taunts:['ROOOAR!','Dino smash!','RAWR!'],  deaths:['Extinct!','Fossilized!']     },
-        { name:'Spooky', icon:'👻', taunts:['Boo!','Ha!','Eek!'],              deaths:['Unghostly!','De-spooked!']   },
-        { name:'Chompy', icon:'🐊', taunts:['Snap!','Hiss!','Chomp!'],         deaths:['So croc-ky!','Unbited!']     },
-        { name:'Glitch', icon:'🤖', taunts:['ERROR!','Bzzt!','Div by 0!'],     deaths:['System crash!','Rebooting...']},
-        { name:'Burny',  icon:'🔥', taunts:['Too hot!','Sizzle!','Burn!'],     deaths:['Extinguished!','Doused!']    },
-    ];
-    const BOSSES = [
-        { name:'MEGA BOSS',  icon:'👹', taunts:['PUNY HUMAN!','GWAHAHAHA!'],     deaths:['IMPOSSIBLE!','HOW?!']     },
-        { name:'DARK LORD',  icon:'💀', taunts:['YOUR END IS NEAR!','DARKNESS!'],deaths:['THE LIGHT!','NOOOOO!']   },
-        { name:'STORM KING', icon:'🌪️', taunts:['FEEL MY WRATH!','WHIRLWIND!'], deaths:['CALMED!','WEATHERED!']   },
-    ];
+/* ══════════════════════════════════════
+   GAME DATA
+══════════════════════════════════════ */
+const MONSTERS = [
+    { name:'Zappy',  icon:'👾', taunts:['Zap!','Too slow!','Foolish!'],       deaths:['Zapped out!','Nooo!']          },
+    { name:'Bumble', icon:'🐝', taunts:['Bzzzzt!','Miss me!','Ha!'],           deaths:['Not the honey!','Ouch!']       },
+    { name:'Gloop',  icon:'🐙', taunts:['Slippery!','Glub!','Got ya!'],        deaths:['Deflated!','Popped!']          },
+    { name:'Sparky', icon:'🦖', taunts:['ROOOAR!','Dino smash!','RAWR!'],     deaths:['Extinct!','Fossilized!']        },
+    { name:'Spooky', icon:'👻', taunts:['Boo!','Ha-ha!','Eek!'],              deaths:['Unghostly!','De-spooked!']      },
+    { name:'Chompy', icon:'🐊', taunts:['Snap!','Hiss!','Chomp!'],            deaths:['So croc-ky!','Unbited!']        },
+    { name:'Glitch', icon:'🤖', taunts:['ERROR!','Bzzt!','Div/0!'],           deaths:['System crash!','Rebooting…']   },
+    { name:'Burny',  icon:'🔥', taunts:['Too hot!','Sizzle!','Burn!'],        deaths:['Extinguished!','Doused!']       },
+    { name:'Frosty', icon:'❄️', taunts:['Freeze!','Ice ice!','Brr!'],         deaths:['Melted!','Thawed out!']         },
+    { name:'Slimey', icon:'🐸', taunts:['Ribbit!','Slippery!','Hop!'],        deaths:['De-slimedD!','Leapt away!']     },
+];
+const BOSSES = [
+    { name:'MEGA BOSS',  icon:'👹', taunts:['PUNY HUMAN!','GWAHAHAHA!'],       deaths:['IMPOSSIBLE!','HOW?!']           },
+    { name:'DARK LORD',  icon:'💀', taunts:['YOUR END IS NEAR!','DARKNESS!'],  deaths:['THE LIGHT!','NOOOOO!']          },
+    { name:'STORM KING', icon:'🌪️', taunts:['FEEL MY WRATH!','WHIRLWIND!'],   deaths:['CALMED!','WEATHERED!']          },
+    { name:'LAVA QUEEN', icon:'🌋', taunts:['BURN IT ALL!','LAVA TIME!'],      deaths:['COOLED DOWN!','SOLIDIFIED!']    },
+];
 
-    let floor=1, playerHP=3, enemyHP=1, isBusy=false, timerInterval;
-    let combo=0, score=0, monster=null;
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let floor=1, playerHP=3, enemyHP=1;
+let isBusy=false, timerInterval=null;
+let combo=0, score=0, monster=null;
 
-    function getBest() { return parseInt(localStorage.getItem('mq_best')||'1'); }
-    function setBest(f){ if(f>getBest()) localStorage.setItem('mq_best',String(f)); }
-    function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+function getBest() { return parseInt(localStorage.getItem('mq_best')||'1'); }
+function setBest(f){ if(f>getBest()) localStorage.setItem('mq_best',String(f)); }
+function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 
-    function updateBest() {
-        setBest(floor);
-        document.getElementById('best-stat').innerText = '🏆 Best: F' + getBest();
-    }
-
-    function say(who, text) {
-        const b = document.getElementById(who+'-bubble');
-        b.innerText = text; b.style.opacity = '1';
-        clearTimeout(b._t); b._t = setTimeout(()=>b.style.opacity='0', 1100);
-    }
-    function flash(color) {
-        const f = document.getElementById('flash');
-        f.style.background=color; f.style.opacity='0.4';
-        setTimeout(()=>f.style.opacity='0', 130);
-    }
-    function popNum(text, type) {
-        const s=document.getElementById('stage'), el=document.createElement('div');
-        el.className='pop-num '+type; el.innerText=text;
-        el.style.right=(30+Math.random()*60)+'px';
-        el.style.bottom=(70+Math.random()*40)+'px';
-        s.appendChild(el); setTimeout(()=>el.remove(), 800);
-    }
-    function popStars() {
-        const s=document.getElementById('stage');
-        ['⭐','✨','💫'].forEach((c,i)=>{
-            const el=document.createElement('div');
-            el.className='star-pop'; el.innerText=c;
-            el.style.right=(25+i*20)+'px'; el.style.bottom=(85+i*15)+'px';
-            el.style.animationDelay=(i*0.09)+'s';
-            s.appendChild(el); setTimeout(()=>el.remove(), 700+i*90);
-        });
-    }
-
-    function showBanner(text, type='floor') {
-        const COLORS = { boss:'#DC2626', unlock:'#4F46E5', floor:'#D97706' };
-        const ICONS  = { boss:'⚠️', unlock:'🔓', floor:'🏆' };
-        const SUBS   = { boss:'Defeat it to advance!', unlock:'New operation unlocked!', floor:"You're unstoppable!" };
-
-        const overlay = document.getElementById('interstitial');
-        const bar     = document.getElementById('int-bar');
-
-        document.getElementById('int-icon').innerText  = ICONS[type]  || '🌟';
-        document.getElementById('int-title').innerText = text;
-        document.getElementById('int-sub').innerText   = SUBS[type]   || '';
-        overlay.style.background = COLORS[type] || '#D97706';
-
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        overlay.style.display = 'flex';
-
-        requestAnimationFrame(()=>{
-            requestAnimationFrame(()=>{
-                bar.style.transition = 'width 1.4s linear';
-                bar.style.width = '100%';
-            });
-        });
-
-        clearTimeout(overlay._t);
-        overlay._t = setTimeout(()=>{ overlay.style.display = 'none'; }, 1600);
-    }
-
-    function confetti(n=40) {
-        const cols=['#FF784E','#FCD34D','#4ADE80','#60A5FA','#F472B6','#FB923C'];
-        for(let i=0;i<n;i++){
-            const el=document.createElement('div');
-            el.className='confetti';
-            el.style.cssText=`left:${Math.random()*100}vw;background:${pick(cols)};animation-duration:${0.7+Math.random()*1.2}s;animation-delay:${Math.random()*0.4}s;transform:rotate(${Math.random()*360}deg)`;
-            document.body.appendChild(el); setTimeout(()=>el.remove(), 1900);
-        }
-    }
-    function updateCombo() {
-        const el=document.getElementById('combo-strip');
-        if(combo>=2) {
-            el.innerText = combo+'× COMBO! '+(combo>=5?'🔥🔥':'🔥');
-            el.style.color = combo>=5?'#EF4444':'#F59E0B';
-        } else { el.innerText = ''; }
-    }
-
-    function init() {
-        isBusy = false;
-        document.getElementById('floor').innerText   = floor;
-        document.getElementById('p-hp').innerText    = playerHP;
-        updateBest();
-
-        const isBoss = (floor % 5 === 0);
-        enemyHP = isBoss ? 3 : 1;
-
-        const hpBar = document.getElementById('hp-bar-container');
-        hpBar.style.display = isBoss ? 'block' : 'none';
-        document.getElementById('hp-fill').style.width = '100%';
-
-        if(isBoss) {
-            monster = pick(BOSSES);
-            document.getElementById('monster-label').innerText = monster.name;
-            document.getElementById('monster-label').className = 'boss-label';
-            document.getElementById('enemy').innerText = monster.icon;
-            SFX.boss(); showBanner('⚠️ BOSS FIGHT! ⚠️', 'boss');
-        } else {
-            monster = pick(MONSTERS);
-            document.getElementById('monster-label').innerText = monster.name;
-            document.getElementById('monster-label').className = '';
-            document.getElementById('enemy').innerText = monster.icon;
-            if(floor%10===0){ confetti(55); showBanner('🏆 Floor '+floor+'! Amazing!', 'floor'); }
-            else if(floor===6)  showBanner('➖ Subtraction unlocked!', 'unlock');
-            else if(floor===11) showBanner('✖️ Multiplication unlocked!', 'unlock');
-            else if(floor===16) showBanner('➗ Division unlocked!', 'unlock');
-        }
-        newRound();
-    }
-
-    function newRound() {
-        let op='+', ans, valA, valB, result;
-        
-        // Define operator based on floor
-        if (floor>=16) op=['+','-','×','÷'][Math.floor(Math.random()*4)];
-        else if (floor>=11) op=['+','-','×'][Math.floor(Math.random()*3)];
-        else if (floor>=6)  op=Math.random()>0.5?'-':'+';
-
-        // Logic to ensure whole numbers and reasonable difficulty
-        if(op==='×'){ valA=Math.floor(Math.random()*5)+1; valB=pick([2,5,10]); result=valA*valB; }
-        else if(op==='÷'){ valB=Math.floor(Math.random()*4)+1; result=Math.floor(Math.random()*5)+1; valA=result*valB; }
-        else if(op==='-'){ valA=Math.floor(Math.random()*10)+5; valB=Math.floor(Math.random()*5)+1; result=valA-valB; }
-        else { valA=Math.floor(Math.random()*10)+1; valB=Math.floor(Math.random()*10)+1; result=valA+valB; }
-
-        // Choose which position is the unknown "?"
-        // 0: valA is ?, 1: valB is ?, 2: result is ?
-        const slotPos = Math.floor(Math.random() * 3);
-        const vals = [valA, valB, result];
-        ans = vals[slotPos];
-
-        const box = document.getElementById('equation-box');
-        box.innerHTML = '';
-
-        // Helper to create slot or text
-        const makeEl = (i) => {
-            if(i === slotPos) {
-                const s = document.createElement('div');
-                s.className = 'slot'; s.id = 'slot'; s.innerText = '?';
-                return s;
-            } else {
-                const t = document.createElement('span');
-                t.className = 'val-text'; t.innerText = vals[i];
-                return t;
-            }
-        };
-
-        // Assemble equation
-        box.appendChild(makeEl(0));
-        const opSpan = document.createElement('span'); opSpan.innerText = op; box.appendChild(opSpan);
-        box.appendChild(makeEl(1));
-        const eqSpan = document.createElement('span'); eqSpan.innerText = '='; box.appendChild(eqSpan);
-        box.appendChild(makeEl(2));
-
-        const hand = document.getElementById('card-hand');
-        hand.innerHTML = '';
-        let cards = [ans];
-        while(cards.length < 6){ 
-            let r = Math.floor(Math.random() * (op === '×' || op === '÷' ? 50 : 25)) + 1; 
-            if(!cards.includes(r)) cards.push(r); 
-        }
-        cards.sort(() => Math.random() - 0.5).forEach(n => {
-            const c = document.createElement('button');
-            c.type = 'button'; c.className = 'card'; c.innerText = n;
-            c.addEventListener('click', () => play(n, ans));
-            hand.appendChild(c);
-        });
-        
-        startTimer();
-        if(Math.random() < 0.2) say('enemy', pick(monster.taunts));
-    }
-
-    function startTimer() {
-        clearInterval(timerInterval);
-        let timeLeft=100;
-        let speed=0.4+(floor*0.04);
-        if(floor>20) speed+=Math.floor((floor-20)/5)*0.15;
-        timerInterval=setInterval(()=>{
-            timeLeft-=speed;
-            const fill=document.getElementById('timer-fill');
-            fill.style.width=timeLeft+'%';
-            fill.className=(timeLeft<25?'danger':timeLeft<50?'warning':'');
-            if(timeLeft<=0){ clearInterval(timerInterval); play(-999,0); }
-        },100);
-    }
-
-    function play(n, ans) {
-        if(isBusy) return;
-        try{ ac().resume(); }catch(e){}
-        isBusy=true; clearInterval(timerInterval);
-        document.querySelectorAll('.card').forEach(c=>c.disabled=true);
-
-        if(n===ans) {
-            combo++;
-            score+=10*Math.max(1,combo);
-            updateCombo();
-            const slot=document.getElementById('slot');
-            slot.innerText=ans; slot.className='slot filled';
-            document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===ans) c.classList.add('correct'); });
-            if(combo>=3) SFX.combo(); else SFX.hit();
-            say('hero', combo>=4?'🔥 x'+combo+'!':pick(['Hiyah!','Got you!','Take that!','Nice!']));
-            flash('#4ADE8040');
-            document.getElementById('hero-wrap').classList.add('hero-attack');
-            setTimeout(()=>{
-                document.getElementById('hero-wrap').classList.remove('hero-attack');
-                enemyHP--;
-                if(enemyHP>0) {
-                    document.getElementById('hp-fill').style.width=(enemyHP/3*100)+'%';
-                    document.getElementById('enemy').classList.add('enemy-shake');
-                    popNum('💥 HIT!','good');
-                    setTimeout(()=>{ document.getElementById('enemy').classList.remove('enemy-shake'); isBusy=false; newRound(); },420);
-                } else {
-                    document.getElementById('enemy').classList.add('enemy-hit');
-                    popNum('⚡ KO!','good');
-                    if(combo>=4) popStars();
-                    if(floor%5===0){ SFX.bossKill(); confetti(65); } else SFX.levelup();
-                    setTimeout(()=>{
-                        const e=document.getElementById('enemy');
-                        e.className=''; e.style.transform=''; e.style.opacity='';
-                        floor++; isBusy=false; init();
-                    },650);
-                }
-            },450);
-        } else {
-            const isTimeout=(n===-999);
-            combo=0; updateCombo();
-            if(isTimeout){ SFX.timeout(); flash('#EF444430'); say('enemy','⏰ TOO SLOW!'); popNum('TIME!','bad'); }
-            else { SFX.wrong(); flash('#EF444448'); document.querySelectorAll('.card').forEach(c=>{ if(+c.innerText===n) c.classList.add('wrong'); }); say('enemy', pick(monster.taunts)); popNum('✗ MISS','bad'); }
-            document.getElementById('hero-wrap').classList.add('hero-hurt');
-            setTimeout(()=>document.getElementById('hero-wrap').classList.remove('hero-hurt'),380);
-            playerHP--;
-            document.getElementById('p-hp').innerText=playerHP;
-            if(playerHP<=0){ SFX.over(); setTimeout(gameOver,650); }
-            else { setTimeout(()=>{ isBusy=false; newRound(); }, 650); }
-        }
-    }
-
-    function gameOver() {
-        const best=getBest(), isNew=floor>best;
-        if(isNew) setBest(floor);
-        document.getElementById('go-emoji').innerText = floor>15?'🏆':floor>8?'⭐':'💀';
-        document.getElementById('go-title').innerText = floor>15?'Legendary Run!':floor>8?'Great Fight!':'Tower Broken!';
-        document.getElementById('go-sub').innerText   = floor>8?'You\'re getting stronger!':'Keep practising!';
-        document.getElementById('go-floor').innerText = 'Floor '+floor;
-        document.getElementById('go-score').innerText = score;
-        document.getElementById('go-best').innerText  = 'F'+(isNew?floor:best);
-        document.getElementById('new-best-tag').style.display = isNew?'inline-block':'none';
-        if(isNew) confetti(80);
-        document.getElementById('go-overlay').classList.add('show');
-    }
-
-    function restartGame() {
-        document.getElementById('go-overlay').classList.remove('show');
-        floor=1; playerHP=3; combo=0; score=0; init();
-    }
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-        init();
-        document.getElementById('home-btn').addEventListener('click',()=>{ clearInterval(timerInterval); window.location.href='../'; });
-        document.getElementById('go-retry').addEventListener('click', restartGame);
-        document.getElementById('go-home').addEventListener('click',()=>{ window.location.href='../'; });
+/* ══════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════ */
+function updateHP() {
+    document.getElementById('p-hp') && (document.getElementById('p-hp').innerText = playerHP);
+    ['pip1','pip2','pip3'].forEach((id,i)=>{
+        const el = document.getElementById(id);
+        if(el) el.className = 'pip' + (i < playerHP ? '' : ' empty');
     });
+}
+function updateScore() {
+    const el = document.getElementById('score-display');
+    if(el) el.innerText = score;
+}
+function updateBest() {
+    setBest(floor);
+    const el = document.getElementById('best-stat');
+    if(el) el.innerText = '🏆 Best: F' + getBest();
+}
+
+function say(who, text) {
+    const b = document.getElementById(who+'-bubble');
+    if(!b) return;
+    b.innerText = text; b.style.opacity = '1';
+    clearTimeout(b._t); b._t = setTimeout(()=> b.style.opacity='0', 1200);
+}
+function flash(color) {
+    const f = document.getElementById('flash');
+    f.style.background = color; f.style.opacity = '0.45';
+    setTimeout(()=> f.style.opacity = '0', 140);
+}
+function popNum(text, type) {
+    const s = document.getElementById('stage'), el = document.createElement('div');
+    el.className = 'pop-num ' + type; el.innerText = text;
+    el.style.right  = (28 + Math.random()*60)+'px';
+    el.style.bottom = (65 + Math.random()*45)+'px';
+    s.appendChild(el); setTimeout(()=> el.remove(), 900);
+}
+function popStars() {
+    const s = document.getElementById('stage');
+    ['⭐','✨','💫','🌟'].forEach((c,i)=>{
+        const el = document.createElement('div');
+        el.className = 'star-pop'; el.innerText = c;
+        el.style.right = (20+i*22)+'px'; el.style.bottom = (80+i*12)+'px';
+        el.style.animationDelay = (i*0.08)+'s';
+        s.appendChild(el); setTimeout(()=> el.remove(), 800+i*80);
+    });
+}
+function sparkles(x, y) {
+    const s = document.getElementById('stage');
+    const icons = ['✨','💥','⚡','🌟'];
+    for(let i=0;i<6;i++){
+        const el = document.createElement('div');
+        el.className = 'sparkle-burst'; el.innerText = icons[i%icons.length];
+        const angle = (i/6)*Math.PI*2;
+        el.style.setProperty('--tx', Math.cos(angle)*45+'px');
+        el.style.setProperty('--ty', Math.sin(angle)*45+'px');
+        el.style.left = (x-12)+'px'; el.style.bottom = (y-12)+'px';
+        el.style.animationDelay = (i*0.04)+'s';
+        s.appendChild(el); setTimeout(()=> el.remove(), 750);
+    }
+}
+
+function confetti(n=45) {
+    const cols = ['#FF6B35','#FFD166','#3DD68C','#4DA6FF','#F472B6','#A855F7','#FB923C'];
+    for(let i=0;i<n;i++){
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.cssText = `left:${Math.random()*100}vw;background:${pick(cols)};animation-duration:${0.8+Math.random()*1.3}s;animation-delay:${Math.random()*0.5}s;border-radius:${Math.random()>0.5?'50%':'3px'}`;
+        document.body.appendChild(el);
+        setTimeout(()=> el.remove(), 2200);
+    }
+}
+
+function updateCombo() {
+    const el = document.getElementById('combo-strip');
+    if(combo >= 2) {
+        const emoji = combo >= 7 ? '🔥🔥🔥' : combo >= 5 ? '🔥🔥' : '🔥';
+        el.innerText = combo + '× COMBO! ' + emoji;
+        el.style.color  = combo >= 5 ? '#EF4444' : combo >= 3 ? '#F97316' : '#F59E0B';
+        el.style.opacity = '1';
+    } else {
+        el.style.opacity = '0';
+    }
+}
+
+/* ══════════════════════════════════════
+   BANNERS / INTERSTITIALS
+══════════════════════════════════════ */
+function showBanner(text, type='floor') {
+    const COLORS = { boss:'linear-gradient(135deg,#DC2626,#991B1B)', unlock:'linear-gradient(135deg,#7C3AED,#4F46E5)', floor:'linear-gradient(135deg,#D97706,#B45309)' };
+    const ICONS  = { boss:'⚠️', unlock:'🔓', floor:'🏆' };
+    const SUBS   = { boss:'Defeat it to climb higher!', unlock:'New power unlocked!', floor:'You\'re unstoppable!' };
+
+    const overlay = document.getElementById('interstitial');
+    const bar     = document.getElementById('int-bar');
+
+    document.getElementById('int-icon').innerText  = ICONS[type]  || '🌟';
+    document.getElementById('int-title').innerText = text;
+    document.getElementById('int-sub').innerText   = SUBS[type]   || '';
+    overlay.style.background = COLORS[type] || COLORS.floor;
+
+    bar.style.transition = 'none'; bar.style.width = '0%';
+    overlay.classList.add('show');
+
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        bar.style.transition = 'width 1.5s linear'; bar.style.width = '100%';
+    }));
+    clearTimeout(overlay._t);
+    overlay._t = setTimeout(()=> overlay.classList.remove('show'), 1700);
+}
+
+/* ══════════════════════════════════════
+   GAME INIT
+══════════════════════════════════════ */
+function init() {
+    isBusy = false;
+    document.getElementById('floor').innerText = floor;
+    updateHP(); updateScore(); updateBest();
+
+    const isBoss = (floor % 5 === 0);
+    enemyHP = isBoss ? 3 : 1;
+
+    const hpBar = document.getElementById('hp-bar-container');
+    hpBar.style.display = isBoss ? 'block' : 'none';
+    document.getElementById('hp-fill').style.width = '100%';
+
+    if(isBoss) {
+        monster = pick(BOSSES);
+        document.getElementById('monster-label').innerText = '⚔️ ' + monster.name;
+        document.getElementById('monster-label').className = 'boss-label';
+        document.getElementById('enemy').innerText = monster.icon;
+        document.getElementById('enemy').style.cssText = '';
+        SFX.boss();
+        showBanner('⚠️ BOSS FIGHT!', 'boss');
+    } else {
+        monster = pick(MONSTERS);
+        document.getElementById('monster-label').innerText = monster.name;
+        document.getElementById('monster-label').className = '';
+        document.getElementById('enemy').innerText = monster.icon;
+        document.getElementById('enemy').style.cssText = '';
+        if(floor % 10 === 0){ confetti(60); showBanner('🏆 Floor ' + floor + '! Amazing!', 'floor'); }
+        else if(floor === 6)  { SFX.unlock(); showBanner('➖ Subtraction unlocked!', 'unlock'); }
+        else if(floor === 11) { SFX.unlock(); showBanner('✖️ Multiplication unlocked!', 'unlock'); }
+        else if(floor === 16) { SFX.unlock(); showBanner('➗ Division unlocked!', 'unlock'); }
+    }
+    newRound();
+}
+
+/* ══════════════════════════════════════
+   NEW ROUND
+══════════════════════════════════════ */
+function newRound() {
+    let op='+', valA, valB, result;
+
+    if(floor >= 16) op = ['+','-','×','÷'][Math.floor(Math.random()*4)];
+    else if(floor >= 11) op = ['+','-','×'][Math.floor(Math.random()*3)];
+    else if(floor >= 6)  op = Math.random() > 0.5 ? '-' : '+';
+
+    if(op === '×') {
+        valA = Math.floor(Math.random()*6)+1;
+        valB = pick([2,3,4,5,10]);
+        result = valA * valB;
+    } else if(op === '÷') {
+        valB   = Math.floor(Math.random()*4)+2;
+        result = Math.floor(Math.random()*6)+1;
+        valA   = result * valB;
+    } else if(op === '-') {
+        valA   = Math.floor(Math.random()*12)+6;
+        valB   = Math.floor(Math.random()*6)+1;
+        result = valA - valB;
+    } else {
+        valA   = Math.floor(Math.random()*10)+1;
+        valB   = Math.floor(Math.random()*10)+1;
+        result = valA + valB;
+    }
+
+    const slotPos = Math.floor(Math.random() * 3);
+    const vals = [valA, valB, result];
+    const ans  = vals[slotPos];
+
+    const box = document.getElementById('equation-box');
+    box.innerHTML = '';
+
+    const makeEl = (i) => {
+        if(i === slotPos) {
+            const s = document.createElement('div');
+            s.className = 'slot'; s.id = 'the-slot'; s.innerText = '?';
+            return s;
+        }
+        const t = document.createElement('span');
+        t.className = 'val-text'; t.innerText = vals[i];
+        return t;
+    };
+    const opSpan = document.createElement('span'); opSpan.className = 'op-text'; opSpan.innerText = op;
+    const eqSpan = document.createElement('span'); eqSpan.className = 'eq-text'; eqSpan.innerText = '=';
+    box.appendChild(makeEl(0)); box.appendChild(opSpan);
+    box.appendChild(makeEl(1)); box.appendChild(eqSpan);
+    box.appendChild(makeEl(2));
+
+    // Build card hand with distractors
+    const hand = document.getElementById('card-hand');
+    hand.innerHTML = '';
+    const maxRand = (op === '×' || op === '÷') ? 55 : 28;
+    const cards = [ans];
+    while(cards.length < 6) {
+        let r = Math.floor(Math.random()*maxRand)+1;
+        if(!cards.includes(r)) cards.push(r);
+    }
+    cards.sort(()=> Math.random()-0.5).forEach(n => {
+        const c = document.createElement('button');
+        c.type = 'button'; c.className = 'card'; c.innerText = n;
+        c.addEventListener('click', ()=> play(n, ans));
+        hand.appendChild(c);
+    });
+
+    startTimer();
+    if(Math.random() < 0.22) say('enemy', pick(monster.taunts));
+}
+
+/* ══════════════════════════════════════
+   TIMER
+══════════════════════════════════════ */
+function startTimer() {
+    clearInterval(timerInterval);
+    let timeLeft = 100;
+    let speed = 0.38 + (floor * 0.035);
+    if(floor > 20) speed += Math.floor((floor-20)/5) * 0.13;
+    timerInterval = setInterval(()=>{
+        timeLeft -= speed;
+        const fill = document.getElementById('timer-fill');
+        fill.style.width  = Math.max(0,timeLeft) + '%';
+        fill.className    = timeLeft < 22 ? 'danger' : timeLeft < 48 ? 'warning' : '';
+        if(timeLeft <= 0){ clearInterval(timerInterval); play(-999, 0); }
+    }, 100);
+}
+
+/* ══════════════════════════════════════
+   PLAY (answer handling)
+══════════════════════════════════════ */
+function play(n, ans) {
+    if(isBusy) return;
+    try{ ac().resume(); }catch(e){}
+    isBusy = true;
+    clearInterval(timerInterval);
+    document.querySelectorAll('.card').forEach(c => c.disabled = true);
+
+    if(n === ans) {
+        // ── CORRECT ──
+        combo++;
+        score += 10 * Math.max(1, combo);
+        updateCombo(); updateScore();
+
+        const slot = document.getElementById('the-slot');
+        slot.innerText = ans; slot.className = 'slot filled';
+
+        document.querySelectorAll('.card').forEach(c => {
+            if(+c.innerText === ans) c.classList.add('correct');
+        });
+
+        if(combo >= 3) SFX.combo(); else SFX.hit();
+        say('hero', combo >= 5 ? '🔥 x' + combo + '!' : pick(['Hiyah!','Got you!','Take that!','Nice!','Nailed it!']));
+        flash('#3DD68C');
+
+        // Trigger sparkles at slot location
+        const slotEl = document.getElementById('the-slot');
+        if(slotEl) {
+            const rect  = slotEl.getBoundingClientRect();
+            const sRect = document.getElementById('stage').getBoundingClientRect();
+            sparkles(rect.left - sRect.left + rect.width/2, sRect.bottom - rect.bottom + rect.height/2);
+        }
+
+        document.getElementById('hero-wrap').classList.add('hero-attack');
+        setTimeout(()=>{
+            document.getElementById('hero-wrap').classList.remove('hero-attack');
+            enemyHP--;
+            if(enemyHP > 0) {
+                document.getElementById('hp-fill').style.width = (enemyHP/3*100)+'%';
+                document.getElementById('enemy').classList.add('enemy-shake');
+                popNum('💥 HIT!','good');
+                setTimeout(()=>{
+                    document.getElementById('enemy').classList.remove('enemy-shake');
+                    isBusy = false; newRound();
+                }, 430);
+            } else {
+                document.getElementById('enemy').classList.add('enemy-hit');
+                popNum('⚡ KO!','good');
+                if(combo >= 4) popStars();
+                if(floor % 5 === 0){ SFX.bossKill(); confetti(70); } else SFX.levelup();
+                setTimeout(()=>{
+                    const e = document.getElementById('enemy');
+                    e.className = ''; e.style.transform = ''; e.style.opacity = '';
+                    floor++; isBusy = false; init();
+                }, 700);
+            }
+        }, 460);
+
+    } else {
+        // ── WRONG or TIMEOUT ──
+        const isTimeout = (n === -999);
+        combo = 0; updateCombo();
+
+        if(isTimeout) {
+            SFX.timeout(); flash('#EF4444');
+            say('enemy','⏰ TOO SLOW!'); popNum('⏰ TIME!','bad');
+        } else {
+            SFX.wrong(); flash('#EF4444');
+            document.querySelectorAll('.card').forEach(c => {
+                if(+c.innerText === n) c.classList.add('wrong');
+            });
+            say('enemy', pick(monster.taunts));
+            popNum('✗ MISS!','bad');
+        }
+
+        document.getElementById('hero-wrap').classList.add('hero-hurt');
+        setTimeout(()=> document.getElementById('hero-wrap').classList.remove('hero-hurt'), 380);
+
+        playerHP--;
+        updateHP();
+
+        if(playerHP <= 0) {
+            SFX.over(); setTimeout(gameOver, 700);
+        } else {
+            setTimeout(()=>{ isBusy = false; newRound(); }, 700);
+        }
+    }
+}
+
+/* ══════════════════════════════════════
+   GAME OVER
+══════════════════════════════════════ */
+function gameOver() {
+    clearInterval(timerInterval);
+    const best  = getBest();
+    const isNew = floor > best;
+    if(isNew) setBest(floor);
+
+    document.getElementById('go-emoji').innerText = floor > 20 ? '🏆' : floor > 10 ? '⭐' : floor > 5 ? '😤' : '💀';
+    document.getElementById('go-title').innerText = floor > 20 ? 'Legendary!' : floor > 10 ? 'Amazing Fight!' : floor > 5 ? 'Good Try!' : 'Tower Broken!';
+    document.getElementById('go-sub').innerText   = floor > 10 ? "You're getting stronger every time!" : "Keep practising — maths is your power!";
+    document.getElementById('go-floor').innerText = 'Floor ' + floor;
+    document.getElementById('go-score').innerText = score.toLocaleString();
+    document.getElementById('go-best').innerText  = 'F' + (isNew ? floor : best);
+    document.getElementById('new-best-tag').style.display = isNew ? 'inline-block' : 'none';
+    if(isNew) confetti(90);
+
+    document.getElementById('go-overlay').classList.add('show');
+}
+
+function restartGame() {
+    document.getElementById('go-overlay').classList.remove('show');
+    floor = 1; playerHP = 3; combo = 0; score = 0;
+    init();
+}
+
+/* ══════════════════════════════════════
+   BOOT
+══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', ()=>{
+    init();
+    document.getElementById('home-btn').addEventListener('click',()=>{
+        clearInterval(timerInterval);
+        window.location.href = '../';
+    });
+    document.getElementById('go-retry').addEventListener('click', restartGame);
+    document.getElementById('go-home').addEventListener('click',()=>{ window.location.href = '../'; });
+});
 </script>
+
 </body>
 </html>
