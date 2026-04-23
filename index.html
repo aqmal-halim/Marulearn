@@ -38,20 +38,19 @@
             position: relative;
         }
 
-        .header { margin-bottom: 15px; position: relative; }
-        
         .back-btn {
-            position: absolute; left: 0; top: 0;
-            background: #f5f6fa; color: #7f8fa6;
-            text-decoration: none; padding: 8px 12px;
-            border-radius: 12px; font-weight: 700; font-size: 0.9rem;
-            box-shadow: 0 3px 0 #dcdde1; transition: 0.2s;
+            position: absolute; top: 20px; left: 20px;
+            background: white; border: none; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.2s; z-index: 10;
         }
-        .back-btn:active { transform: translateY(2px); box-shadow: none; }
+        .back-btn:active { transform: scale(0.9); }
 
-        h1 { color: #2f3640; font-size: 1.8rem; font-weight: 700; margin: 10px 0; }
-        
-        .stats { display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .header { margin-top: 10px; margin-bottom: 15px; }
+        h1 { color: #2f3640; font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+        .stats { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; opacity: 0; transition: 0.3s; }
+        .stats.active { opacity: 1; }
 
         .level-pill {
             background: var(--primary);
@@ -60,24 +59,30 @@
             box-shadow: 0 4px 0 var(--primary-dark);
         }
 
-        #grid {
-            display: grid; gap: 10px;
-            margin-bottom: 25px;
-            aspect-ratio: 1;
+        #timer-container {
+            width: 100%; height: 12px;
+            background: #eee; border-radius: 6px;
+            overflow: hidden; margin-bottom: 20px;
+            border: 2px solid white; visibility: hidden;
         }
+        #timer-bar {
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, #4cd137, #fbc531);
+        }
+
+        #grid { display: grid; gap: 10px; margin-bottom: 25px; aspect-ratio: 1; }
 
         .tile {
             background: var(--tile-bg);
             border-radius: 18px;
-            position: relative;
-            cursor: pointer;
+            position: relative; cursor: pointer;
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
             box-shadow: 0 6px 0 rgba(0,0,0,0.05);
             display: flex; align-items: center; justify-content: center;
         }
         .tile:active { transform: scale(0.9) rotate(10deg); }
         .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); cursor: default; }
-        .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; cursor: default; }
+        .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; }
 
         svg.pipe { width: 80%; height: 80%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .pipe-path { fill: none; stroke: var(--pipe-metal); stroke-width: 20; stroke-linecap: round; }
@@ -89,7 +94,7 @@
         }
         .tile.flow .water-path { stroke-dashoffset: 0; }
 
-        .controls { display: flex; gap: 15px; }
+        .controls { display: flex; gap: 10px; }
         button {
             flex: 1; padding: 15px; border-radius: 20px;
             border: none; font-weight: 700; font-size: 1rem;
@@ -117,6 +122,8 @@
 </head>
 <body>
 
+<a href="https://aqmal-halim.github.io/Marulearn/" class="back-btn">🏠</a>
+
 <div id="celebration">
     <div class="modal">
         <h2 style="font-size: 2.2rem;">Splashtastic! 💦</h2>
@@ -130,16 +137,17 @@
 
 <div id="game-card">
     <div class="header">
-        <a href="https://aqmal-halim.github.io/Marulearn/" class="back-btn">← Home</a>
-        <h1>Hydro Quest 💧</h1>
-        <div class="stats">
+        <div class="stats" id="stats-header">
             <span class="level-pill" id="level-txt">Level 1</span>
+            <span style="font-weight:700; color:#7f8fa6" id="timer-text">--s</span>
         </div>
+        <h1>Hydro Quest 💧</h1>
     </div>
+    <div id="timer-container"><div id="timer-bar"></div></div>
     <div id="grid"></div>
     <div class="controls">
-        <button class="btn-sec" onclick="initGame()">Shuffle</button>
-        <button class="btn-main" id="valve-btn" onclick="startFlow()">Open Valve!</button>
+        <button class="btn-sec" id="shuffle-btn" onclick="initGame()">Shuffle</button>
+        <button class="btn-main" id="action-btn" onclick="handleAction()">Start Quest!</button>
     </div>
 </div>
 
@@ -148,41 +156,48 @@
         ctx: null,
         init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
         playClick() {
-            this.init();
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(400, this.ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
         },
         playBubble() {
-            this.init();
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(200, this.ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+        },
+        playWin() {
+            this.init(); [440, 554.37, 659.25, 880].forEach((f, i) => {
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.frequency.value = f; gain.gain.setValueAtTime(0.1, this.ctx.currentTime + i*0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i*0.1 + 0.5);
+                osc.connect(gain); gain.connect(this.ctx.destination); osc.start(this.ctx.currentTime + i*0.1); osc.stop(this.ctx.currentTime + i*0.1 + 0.5);
+            });
+        },
+        playFail() {
+            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+            osc.frequency.setValueAtTime(150, this.ctx.currentTime); osc.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.4);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.4);
         }
     };
 
     let size = 3;
     let tiles = [];
     let isFlowing = false;
+    let gameActive = false;
+    let timer;
+    let timeLeft = 0;
     const gridEl = document.getElementById('grid');
 
     const SVG_PIPES = {
         straight: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 0 50 L 100 50"/><path class="water-path" d="M 0 50 L 100 50"/></svg>`,
         elbow: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 50 0 Q 50 50 100 50"/><path class="water-path" d="M 50 0 Q 50 50 100 50"/></svg>`,
-        start: `<svg viewBox="0 0 100 100" class="pipe"><rect x="10" y="35" width="20" height="30" rx="5" fill="#718093" /><path class="pipe-path" d="M 30 50 L 100 50"/><path class="water-path" d="M 30 50 L 100 50"/></svg>`,
-        end: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 0 50 L 70 50"/><rect x="70" y="30" width="10" height="40" rx="2" fill="#718093" /><path class="water-path" d="M 0 50 L 70 50"/></svg>`
+        start: `<svg viewBox="0 0 100 100" class="pipe"><circle cx="30" cy="50" r="15" fill="#718093" /><path class="pipe-path" d="M 30 50 L 100 50"/><path class="water-path" d="M 30 50 L 100 50"/></svg>`,
+        end: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 0 50 L 70 50"/><circle cx="70" cy="50" r="12" fill="#4cd137" /><path class="water-path" d="M 0 50 L 70 50"/></svg>`
     };
 
     function generatePath() {
@@ -206,9 +221,18 @@
     }
 
     function initGame() {
+        clearInterval(timer);
         isFlowing = false;
+        gameActive = false;
+        timeLeft = 10 + (size - 3) * 5;
+        
+        document.getElementById('stats-header').classList.remove('active');
+        document.getElementById('timer-container').style.visibility = 'hidden';
+        document.getElementById('action-btn').innerText = 'Start Quest!';
+        document.getElementById('timer-text').innerText = timeLeft + 's';
         document.getElementById('level-txt').innerText = `Level ${size-2}`;
         document.getElementById('celebration').classList.remove('active');
+        
         gridEl.innerHTML = '';
         gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         const path = generatePath();
@@ -225,9 +249,6 @@
                 type = (diff === 2 || diff === size*2) ? 'straight' : 'elbow';
             }
             const tile = { id: i, type: type, rotation: Math.floor(Math.random() * 4), isStart: i === 0, isEnd: i === size*size-1 };
-            // Fix Start/End Rotation
-            if(tile.isStart) tile.rotation = 0; // Always point right
-            if(tile.isEnd) tile.rotation = 0; // Always accept from left
             tiles.push(tile);
             renderTile(tile);
         }
@@ -240,12 +261,35 @@
         const svg = div.querySelector('svg');
         svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
         div.onclick = () => {
-            if(isFlowing || tile.isStart || tile.isEnd) return;
+            if(isFlowing || tile.isStart) return;
             AudioEngine.playClick();
             tile.rotation = (tile.rotation + 1) % 4;
             svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
         };
         gridEl.appendChild(div);
+    }
+
+    function handleAction() {
+        if (!gameActive) {
+            gameActive = true;
+            document.getElementById('stats-header').classList.add('active');
+            document.getElementById('timer-container').style.visibility = 'visible';
+            document.getElementById('action-btn').innerText = 'Open Valve!';
+            startTimer();
+        } else {
+            startFlow();
+        }
+    }
+
+    function startTimer() {
+        const bar = document.getElementById('timer-bar');
+        bar.style.transition = 'none'; bar.style.width = '100%';
+        setTimeout(() => { bar.style.transition = `width ${timeLeft}s linear`; bar.style.width = '0%'; }, 50);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + 's';
+            if(timeLeft <= 0) { clearInterval(timer); startFlow(); }
+        }, 1000);
     }
 
     function getConnectors(tile) {
@@ -254,7 +298,6 @@
         else if(tile.type === 'end') base = [0, 0, 0, 1];
         else if(tile.type === 'straight') base = [0, 1, 0, 1];
         else base = [1, 1, 0, 0];
-        
         for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
         return base;
     }
@@ -262,6 +305,7 @@
     async function startFlow() {
         if(isFlowing) return;
         isFlowing = true;
+        clearInterval(timer);
         let queue = [0]; let visited = new Set(); let won = false;
         while(queue.length > 0) {
             let currIdx = queue.shift();
@@ -287,11 +331,8 @@
                 }
             });
         }
-        if(won) document.getElementById('celebration').classList.add('active');
-        else { 
-            isFlowing = false; 
-            tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); 
-        }
+        if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
+        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); startTimer(); }
     }
 
     function nextLevel() { if(size < 6) size++; initGame(); }
