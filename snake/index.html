@@ -158,7 +158,6 @@
     .btn-new { background: var(--purple); }
     .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
 
-    /* Overlay for Start & Game Over */
     .overlay {
       position: fixed; inset: 0; background: rgba(45, 58, 74, 0.85);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -175,6 +174,8 @@
     }
     .toast.show { transform: translateY(0); }
 
+    .best-label { font-size: 0.8rem; color: var(--yellow); font-weight: 800; text-transform: uppercase; margin-top: 5px; }
+
     @media (max-width: 400px) { :root { --tile-size: 55px; --gap: 8px; } }
   </style>
 </head>
@@ -185,13 +186,15 @@
 
 <div id="start-overlay" class="overlay">
   <h2>Marulearn</h2>
-  <p style="margin-bottom:20px; font-size:1.2rem;">Find the path to the target before time runs out!</p>
-  <button class="btn btn-new" style="flex:none; width:200px;" onclick="startGame()">PLAY 🎮</button>
+  <p style="margin-bottom:10px; font-size:1.2rem;">Find the path to the target!</p>
+  <p id="start-best" class="best-label">Best: 0</p>
+  <button class="btn btn-new" style="flex:none; width:200px; margin-top:20px;" onclick="startGame()">PLAY 🎮</button>
 </div>
 
 <div id="gameover-overlay" class="overlay hidden">
   <h2>Game Over!</h2>
-  <p id="final-score" style="margin-bottom:20px; font-size:1.5rem;">Score: 0</p>
+  <p id="final-score" style="font-size:1.5rem; margin-bottom:5px;">Score: 0</p>
+  <p id="final-best" class="best-label" style="font-size:1rem; margin-bottom:20px;">Personal Best: 0</p>
   <button class="btn btn-new" style="flex:none; width:200px;" onclick="startGame()">RETRY 🔄</button>
 </div>
 
@@ -200,7 +203,8 @@
     <div class="nav-top">
       <a href="https://aqmal-halim.github.io/Marulearn/index.html" class="home-btn">🏠</a>
       <div class="logo">Maru<span>learn</span> Math</div>
-      <div style="width:45px;"></div> </div>
+      <div style="width:45px;"></div>
+    </div>
     
     <div class="stats-bar">
       <div class="stat-card">
@@ -234,7 +238,10 @@
       <button class="btn btn-shuffle" onclick="shuffle()">🔀 Shuffle</button>
       <button class="btn btn-new" onclick="resetCurrentGame()">🌟 Reset</button>
     </div>
-    <p style="text-align:center; font-size:0.7rem; color:#718096; font-weight:700;">Score: <span id="score-text">0</span></p>
+    <div style="display:flex; justify-content: space-between; align-items:center; padding: 0 10px;">
+        <p style="font-size:0.8rem; color:#718096; font-weight:700;">Score: <span id="score-text">0</span></p>
+        <p style="font-size:0.8rem; color:var(--orange); font-weight:800;">Best: <span id="best-text">0</span></p>
+    </div>
   </div>
 </div>
 
@@ -242,11 +249,26 @@
   const state = {
     target: 0, score: 0, level: 1, lives: 5, timeLeft: 20,
     currentSum: 0, selected: [], clearedInLevel: 0, levelUpAt: 6,
-    isDragging: false, timerId: null, active: false
+    isDragging: false, timerId: null, active: false, personalBest: 0
   };
 
   const colors = ['#ffeaa7', '#fab1a0', '#a29bfe', '#81ecec', '#55efc4', '#ff7675'];
   let audioCtx;
+
+  // Load High Score on Load
+  window.onload = () => {
+    const saved = localStorage.getItem('marulearn_best');
+    if (saved) {
+      state.personalBest = parseInt(saved);
+      updateBestDisplays();
+    }
+  };
+
+  function updateBestDisplays() {
+    document.getElementById('best-text').textContent = state.personalBest;
+    document.getElementById('start-best').textContent = `Best: ${state.personalBest}`;
+    document.getElementById('final-best').textContent = `Personal Best: ${state.personalBest}`;
+  }
 
   function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -311,6 +333,14 @@
   function endGame() {
     state.active = false;
     clearInterval(state.timerId);
+    
+    // Check for Personal Best
+    if (state.score > state.personalBest) {
+      state.personalBest = state.score;
+      localStorage.setItem('marulearn_best', state.personalBest);
+    }
+    
+    updateBestDisplays();
     document.getElementById('final-score').textContent = `Final Score: ${state.score}`;
     document.getElementById('gameover-overlay').classList.remove('hidden');
   }
@@ -382,7 +412,14 @@
 
   function handleMatch() {
     playSound('match');
+    const oldScore = state.score;
     state.score += (state.selected.length * 10 * state.level);
+    
+    // Live record update feedback
+    if (state.score > state.personalBest && oldScore <= state.personalBest && state.personalBest > 0) {
+      showToast("NEW BEST SCORE! 🏆");
+    }
+
     state.clearedInLevel++;
     state.selected.forEach(t => t.classList.add('clearing'));
     setTimeout(() => {
@@ -432,7 +469,6 @@
     if (el && el.classList.contains('tile')) enterTile(el);
   });
 
-  // BG Animation
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
   function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
