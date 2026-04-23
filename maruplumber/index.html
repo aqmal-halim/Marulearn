@@ -3,299 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MaruPlumber: Hydro Quest</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Hydro Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00a8ff;
-            --primary-dark: #0097e6;
-            --accent: #fbc531;
-            --bg-gradient: linear-gradient(135deg, #74b9ff, #a29bfe);
-            --tile-bg: rgba(255, 255, 255, 0.8);
-            --pipe-metal: #dcdde1;
-            --pipe-shadow: #718093;
-            --water: #00d2ff;
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --surface-2: #1a2235;
+            --surface-3: #1e2d40;
+            --border: rgba(99,179,237,0.15);
+            --border-bright: rgba(99,179,237,0.35);
+            --water: #38bdf8;
+            --water-dark: #0ea5e9;
+            --water-glow: rgba(56,189,248,0.4);
+            --pipe: #2d3a4f;
+            --pipe-light: #3d5068;
+            --pipe-rim: #4a6080;
+            --accent: #f59e0b;
+            --accent-glow: rgba(245,158,11,0.4);
+            --green: #34d399;
+            --green-glow: rgba(52,211,153,0.4);
+            --red: #f87171;
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --text-dim: #94a3b8;
+            --radius: 16px;
+            --tile-size: 72px;
+            --gap: 8px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fredoka', sans-serif; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; overflow: hidden; }
+
         body {
-            background: var(--bg-gradient);
-            height: 100dvh;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; padding: 10px;
-        }
-
-        .back-home {
-            position: absolute; top: 20px; left: 20px;
-            background: white; width: 45px; height: 45px;
-            border-radius: 15px; display: flex; align-items: center;
-            justify-content: center; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            z-index: 10; transition: 0.2s;
-        }
-        .back-home:active { transform: scale(0.9); }
-
-        #game-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 40px;
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(255,255,255,0.5);
-            text-align: center;
+            background: var(--bg);
+            font-family: 'Nunito', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
             position: relative;
         }
 
-        .header { margin-bottom: 25px; }
-        h1 { color: #2f3640; font-size: 2rem; font-weight: 700; margin-bottom: 10px; }
-        .stats { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
+        .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.07; animation: blobDrift 20s ease-in-out infinite alternate; }
+        .bg-blob:nth-child(1) { width: 400px; height: 400px; background: var(--water); top: -100px; left: -100px; }
+        .bg-blob:nth-child(2) { width: 300px; height: 300px; background: var(--accent); bottom: -80px; right: -80px; animation-delay: -5s; }
+        .bg-grid { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px); background-size: 40px 40px; }
 
-        .level-pill {
-            background: var(--primary);
-            color: white; padding: 8px 20px;
-            border-radius: 20px; font-weight: 600;
-            box-shadow: 0 4px 0 var(--primary-dark);
-        }
+        @keyframes blobDrift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,30px) scale(1.15); } }
 
-        #grid {
-            display: grid; gap: 10px;
-            margin-bottom: 25px;
-            aspect-ratio: 1;
-        }
+        #app { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+        .header { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--water), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo span { -webkit-text-fill-color: var(--text); }
+        .badge { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 6px 14px; font-size: 0.8rem; font-family: 'Space Mono', monospace; }
+        .badge.highlight { border-color: var(--border-bright); color: var(--water); }
 
-        .tile {
-            background: var(--tile-bg);
-            border-radius: 18px;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.05);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .tile:active { transform: scale(0.9) rotate(10deg); }
-        .tile.is-start { background: #fff1c1; border: 3px solid var(--accent); }
-        .tile.is-end { background: #c1ffcf; border: 3px solid #4cd137; }
+        .stats-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .stat-value { font-size: 1.1rem; font-weight: 900; font-family: 'Space Mono', monospace; }
+        .stat-value.water { color: var(--water); }
+        .stat-divider { width: 1px; height: 30px; background: var(--border); }
 
-        svg.pipe { width: 80%; height: 80%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .pipe-path { fill: none; stroke: var(--pipe-metal); stroke-width: 20; stroke-linecap: round; }
-        
-        .water-path {
-            fill: none; stroke: var(--water); stroke-width: 12;
-            stroke-linecap: round; stroke-dasharray: 100;
-            stroke-dashoffset: 100; transition: stroke-dashoffset 0.5s ease-in-out;
-        }
-        .tile.flow .water-path { stroke-dashoffset: 0; }
+        .diff-row { display: flex; gap: 6px; width: 100%; }
+        .diff-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.75rem; }
+        .diff-btn.active { border-color: var(--water); color: var(--water); background: var(--surface-3); }
 
-        .controls { display: flex; gap: 15px; }
-        button {
-            flex: 1; padding: 15px; border-radius: 20px;
-            border: none; font-weight: 700; font-size: 1rem;
-            cursor: pointer; transition: 0.2s;
-        }
-        .btn-main { background: var(--primary); color: white; box-shadow: 0 6px 0 var(--primary-dark); }
-        .btn-main:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--primary-dark); }
-        .btn-sec { background: #f5f6fa; color: #7f8fa6; }
+        .grid-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px; box-shadow: 0 0 40px rgba(0,0,0,0.4); }
+        #grid { display: grid; gap: var(--gap); aspect-ratio: 1; }
 
-        #celebration {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; color: white; backdrop-filter: blur(8px);
-        }
-        #celebration.active { display: flex; }
-        .modal { 
-            background: white; padding: 35px; border-radius: 35px; 
-            color: #2f3640; text-align: center; transform: scale(0);
-            animation: popIn 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 85%; max-width: 340px;
-        }
-        @keyframes popIn { to { transform: scale(1); } }
-        .modal-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .tile { position: relative; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: transform 0.1s; overflow: hidden; }
+        .tile:active { transform: scale(0.92); }
+        .tile.locked { cursor: default; }
+        .tile.flowing { border-color: var(--water); box-shadow: 0 0 15px var(--water-glow); }
+        .tile.is-end.flowing { border-color: var(--green); box-shadow: 0 0 20px var(--green-glow); }
+
+        .pipe-svg { width: 100%; height: 100%; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .p-tube { fill: none; stroke: var(--pipe); stroke-width: 12; stroke-linecap: round; }
+        .p-water { fill: none; stroke: var(--water); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 0.4s; }
+        .tile.flowing .p-water { stroke-dashoffset: 0; }
+
+        .controls { display: flex; gap: 10px; width: 100%; }
+        .btn { flex: 1; padding: 14px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn-primary { background: var(--water); color: var(--bg); }
+        .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; display: none; align-items: center; justify-content: center; }
+        .modal-backdrop.active { display: flex; }
+        .modal { background: var(--surface); padding: 30px; border-radius: 24px; text-align: center; border: 1px solid var(--water); max-width: 300px; }
+
+        .toast { position: fixed; top: 20px; background: var(--surface-2); padding: 10px 20px; border-radius: 10px; border: 1px solid var(--border); transition: 0.3s; opacity: 0; pointer-events: none; }
+        .toast.show { opacity: 1; top: 30px; }
     </style>
 </head>
 <body>
 
-<a href="https://aqmal-halim.github.io/Marulearn/" class="back-home">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2f3640" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-</a>
+<div class="bg-layer"><div class="bg-blob"></div><div class="bg-blob"></div></div>
+<div class="bg-grid"></div>
+<div class="toast" id="toast"></div>
 
-<div id="celebration">
+<div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
-        <h2 style="font-size: 2.2rem;">Splashtastic! 💦</h2>
-        <p style="margin: 10px 0 10px; color: #7f8fa6;">The garden is perfectly watered!</p>
-        <div class="modal-btns">
-            <button class="btn-main" onclick="nextLevel()">Next Difficulty</button>
-            <button class="btn-sec" onclick="initGame()">Retry Level</button>
-        </div>
+        <h2 id="modal-title">Flow Complete!</h2>
+        <p style="margin: 15px 0; color: var(--text-dim)">Water is flowing smoothly!</p>
+        <button class="btn btn-primary" onclick="Game.init()" style="width: 100%">Play Again</button>
     </div>
 </div>
 
-<div id="game-card">
+<div id="app">
     <div class="header">
-        <h1>Hydro Quest 💧</h1>
-        <div class="stats">
-            <span class="level-pill" id="level-txt">Level 1</span>
+        <div class="logo">Hydro<span>Quest</span></div>
+        <div class="header-right">
+            <div class="badge highlight" id="level-badge">LVL 1</div>
         </div>
     </div>
 
-    <div id="grid"></div>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">Moves</div>
+            <div class="stat-value water" id="stat-moves">0</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-label">Time</div>
+            <div class="stat-value" id="stat-time">0:00</div>
+        </div>
+    </div>
+
+    <div class="diff-row" id="diff-row"></div>
+
+    <div class="grid-wrap">
+        <div id="grid"></div>
+    </div>
 
     <div class="controls">
-        <button class="btn-sec" onclick="initGame()">Shuffle</button>
-        <button class="btn-main" id="valve-btn" onclick="startFlow()">Start Quest!</button>
+        <button class="btn btn-secondary" onclick="Game.init()">⟳ Reset</button>
+        <button class="btn btn-primary" id="btn-flow" onclick="Game.startFlow()">▶ Flow</button>
     </div>
 </div>
 
 <script>
-    const AudioEngine = {
-        ctx: null,
-        init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-        playClick() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(400, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.1);
-        },
-        playBubble() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.2);
-        },
-        playWin() {
-            this.init(); [440, 554.37, 659.25, 880].forEach((f, i) => {
-                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-                osc.frequency.value = f; gain.gain.setValueAtTime(0.1, this.ctx.currentTime + i*0.1);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i*0.1 + 0.5);
-                osc.connect(gain); gain.connect(this.ctx.destination); osc.start(this.ctx.currentTime + i*0.1); osc.stop(this.ctx.currentTime + i*0.1 + 0.5);
-            });
-        },
-        playFail() {
-            this.init(); const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
-            osc.frequency.setValueAtTime(150, this.ctx.currentTime); osc.frequency.linearRampToValueAtTime(50, this.ctx.currentTime + 0.4);
-            gain.gain.setValueAtTime(0.2, this.ctx.currentTime); gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
-            osc.connect(gain); gain.connect(this.ctx.destination); osc.start(); osc.stop(this.ctx.currentTime + 0.4);
-        }
+const PIPES = {
+    straight: { conns: [1,0,1,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-tube" d="M 50 0 L 50 100"/><path class="p-water" d="M 50 0 L 50 100"/></svg>` },
+    elbow: { conns: [1,1,0,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><path class="p-tube" d="M 50 0 Q 50 50 100 50"/><path class="p-water" d="M 50 0 Q 50 50 100 50"/></svg>` },
+    start: { conns: [0,1,0,0], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="20" cy="50" r="10" fill="#f59e0b"/><path class="p-tube" d="M 20 50 L 100 50"/><path class="p-water" d="M 20 50 L 100 50"/></svg>` },
+    end: { conns: [0,0,0,1], svg: `<svg viewBox="0 0 100 100" class="pipe-svg"><circle cx="80" cy="50" r="10" fill="#34d399"/><path class="p-tube" d="M 0 50 L 80 50"/><path class="p-water" d="M 0 50 L 80 50"/></svg>` }
+};
+
+const DIFFICULTIES = [
+    { name: 'Easy', size: 3 }, { name: 'Medium', size: 4 }, { name: 'Hard', size: 5 }
+];
+
+const Game = (() => {
+    let state = { diffIdx: 0, tiles: [], moves: 0, isFlowing: false, startTime: null };
+
+    const init = (idx = state.diffIdx) => {
+        state.diffIdx = idx;
+        state.moves = 0;
+        state.isFlowing = false;
+        state.startTime = Date.now();
+        document.getElementById('modal-backdrop').classList.remove('active');
+        document.getElementById('btn-flow').disabled = false;
+        renderDiffs();
+        generateLevel();
     };
 
-    let size = 3;
-    let tiles = [];
-    let isFlowing = false;
-    const gridEl = document.getElementById('grid');
-
-    const SVG_PIPES = {
-        straight: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 0 50 L 100 50"/><path class="water-path" d="M 0 50 L 100 50"/></svg>`,
-        elbow: `<svg viewBox="0 0 100 100" class="pipe"><path class="pipe-path" d="M 50 0 Q 50 50 100 50"/><path class="water-path" d="M 50 0 Q 50 50 100 50"/></svg>`,
-        start: `<svg viewBox="0 0 100 100" class="pipe"><circle cx="30" cy="50" r="15" fill="#718093" /><path class="pipe-path" d="M 30 50 L 100 50"/><path class="water-path" d="M 30 50 L 100 50"/></svg>`,
-        end: `<svg viewBox="0 0 100 100" class="pipe"><circle cx="70" cy="50" r="15" fill="#718093" /><path class="pipe-path" d="M 0 50 L 70 50"/><path class="water-path" d="M 0 50 L 70 50"/></svg>`
-    };
-
-    function generatePath() {
+    const generateLevel = () => {
+        const size = DIFFICULTIES[state.diffIdx].size;
         const total = size * size;
-        let path = []; let curr = 0; let visited = new Set([0]);
-        while(curr !== total - 1) {
-            path.push(curr);
-            let neighbors = [];
-            let r = Math.floor(curr/size), c = curr%size;
-            if(r > 0) neighbors.push(curr-size);
-            if(r < size-1) neighbors.push(curr+size);
-            if(c > 0) neighbors.push(curr-1);
-            if(c < size-1) neighbors.push(curr+1);
-            neighbors = neighbors.filter(n => !visited.has(n));
-            if(neighbors.length === 0) return generatePath(); 
-            curr = neighbors[Math.floor(Math.random() * neighbors.length)];
-            visited.add(curr);
-        }
-        path.push(total-1);
-        return path;
-    }
-
-    function initGame() {
-        isFlowing = false;
-        document.getElementById('level-txt').innerText = `Level ${size-2}`;
-        document.getElementById('celebration').classList.remove('active');
+        const grid = document.getElementById('grid');
+        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        grid.innerHTML = '';
         
-        gridEl.innerHTML = '';
-        gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-        const path = generatePath();
-        tiles = [];
-        for(let i=0; i<size*size; i++) {
-            const isPath = path.includes(i);
-            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
-            if(i === 0) type = 'start';
-            else if(i === size*size-1) type = 'end';
-            else if(isPath) {
-                const idx = path.indexOf(i);
-                const prev = path[idx-1], next = path[idx+1];
-                const diff = Math.abs(prev - next);
-                type = (diff === 2 || diff === size*2) ? 'straight' : 'elbow';
-            }
-            const tile = { id: i, type: type, rotation: Math.floor(Math.random() * 4), isStart: i === 0, isEnd: i === size*size-1 };
-            tiles.push(tile);
-            renderTile(tile);
-        }
-    }
-
-    function renderTile(tile) {
-        const div = document.createElement('div');
-        div.className = `tile ${tile.isStart?'is-start':''} ${tile.isEnd?'is-end':''}`;
-        div.innerHTML = SVG_PIPES[tile.type];
-        const svg = div.querySelector('svg');
-        svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
-        div.onclick = () => {
-            if(isFlowing) return;
-            AudioEngine.playClick();
-            tile.rotation = (tile.rotation + 1) % 4;
-            svg.style.transform = `rotate(${tile.rotation * 90}deg)`;
-        };
-        gridEl.appendChild(div);
-    }
-
-    function getConnectors(tile) {
-        let base = (tile.type === 'start') ? [0, 1, 0, 0] : 
-                   (tile.type === 'end' ? [0, 0, 0, 1] : 
-                   (tile.type === 'straight' ? [0, 1, 0, 1] : [1, 1, 0, 0]));
-        for(let i=0; i<tile.rotation; i++) base.unshift(base.pop());
-        return base;
-    }
-
-    async function startFlow() {
-        if(isFlowing) return;
-        isFlowing = true;
-        let queue = [0]; let visited = new Set(); let won = false;
-        while(queue.length > 0) {
-            let currIdx = queue.shift();
-            if(visited.has(currIdx)) continue;
-            visited.add(currIdx);
-            const tileEl = gridEl.children[currIdx];
-            tileEl.classList.add('flow');
-            AudioEngine.playBubble();
-            await new Promise(r => setTimeout(r, 400));
-            if(tiles[currIdx].isEnd) { won = true; break; }
-            const conns = getConnectors(tiles[currIdx]);
-            const r = Math.floor(currIdx/size), c = currIdx%size;
-            const neighbors = [
-                {idx: currIdx-size, dir: 0, opp: 2, ok: r > 0},
-                {idx: currIdx+1, dir: 1, opp: 3, ok: c < size-1},
-                {idx: currIdx+size, dir: 2, opp: 0, ok: r < size-1},
-                {idx: currIdx-1, dir: 3, opp: 1, ok: c > 0}
-            ];
-            neighbors.forEach(n => {
-                if(n.ok && conns[n.dir] === 1) {
-                    const nextConns = getConnectors(tiles[n.idx]);
-                    if(nextConns[n.opp] === 1) queue.push(n.idx);
+        // 1. Generate Solvable Path using DFS
+        let path = [];
+        const findPath = (curr, visited) => {
+            if (curr === total - 1) return true;
+            let neighbors = [];
+            let r = Math.floor(curr / size), c = curr % size;
+            if (r > 0) neighbors.push(curr - size);
+            if (r < size - 1) neighbors.push(curr + size);
+            if (c > 0) neighbors.push(curr - 1);
+            if (c < size - 1) neighbors.push(curr + 1);
+            neighbors.sort(() => Math.random() - 0.5);
+            for (let next of neighbors) {
+                if (!visited.has(next)) {
+                    visited.add(next);
+                    path.push(next);
+                    if (findPath(next, visited)) return true;
+                    path.pop();
                 }
-            });
-        }
-        if(won) { AudioEngine.playWin(); document.getElementById('celebration').classList.add('active'); }
-        else { AudioEngine.playFail(); isFlowing = false; tiles.forEach((_, i) => gridEl.children[i].classList.remove('flow')); initGame(); }
-    }
+            }
+            return false;
+        };
 
-    function nextLevel() { if(size < 6) size++; initGame(); }
-    initGame();
+        let success = false;
+        while(!success) {
+            path = [0];
+            success = findPath(0, new Set([0]));
+        }
+
+        // 2. Create Tiles
+        state.tiles = new Array(total).fill(null).map((_, i) => {
+            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
+            if (i === 0) type = 'start';
+            if (i === total - 1) type = 'end';
+            return { type, rotation: Math.floor(Math.random() * 4), isLocked: (i === 0 || i === total - 1) };
+        });
+
+        // 3. Ensure path tiles are correctly typed (elbow vs straight)
+        for (let i = 1; i < path.length - 1; i++) {
+            const prev = path[i-1], curr = path[i], next = path[i+1];
+            const d1 = getDir(prev, curr, size), d2 = getDir(curr, next, size);
+            state.tiles[curr].type = (d1 % 2 === d2 % 2) ? 'straight' : 'elbow';
+        }
+
+        renderTiles();
+    };
+
+    const getDir = (from, to, size) => {
+        if (to === from - size) return 0; // up
+        if (to === from + 1) return 1;    // right
+        if (to === from + size) return 2; // down
+        return 3;                         // left
+    };
+
+    const renderTiles = () => {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        state.tiles.forEach((tile, i) => {
+            const div = document.createElement('div');
+            div.className = `tile ${tile.isLocked ? 'locked' : ''}`;
+            div.innerHTML = PIPES[tile.type].svg;
+            div.querySelector('.pipe-svg').style.transform = `rotate(${tile.rotation * 90}deg)`;
+            if (!tile.isLocked) div.onclick = () => rotateTile(i);
+            grid.appendChild(div);
+        });
+        updateUI();
+    };
+
+    const rotateTile = (i) => {
+        if (state.isFlowing) return;
+        state.tiles[i].rotation = (state.tiles[i].rotation + 1) % 4;
+        state.moves++;
+        renderTiles();
+    };
+
+    const startFlow = async () => {
+        state.isFlowing = true;
+        document.getElementById('btn-flow').disabled = true;
+        const size = DIFFICULTIES[state.diffIdx].size;
+        let curr = 0;
+        let fromDir = -1; 
+        const path = [];
+
+        while (true) {
+            const tile = state.tiles[curr];
+            const div = document.getElementById('grid').children[curr];
+            const baseConns = PIPES[tile.type].conns;
+            const conns = [...baseConns];
+            for(let r=0; r<tile.rotation; r++) conns.unshift(conns.pop());
+
+            if (fromDir !== -1 && conns[(fromDir + 2) % 4] !== 1) break; 
+
+            path.push(curr);
+            div.classList.add('flowing');
+            await new Promise(r => setTimeout(r, 300));
+            if (tile.type === 'end') {
+                document.getElementById('modal-backdrop').classList.add('active');
+                return;
+            }
+
+            let nextDir = -1;
+            for(let d=0; d<4; d++) {
+                if (conns[d] === 1 && d !== (fromDir + 2) % 4) { nextDir = d; break; }
+            }
+
+            let r = Math.floor(curr / size), c = curr % size;
+            if (nextDir === 0 && r > 0) { curr -= size; fromDir = 0; }
+            else if (nextDir === 1 && c < size - 1) { curr += 1; fromDir = 1; }
+            else if (nextDir === 2 && r < size - 1) { curr += size; fromDir = 2; }
+            else if (nextDir === 3 && c > 0) { curr -= 1; fromDir = 3; }
+            else break;
+        }
+
+        setTimeout(() => {
+            path.forEach(idx => document.getElementById('grid').children[idx].classList.remove('flowing'));
+            state.isFlowing = false;
+            document.getElementById('btn-flow').disabled = false;
+        }, 500);
+    };
+
+    const renderDiffs = () => {
+        const row = document.getElementById('diff-row');
+        row.innerHTML = '';
+        DIFFICULTIES.forEach((d, i) => {
+            const btn = document.createElement('button');
+            btn.className = `diff-btn ${i === state.diffIdx ? 'active' : ''}`;
+            btn.innerText = d.name;
+            btn.onclick = () => init(i);
+            row.appendChild(btn);
+        });
+    };
+
+    const updateUI = () => {
+        document.getElementById('stat-moves').innerText = state.moves;
+        document.getElementById('level-badge').innerText = `LVL ${state.diffIdx + 1}`;
+    };
+
+    setInterval(() => {
+        if (!state.isFlowing && state.startTime) {
+            const sec = Math.floor((Date.now() - state.startTime) / 1000);
+            document.getElementById('stat-time').innerText = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
+        }
+    }, 1000);
+
+    return { init, startFlow };
+})();
+
+window.onload = () => Game.init(0);
 </script>
 </body>
 </html>
