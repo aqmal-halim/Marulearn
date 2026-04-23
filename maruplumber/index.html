@@ -468,7 +468,6 @@
 </head>
 <body>
 
-<!-- Loading screen -->
 <div class="loading-screen" id="loading-screen">
     <div class="loading-logo">💧 Hydro Quest</div>
     <div class="loading-drops">
@@ -478,7 +477,6 @@
     </div>
 </div>
 
-<!-- Background -->
 <div class="sky-bg">
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
@@ -494,7 +492,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Win Modal -->
 <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
         <span class="modal-celebrate" id="modal-celebrate">🎉</span>
@@ -528,7 +525,6 @@
 </div>
 
 <div id="app">
-    <!-- Header -->
     <div class="header">
         <div>
             <div class="logo">💧 <span class="drop">Hydro</span><span class="quest">Quest</span></div>
@@ -540,7 +536,6 @@
         </div>
     </div>
 
-    <!-- Stats Bar -->
     <div class="stats-bar">
         <div class="stat-item">
             <div class="stat-label">💧 Moves</div>
@@ -563,16 +558,13 @@
         </div>
     </div>
 
-    <!-- Difficulty Row -->
     <div class="diff-row" id="diff-row"></div>
 
-    <!-- Mascot -->
     <div class="mascot-wrap">
         <div class="mascot" id="mascot">🐸</div>
         <div class="speech-bubble" id="speech-bubble">Rotate the pipes to guide the water from 🟡 to 🟢!</div>
     </div>
 
-    <!-- Game Grid -->
     <div class="grid-wrap" id="grid-wrap">
         <div class="grid-header">
             <div class="grid-title-badge" id="diff-label">3×3</div>
@@ -601,10 +593,8 @@
         </div>
     </div>
 
-    <!-- Hint -->
     <div class="hint-bar" id="hint-bar">Tap any pipe tile to rotate it clockwise!</div>
 
-    <!-- Controls -->
     <div class="controls">
         <button class="btn btn-secondary btn-undo" id="btn-undo" onclick="Game.undo()">
             ↩ Undo
@@ -671,14 +661,6 @@ const PIPES = {
             <path class="p-water"d="M ${sz/2} 0 Q ${sz/2} ${sz/2} ${sz} ${sz/2}" stroke-width="${sz*0.08}" fill="none" stroke-dasharray="${sz*1.6}" stroke-dashoffset="${sz*1.6}"/>
         </svg>`
     },
-    tee: {
-        conns: [0,1,1,1],
-        svg: sz => `<svg viewBox="0 0 ${sz} ${sz}" class="pipe-svg">
-            <path class="p-bg"   d="M 0 ${sz/2} L ${sz} ${sz/2} M ${sz/2} ${sz/2} L ${sz/2} ${sz}" stroke-width="${sz*0.2}" fill="none"/>
-            <path class="p-tube" d="M 0 ${sz/2} L ${sz} ${sz/2} M ${sz/2} ${sz/2} L ${sz/2} ${sz}" stroke-width="${sz*0.17}" fill="none"/>
-            <path class="p-water"d="M 0 ${sz/2} L ${sz} ${sz/2}" stroke-width="${sz*0.08}" fill="none" stroke-dasharray="${sz*1.4}" stroke-dashoffset="${sz*1.4}"/>
-        </svg>`
-    },
     start: {
         conns: [0,1,0,0],
         svg: sz => {
@@ -713,11 +695,11 @@ const PIPES = {
    DIFFICULTY CONFIG
 ═══════════════════════════════════════════════════════ */
 const DIFFS = [
-    { name: 'Easy',   emoji: '😊', size: 3, label: '3×3', teeChance: 0,    undos: 5, par: 4,  msgs: ['You got this! 💪','Easy peasy! 🌊','Ready to flow? 💧'] },
-    { name: 'Medium', emoji: '🤔', size: 4, label: '4×4', teeChance: 0.1,  undos: 4, par: 8,  msgs: ['Getting trickier! 🧩','Think it through! 🌀','You can do it! 🎯'] },
-    { name: 'Hard',   emoji: '😅', size: 5, label: '5×5', teeChance: 0.2,  undos: 3, par: 14, msgs: ['Challenge accepted! 🔥','Stay focused! 🎯','Engineer mode! 🔧'] },
-    { name: 'Expert', emoji: '🧠', size: 6, label: '6×6', teeChance: 0.3,  undos: 2, par: 22, msgs: ['Brain power! 🧠','Master plumber! 🔩','Almost impossible? 💎'] },
-    { name: 'Master', emoji: '🏆', size: 7, label: '7×7', teeChance: 0.35, undos: 1, par: 35, msgs: ['LEGEND MODE! 🏆','Are you human?! 🤯','Water wizard! 🌊'] },
+    { name: 'Easy',   emoji: '😊', size: 3, label: '3×3', undos: 5, par: 4,  msgs: ['You got this! 💪','Easy peasy! 🌊','Ready to flow? 💧'] },
+    { name: 'Medium', emoji: '🤔', size: 4, label: '4×4', undos: 4, par: 8,  msgs: ['Getting trickier! 🧩','Think it through! 🌀','You can do it! 🎯'] },
+    { name: 'Hard',   emoji: '😅', size: 5, label: '5×5', undos: 3, par: 14, msgs: ['Challenge accepted! 🔥','Stay focused! 🎯','Engineer mode! 🔧'] },
+    { name: 'Expert', emoji: '🧠', size: 6, label: '6×6', undos: 2, par: 22, msgs: ['Brain power! 🧠','Master plumber! 🔩','Almost impossible? 💎'] },
+    { name: 'Master', emoji: '🏆', size: 7, label: '7×7', undos: 1, par: 35, msgs: ['LEGEND MODE! 🏆','Are you human?! 🤯','Water wizard! 🌊'] },
 ];
 
 const WIN_MESSAGES = [
@@ -777,7 +759,6 @@ const Game = (() => {
             }
             if (!ok) continue;
         }
-        // fallback: snake path
         const p = []; for (let i = 0; i < total; i++) p.push(i); return p;
     };
 
@@ -819,7 +800,7 @@ const Game = (() => {
             } else if (pathIdx !== -1) {
                 const prev = path[pathIdx - 1], next = path[pathIdx + 1];
                 const fd = getDir(prev, i, sz), td = getDir(i, next, sz);
-                type = (opp(fd) === td) ? 'straight' : (Math.random() < diff.teeChance ? 'tee' : 'elbow');
+                type = (opp(fd) === td) ? 'straight' : 'elbow';
                 correctRot = getCorrectRot(type, fd, td);
                 rotation = (correctRot + 1 + rng(3)) % 4;
             } else {
@@ -872,7 +853,6 @@ const Game = (() => {
         const div = $('grid').children[i];
         div.querySelector('.pipe-svg').style.transform = `rotate(${tile.rotation * 90}deg)`;
 
-        // Ripple
         const rect = div.getBoundingClientRect();
         const rip = document.createElement('div');
         rip.className = 'ripple';
@@ -981,7 +961,6 @@ const Game = (() => {
             await new Promise(r => setTimeout(r, 280));
         }
 
-        // Fail
         clearInterval(S.timerID);
         SFX.fail(); setMascot('fail');
         for (let i = 0; i < tiles.length; i++) {
@@ -1003,7 +982,6 @@ const Game = (() => {
         const p = Math.round(pct * 100);
         $('flow-bar').style.width = `${p}%`;
         $('flow-pct').textContent = `${p}%`;
-        // Animate drops
         const drops = $('flow-drops').querySelectorAll('.flow-drop');
         drops.forEach((d, i) => {
             if (pct >= (i + 1) / drops.length) d.classList.add('filled');
@@ -1022,7 +1000,6 @@ const Game = (() => {
         $('res-score').textContent = score.toLocaleString();
         $('res-score-lbl').textContent = isNewBest ? '🏆 Best!' : 'Score';
 
-        // Stars in modal
         const mStars = $('modal-stars');
         mStars.innerHTML = '';
         for (let i = 0; i < 3; i++) {
@@ -1123,9 +1100,7 @@ const Game = (() => {
     return { init, undo, shuffle, replay, nextLevel, startFlow, showToast };
 })();
 
-/* ─── BOOT ─── */
 window.addEventListener('load', () => {
-    // Dismiss loading screen after fonts & layout ready
     setTimeout(() => {
         document.getElementById('loading-screen').classList.add('hidden');
         Game.init(0);
