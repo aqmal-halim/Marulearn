@@ -58,17 +58,16 @@
 
         #app { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
         
-        /* Header & Navigation Fixes */
         .header { width: 100%; display: flex; align-items: center; justify-content: space-between; }
         .logo-group { display: flex; align-items: center; gap: 12px; }
         .home-link { 
             display: flex; align-items: center; justify-content: center;
-            width: 36px; height: 36px; border-radius: 10px;
+            width: 38px; height: 38px; border-radius: 12px;
             background: var(--surface-2); border: 1px solid var(--border);
             color: var(--text-dim); text-decoration: none; font-size: 1.2rem;
             transition: all 0.2s;
         }
-        .home-link:hover { border-color: var(--water); color: var(--water); }
+        .home-link:hover { border-color: var(--water); color: var(--water); background: var(--surface-3); }
         .logo { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--water), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .logo span { -webkit-text-fill-color: var(--text); }
         
@@ -83,7 +82,7 @@
         .stat-divider { width: 1px; height: 30px; background: var(--border); }
 
         .diff-row { display: flex; gap: 6px; width: 100%; }
-        .diff-btn { flex: 1; padding: 8px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.75rem; }
+        .diff-btn { flex: 1; padding: 10px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.75rem; font-weight: 700; }
         .diff-btn.active { border-color: var(--water); color: var(--water); background: var(--surface-3); }
 
         .grid-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px; box-shadow: 0 0 40px rgba(0,0,0,0.4); }
@@ -101,14 +100,15 @@
         .tile.flowing .p-water { stroke-dashoffset: 0; }
 
         .controls { display: flex; gap: 10px; width: 100%; }
-        .btn { flex: 1; padding: 14px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .btn { flex: 1; padding: 14px; border-radius: 14px; border: none; font-weight: 800; cursor: pointer; transition: all 0.2s; }
         .btn-primary { background: var(--water); color: var(--bg); }
         .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; display: none; align-items: center; justify-content: center; }
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 100; display: none; align-items: center; justify-content: center; }
         .modal-backdrop.active { display: flex; }
-        .modal { background: var(--surface); padding: 30px; border-radius: 24px; text-align: center; border: 1px solid var(--water); max-width: 300px; }
+        .modal { background: var(--surface); padding: 30px; border-radius: 24px; text-align: center; border: 1px solid var(--water); max-width: 300px; width: 90%; }
     </style>
 </head>
 <body>
@@ -118,16 +118,16 @@
 
 <div class="modal-backdrop" id="modal-backdrop">
     <div class="modal">
-        <h2 id="modal-title">Flow Complete!</h2>
-        <p style="margin: 15px 0; color: var(--text-dim)">Excellent work, Engineer!</p>
-        <button class="btn btn-primary" onclick="Game.init()" style="width: 100%">Next Level</button>
+        <h2 id="modal-title" style="font-size: 1.8rem; font-weight: 900;">Flow Complete!</h2>
+        <p style="margin: 15px 0; color: var(--text-dim)">You successfully connected the system!</p>
+        <button class="btn btn-primary" onclick="Game.init()" style="width: 100%">Play Next</button>
     </div>
 </div>
 
 <div id="app">
     <div class="header">
         <div class="logo-group">
-            <a href="https://aqmal-halim.github.io/Marulearn/" class="home-link">🏠</a>
+            <a href="https://aqmal-halim.github.io/Marulearn/" class="home-link" title="Home">🏠</a>
             <div class="logo">Hydro<span>Quest</span></div>
         </div>
         <div class="header-right">
@@ -183,32 +183,6 @@ const Game = (() => {
         generateLevel();
     };
 
-    const generateLevel = () => {
-        const size = DIFFICULTIES[state.diffIdx].size;
-        const total = size * size;
-        const startIdx = 0;
-        const endIdx = total - 1;
-
-        // Create Path using BFS to ensure solvability
-        let path = findValidPath(startIdx, endIdx, size);
-        
-        state.tiles = new Array(total).fill(null).map((_, i) => {
-            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
-            if (i === startIdx) return { type: 'start', rotation: 0, isLocked: true };
-            if (i === endIdx) return { type: 'end', rotation: 0, isLocked: true };
-            return { type, rotation: Math.floor(Math.random() * 4), isLocked: false };
-        });
-
-        // Force tiles on the solution path to be the correct shapes
-        for (let i = 1; i < path.length - 1; i++) {
-            const prev = path[i-1], curr = path[i], next = path[i+1];
-            const d1 = getDir(prev, curr, size), d2 = getDir(curr, next, size);
-            state.tiles[curr].type = (d1 % 2 === d2 % 2) ? 'straight' : 'elbow';
-        }
-
-        renderTiles();
-    };
-
     const findValidPath = (start, end, size) => {
         let q = [[start]];
         let visited = new Set([start]);
@@ -231,6 +205,7 @@ const Game = (() => {
                 }
             }
         }
+        return null;
     };
 
     const getDir = (from, to, size) => {
@@ -240,9 +215,34 @@ const Game = (() => {
         return 3;                         // Left
     };
 
+    const generateLevel = () => {
+        const size = DIFFICULTIES[state.diffIdx].size;
+        const total = size * size;
+        const startIdx = 0;
+        const endIdx = total - 1;
+
+        let path = findValidPath(startIdx, endIdx, size);
+        
+        state.tiles = new Array(total).fill(null).map((_, i) => {
+            if (i === startIdx) return { type: 'start', rotation: 0, isLocked: true };
+            if (i === endIdx) return { type: 'end', rotation: 0, isLocked: true };
+            let type = Math.random() > 0.5 ? 'straight' : 'elbow';
+            return { type, rotation: Math.floor(Math.random() * 4), isLocked: false };
+        });
+
+        for (let i = 1; i < path.length - 1; i++) {
+            const prev = path[i-1], curr = path[i], next = path[i+1];
+            const d1 = getDir(prev, curr, size), d2 = getDir(curr, next, size);
+            state.tiles[curr].type = (d1 % 2 === d2 % 2) ? 'straight' : 'elbow';
+        }
+
+        renderTiles();
+    };
+
     const renderTiles = () => {
         const grid = document.getElementById('grid');
-        grid.style.gridTemplateColumns = `repeat(${DIFFICULTIES[state.diffIdx].size}, 1fr)`;
+        const size = DIFFICULTIES[state.diffIdx].size;
+        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         grid.innerHTML = '';
         state.tiles.forEach((tile, i) => {
             const div = document.createElement('div');
@@ -267,34 +267,42 @@ const Game = (() => {
         document.getElementById('btn-flow').disabled = true;
         const size = DIFFICULTIES[state.diffIdx].size;
         let curr = 0;
-        let fromDir = 3; // Start coming from the left wall
-        const path = [];
+        let fromDir = 3; // Flow starts from outside the left boundary
+        const pathIndices = [];
 
         while (true) {
             const tile = state.tiles[curr];
             const div = document.getElementById('grid').children[curr];
             
+            // Calculate active connections based on rotation
             const baseConns = PIPES[tile.type].conns;
             const conns = [...baseConns];
-            for(let r=0; r<tile.rotation; r++) conns.unshift(conns.pop());
+            for(let r=0; r < tile.rotation; r++) conns.unshift(conns.pop());
 
-            // Check if current pipe connects to the incoming flow
-            if (conns[(fromDir + 2) % 4] !== 1) break; 
+            // Is the pipe entry aligned with where the water is coming from?
+            const entrySide = (fromDir + 2) % 4;
+            if (conns[entrySide] !== 1) break; 
 
-            path.push(curr);
+            pathIndices.push(curr);
             div.classList.add('flowing');
             await new Promise(r => setTimeout(r, 250));
 
+            // Check if we hit the end
             if (tile.type === 'end') {
                 document.getElementById('modal-backdrop').classList.add('active');
                 return;
             }
 
+            // Find the exit direction (the side that isn't the entrySide)
             let nextDir = -1;
             for(let d=0; d<4; d++) {
-                if (conns[d] === 1 && d !== (fromDir + 2) % 4) { nextDir = d; break; }
+                if (conns[d] === 1 && d !== entrySide) { 
+                    nextDir = d; 
+                    break; 
+                }
             }
 
+            // Move to next tile
             let r = Math.floor(curr / size), c = curr % size;
             if (nextDir === 0 && r > 0) { curr -= size; fromDir = 0; }
             else if (nextDir === 1 && c < size - 1) { curr += 1; fromDir = 1; }
@@ -303,8 +311,9 @@ const Game = (() => {
             else break;
         }
 
+        // If flow stops before reaching end
         setTimeout(() => {
-            path.forEach(idx => document.getElementById('grid').children[idx].classList.remove('flowing'));
+            pathIndices.forEach(idx => document.getElementById('grid').children[idx].classList.remove('flowing'));
             state.isFlowing = false;
             document.getElementById('btn-flow').disabled = false;
         }, 600);
