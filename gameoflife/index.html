@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -26,18 +25,18 @@ body{
 /* ── START ── */
 .start-logo{font-size:5em;animation:bounce-in .6s cubic-bezier(.34,1.56,.64,1);margin-bottom:8px}
 @keyframes bounce-in{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.start-title{font-size:2.4em;font-weight:900;color:var(–text);margin-bottom:4px}
-.start-sub{color:var(–text2);font-size:.95em;margin-bottom:28px;text-align:center}
-.start-card{width:100%;max-width:380px;background:white;border-radius:28px;padding:28px 24px;box-shadow:0 8px 40px var(–shadow);border:3px solid var(–border)}
-.form-label{font-size:.75em;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(–text2);margin-bottom:6px;display:block}
-.form-input{width:100%;background:#fafafa;border:2px solid #e2e8f0;border-radius:14px;padding:12px 16px;font-family:inherit;font-size:1em;font-weight:700;color:var(–text);outline:none;margin-bottom:18px;transition:border-color .2s}
-.form-input:focus{border-color:var(–amber)}
+.start-title{font-size:2.4em;font-weight:900;color:var(--text);margin-bottom:4px}
+.start-sub{color:var(--text2);font-size:.95em;margin-bottom:28px;text-align:center}
+.start-card{width:100%;max-width:380px;background:white;border-radius:28px;padding:28px 24px;box-shadow:0 8px 40px var(--shadow);border:3px solid var(--border)}
+.form-label{font-size:.75em;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:6px;display:block}
+.form-input{width:100%;background:#fafafa;border:2px solid #e2e8f0;border-radius:14px;padding:12px 16px;font-family:inherit;font-size:1em;font-weight:700;color:var(--text);outline:none;margin-bottom:18px;transition:border-color .2s}
+.form-input:focus{border-color:var(--amber)}
 .gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
-.gender-btn{background:#f8fafc;border:2.5px solid #e2e8f0;border-radius:16px;padding:14px 10px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .15s;color:var(–text2)}
-.gender-btn.selected{background:#fffbeb;border-color:var(–amber);color:var(–amber)}
+.gender-btn{background:#f8fafc;border:2.5px solid #e2e8f0;border-radius:16px;padding:14px 10px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .15s;color:var(--text2)}
+.gender-btn.selected{background:#fffbeb;border-color:var(--amber);color:var(--amber)}
 .btn-start{width:100%;padding:16px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-family:inherit;font-weight:900;font-size:1.1em;border:none;border-radius:18px;cursor:pointer;box-shadow:0 5px 0 #b45309;transition:all .1s}
 .btn-start:active{transform:translateY(4px);box-shadow:0 1px 0 #b45309}
-.btn-continue{width:100%;max-width:380px;margin-top:12px;padding:13px;background:white;color:var(–indigo);font-family:inherit;font-weight:800;font-size:.95em;border:2.5px solid #c7d2fe;border-radius:16px;cursor:pointer;transition:all .15s}
+.btn-continue{width:100%;max-width:380px;margin-top:12px;padding:13px;background:white;color:var(--indigo);font-family:inherit;font-weight:800;font-size:.95em;border:2.5px solid #c7d2fe;border-radius:16px;cursor:pointer;transition:all .15s}
 .btn-continue:active{background:#eef2ff}
 
 /* ── GAME SCREEN ── */
@@ -45,49 +44,49 @@ body{
 
 /* top bar */
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.top-name{font-weight:900;font-size:1.2em;color:var(–text)}
+.top-name{font-weight:900;font-size:1.2em;color:var(--text)}
 .top-right{display:flex;align-items:center;gap:8px}
-.top-money{font-weight:800;font-size:.88em;color:var(–green);background:#d1fae5;padding:4px 10px;border-radius:20px}
-.save-indicator{font-size:.7em;font-weight:800;color:var(–green);background:#ecfdf5;padding:3px 8px;border-radius:10px;opacity:0;transition:opacity .4s}
+.top-money{font-weight:800;font-size:.88em;color:var(--green);background:#d1fae5;padding:4px 10px;border-radius:20px}
+.save-indicator{font-size:.7em;font-weight:800;color:var(--green);background:#ecfdf5;padding:3px 8px;border-radius:10px;opacity:0;transition:opacity .4s}
 .save-indicator.show{opacity:1}
-.btn-new{background:white;color:var(–red);border:2px solid #fee2e2;padding:6px 10px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer}
+.btn-new{background:white;color:var(--red);border:2px solid #fee2e2;padding:6px 10px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer}
 
 /* avatar card */
-.avatar-card{background:white;border-radius:26px;padding:20px 22px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:2.5px solid var(–border);display:flex;align-items:center;gap:18px;margin-bottom:12px;position:relative;overflow:hidden}
-.avatar-card::before{content:’’;position:absolute;top:0;right:0;width:120px;height:100%;opacity:.06;background:radial-gradient(circle at 80% 50%,var(–amber) 0%,transparent 70%)}
+.avatar-card{background:white;border-radius:26px;padding:20px 22px;box-shadow:0 4px 20px rgba(0,0,0,.06);border:2.5px solid var(--border);display:flex;align-items:center;gap:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.avatar-card::before{content:'';position:absolute;top:0;right:0;width:120px;height:100%;opacity:.06;background:radial-gradient(circle at 80% 50%,var(--amber) 0%,transparent 70%)}
 .ava-emoji{font-size:4.2em;line-height:1;animation:float 3s ease-in-out infinite;flex-shrink:0;transition:all .4s}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.ava-age{font-size:3em;font-weight:900;color:var(–amber);line-height:1}
-.ava-label{font-size:.75em;color:var(–text2);font-weight:700}
-.ava-stage{font-size:.9em;font-weight:800;color:var(–text)}
-.ava-job{font-size:.8em;color:var(–text2);font-weight:700;margin-top:2px}
+.ava-age{font-size:3em;font-weight:900;color:var(--amber);line-height:1}
+.ava-label{font-size:.75em;color:var(--text2);font-weight:700}
+.ava-stage{font-size:.9em;font-weight:800;color:var(--text)}
+.ava-job{font-size:.8em;color:var(--text2);font-weight:700;margin-top:2px}
 
 /* stats card */
 .stats-card{background:white;border-radius:22px;padding:18px;box-shadow:0 4px 20px rgba(0,0,0,.05);border:2.5px solid #e0f2fe;margin-bottom:12px}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .stat-head{display:flex;justify-content:space-between;margin-bottom:5px}
-.stat-name{font-size:.75em;font-weight:800;color:var(–text2)}
-.stat-val{font-size:.75em;font-weight:900;color:var(–text);transition:all .3s}
+.stat-name{font-size:.75em;font-weight:800;color:var(--text2)}
+.stat-val{font-size:.75em;font-weight:900;color:var(--text);transition:all .3s}
 .stat-val.pulse{animation:stat-pulse .5s}
-@keyframes stat-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(–green)}}
+@keyframes stat-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(--green)}}
 .stat-val.pulse-bad{animation:stat-pulse-bad .5s}
-@keyframes stat-pulse-bad{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(–red)}}
+@keyframes stat-pulse-bad{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(--red)}}
 .stat-bar{height:10px;background:#f1f5f9;border-radius:99px;overflow:hidden}
 .stat-fill{height:100%;border-radius:99px;transition:width .55s ease,background-color .55s}
 
 /* panel card */
 .panel-card{background:white;border-radius:22px;padding:18px 16px;box-shadow:0 4px 20px rgba(0,0,0,.05);border:2.5px solid #e2e8f0;margin-bottom:12px}
 .tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
-.tab-btn{padding:7px 14px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer;border:none;white-space:nowrap;background:#f8fafc;color:var(–text2);transition:all .15s}
-.tab-btn.on{background:var(–indigo);color:white}
+.tab-btn{padding:7px 14px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer;border:none;white-space:nowrap;background:#f8fafc;color:var(--text2);transition:all .15s}
+.tab-btn.on{background:var(--indigo);color:white}
 
 /* act items */
 .act-item{background:#fafafa;border-radius:16px;padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;border:2px solid transparent;margin-bottom:8px;transition:all .15s}
-.act-item:active{transform:scale(.97);border-color:var(–indigo);background:#eef2ff}
+.act-item:active{transform:scale(.97);border-color:var(--indigo);background:#eef2ff}
 .act-item *{pointer-events:none}
 .act-icon{font-size:1.8em;flex-shrink:0}
-.act-title{font-size:.9em;font-weight:800;color:var(–text)}
-.act-sub{font-size:.75em;color:var(–text2);font-weight:600}
+.act-title{font-size:.9em;font-weight:800;color:var(--text)}
+.act-sub{font-size:.75em;color:var(--text2);font-weight:600}
 
 /* log */
 .log-box{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#e2e8f0 transparent}
@@ -113,7 +112,7 @@ body{
 .trophy-item{background:#f8fafc;border-radius:16px;padding:12px 8px;text-align:center;border:2px solid #e2e8f0}
 .trophy-item.unlocked{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#f59e0b}
 .trophy-emoji{font-size:2em;margin-bottom:4px;display:block}
-.trophy-name{font-size:.7em;font-weight:800;color:var(–text);line-height:1.3}
+.trophy-name{font-size:.7em;font-weight:800;color:var(--text);line-height:1.3}
 .trophy-locked{filter:grayscale(1);opacity:.35}
 
 /* floating numbers */
@@ -123,23 +122,23 @@ body{
 
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.modal-card{background:white;border-radius:28px;padding:32px 24px;width:88%;max-width:370px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.2);border:3px solid var(–border);animation:modal-in .35s cubic-bezier(.34,1.56,.64,1)}
+.modal-card{background:white;border-radius:28px;padding:32px 24px;width:88%;max-width:370px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.2);border:3px solid var(--border);animation:modal-in .35s cubic-bezier(.34,1.56,.64,1)}
 @keyframes modal-in{from{transform:scale(.7) translateY(30px);opacity:0}to{transform:scale(1);opacity:1}}
 .modal-icon{font-size:4.5em;margin-bottom:10px}
-.modal-title{font-size:1.6em;font-weight:900;color:var(–text);margin-bottom:6px}
-.modal-body{font-size:.9em;color:var(–text2);margin-bottom:20px;line-height:1.6;font-weight:600}
+.modal-title{font-size:1.6em;font-weight:900;color:var(--text);margin-bottom:6px}
+.modal-body{font-size:.9em;color:var(--text2);margin-bottom:20px;line-height:1.6;font-weight:600}
 .modal-btns{display:grid;gap:8px}
 .mbtn{padding:13px 16px;border:none;border-radius:16px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .1s;text-align:center}
 .mbtn:active{transform:scale(.97)}
 .mbtn.pri{background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;box-shadow:0 4px 0 #3730a3}
 .mbtn.pri:active{transform:translateY(3px);box-shadow:0 1px 0 #3730a3}
-.mbtn.sec{background:#f8fafc;color:var(–text);border:2px solid #e2e8f0}
+.mbtn.sec{background:#f8fafc;color:var(--text);border:2px solid #e2e8f0}
 .mbtn.dan{background:#fee2e2;color:#991b1b;border:2px solid #fca5a5}
 .mbtn.grn{background:linear-gradient(135deg,#10b981,#059669);color:white;box-shadow:0 4px 0 #047857}
 
 /* mini-game modal */
 .minigame-box{background:#f8fafc;border-radius:20px;padding:20px;margin-bottom:16px;border:2px solid #e2e8f0;text-align:center}
-.mg-question{font-size:1.8em;font-weight:900;color:var(–text);margin-bottom:14px}
+.mg-question{font-size:1.8em;font-weight:900;color:var(--text);margin-bottom:14px}
 .mg-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .mg-opt{padding:12px;background:white;border:2.5px solid #e2e8f0;border-radius:14px;font-family:inherit;font-weight:800;font-size:1.1em;cursor:pointer;transition:all .15s}
 .mg-opt:active{transform:scale(.95)}
@@ -148,7 +147,7 @@ body{
 @keyframes c-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes w-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .mg-timer-bar{height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-top:12px}
-.mg-timer-fill{height:100%;background:var(–green);border-radius:99px;transition:width .1s linear}
+.mg-timer-fill{height:100%;background:var(--green);border-radius:99px;transition:width .1s linear}
 .mg-feedback{font-size:.9em;font-weight:800;min-height:22px;margin-top:8px}
 
 /* confetti */
@@ -160,23 +159,44 @@ body{
 .shake{animation:shake .45s ease}
 
 /* music btn */
-.music-btn{position:fixed;bottom:20px;right:16px;z-index:50;background:white;border:2.5px solid var(–border);border-radius:50%;width:50px;height:50px;font-size:1.3em;cursor:pointer;box-shadow:0 4px 15px var(–shadow);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.music-btn{position:fixed;bottom:20px;right:16px;z-index:50;background:white;border:2.5px solid var(--border);border-radius:50%;width:50px;height:50px;font-size:1.3em;cursor:pointer;box-shadow:0 4px 15px var(--shadow);display:flex;align-items:center;justify-content:center;transition:all .2s}
 .music-btn:active{transform:scale(.9)}
 
 /* word scramble */
 .scramble-letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-.letter-tile{width:36px;height:36px;background:var(–indigo);color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;cursor:pointer;transition:all .15s;user-select:none}
+.letter-tile{width:36px;height:36px;background:var(--indigo);color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;cursor:pointer;transition:all .15s;user-select:none}
 .letter-tile:active{transform:scale(.9)}
 .answer-row{display:flex;gap:6px;justify-content:center;margin:8px 0;min-height:40px;flex-wrap:wrap}
 .answer-slot{width:36px;height:36px;border:2px dashed #e2e8f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;background:#fafafa;cursor:pointer;transition:all .15s}
-.answer-slot.filled{background:var(–amber);color:white;border-color:var(–amber)}
-</style>
+.answer-slot.filled{background:var(--amber);color:white;border-color:var(--amber)}
 
+/* ── ENERGY BAR ── */
+.energy-bar-wrap{background:white;border-radius:18px;padding:12px 16px;margin-bottom:12px;border:2.5px solid #fde68a;box-shadow:0 2px 12px rgba(245,158,11,.1);display:flex;align-items:center;gap:12px}
+.energy-label{font-size:.78em;font-weight:900;color:var(--text2);white-space:nowrap;min-width:60px}
+.energy-track{flex:1;height:12px;background:#f1f5f9;border-radius:99px;overflow:hidden}
+.energy-fill{height:100%;border-radius:99px;transition:width .5s ease,background-color .4s}
+.energy-count{font-size:.78em;font-weight:900;color:var(--amber);white-space:nowrap;min-width:36px;text-align:right}
+/* greyed out act items */
+.act-item.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.5)}
+.act-item.disabled:active{transform:none;border-color:transparent;background:#fafafa}
+/* flash overlay */
+#flash-overlay{position:fixed;inset:0;pointer-events:none;z-index:199;opacity:0;transition:opacity .12s;background:rgba(239,68,68,0)}
+/* tombstone */
+.tombstone-card{background:linear-gradient(160deg,#1e293b,#0f172a);border-radius:28px;padding:32px 24px;text-align:center;border:3px solid #334155}
+.tomb-emoji{font-size:5em;margin-bottom:10px;display:block}
+.tomb-title{font-size:1.8em;font-weight:900;color:white;margin-bottom:6px}
+.tomb-sub{font-size:.95em;color:#94a3b8;margin-bottom:20px;line-height:1.6;font-weight:600}
+.tomb-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.tomb-stat{background:rgba(255,255,255,.06);border-radius:14px;padding:10px 8px;text-align:center}
+.tomb-stat-val{font-size:1.2em;font-weight:900;color:white}
+.tomb-stat-lbl{font-size:.68em;color:#64748b;font-weight:700;margin-top:2px}
+.tomb-legacy{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:16px;padding:10px 16px;font-weight:900;font-size:.95em;margin-bottom:20px}
+
+</style>
 </head>
 <body>
 
 <!-- ════════════ START SCREEN ════════════ -->
-
 <div id="start-screen" class="screen active">
   <div class="start-logo">🌱</div>
   <div class="start-title">Life Story!</div>
@@ -195,7 +215,6 @@ body{
 </div>
 
 <!-- ════════════ GAME SCREEN ════════════ -->
-
 <div id="game-screen" class="screen">
 <div id="gs-inner">
 
@@ -213,8 +232,14 @@ body{
 
   <div id="badge-strip" class="badge-strip" style="display:none"></div>
 
-  <!-- Avatar -->
+  <!-- Energy bar -->
+  <div class="energy-bar-wrap">
+    <span class="energy-label">⚡ Energy</span>
+    <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
+    <span class="energy-count" id="energy-count">5/5</span>
+  </div>
 
+  <!-- Avatar -->
   <div class="avatar-card">
     <div class="ava-emoji" id="ava-emoji">👶</div>
     <div>
@@ -226,7 +251,6 @@ body{
   </div>
 
   <!-- Stats -->
-
   <div class="stats-card">
     <div style="font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:12px">📊 Your Stats</div>
     <div class="stats-grid">
@@ -238,7 +262,6 @@ body{
   </div>
 
   <!-- Activity panel -->
-
   <div class="panel-card">
     <div class="tabs">
       <button type="button" class="tab-btn on"  id="tab-act"  onclick="openTab('act')">🎯 Do</button>
@@ -255,14 +278,12 @@ body{
   </div>
 
   <!-- Log -->
-
   <div class="panel-card">
     <div style="font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:10px">📜 Life Log</div>
     <div class="log-box" id="life-log"></div>
   </div>
 
   <!-- Age Up -->
-
   <button type="button" class="age-up-btn" onclick="ageUp()">
     <span>🎂</span><span>Age Up — Turn <span id="next-age">1</span></span>
   </button>
@@ -272,7 +293,6 @@ body{
 </div>
 
 <!-- ════════════ MODAL ════════════ -->
-
 <div class="modal-bg" id="modal" style="display:none">
   <div class="modal-card">
     <div class="modal-icon" id="m-icon">🎉</div>
@@ -283,8 +303,10 @@ body{
   </div>
 </div>
 
-<!-- Music -->
+<!-- Flash overlay -->
+<div id="flash-overlay"></div>
 
+<!-- Music -->
 <button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" title="Toggle music">🎵</button>
 
 <script>
@@ -357,17 +379,22 @@ const DEFAULT = {
   money:0, job:null, jobTitle:'Unemployed', salary:0,
   education:'none', studyingAt:null, promotionChance:0,
   achievements:[], log:[],
+  // NEW: balance systems
+  energy:5,          // ⚡ resets each Age Up
+  maxEnergy:5,       // grows with age
+  misfortune:0,      // 0-100, raised by bad choices, affects neg event probability
+  yearActCounts:{},  // diminishing returns tracker — reset each Age Up
 };
 let G = {...DEFAULT};
 let chosenGender = 'male';
 
 const save = () => {
-  localStorage.setItem('lifestory_v3', JSON.stringify(G));
+  localStorage.setItem('lifestory_v4', JSON.stringify(G));
   const ind = document.getElementById('save-ind');
   if(ind){ ind.classList.add('show'); setTimeout(()=>ind.classList.remove('show'), 1800); }
 };
-const load  = () => { const s=localStorage.getItem('lifestory_v3'); return s?JSON.parse(s):null; };
-const clear = () => localStorage.removeItem('lifestory_v3');
+const load  = () => { const s=localStorage.getItem('lifestory_v4'); return s?JSON.parse(s):null; };
+const clear = () => localStorage.removeItem('lifestory_v4');
 
 // ══════════════════════════════════════════
 // JOBS
@@ -494,7 +521,57 @@ function evFn(name) {
   if(name==='move_out'){ if(G.money>=5000){applyMod({happiness:18,money:-5000});addLog('Moved into your own place! 🏠','good');}else{addLog('Not enough savings!','bad');applyMod({happiness:-5});} }
   if(name==='invest'){ if(G.money>=5000){const w=Math.random()>.4;applyMod({money:w?9000:-5000});addLog(w?'Investment paid off! +$9,000 💰':'Investment crashed... -$5,000 😭',w?'good':'bad');if(w)SoundManager.money();}else{addLog('Not enough money to invest!','bad');} }
   if(name==='start_biz'){ if(G.money>=3000){const w=Math.random()>.5;applyMod({money:w?20000:-3000,happiness:w?25:-10});addLog(w?'🚀 Business took off! +$20,000!':'📉 Business failed... -$3,000',w?'good':'bad');if(w){SoundManager.levelUp();burst(50);}}else{addLog('Need $3,000 to start a business!','bad');} }
+  if(name==='_fired'){
+    if(G.job){ addLog(`Lost job as ${G.jobTitle}! 😤`,'bad'); G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0; applyMod({happiness:-15}); SoundManager.fail(); G.misfortune=Math.min((G.misfortune||0)+20,100); }
+  }
 }
+
+// ══════════════════════════════════════════
+// LEGACY / TOMBSTONE SCREEN
+// ══════════════════════════════════════════
+function getLegacy() {
+  if(G.money>=1000000) return '💎 Millionaire';
+  if(G.smarts>=90)      return '🎓 Scholar';
+  if(G.job==='doctor')  return '👨‍⚕️ Doctor';
+  if(G.job==='ceo')     return '🏢 CEO';
+  if(G.education==='graduate') return '🔬 Graduate';
+  if(G.looks>=85)       return '✨ Icon';
+  if(G.age>=90)         return '🌟 Legend';
+  if(G.happiness>=80)   return '😄 Happy Soul';
+  if(G.health>=80)      return '💪 Healthy Life';
+  return '🌱 Simple Life';
+}
+
+function showLegacyScreen() {
+  const legacy = getLegacy();
+  const cause = G.health<=0 ? 'Health reached zero' : G.happiness<=0 ? 'Happiness hit zero' : 'Natural causes';
+  const emoji = G.age>=85?'🏆':G.age>=65?'🌟':G.age>=40?'⭐':'😢';
+
+  document.getElementById('m-icon').innerHTML  = '';
+  document.getElementById('m-title').textContent = '';
+  document.getElementById('m-body').textContent  = '';
+  document.getElementById('m-extra').innerHTML = `
+    <div class="tombstone-card">
+      <span class="tomb-emoji">${emoji}</span>
+      <div class="tomb-title">${G.name}</div>
+      <div class="tomb-sub">Lived ${G.age} years · ${cause}</div>
+      <div class="tomb-stats">
+        <div class="tomb-stat"><div class="tomb-stat-val">$${G.money.toLocaleString()}</div><div class="tomb-stat-lbl">Net Worth</div></div>
+        <div class="tomb-stat"><div class="tomb-stat-val">${G.age}</div><div class="tomb-stat-lbl">Years Lived</div></div>
+        <div class="tomb-stat"><div class="tomb-stat-val">${G.smarts}</div><div class="tomb-stat-lbl">Smarts</div></div>
+        <div class="tomb-stat"><div class="tomb-stat-val">${G.achievements.length}</div><div class="tomb-stat-lbl">Trophies</div></div>
+      </div>
+      <div class="tomb-legacy">Legacy: ${legacy}</div>
+    </div>`;
+  const btns = document.getElementById('m-btns'); btns.innerHTML='';
+  const btn=document.createElement('button');
+  btn.type='button'; btn.className='mbtn grn'; btn.style.marginTop='16px';
+  btn.textContent='🌱 Start a New Life';
+  btn.onclick=()=>{clear();location.reload();};
+  btns.appendChild(btn);
+  document.getElementById('modal').style.display='flex';
+}
+
 
 // ══════════════════════════════════════════
 // MINI-GAMES
@@ -631,6 +708,8 @@ function applyMod(mod, silent=false) {
   if(mod.money     !=null) { G.money   = Math.max(0, G.money + mod.money); }
 
   if(!silent){
+    // Flash red on significant stat losses
+    if((mod.health&&mod.health<=-10)||(mod.happiness&&mod.happiness<=-10)) { flashRed(); shakeScreen(); }
     if(mod.health    &&mod.health!==0)    spawnFloat((mod.health>0?'+':'')+mod.health+'❤️',    mod.health>0,    false);
     if(mod.happiness &&mod.happiness!==0) spawnFloat((mod.happiness>0?'+':'')+mod.happiness+'😊', mod.happiness>0, false);
     if(mod.smarts    &&mod.smarts!==0)    spawnFloat((mod.smarts>0?'+':'')+mod.smarts+'🧠',    mod.smarts>0,    false);
@@ -665,6 +744,54 @@ function spawnFloat(text, pos, gold=false) {
 }
 
 function shakeScreen(){ const el=document.getElementById('gs-inner'); el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),450); }
+
+function flashRed() {
+  const f=document.getElementById('flash-overlay');
+  if(!f) return;
+  f.style.background='rgba(239,68,68,0.18)';
+  f.style.opacity='1';
+  setTimeout(()=>f.style.opacity='0', 200);
+}
+
+function useEnergy(cost=1) {
+  // Returns true if action allowed, false if not enough energy
+  if(G.energy < cost) {
+    SoundManager.fail();
+    addLog('⚡ Not enough energy! Age Up to rest and recharge.','bad');
+    shakeScreen();
+    return false;
+  }
+  G.energy -= cost;
+  updateEnergyUI();
+  return true;
+}
+
+function updateEnergyUI() {
+  const pct = (G.energy / G.maxEnergy) * 100;
+  const fill = document.getElementById('energy-fill');
+  const count = document.getElementById('energy-count');
+  if(fill) {
+    fill.style.width = pct + '%';
+    fill.style.backgroundColor = G.energy === 0 ? '#ef4444' : G.energy <= 1 ? '#f59e0b' : '#10b981';
+  }
+  if(count) count.textContent = G.energy + '/' + G.maxEnergy;
+}
+
+// Diminishing returns: track how many times each activity was used this year
+function actCount(key) {
+  if(!G.yearActCounts) G.yearActCounts = {};
+  return G.yearActCounts[key] || 0;
+}
+function incActCount(key) {
+  if(!G.yearActCounts) G.yearActCounts = {};
+  G.yearActCounts[key] = (G.yearActCounts[key] || 0) + 1;
+}
+function scaledBonus(key, base, tiers=[1, 0.5, 0]) {
+  // Returns diminished bonus based on how many times used
+  const used = actCount(key);
+  const mult = used < tiers.length ? tiers[used] : 0;
+  return Math.round(base * mult);
+}
 
 // ══════════════════════════════════════════
 // AVATAR & STAGES
@@ -706,6 +833,7 @@ function updateUI() {
     if(fill){fill.style.width=v+'%';fill.style.backgroundColor=statColor(v);}
     if(val) val.textContent=v;
   });
+  updateEnergyUI();
   renderLog();
 }
 
@@ -740,17 +868,120 @@ function actItem(emoji, title, sub, fn) {
 function renderActivities() {
   const el=document.getElementById('panel-act'); el.innerHTML='';
   const a=G.age;
-  const add=(e,t,s,fn)=>el.appendChild(actItem(e,t,s,fn));
-  add('📖','Read a Book','+6 Smarts, +3 Happiness',()=>{applyMod({smarts:6,happiness:3});addLog('Read a book 📖','good');SoundManager.success();});
-  if(a>=5) add('🎨','Draw / Paint','+4 Happiness, +3 Looks',()=>{applyMod({happiness:4,looks:3});addLog('Got creative 🎨','good');SoundManager.success();});
-  if(a>=6) add('🏃','Exercise','+6 Health, +3 Looks',()=>{applyMod({health:6,looks:3});addLog('Went for a run 🏃','good');SoundManager.success();});
-  if(a>=8) add('🎵','Play Music','+5 Happiness, +3 Smarts',()=>{applyMod({happiness:5,smarts:3});addLog('Played music 🎵','good');SoundManager.success();});
-  if(a>=12)add('🏋️','Hit the Gym','+10 Health, +6 Looks',()=>{applyMod({health:10,looks:6});addLog('Crushed the gym 🏋️','good');SoundManager.success();});
-  if(a>=12)add('👥','Hang with Friends','+12 Happiness',()=>{applyMod({happiness:12});addLog('Hung out with friends 😄','good');SoundManager.success();});
-  if(a>=16)add('🧘','Meditate','+10 Happiness, +4 Health',()=>{applyMod({happiness:10,health:4});addLog('Meditated 🧘','good');SoundManager.success();});
-  if(a>=18)add('🏥','See a Doctor','+15 Health (−$200)',()=>{if(G.money>=200){applyMod({health:15,money:-200});addLog('Doctor visit 🏥','info');}else{addLog('Can\'t afford doctor!','bad');SoundManager.fail();}});
-  if(a>=21)add('🎰','Casino Night','Risk $500 for $1,500?',()=>{const w=Math.random()>.5;applyMod({money:w?1500:-500,happiness:w?15:-10});addLog(w?'Casino WIN! +$1,500':'Casino loss -$500',w?'good':'bad');if(w)SoundManager.money();else SoundManager.fail();});
-  if(a>=25)add('✈️','Take a Trip','+25 Happiness (−$2,000)',()=>{applyMod({happiness:25,money:-2000,looks:5,smarts:5});addLog('Amazing trip ✈️','good');SoundManager.levelUp();});
+  const noEnergy = G.energy <= 0;
+
+  // Show energy warning if depleted
+  if(noEnergy) {
+    const warn=document.createElement('div');
+    warn.style.cssText='background:#fff7ed;border:2px solid #fed7aa;border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.82em;font-weight:800;color:#c2410c;text-align:center';
+    warn.textContent='⚡ No energy left! Click Age Up to rest and refill.';
+    el.appendChild(warn);
+  }
+
+  // Energy cost display helper
+  function energySub(baseSub, key) {
+    const used=actCount(key);
+    const dimNote=used===1?' (half bonus)':used>=2?' (no more bonus)':'';
+    return baseSub + dimNote + ' · ⚡-1';
+  }
+
+  function addAct(minAge, emoji, title, subBase, key, energyCost, fn) {
+    if(a < minAge) return;
+    const item = actItem(emoji, title, energySub(subBase, key), () => {
+      if(!useEnergy(energyCost)) return;
+      fn();
+      renderActivities(); // re-render to show updated diminshing returns
+    });
+    if(noEnergy) item.classList.add('disabled');
+    el.appendChild(item);
+  }
+
+  addAct(5,  '📖','Read a Book',    '+6 Smarts, +3 Happy',    'read',     1, ()=>{
+    const s=scaledBonus('read',6), h=scaledBonus('read',3);
+    incActCount('read');
+    if(s>0||h>0){applyMod({smarts:s,happiness:h});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy`,'good');}
+    else{addLog('Read a book — nothing new to learn here this year 📖','info');}
+    SoundManager.success();
+  });
+  addAct(5,  '🎨','Draw / Paint',   '+4 Happy, +3 Looks',     'draw',     1, ()=>{
+    const h=scaledBonus('draw',4), l=scaledBonus('draw',3);
+    incActCount('draw');
+    if(h>0||l>0){applyMod({happiness:h,looks:l});addLog('Got creative 🎨','good');}
+    else{addLog('Drew a bit but inspiration ran dry this year 🎨','info');}
+    SoundManager.success();
+  });
+  addAct(6,  '🏃','Exercise',       '+6 Health, +3 Looks',    'run',      1, ()=>{
+    const h=scaledBonus('run',6), l=scaledBonus('run',3);
+    incActCount('run');
+    if(h>0||l>0){applyMod({health:h,looks:l});addLog('Went for a run 🏃','good');}
+    else{addLog('Ran again — body needs rest, minimal benefit 🏃','info');}
+    SoundManager.success();
+  });
+  addAct(8,  '🎵','Play Music',     '+5 Happy, +3 Smarts',    'music',    1, ()=>{
+    const h=scaledBonus('music',5), s=scaledBonus('music',3);
+    incActCount('music');
+    if(h>0||s>0){applyMod({happiness:h,smarts:s});addLog('Played music 🎵','good');}
+    else{addLog('Played music — practised but no new growth this year 🎵','info');}
+    SoundManager.success();
+  });
+  addAct(12, '🏋️','Hit the Gym',  '+10 Health, +6 Looks',   'gym',      1, ()=>{
+    const h=scaledBonus('gym',10), l=scaledBonus('gym',6);
+    incActCount('gym');
+    if(h>0||l>0){applyMod({health:h,looks:l});addLog('Crushed the gym 🏋️','good');}
+    else{addLog('Hit the gym again — need rest for max gains 🏋️','info');}
+    SoundManager.success();
+  });
+  addAct(12, '👥','Hang with Friends','+12 Happiness',         'social',   1, ()=>{
+    const h=scaledBonus('social',12);
+    incActCount('social');
+    if(h>0){applyMod({happiness:h});addLog('Hung out with friends 😄','good');}
+    else{addLog('Saw friends again — still fun but nothing new this year! 👥','info');}
+    SoundManager.success();
+  });
+  addAct(16, '🧘','Meditate',       '+10 Happy, +4 Health',   'meditate', 1, ()=>{
+    const h=scaledBonus('meditate',10), hp=scaledBonus('meditate',4);
+    incActCount('meditate');
+    if(h>0||hp>0){applyMod({happiness:h,health:hp});addLog('Meditated 🧘','good');}
+    else{addLog('Meditated — already at peace this year 🧘','info');}
+    SoundManager.success();
+  });
+  if(a>=18) {
+    const item=actItem('🏥','See a Doctor','+15 Health (−$200) · no ⚡ cost',()=>{
+      if(G.money>=200){applyMod({health:15,money:-200});addLog('Doctor visit 🏥 +15 Health','info');}
+      else{addLog("Can't afford doctor!","bad");SoundManager.fail();}
+    });
+    el.appendChild(item); // doctor free — no energy cost
+  }
+  if(a>=21) {
+    addAct(21,'🎰','Casino Night',   'Risk $500 for $1,500?',  'casino',   1, ()=>{
+      const w=Math.random()>.5;
+      incActCount('casino');
+      applyMod({money:w?1500:-500,happiness:w?15:-10});
+      if(!w){G.misfortune=Math.min(G.misfortune+8,100);} // bad luck raises misfortune
+      addLog(w?'Casino WIN! 🎰 +$1,500':'Casino loss -$500 😢',w?'good':'bad');
+      if(w)SoundManager.money();else SoundManager.fail();
+    });
+  }
+  if(a>=25) {
+    addAct(25,'✈️','Take a Trip',    '+25 Happy (−$2,000)',    'travel',   2, ()=>{ // costs 2 energy
+      incActCount('travel');
+      applyMod({happiness:25,money:-2000,looks:5,smarts:5});
+      addLog('Amazing trip ✈️','good');SoundManager.levelUp();
+    });
+  }
+
+  // Sleep / rest option — refills 2 energy but costs happiness
+  if(G.energy < G.maxEnergy) {
+    const restItem=actItem('😴','Rest Early','+2⚡ Energy, −5 Happiness','Recover energy mid-year',()=>{
+      G.energy=Math.min(G.energy+2, G.maxEnergy);
+      applyMod({happiness:-5});
+      addLog('Rested early 😴 +2⚡ Energy','info');
+      updateEnergyUI();
+      renderActivities();
+      SoundManager.click();
+    });
+    el.appendChild(restItem);
+  }
 }
 
 function renderWork() {
@@ -811,46 +1042,79 @@ function ageUp() {
   SoundManager.unlock(); SoundManager.ageUp();
   G.age++;
 
-  // Natural drift
-  G.happiness = clamp(G.happiness - rand(1,3));
-  G.health    = clamp(G.health    - (G.age>50?rand(1,3):1));
+  // ── RESET energy & diminishing returns for new year ──
+  G.maxEnergy = G.age < 6 ? 3 : G.age < 13 ? 4 : G.age < 60 ? 5 : 4; // less energy when elderly
+  G.energy = G.maxEnergy;
+  G.yearActCounts = {};
 
-  // Salary
+  // ── Natural stat drift ──
+  G.happiness = clamp(G.happiness - rand(1,3));
+  // Age decay: accelerates after 60
+  const healthDrop = G.age > 70 ? rand(2,5) : G.age > 60 ? rand(1,3) : G.age > 50 ? rand(0,2) : 1;
+  G.health = clamp(G.health - healthDrop);
+  if(G.age > 60) addLog(`Age ${G.age}: health declining naturally 🌿 (−${healthDrop} Health)`,'info');
+
+  // ── Misfortune decay (slowly recovers over time) ──
+  G.misfortune = Math.max(0, (G.misfortune||0) - 5);
+
+  // ── Salary ──
   if(G.salary>0){ G.money+=G.salary; addLog(`Earned $${G.salary.toLocaleString()} salary 💰`,'good'); SoundManager.money(); }
 
-  // Milestones
+  // ── Milestones ──
   if(G.age===5)  addLog('Started school! First day 🎒','event');
   if(G.age===13) addLog('Officially a teenager! 🎉','event');
-  if(G.age===18){ addLog('You\'re 18! High school done! 🎓','event'); G.education='highschool'; burst(50); SoundManager.levelUp(); }
+  if(G.age===18){ addLog("You're 18! High school done! 🎓",'event'); G.education='highschool'; burst(50); SoundManager.levelUp(); }
   if(G.age===30) addLog('Turned 30! Feeling wiser 🌟','event');
   if(G.age===50) addLog('Big 50! Half a century! 🎂','event');
   if(G.age===65) addLog('Retirement age reached! 🏖️','event');
 
-  // Graduation
+  // ── Graduation ──
   if(G.studyingAt?.includes('University')&&G.age>=22){ G.studyingAt=null; addLog('Graduated University! 🎓','event'); SoundManager.levelUp(); burst(60); }
   if(G.studyingAt?.includes('Grad')&&G.age>=28){ G.studyingAt=null; addLog('Completed Grad School! 🎓','event'); SoundManager.legend(); burst(80); }
 
-  // Promotion
+  // ── Promotion ──
   if(G.job&&Math.random()*100<G.promotionChance){ const r=Math.floor(G.salary*.18); G.salary+=r; G.promotionChance=Math.max(0,G.promotionChance-20); addLog(`Promoted! New salary: $${G.salary.toLocaleString()} (+$${r}) 🎉`,'good'); SoundManager.levelUp(); }
 
-  // Death
-  if(G.age>=100||G.health<=0){
-    addLog(`A full life ended at age ${G.age}. What a journey 🕊️`,'bad'); SoundManager.gameOver();
-    showModal('🕊️','Life Complete',`${G.name} lived to age ${G.age}. Final wealth: $${G.money.toLocaleString()}.`,[{l:'🌱 New Life',fn:'_restart',style:'grn'}]);
+  // ── IMMEDIATE DEATH on 0 health or 0 happiness ──
+  if(G.health<=0 || G.happiness<=0 || G.age>=100){
+    const cause = G.health<=0 ? 'Your health reached zero.' : G.happiness<=0 ? 'Your happiness hit zero — a broken spirit.' : 'A long life, well lived.';
+    G.health=Math.max(G.health,0); G.happiness=Math.max(G.happiness,0);
+    addLog(`Life ended at age ${G.age}. ${cause} 🕊️`,'bad');
+    SoundManager.gameOver(); flashRed();
+    setTimeout(showLegacyScreen, 600);
     return;
   }
 
-  // Event system with rarity weights
-  const roll=Math.random()*100;
-  const rarity=roll<1?'l':roll<12?'r':'c';
-  const pool=EVENTS.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&e.r===rarity);
-  if(pool.length&&(rarity!=='c'||Math.random()<.38)){
-    const ev=pool[Math.floor(Math.random()*pool.length)];
-    if(ev.r==='l'){ SoundManager.legend(); burst(70); }
-    showModal(ev.emoji, ev.title, ev.body, ev.choices.map((c,i)=>({...c,style:i===0?'pri':'sec'})));
+  // ── EVENT SYSTEM with misfortune weighting ──
+  const roll = Math.random()*100;
+  const rarity = roll<1 ? 'l' : roll<12 ? 'r' : 'c';
+  const misfortunePull = (G.misfortune||0) > 30; // bad luck pulls toward negative events
+  const pool = EVENTS.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&e.r===rarity);
+
+  // Misfortune: inject a negative event override occasionally
+  const negEvents = [
+    {minAge:16,maxAge:99,r:'c',emoji:'🔥',title:'Fired!',body:'Your boss let you go. You're unemployed.',choices:[{l:'😤 Start fresh',fn:'_fired',style:'dan'},{l:'💔 I saw it coming',fn:'_fired',style:'sec'}]},
+    {minAge:18,maxAge:99,r:'c',emoji:'🏚️',title:'Bad Luck Week',body:'Everything that could go wrong, did. Your mood crashed.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5}},{l:'😴 Rest it off',m:{happiness:-10,health:5}}]},
+    {minAge:20,maxAge:80,r:'c',emoji:'💸',title:'Unexpected Bill!',body:'A huge unexpected bill just landed. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10}},{l:'😰 Ignore it',m:{happiness:-20}}]},
+  ];
+
+  let ev = null;
+  if(misfortunePull && Math.random()<.4 && G.age>=16){
+    ev = negEvents[Math.floor(Math.random()*negEvents.length)];
+    G.misfortune = Math.max(0, G.misfortune-15); // used up some bad luck
+  } else if(pool.length && (rarity!=='c' || Math.random()<.38)){
+    ev = pool[Math.floor(Math.random()*pool.length)];
   }
 
-  if(G.health<30||G.happiness<25) shakeScreen();
+  if(ev){
+    if(ev.r==='l'){ SoundManager.legend(); burst(70); }
+    showModal(ev.emoji, ev.title, ev.body, ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})));
+  }
+
+  // Danger warning
+  if(G.health<30){ shakeScreen(); flashRed(); addLog('⚠️ Your health is critically low!','bad'); }
+  else if(G.happiness<25){ shakeScreen(); flashRed(); addLog('⚠️ Your happiness is dangerously low!','bad'); }
+
   checkAchievements();
   save();
   updateUI();
@@ -927,6 +1191,5 @@ window.addEventListener('DOMContentLoaded',()=>{
   if(saved) document.getElementById('continue-btn').style.display='block';
 });
 </script>
-
 </body>
 </html>
