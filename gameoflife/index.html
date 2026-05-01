@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🌱 BitLife — Life Simulator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+  body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+
+/* Stat bars */
+.stat-bar { height: 10px; border-radius: 99px; background: #1e293b; overflow: hidden; }
+.stat-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease, background 0.5s; }
+
+/* Scrollable log */
+#life-log { max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+#life-log::-webkit-scrollbar { width: 4px; }
+#life-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.modal-card    { background: #1e293b; border-radius: 24px; padding: 28px 22px; width: 88%; max-width: 360px; border: 2px solid #334155; animation: modal-in 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes modal-in { from{transform:scale(0.8) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+
+/* Buttons */
+.btn-primary   { background: #3b82f6; color: white; font-weight: 800; padding: 12px 20px; border-radius: 14px; border: none; cursor: pointer; font-family: inherit; width: 100%; font-size: 1em; transition: all 0.1s; box-shadow: 0 4px 0 #1d4ed8; }
+.btn-primary:active   { transform: translateY(3px); box-shadow: 0 1px 0 #1d4ed8; }
+.btn-secondary { background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit; font-size: 0.9em; transition: all 0.1s; }
+.btn-secondary:active { background: #475569; }
+.btn-danger    { background: #ef4444; color: white; font-weight: 800; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit; font-size: 0.9em; box-shadow: 0 3px 0 #b91c1c; transition: all 0.1s; }
+.btn-danger:active { transform: translateY(2px); box-shadow: 0 1px 0 #b91c1c; }
+
+/* Activity cards */
+.act-card { background: #1e293b; border-radius: 16px; padding: 14px 16px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 12px; }
+.act-card:active { transform: scale(0.97); border-color: #3b82f6; }
+
+/* Tab buttons */
+.tab-btn { padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.82em; cursor: pointer; border: none; font-family: inherit; transition: all 0.15s; background: transparent; color: #64748b; }
+.tab-btn.active { background: #3b82f6; color: white; }
+
+/* Age up button */
+#age-up-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 900; font-size: 1.1em; padding: 16px; border-radius: 18px; border: none; cursor: pointer; font-family: inherit; width: 100%; box-shadow: 0 5px 0 #047857; transition: all 0.1s; }
+#age-up-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #047857; }
+
+/* Log entry */
+.log-entry { padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; font-size: 0.82em; line-height: 1.4; }
+.log-good  { background: #052e16; color: #86efac; border-left: 3px solid #22c55e; }
+.log-bad   { background: #2d0c0c; color: #fca5a5; border-left: 3px solid #ef4444; }
+.log-info  { background: #0c1a2e; color: #93c5fd; border-left: 3px solid #3b82f6; }
+.log-event { background: #1c1a00; color: #fde68a; border-left: 3px solid #f59e0b; }
+
+/* Screen transitions */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Character avatar */
+.avatar { font-size: 4em; line-height: 1; }
+
+/* Progress ring for age */
+.age-display { font-size: 3em; font-weight: 900; color: #10b981; }
+</style>
+
+</head>
+<body>
+
+<!-- ═══════════════════════════ START SCREEN ═══════════════════════════ -->
+
+<div id="start-screen" class="screen active min-h-screen flex flex-col items-center justify-center px-6 py-10">
+  <div class="text-6xl mb-4">🌱</div>
+  <h1 class="text-3xl font-black text-white mb-2">Life Simulator</h1>
+  <p class="text-slate-400 text-sm mb-10 text-center">Every choice shapes your story.<br>Live the life you choose.</p>
+
+  <div class="w-full max-w-sm bg-slate-800 rounded-2xl p-6 border border-slate-700">
+    <h2 class="text-white font-black text-lg mb-5">✨ Create Your Character</h2>
+
+```
+<label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1 block">Your Name</label>
+<input id="char-name" type="text" placeholder="Enter your name..."
+  class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-white font-bold mb-4 outline-none focus:border-blue-500"
+  style="font-family:inherit" maxlength="20"/>
+
+<label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 block">Gender</label>
+<div class="grid grid-cols-2 gap-3 mb-6">
+  <button type="button" id="btn-male"   class="tab-btn active py-3 rounded-xl text-sm" onclick="selectGender('male')">👦 Male</button>
+  <button type="button" id="btn-female" class="tab-btn        py-3 rounded-xl text-sm" onclick="selectGender('female')">👧 Female</button>
+</div>
+
+<button type="button" class="btn-primary" onclick="startLife()">🚀 Start My Life!</button>
+```
+
+  </div>
+
+  <div id="continue-btn-wrap" class="mt-4 w-full max-w-sm" style="display:none">
+    <button type="button" class="btn-secondary w-full" onclick="continueLife()">▶️ Continue Previous Life</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ GAME SCREEN ═══════════════════════════ -->
+
+<div id="game-screen" class="screen max-w-sm mx-auto px-4 py-5">
+
+  <!-- Header -->
+
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">Living the life of</div>
+      <div class="text-white font-black text-xl" id="hdr-name">---</div>
+    </div>
+    <button type="button" class="btn-danger text-xs px-3 py-2" onclick="confirmNewLife()">🔄 New Life</button>
+  </div>
+
+  <!-- Age + Avatar Card -->
+
+  <div class="bg-slate-800 rounded-2xl p-5 mb-4 border border-slate-700 flex items-center gap-5">
+    <div class="text-center flex-shrink-0">
+      <div class="avatar" id="char-avatar">👶</div>
+      <div class="text-slate-400 text-xs mt-1" id="char-gender-label">Boy</div>
+    </div>
+    <div class="flex-1">
+      <div class="flex items-baseline gap-2 mb-1">
+        <div class="age-display" id="hdr-age">0</div>
+        <div class="text-slate-400 font-bold text-sm">years old</div>
+      </div>
+      <div class="text-slate-300 text-sm font-bold" id="hdr-job">Unemployed</div>
+      <div class="text-slate-400 text-xs mt-1">💰 $<span id="hdr-money">0</span></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+
+  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
+    <h3 class="text-slate-300 font-black text-sm uppercase tracking-wider mb-3">📊 Stats</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">❤️ Health</span><span class="text-slate-300 text-xs font-bold" id="stat-health-val">100</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="stat-health" style="width:100%"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">😊 Happiness</span><span class="text-slate-300 text-xs font-bold" id="stat-happiness-val">100</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="stat-happiness" style="width:100%"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">🧠 Smarts</span><span class="text-slate-300 text-xs font-bold" id="stat-smarts-val">50</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="stat-smarts" style="width:50%"></div></div>
+      </div>
+      <div>
+        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">✨ Looks</span><span class="text-slate-300 text-xs font-bold" id="stat-looks-val">50</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="stat-looks" style="width:50%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Tabs -->
+
+  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
+      <button type="button" class="tab-btn active whitespace-nowrap" onclick="switchTab('activities')" id="tab-activities">🎯 Activities</button>
+      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('work')"       id="tab-work">💼 Work</button>
+      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('education')"  id="tab-education">📚 Education</button>
+      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('assets')"     id="tab-assets">💰 Assets</button>
+    </div>
+
+```
+<!-- Activities Tab -->
+<div id="panel-activities">
+  <div class="grid gap-2" id="activity-list">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- Work Tab -->
+<div id="panel-work" style="display:none">
+  <div id="work-content"></div>
+</div>
+
+<!-- Education Tab -->
+<div id="panel-education" style="display:none">
+  <div id="education-content"></div>
+</div>
+
+<!-- Assets Tab -->
+<div id="panel-assets" style="display:none">
+  <div id="assets-content"></div>
+</div>
+```
+
+  </div>
+
+  <!-- Life Log -->
+
+  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
+    <h3 class="text-slate-300 font-black text-sm uppercase tracking-wider mb-3">📜 Life Log</h3>
+    <div id="life-log"></div>
+  </div>
+
+  <!-- Age Up Button -->
+
+  <button type="button" id="age-up-btn" onclick="ageUp()">
+    🎂 Age Up — Turn <span id="next-age">1</span>
+  </button>
+  <div class="h-10"></div>
+
+</div>
+
+<!-- ═══════════════════════════ MODAL ═══════════════════════════ -->
+
+<div id="modal" class="modal-overlay" style="display:none">
+  <div class="modal-card">
+    <div class="text-4xl text-center mb-3" id="modal-icon">⚡</div>
+    <h3 class="text-white font-black text-xl text-center mb-2" id="modal-title">Event!</h3>
+    <p class="text-slate-300 text-sm text-center mb-5 leading-relaxed" id="modal-body">Something happened.</p>
+    <div id="modal-choices" class="grid gap-2"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// GAME STATE
+// ══════════════════════════════════════════════════════════
+const DEFAULT_STATE = {
+  name: 'Player',
+  gender: 'male',
+  age: 0,
+  health: 100,
+  happiness: 80,
+  smarts: 50,
+  looks: 50,
+  money: 0,
+  job: null,
+  jobTitle: 'Unemployed',
+  salary: 0,
+  education: 'none',       // none, highschool, university, graduate
+  studyingAt: null,
+  promotionChance: 0,
+  log: [],
+};
+
+let G = { ...DEFAULT_STATE };
+let selectedGender = 'male';
+let pendingModal = null;
+
+// ── Save / Load ──
+function saveGame() { localStorage.setItem('lifesim_save', JSON.stringify(G)); }
+function loadGame() {
+  const s = localStorage.getItem('lifesim_save');
+  return s ? JSON.parse(s) : null;
+}
+function clearGame() { localStorage.removeItem('lifesim_save'); }
+
+// ══════════════════════════════════════════════════════════
+// JOBS DATA
+// ══════════════════════════════════════════════════════════
+const JOBS = [
+  { id:'cashier',     title:'Cashier',         salary:1200,  minAge:16, minSmarts:0,  minEdu:'none',        emoji:'🛒' },
+  { id:'waiter',      title:'Waiter',           salary:1500,  minAge:16, minSmarts:0,  minEdu:'none',        emoji:'🍽️' },
+  { id:'driver',      title:'Delivery Driver',  salary:2000,  minAge:18, minSmarts:20, minEdu:'none',        emoji:'🚗' },
+  { id:'nurse',       title:'Nurse',            salary:3500,  minAge:22, minSmarts:55, minEdu:'university',  emoji:'💉' },
+  { id:'teacher',     title:'Teacher',          salary:3000,  minAge:22, minSmarts:60, minEdu:'university',  emoji:'🏫' },
+  { id:'engineer',    title:'Engineer',         salary:6000,  minAge:22, minSmarts:70, minEdu:'university',  emoji:'⚙️' },
+  { id:'doctor',      title:'Doctor',           salary:10000, minAge:26, minSmarts:80, minEdu:'graduate',    emoji:'👨‍⚕️' },
+  { id:'lawyer',      title:'Lawyer',           salary:9000,  minAge:26, minSmarts:75, minEdu:'graduate',    emoji:'⚖️' },
+  { id:'programmer',  title:'Programmer',       salary:7000,  minAge:22, minSmarts:75, minEdu:'university',  emoji:'💻' },
+  { id:'ceo',         title:'CEO',              salary:25000, minAge:30, minSmarts:90, minEdu:'graduate',    emoji:'🏢' },
+];
+
+// ══════════════════════════════════════════════════════════
+// RANDOM EVENTS
+// ══════════════════════════════════════════════════════════
+const EVENTS = [
+  // childhood
+  { minAge:5,  maxAge:12, emoji:'🎁', title:'Birthday Gift!',
+    body:'Someone gave you a really cool birthday gift!',
+    choices:[{ label:'😄 Yay!', fn:()=>applyDelta({happiness:8,smarts:3}) }] },
+  { minAge:6,  maxAge:14, emoji:'😢', title:'You got bullied...',
+    body:'Some kids at school are making fun of you. What do you do?',
+    choices:[
+      { label:'🥊 Fight back',  fn:()=>applyDelta({health:-10, happiness:5})  },
+      { label:'🙈 Ignore them', fn:()=>applyDelta({happiness:-5})             },
+      { label:'📢 Tell teacher',fn:()=>applyDelta({happiness:10, smarts:2})   },
+    ]},
+  { minAge:8, maxAge:15, emoji:'📚', title:'Science Fair!',
+    body:'Your school is having a science fair. Do you enter?',
+    choices:[
+      { label:'🔬 Enter!',     fn:()=>applyDelta({smarts:10, happiness:5})  },
+      { label:'😴 Skip it',   fn:()=>applyDelta({happiness:-2})             },
+    ]},
+  // teen
+  { minAge:13, maxAge:17, emoji:'💕', title:'First crush!',
+    body:'You have a crush on someone at school! What do you do?',
+    choices:[
+      { label:'💌 Ask them out', fn:()=>Math.random()>0.5 ? applyDelta({happiness:20}) : applyDelta({happiness:-10}) },
+      { label:'🤫 Keep it secret', fn:()=>applyDelta({happiness:-5}) },
+    ]},
+  { minAge:14, maxAge:18, emoji:'🎮', title:'Gaming addiction risk',
+    body:'You\'ve been playing video games for 12 hours straight!',
+    choices:[
+      { label:'🛑 Take a break', fn:()=>applyDelta({health:5, smarts:3})  },
+      { label:'🎮 Keep playing', fn:()=>applyDelta({health:-8, smarts:-5, happiness:5}) },
+    ]},
+  // adult
+  { minAge:18, maxAge:30, emoji:'🏠', title:'Move out?',
+    body:'You\'re thinking about getting your own apartment. It\'ll cost $800/month.',
+    choices:[
+      { label:'🏠 Move out!',    fn:()=>{ if(G.money>=5000){applyDelta({happiness:15,money:-5000});addLog('Moved into your own apartment! 🏠','good');}else{addLog('Not enough savings yet...','bad');} }},
+      { label:'🏡 Stay home',    fn:()=>applyDelta({happiness:-5}) },
+    ]},
+  { minAge:22, maxAge:40, emoji:'💍', title:'Relationship milestone',
+    body:'Your partner is asking about moving in together. What do you say?',
+    choices:[
+      { label:'💍 Yes, let\'s do it!', fn:()=>applyDelta({happiness:20, money:-2000}) },
+      { label:'⏳ Not yet',            fn:()=>applyDelta({happiness:-5}) },
+    ]},
+  { minAge:25, maxAge:45, emoji:'🤒', title:'Fell ill...',
+    body:'You\'re feeling really sick. Fever, cough, the works.',
+    choices:[
+      { label:'🏥 See a doctor', fn:()=>applyDelta({health:20, money:-500})  },
+      { label:'🛌 Rest at home', fn:()=>applyDelta({health:5})              },
+    ]},
+  { minAge:30, maxAge:55, emoji:'📈', title:'Investment opportunity!',
+    body:'A friend tells you about a great stock opportunity.',
+    choices:[
+      { label:'💸 Invest $5,000', fn:()=>{ if(G.money>=5000){ const win=Math.random()>0.4; applyDelta({money: win?8000:-5000}); addLog(win?'Investment paid off! +$8000 💰':'Investment failed... lost $5000 😢', win?'good':'bad'); }else{ addLog('Not enough money to invest!','bad'); } } },
+      { label:'🙅 No thanks',    fn:()=>addLog('Played it safe with your money.','info') },
+    ]},
+  { minAge:40, maxAge:60, emoji:'😰', title:'Midlife crisis!',
+    body:'You\'re questioning everything about your life. What do you do?',
+    choices:[
+      { label:'🏋️ Hit the gym',   fn:()=>applyDelta({health:10, looks:10, happiness:10}) },
+      { label:'🎸 Buy a guitar',  fn:()=>applyDelta({happiness:15, money:-800})  },
+      { label:'🧘 Meditate',      fn:()=>applyDelta({happiness:20, smarts:5})    },
+    ]},
+];
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+function clamp(v, min=0, max=100) { return Math.max(min, Math.min(max, v)); }
+function rand(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+function applyDelta(delta) {
+  if(delta.health    !== undefined) G.health    = clamp(G.health    + delta.health);
+  if(delta.happiness !== undefined) G.happiness = clamp(G.happiness + delta.happiness);
+  if(delta.smarts    !== undefined) G.smarts    = clamp(G.smarts    + delta.smarts);
+  if(delta.looks     !== undefined) G.looks     = clamp(G.looks     + delta.looks);
+  if(delta.money     !== undefined) G.money     = Math.max(0, G.money + delta.money);
+  updateUI();
+}
+
+function addLog(msg, type='info') {
+  G.log.unshift({ msg, type, age: G.age });
+  if(G.log.length > 60) G.log.pop();
+  renderLog();
+}
+
+// ══════════════════════════════════════════════════════════
+// AVATAR
+// ══════════════════════════════════════════════════════════
+function getAvatar(age, gender) {
+  if(age < 4)  return gender==='female' ? '👶' : '👶';
+  if(age < 12) return gender==='female' ? '👧' : '👦';
+  if(age < 18) return gender==='female' ? '👩' : '👦';
+  if(age < 40) return gender==='female' ? '👩' : '👨';
+  if(age < 65) return gender==='female' ? '👩' : '👨';
+  return gender==='female' ? '👵' : '👴';
+}
+
+// ══════════════════════════════════════════════════════════
+// UI CONTROLLER
+// ══════════════════════════════════════════════════════════
+function statColor(v) {
+  if(v >= 70) return '#22c55e';
+  if(v >= 40) return '#f59e0b';
+  return '#ef4444';
+}
+
+function updateUI() {
+  // Header
+  document.getElementById('hdr-name').textContent  = G.name;
+  document.getElementById('hdr-age').textContent   = G.age;
+  document.getElementById('hdr-job').textContent   = G.jobTitle;
+  document.getElementById('hdr-money').textContent = G.money.toLocaleString();
+  document.getElementById('next-age').textContent  = G.age + 1;
+  document.getElementById('char-avatar').textContent    = getAvatar(G.age, G.gender);
+  document.getElementById('char-gender-label').textContent = G.gender === 'female' ? 'Girl/Woman' : 'Boy/Man';
+
+  // Stats
+  const stats = ['health','happiness','smarts','looks'];
+  stats.forEach(s => {
+    const val = G[s];
+    const fill = document.getElementById('stat-'+s);
+    const lbl  = document.getElementById('stat-'+s+'-val');
+    if(fill) { fill.style.width = val+'%'; fill.style.background = statColor(val); }
+    if(lbl)  lbl.textContent = val;
+  });
+
+  // Activities
+  renderActivities();
+  renderWork();
+  renderEducation();
+  renderAssets();
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER PANELS
+// ══════════════════════════════════════════════════════════
+function renderActivities() {
+  const acts = [];
+
+  if(G.age >= 5)  acts.push({ emoji:'📖', label:'Read a Book',     sub:'+5 Smarts',         fn:()=>{ applyDelta({smarts:5, happiness:3}); addLog('Read a book 📖 +5 Smarts','good'); } });
+  if(G.age >= 6)  acts.push({ emoji:'🎨', label:'Draw / Paint',    sub:'+3 Happiness, +2 Looks', fn:()=>{ applyDelta({happiness:5, looks:2}); addLog('Did some drawing 🎨','good'); } });
+  if(G.age >= 8)  acts.push({ emoji:'🏃', label:'Exercise',        sub:'+5 Health, +3 Looks', fn:()=>{ applyDelta({health:5, looks:3}); addLog('Went for a run 🏃 +5 Health','good'); } });
+  if(G.age >= 10) acts.push({ emoji:'🎵', label:'Play Music',      sub:'+5 Happiness, +2 Smarts', fn:()=>{ applyDelta({happiness:5, smarts:2}); addLog('Played music 🎵','good'); } });
+  if(G.age >= 12) acts.push({ emoji:'🏋️', label:'Go to Gym',      sub:'+8 Health, +5 Looks', fn:()=>{ applyDelta({health:8, looks:5, happiness:3}); addLog('Hit the gym 🏋️','good'); } });
+  if(G.age >= 14) acts.push({ emoji:'👥', label:'Socialise',       sub:'+10 Happiness',      fn:()=>{ applyDelta({happiness:10}); addLog('Hung out with friends 👥','good'); } });
+  if(G.age >= 18) acts.push({ emoji:'🧘', label:'Meditate',        sub:'+8 Happiness, +3 Health', fn:()=>{ applyDelta({happiness:8, health:3}); addLog('Meditated 🧘 +8 Happiness','good'); } });
+  if(G.age >= 18) acts.push({ emoji:'🏥', label:'See a Doctor',    sub:'+15 Health ($200)',  fn:()=>{ if(G.money>=200){ applyDelta({health:15, money:-200}); addLog('Visited the doctor 🏥 +15 Health (-$200)','info'); }else{ addLog('Can\'t afford doctor visit!','bad'); } } });
+  if(G.age >= 21) acts.push({ emoji:'🎰', label:'Casino Night',    sub:'Risk/Reward',        fn:()=>{ const win=Math.random()>0.6; applyDelta({money: win?1000:-500, happiness: win?15:-10}); addLog(win?'Won $1000 at casino! 🎰':'Lost $500 at casino 😢', win?'good':'bad'); } });
+
+  const list = document.getElementById('activity-list');
+  list.innerHTML = acts.map(a => `
+    <div class="act-card" onclick="(${a.fn.toString()})()">
+      <div style="font-size:1.8em">${a.emoji}</div>
+      <div><div class="text-white font-bold text-sm">${a.label}</div><div class="text-slate-400 text-xs">${a.sub}</div></div>
+    </div>`).join('');
+}
+
+function renderWork() {
+  const el = document.getElementById('work-content');
+  if(!el) return;
+
+  if(G.age < 16) {
+    el.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">You can start working at age 16! 🎒</p>';
+    return;
+  }
+
+  let html = '';
+
+  // Current job info
+  if(G.job) {
+    html += `
+      <div class="bg-slate-900 rounded-xl p-4 mb-3">
+        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Current Job</div>
+        <div class="text-white font-black text-lg">${G.jobTitle}</div>
+        <div class="text-green-400 font-bold text-sm">💰 $${G.salary.toLocaleString()}/month</div>
+        <div class="text-slate-400 text-xs mt-1">Promotion chance: ${G.promotionChance}%</div>
+      </div>
+      <button type="button" class="act-card w-full mb-2" onclick="workHard()" style="display:flex">
+        <div style="font-size:1.6em">💪</div>
+        <div><div class="text-white font-bold text-sm">Work Hard</div><div class="text-slate-400 text-xs">+10% promotion chance, +salary</div></div>
+      </button>
+      <button type="button" class="act-card w-full mb-3" onclick="quitJob()" style="display:flex;border-color:#ef4444">
+        <div style="font-size:1.6em">🚪</div>
+        <div><div class="text-red-400 font-bold text-sm">Quit Job</div><div class="text-slate-400 text-xs">Go back to job hunting</div></div>
+      </button>`;
+  }
+
+  // Available jobs
+  const available = JOBS.filter(j =>
+    G.age >= j.minAge &&
+    G.smarts >= j.minSmarts &&
+    eduLevel(G.education) >= eduLevel(j.minEdu) &&
+    j.id !== G.job
+  );
+
+  if(available.length > 0) {
+    html += `<div class="text-slate-400 text-xs font-bold uppercase mb-2">${G.job ? 'Other Jobs Available' : 'Apply for a Job'}</div>`;
+    html += available.map(j => `
+      <div class="act-card mb-2" onclick="applyJob('${j.id}')">
+        <div style="font-size:1.6em">${j.emoji}</div>
+        <div class="flex-1"><div class="text-white font-bold text-sm">${j.title}</div><div class="text-slate-400 text-xs">$${j.salary.toLocaleString()}/mo · Min age ${j.minAge}</div></div>
+        <div class="text-green-400 text-xs font-bold">Apply →</div>
+      </div>`).join('');
+  } else if(!G.job) {
+    html += '<p class="text-slate-400 text-sm text-center py-2">No jobs available yet. Study more! 📚</p>';
+  }
+
+  el.innerHTML = html;
+}
+
+function renderEducation() {
+  const el = document.getElementById('education-content');
+  if(!el) return;
+
+  const eduBadge = { none:'None', highschool:'🎓 High School', university:'🏛️ University', graduate:'🎓 Graduate' };
+
+  let html = `
+    <div class="bg-slate-900 rounded-xl p-4 mb-3">
+      <div class="text-slate-400 text-xs font-bold uppercase mb-1">Education Level</div>
+      <div class="text-white font-bold">${eduBadge[G.education]}</div>
+      ${G.studyingAt ? `<div class="text-blue-400 text-xs mt-1">Currently: ${G.studyingAt}</div>` : ''}
+    </div>`;
+
+  if(G.age < 18) {
+    html += `<div class="act-card mb-2" onclick="studyHard()"><div style="font-size:1.6em">📖</div><div><div class="text-white font-bold text-sm">Study Hard</div><div class="text-slate-400 text-xs">+8 Smarts (at school)</div></div></div>`;
+  } else if(G.age >= 18 && G.education === 'highschool' || G.education === 'none' && G.age >= 18) {
+    if(G.smarts >= 50) {
+      html += `<div class="act-card mb-2" onclick="enrollUniversity()"><div style="font-size:1.8em">🏛️</div><div><div class="text-white font-bold text-sm">Enrol in University</div><div class="text-slate-400 text-xs">Needs Smarts 50+. Opens better jobs.</div></div></div>`;
+    } else {
+      html += `<div class="act-card mb-2" onclick="studyHard()"><div style="font-size:1.6em">📖</div><div><div class="text-white font-bold text-sm">Study Hard</div><div class="text-slate-400 text-xs">+8 Smarts. Need 50+ for university.</div></div></div>`;
+    }
+  }
+
+  if(G.education === 'university' && G.age >= 24 && G.smarts >= 75) {
+    html += `<div class="act-card mb-2" onclick="enrollGraduate()"><div style="font-size:1.8em">🎓</div><div><div class="text-white font-bold text-sm">Graduate School</div><div class="text-slate-400 text-xs">Needs Smarts 75+. Unlocks top jobs.</div></div></div>`;
+  }
+
+  if(G.age >= 18) {
+    html += `<div class="act-card" onclick="studyHard()"><div style="font-size:1.6em">📚</div><div><div class="text-white font-bold text-sm">Self Study</div><div class="text-slate-400 text-xs">+5 Smarts anytime</div></div></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function renderAssets() {
+  const el = document.getElementById('assets-content');
+  if(!el) return;
+
+  const netWorth = G.money;
+  const tier = netWorth >= 1000000 ? '🤑 Millionaire' :
+               netWorth >= 100000  ? '💎 Wealthy'     :
+               netWorth >= 10000   ? '💰 Comfortable' :
+               netWorth >= 1000    ? '👍 Getting by'  : '😟 Struggling';
+
+  el.innerHTML = `
+    <div class="bg-slate-900 rounded-xl p-4 mb-3">
+      <div class="text-slate-400 text-xs font-bold uppercase mb-1">Net Worth</div>
+      <div class="text-green-400 font-black text-3xl">$${G.money.toLocaleString()}</div>
+      <div class="text-slate-400 text-sm mt-1">${tier}</div>
+    </div>
+    <div class="bg-slate-900 rounded-xl p-4 mb-3">
+      <div class="text-slate-400 text-xs font-bold uppercase mb-2">Monthly Income</div>
+      <div class="flex justify-between text-sm"><span class="text-slate-300">Salary</span><span class="text-green-400 font-bold">$${G.salary.toLocaleString()}</span></div>
+    </div>
+    ${G.money >= 1000 ? `
+    <div class="act-card" onclick="saveInBank()">
+      <div style="font-size:1.6em">🏦</div>
+      <div><div class="text-white font-bold text-sm">Save in Bank</div><div class="text-slate-400 text-xs">Earn 3% interest on savings</div></div>
+    </div>` : ''}`;
+}
+
+function renderLog() {
+  const el = document.getElementById('life-log');
+  if(!G.log.length) {
+    el.innerHTML = '<p class="text-slate-500 text-xs text-center py-3">Your life story will appear here...</p>';
+    return;
+  }
+  el.innerHTML = G.log.slice(0,25).map(e =>
+    `<div class="log-entry log-${e.type}"><span class="font-bold opacity-60 mr-1">Age ${e.age}:</span>${e.msg}</div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// GAME ACTIONS
+// ══════════════════════════════════════════════════════════
+function eduLevel(e) {
+  return { none:0, highschool:1, university:2, graduate:3 }[e] || 0;
+}
+
+function studyHard() {
+  applyDelta({smarts:8, happiness:-3});
+  addLog('Studied really hard 📚 +8 Smarts','good');
+}
+
+function enrollUniversity() {
+  if(G.smarts < 50) { addLog('Need Smarts 50+ for university!','bad'); return; }
+  if(G.money < 3000 && G.money > 0) { addLog('Need $3000 for university fees!','bad'); return; }
+  G.education   = 'university';
+  G.studyingAt  = 'University 🏛️';
+  applyDelta({smarts:10, money:-3000, happiness:-5});
+  addLog('Enrolled in University! 🏛️ Studies begin!','good');
+}
+
+function enrollGraduate() {
+  G.education  = 'graduate';
+  G.studyingAt = 'Graduate School 🎓';
+  applyDelta({smarts:15, money:-5000});
+  addLog('Enrolled in Graduate School! 🎓','good');
+}
+
+function applyJob(jobId) {
+  const job = JOBS.find(j => j.id === jobId);
+  if(!job) return;
+  const chance = 40 + G.smarts * 0.5;
+  if(Math.random()*100 < chance) {
+    G.job = job.id; G.jobTitle = job.title; G.salary = job.salary; G.promotionChance = 10;
+    addLog(`Got the job! Now a ${job.title} ${job.emoji} earning $${job.salary.toLocaleString()}/mo 🎉`,'good');
+  } else {
+    addLog(`Applied for ${job.title} but didn't get it. Keep trying! 💪`,'bad');
+  }
+  applyDelta({});
+}
+
+function workHard() {
+  G.promotionChance = Math.min(G.promotionChance + 10, 80);
+  const bonus = Math.floor(G.salary * 0.05);
+  applyDelta({happiness:-5, money: bonus});
+  addLog(`Worked extra hard 💪 +$${bonus} bonus. Promotion chance: ${G.promotionChance}%`,'good');
+}
+
+function quitJob() {
+  addLog(`Left your job as ${G.jobTitle}. Time for something new.`,'info');
+  G.job = null; G.jobTitle = 'Unemployed'; G.salary = 0; G.promotionChance = 0;
+  applyDelta({happiness:-10});
+}
+
+function saveInBank() {
+  const interest = Math.floor(G.money * 0.03);
+  applyDelta({money: interest});
+  addLog(`Bank saved! Earned $${interest} in interest 🏦`,'good');
+}
+
+// ══════════════════════════════════════════════════════════
+// AGE UP — THE MAIN LOOP
+// ══════════════════════════════════════════════════════════
+function ageUp() {
+  G.age++;
+
+  // Natural stat drift
+  G.happiness = clamp(G.happiness - rand(1,4));
+  G.health    = clamp(G.health    - (G.age > 50 ? rand(1,3) : 1));
+
+  // Salary income per year
+  if(G.salary > 0) {
+    applyDelta({money: G.salary});
+    addLog(`Earned $${G.salary.toLocaleString()} salary this year 💰`,'good');
+  }
+
+  // Age milestones
+  if(G.age === 5)  addLog('Started primary school! 🎒','info');
+  if(G.age === 13) addLog('Became a teenager! 🎉','event');
+  if(G.age === 18) { addLog('You\'re officially an adult! 🎓 High school completed!','event'); G.education = 'highschool'; }
+  if(G.age === 65) addLog('Reached retirement age 🎉 Consider taking it easy!','event');
+
+  // University graduation
+  if(G.studyingAt && G.studyingAt.includes('University') && G.age >= 22) {
+    G.studyingAt = null;
+    addLog('Graduated from University! 🎓 New jobs unlocked!','event');
+  }
+  if(G.studyingAt && G.studyingAt.includes('Graduate') && G.age >= 28) {
+    G.studyingAt = null;
+    addLog('Completed Graduate School! 🎓 Top-tier jobs available!','event');
+  }
+
+  // Promotion check
+  if(G.job && Math.random()*100 < G.promotionChance) {
+    const raise = Math.floor(G.salary * 0.15);
+    G.salary += raise;
+    G.promotionChance = Math.max(0, G.promotionChance - 20);
+    addLog(`Got promoted! New salary: $${G.salary.toLocaleString()} 🎉 (+$${raise})`, 'good');
+  }
+
+  // Death check
+  if(G.age >= 100 || G.health <= 0) {
+    addLog(`Your life ended at age ${G.age}. What a journey... 🕊️`,'bad');
+    showEndScreen();
+    return;
+  }
+
+  // Random event (30% chance)
+  if(Math.random() < 0.3) {
+    const eligible = EVENTS.filter(e => G.age >= e.minAge && G.age <= e.maxAge);
+    if(eligible.length) {
+      const ev = eligible[Math.floor(Math.random()*eligible.length)];
+      showModal(ev.emoji, ev.title, ev.body, ev.choices);
+    }
+  }
+
+  saveGame();
+  updateUI();
+}
+
+// ══════════════════════════════════════════════════════════
+// MODAL SYSTEM
+// ══════════════════════════════════════════════════════════
+function showModal(icon, title, body, choices) {
+  document.getElementById('modal-icon').textContent  = icon;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent  = body;
+
+  const choicesEl = document.getElementById('modal-choices');
+  choicesEl.innerHTML = '';
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn-secondary w-full text-left px-4 py-3';
+    btn.textContent = c.label;
+    btn.onclick = () => { c.fn(); closeModal(); updateUI(); };
+    choicesEl.appendChild(btn);
+  });
+
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════
+// END SCREEN
+// ══════════════════════════════════════════════════════════
+function showEndScreen() {
+  showModal('🕊️', 'Life Complete',
+    `${G.name} lived to age ${G.age}. Final net worth: $${G.money.toLocaleString()}. ${G.jobTitle !== 'Unemployed' ? 'Career: '+G.jobTitle+'.' : ''}`,
+    [{ label:'🌱 Start a New Life', fn:()=>{ clearGame(); location.reload(); } }]
+  );
+}
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+function switchTab(name) {
+  ['activities','work','education','assets'].forEach(t => {
+    document.getElementById('panel-'+t).style.display = t===name ? 'block' : 'none';
+    const btn = document.getElementById('tab-'+t);
+    if(btn) { btn.classList.toggle('active', t===name); }
+  });
+  if(name==='work')      renderWork();
+  if(name==='education') renderEducation();
+  if(name==='assets')    renderAssets();
+}
+
+// ══════════════════════════════════════════════════════════
+// START / CONTINUE / NEW LIFE
+// ══════════════════════════════════════════════════════════
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('btn-male').classList.toggle('active', g==='male');
+  document.getElementById('btn-female').classList.toggle('active', g==='female');
+}
+
+function startLife() {
+  const nameEl = document.getElementById('char-name');
+  const name = nameEl.value.trim() || (selectedGender==='female' ? 'Aisha' : 'Aqmal');
+  G = { ...DEFAULT_STATE, name, gender: selectedGender, log:[] };
+  addLog(`${name} was born! A new life begins... 🌱`, 'good');
+  saveGame();
+  showGameScreen();
+}
+
+function continueLife() {
+  const saved = loadGame();
+  if(saved) { G = saved; showGameScreen(); }
+}
+
+function showGameScreen() {
+  document.getElementById('start-screen').classList.remove('active');
+  document.getElementById('game-screen').classList.add('active');
+  updateUI();
+  renderLog();
+}
+
+function confirmNewLife() {
+  showModal('⚠️','Start Over?',
+    'This will delete your current life. Are you sure?',
+    [
+      { label:'🌱 Yes, new life!', fn:()=>{ clearGame(); location.reload(); } },
+      { label:'❌ Cancel',         fn:()=>{} },
+    ]
+  );
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = loadGame();
+  if(saved) document.getElementById('continue-btn-wrap').style.display = 'block';
+});
+</script>
+
+</body>
+</html>
