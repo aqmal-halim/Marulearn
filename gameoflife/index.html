@@ -4,769 +4,1122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>🌱 BitLife — Life Simulator</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>🌱 Life Story!</title>
 <style>
-  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-  body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+/* ═══════════════════════════════════════════════
+   FONTS & RESET
+═══════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-/* Stat bars */
-.stat-bar { height: 10px; border-radius: 99px; background: #1e293b; overflow: hidden; }
-.stat-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease, background 0.5s; }
+:root {
+–bg:       #fef3c7;
+–card:     #ffffff;
+–card2:    #fffbeb;
+–accent:   #f59e0b;
+–accent2:  #10b981;
+–accent3:  #6366f1;
+–accent4:  #ef4444;
+–text:     #1e293b;
+–text2:    #64748b;
+–border:   #fde68a;
+–shadow:   rgba(245,158,11,0.18);
+}
 
-/* Scrollable log */
-#life-log { max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #334155 transparent; }
-#life-log::-webkit-scrollbar { width: 4px; }
-#life-log::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
+body {
+font-family: ‘Nunito’, ‘Comic Sans MS’, sans-serif;
+background: linear-gradient(160deg, #fef9ee 0%, #ecfdf5 50%, #eff6ff 100%);
+min-height: 100vh;
+color: var(–text);
+overflow-x: hidden;
+}
 
-/* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-.modal-card    { background: #1e293b; border-radius: 24px; padding: 28px 22px; width: 88%; max-width: 360px; border: 2px solid #334155; animation: modal-in 0.3s cubic-bezier(0.34,1.56,0.64,1); }
-@keyframes modal-in { from{transform:scale(0.8) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+/* ═══════════════════════════════════════════════
+SCREENS
+═══════════════════════════════════════════════ */
+.screen { display:none; }
+.screen.active { display:block; }
 
-/* Buttons */
-.btn-primary   { background: #3b82f6; color: white; font-weight: 800; padding: 12px 20px; border-radius: 14px; border: none; cursor: pointer; font-family: inherit; width: 100%; font-size: 1em; transition: all 0.1s; box-shadow: 0 4px 0 #1d4ed8; }
-.btn-primary:active   { transform: translateY(3px); box-shadow: 0 1px 0 #1d4ed8; }
-.btn-secondary { background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit; font-size: 0.9em; transition: all 0.1s; }
-.btn-secondary:active { background: #475569; }
-.btn-danger    { background: #ef4444; color: white; font-weight: 800; padding: 10px 16px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit; font-size: 0.9em; box-shadow: 0 3px 0 #b91c1c; transition: all 0.1s; }
-.btn-danger:active { transform: translateY(2px); box-shadow: 0 1px 0 #b91c1c; }
+/* ═══════════════════════════════════════════════
+START SCREEN
+═══════════════════════════════════════════════ */
+#start-screen {
+min-height: 100vh;
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 24px 20px;
+}
+#start-screen.active { display:flex; }
 
-/* Activity cards */
-.act-card { background: #1e293b; border-radius: 16px; padding: 14px 16px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; display: flex; align-items: center; gap: 12px; }
-.act-card:active { transform: scale(0.97); border-color: #3b82f6; }
+.start-logo { font-size: 5em; animation: bounce-in 0.6s cubic-bezier(0.34,1.56,0.64,1); margin-bottom: 8px; }
+@keyframes bounce-in { from{transform:scale(0) rotate(-20deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
 
-/* Tab buttons */
-.tab-btn { padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.82em; cursor: pointer; border: none; font-family: inherit; transition: all 0.15s; background: transparent; color: #64748b; }
-.tab-btn.active { background: #3b82f6; color: white; }
+.start-title { font-size: 2.4em; font-weight: 900; color: var(–text); margin-bottom: 4px; }
+.start-sub   { color: var(–text2); font-size: 0.95em; margin-bottom: 28px; text-align:center; }
 
-/* Age up button */
-#age-up-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 900; font-size: 1.1em; padding: 16px; border-radius: 18px; border: none; cursor: pointer; font-family: inherit; width: 100%; box-shadow: 0 5px 0 #047857; transition: all 0.1s; }
-#age-up-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #047857; }
+.start-card {
+width: 100%; max-width: 380px;
+background: white;
+border-radius: 28px;
+padding: 28px 24px;
+box-shadow: 0 8px 40px var(–shadow);
+border: 3px solid var(–border);
+}
 
-/* Log entry */
-.log-entry { padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; font-size: 0.82em; line-height: 1.4; }
-.log-good  { background: #052e16; color: #86efac; border-left: 3px solid #22c55e; }
-.log-bad   { background: #2d0c0c; color: #fca5a5; border-left: 3px solid #ef4444; }
-.log-info  { background: #0c1a2e; color: #93c5fd; border-left: 3px solid #3b82f6; }
-.log-event { background: #1c1a00; color: #fde68a; border-left: 3px solid #f59e0b; }
+.form-label { font-size: 0.75em; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(–text2); margin-bottom: 6px; display:block; }
+.form-input {
+width: 100%; background: #fafafa; border: 2px solid #e2e8f0; border-radius: 14px;
+padding: 12px 16px; font-family: inherit; font-size: 1em; font-weight: 700; color: var(–text);
+outline: none; margin-bottom: 18px; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(–accent); }
 
-/* Screen transitions */
-.screen { display: none; }
-.screen.active { display: block; }
+.gender-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px; }
+.gender-btn  {
+background: #f8fafc; border: 2.5px solid #e2e8f0; border-radius: 16px;
+padding: 14px 10px; font-family: inherit; font-weight: 800; font-size: 0.95em;
+cursor: pointer; transition: all 0.15s; color: var(–text2);
+}
+.gender-btn.selected { background: #fffbeb; border-color: var(–accent); color: var(–accent); }
 
-/* Character avatar */
-.avatar { font-size: 4em; line-height: 1; }
+.btn-start {
+width: 100%; padding: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
+color: white; font-family: inherit; font-weight: 900; font-size: 1.1em;
+border: none; border-radius: 18px; cursor: pointer;
+box-shadow: 0 5px 0 #b45309; transition: all 0.1s;
+}
+.btn-start:active { transform: translateY(4px); box-shadow: 0 1px 0 #b45309; }
 
-/* Progress ring for age */
-.age-display { font-size: 3em; font-weight: 900; color: #10b981; }
+.btn-continue {
+width: 100%; max-width: 380px; margin-top: 12px;
+padding: 13px; background: white; color: var(–accent3);
+font-family: inherit; font-weight: 800; font-size: 0.95em;
+border: 2.5px solid #c7d2fe; border-radius: 16px; cursor: pointer;
+transition: all 0.15s;
+}
+.btn-continue:active { background: #eef2ff; }
+
+/* ═══════════════════════════════════════════════
+GAME SCREEN
+═══════════════════════════════════════════════ */
+#game-screen { max-width: 440px; margin: 0 auto; padding: 16px 14px 80px; }
+
+/* Top bar */
+.top-bar {
+display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 14px;
+}
+.top-name  { font-weight: 900; font-size: 1.2em; color: var(–text); }
+.top-money { font-weight: 800; font-size: 0.9em; color: var(–accent2); background: #d1fae5; padding: 4px 10px; border-radius: 20px; }
+.btn-new   {
+background: white; color: var(–accent4); border: 2px solid #fee2e2;
+padding: 6px 12px; border-radius: 12px; font-family: inherit; font-weight: 800; font-size: 0.78em;
+cursor: pointer;
+}
+
+/* Avatar card */
+.avatar-card {
+background: white; border-radius: 26px; padding: 20px 22px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 2.5px solid var(–border);
+display: flex; align-items: center; gap: 18px; margin-bottom: 12px;
+position: relative; overflow: hidden;
+}
+.avatar-card::before {
+content: ‘’; position:absolute; top:0; right:0;
+width: 120px; height: 100%; opacity: 0.06;
+background: radial-gradient(circle at 80% 50%, var(–accent) 0%, transparent 70%);
+}
+.ava-emoji { font-size: 4.2em; line-height:1; animation: float 3s ease-in-out infinite; flex-shrink:0; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.ava-age   { font-size: 3em; font-weight: 900; color: var(–accent); line-height:1; }
+.ava-label { font-size: 0.75em; color: var(–text2); font-weight: 700; }
+.ava-stage { font-size: 0.9em; font-weight: 800; color: var(–text); }
+.ava-job   { font-size: 0.8em; color: var(–text2); font-weight: 700; margin-top: 2px; }
+
+/* Stats card */
+.stats-card {
+background: white; border-radius: 22px; padding: 18px 18px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 2.5px solid #e0f2fe;
+margin-bottom: 12px;
+}
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.stat-row   { }
+.stat-head  { display:flex; justify-content:space-between; margin-bottom:5px; }
+.stat-name  { font-size:0.75em; font-weight:800; color:var(–text2); }
+.stat-val   { font-size:0.75em; font-weight:900; color:var(–text); }
+.stat-bar   { height:9px; background:#f1f5f9; border-radius:99px; overflow:hidden; }
+.stat-fill  { height:100%; border-radius:99px; transition:width 0.5s ease, background-color 0.5s; }
+
+/* Activity panel */
+.panel-card {
+background: white; border-radius: 22px; padding: 18px 16px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 2.5px solid #e2e8f0;
+margin-bottom: 12px;
+}
+.tabs { display:flex; gap:6px; margin-bottom:14px; overflow-x:auto; padding-bottom:2px; }
+.tab-btn {
+padding: 7px 14px; border-radius: 12px; font-family: inherit; font-weight: 800;
+font-size: 0.78em; cursor: pointer; border: none; white-space: nowrap;
+background: #f8fafc; color: var(–text2); transition: all 0.15s;
+}
+.tab-btn.on { background: var(–accent3); color: white; }
+
+/* Activity items */
+.act-item {
+background: #fafafa; border-radius: 16px; padding: 13px 14px;
+display: flex; align-items: center; gap: 12px; cursor: pointer;
+border: 2px solid transparent; margin-bottom: 8px; transition: all 0.15s;
+}
+.act-item:active { transform:scale(0.97); border-color: var(–accent3); background:#eef2ff; }
+.act-icon   { font-size:1.8em; flex-shrink:0; }
+.act-info   { flex:1; }
+.act-title  { font-size:0.9em; font-weight:800; color:var(–text); }
+.act-sub    { font-size:0.75em; color:var(–text2); font-weight:600; }
+
+/* Log */
+.log-box    { max-height:200px; overflow-y:auto; }
+.log-entry  { padding:7px 12px; border-radius:12px; margin-bottom:5px; font-size:0.8em; font-weight:700; line-height:1.5; }
+.log-good   { background:#ecfdf5; color:#065f46; border-left:3px solid #10b981; }
+.log-bad    { background:#fef2f2; color:#991b1b; border-left:3px solid #ef4444; }
+.log-info   { background:#eff6ff; color:#1e40af; border-left:3px solid #3b82f6; }
+.log-event  { background:#fffbeb; color:#92400e; border-left:3px solid #f59e0b; }
+.log-legend { background:#fdf4ff; color:#6b21a8; border-left:3px solid #a855f7; }
+
+/* Age up */
+.age-up-btn {
+width:100%; padding:18px; font-family:inherit; font-weight:900; font-size:1.1em;
+background: linear-gradient(135deg, #10b981, #059669);
+color: white; border: none; border-radius: 20px; cursor: pointer;
+box-shadow: 0 5px 0 #047857; transition: all 0.1s;
+display: flex; align-items:center; justify-content:center; gap:8px;
+}
+.age-up-btn:active { transform:translateY(4px); box-shadow:0 1px 0 #047857; }
+
+/* Achievements badge bar */
+.badge-strip { display:flex; gap:8px; overflow-x:auto; padding: 4px 0 8px; }
+.badge-pill  {
+background: linear-gradient(135deg, #fef3c7, #fde68a);
+border: 2px solid #f59e0b; border-radius: 20px;
+padding: 5px 12px; font-size: 0.75em; font-weight: 800; color: #92400e;
+white-space: nowrap; flex-shrink:0; animation: pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes pop-in { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+/* ═══════════════════════════════════════════════
+MODAL
+═══════════════════════════════════════════════ */
+.modal-bg {
+position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:60;
+display:flex; align-items:center; justify-content:center;
+backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.modal-card {
+background:white; border-radius:28px; padding:32px 24px;
+width:88%; max-width:370px; text-align:center;
+box-shadow:0 20px 60px rgba(0,0,0,0.2); border:3px solid var(–border);
+animation:modal-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modal-in { from{transform:scale(0.7) translateY(30px);opacity:0} to{transform:scale(1);opacity:1} }
+.modal-icon   { font-size:4.5em; margin-bottom:10px; }
+.modal-title  { font-size:1.6em; font-weight:900; color:var(–text); margin-bottom:6px; }
+.modal-body   { font-size:0.9em; color:var(–text2); margin-bottom:20px; line-height:1.6; font-weight:600; }
+.modal-btns   { display:grid; gap:8px; }
+.modal-btn {
+padding:13px 16px; border:none; border-radius:16px; font-family:inherit;
+font-weight:800; font-size:0.95em; cursor:pointer; transition:all 0.1s; text-align:left;
+}
+.modal-btn.primary   { background:linear-gradient(135deg,#6366f1,#4f46e5); color:white; box-shadow:0 4px 0 #3730a3; }
+.modal-btn.primary:active   { transform:translateY(3px); box-shadow:0 1px 0 #3730a3; }
+.modal-btn.secondary { background:#f8fafc; color:var(–text); border:2px solid #e2e8f0; }
+.modal-btn.secondary:active { background:#eef2ff; }
+.modal-btn.danger    { background:#fee2e2; color:#991b1b; border:2px solid #fca5a5; }
+
+/* ═══════════════════════════════════════════════
+FLOATING +/- NUMBERS (juice!)
+═══════════════════════════════════════════════ */
+.float-num {
+position:fixed; font-size:1.4em; font-weight:900; pointer-events:none; z-index:100;
+animation: float-up 1s ease-out forwards;
+}
+.float-pos { color:#10b981; }
+.float-neg { color:#ef4444; }
+.float-gold{ color:#f59e0b; }
+@keyframes float-up {
+0%   { transform:translateY(0) scale(1); opacity:1; }
+100% { transform:translateY(-80px) scale(1.2); opacity:0; }
+}
+
+/* Screen shake */
+@keyframes shake {
+0%,100%{transform:translateX(0)}
+20%{transform:translateX(-8px)}
+40%{transform:translateX(8px)}
+60%{transform:translateX(-5px)}
+80%{transform:translateX(5px)}
+}
+.shake { animation: shake 0.45s ease; }
+
+/* Music toggle */
+.music-btn {
+position:fixed; bottom:20px; right:16px; z-index:50;
+background:white; border:2.5px solid var(–border); border-radius:50%;
+width:48px; height:48px; font-size:1.4em; cursor:pointer;
+box-shadow:0 4px 15px var(–shadow); display:flex; align-items:center; justify-content:center;
+transition:all 0.2s;
+}
+.music-btn:active { transform:scale(0.9); }
 </style>
 
 </head>
 <body>
 
-<!-- ═══════════════════════════ START SCREEN ═══════════════════════════ -->
+<!-- ════════════ START SCREEN ════════════ -->
 
-<div id="start-screen" class="screen active min-h-screen flex flex-col items-center justify-center px-6 py-10">
-  <div class="text-6xl mb-4">🌱</div>
-  <h1 class="text-3xl font-black text-white mb-2">Life Simulator</h1>
-  <p class="text-slate-400 text-sm mb-10 text-center">Every choice shapes your story.<br>Live the life you choose.</p>
+<div id="start-screen" class="screen active">
+  <div class="start-logo">🌱</div>
+  <div class="start-title">Life Story!</div>
+  <div class="start-sub">Every choice shapes who you become.<br>What kind of life will you live?</div>
 
-  <div class="w-full max-w-sm bg-slate-800 rounded-2xl p-6 border border-slate-700">
-    <h2 class="text-white font-black text-lg mb-5">✨ Create Your Character</h2>
+  <div class="start-card">
+    <span class="form-label">Your Name</span>
+    <input id="char-name" class="form-input" type="text" placeholder="Enter your name..." maxlength="20"/>
 
 ```
-<label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1 block">Your Name</label>
-<input id="char-name" type="text" placeholder="Enter your name..."
-  class="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-white font-bold mb-4 outline-none focus:border-blue-500"
-  style="font-family:inherit" maxlength="20"/>
-
-<label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 block">Gender</label>
-<div class="grid grid-cols-2 gap-3 mb-6">
-  <button type="button" id="btn-male"   class="tab-btn active py-3 rounded-xl text-sm" onclick="selectGender('male')">👦 Male</button>
-  <button type="button" id="btn-female" class="tab-btn        py-3 rounded-xl text-sm" onclick="selectGender('female')">👧 Female</button>
+<span class="form-label">I am a...</span>
+<div class="gender-grid">
+  <button type="button" class="gender-btn selected" id="btn-male"   onclick="pickGender('male')">👦 Boy</button>
+  <button type="button" class="gender-btn"          id="btn-female" onclick="pickGender('female')">👧 Girl</button>
 </div>
 
-<button type="button" class="btn-primary" onclick="startLife()">🚀 Start My Life!</button>
+<button type="button" class="btn-start" onclick="startLife()">🚀 Begin My Life!</button>
 ```
 
   </div>
 
-  <div id="continue-btn-wrap" class="mt-4 w-full max-w-sm" style="display:none">
-    <button type="button" class="btn-secondary w-full" onclick="continueLife()">▶️ Continue Previous Life</button>
-  </div>
-</div>
-
-<!-- ═══════════════════════════ GAME SCREEN ═══════════════════════════ -->
-
-<div id="game-screen" class="screen max-w-sm mx-auto px-4 py-5">
-
-  <!-- Header -->
-
-  <div class="flex justify-between items-center mb-4">
-    <div>
-      <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">Living the life of</div>
-      <div class="text-white font-black text-xl" id="hdr-name">---</div>
-    </div>
-    <button type="button" class="btn-danger text-xs px-3 py-2" onclick="confirmNewLife()">🔄 New Life</button>
-  </div>
-
-  <!-- Age + Avatar Card -->
-
-  <div class="bg-slate-800 rounded-2xl p-5 mb-4 border border-slate-700 flex items-center gap-5">
-    <div class="text-center flex-shrink-0">
-      <div class="avatar" id="char-avatar">👶</div>
-      <div class="text-slate-400 text-xs mt-1" id="char-gender-label">Boy</div>
-    </div>
-    <div class="flex-1">
-      <div class="flex items-baseline gap-2 mb-1">
-        <div class="age-display" id="hdr-age">0</div>
-        <div class="text-slate-400 font-bold text-sm">years old</div>
-      </div>
-      <div class="text-slate-300 text-sm font-bold" id="hdr-job">Unemployed</div>
-      <div class="text-slate-400 text-xs mt-1">💰 $<span id="hdr-money">0</span></div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-
-  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
-    <h3 class="text-slate-300 font-black text-sm uppercase tracking-wider mb-3">📊 Stats</h3>
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">❤️ Health</span><span class="text-slate-300 text-xs font-bold" id="stat-health-val">100</span></div>
-        <div class="stat-bar"><div class="stat-fill" id="stat-health" style="width:100%"></div></div>
-      </div>
-      <div>
-        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">😊 Happiness</span><span class="text-slate-300 text-xs font-bold" id="stat-happiness-val">100</span></div>
-        <div class="stat-bar"><div class="stat-fill" id="stat-happiness" style="width:100%"></div></div>
-      </div>
-      <div>
-        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">🧠 Smarts</span><span class="text-slate-300 text-xs font-bold" id="stat-smarts-val">50</span></div>
-        <div class="stat-bar"><div class="stat-fill" id="stat-smarts" style="width:50%"></div></div>
-      </div>
-      <div>
-        <div class="flex justify-between mb-1"><span class="text-slate-400 text-xs font-bold">✨ Looks</span><span class="text-slate-300 text-xs font-bold" id="stat-looks-val">50</span></div>
-        <div class="stat-bar"><div class="stat-fill" id="stat-looks" style="width:50%"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Activity Tabs -->
-
-  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
-    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
-      <button type="button" class="tab-btn active whitespace-nowrap" onclick="switchTab('activities')" id="tab-activities">🎯 Activities</button>
-      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('work')"       id="tab-work">💼 Work</button>
-      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('education')"  id="tab-education">📚 Education</button>
-      <button type="button" class="tab-btn whitespace-nowrap" onclick="switchTab('assets')"     id="tab-assets">💰 Assets</button>
-    </div>
-
-```
-<!-- Activities Tab -->
-<div id="panel-activities">
-  <div class="grid gap-2" id="activity-list">
-    <!-- Populated by JS -->
-  </div>
-</div>
-
-<!-- Work Tab -->
-<div id="panel-work" style="display:none">
-  <div id="work-content"></div>
-</div>
-
-<!-- Education Tab -->
-<div id="panel-education" style="display:none">
-  <div id="education-content"></div>
-</div>
-
-<!-- Assets Tab -->
-<div id="panel-assets" style="display:none">
-  <div id="assets-content"></div>
-</div>
-```
-
-  </div>
-
-  <!-- Life Log -->
-
-  <div class="bg-slate-800 rounded-2xl p-4 mb-4 border border-slate-700">
-    <h3 class="text-slate-300 font-black text-sm uppercase tracking-wider mb-3">📜 Life Log</h3>
-    <div id="life-log"></div>
-  </div>
-
-  <!-- Age Up Button -->
-
-  <button type="button" id="age-up-btn" onclick="ageUp()">
-    🎂 Age Up — Turn <span id="next-age">1</span>
+  <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()">
+    ▶️ Continue My Story
   </button>
-  <div class="h-10"></div>
-
 </div>
 
-<!-- ═══════════════════════════ MODAL ═══════════════════════════ -->
+<!-- ════════════ GAME SCREEN ════════════ -->
 
-<div id="modal" class="modal-overlay" style="display:none">
-  <div class="modal-card">
-    <div class="text-4xl text-center mb-3" id="modal-icon">⚡</div>
-    <h3 class="text-white font-black text-xl text-center mb-2" id="modal-title">Event!</h3>
-    <p class="text-slate-300 text-sm text-center mb-5 leading-relaxed" id="modal-body">Something happened.</p>
-    <div id="modal-choices" class="grid gap-2"></div>
+<div id="game-screen" class="screen">
+  <div id="gs-inner">
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div>
+        <div class="top-name" id="hdr-name">---</div>
+        <div style="font-size:0.75em;color:var(--text2);font-weight:700" id="hdr-edu">No education yet</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="top-money">💰 $<span id="hdr-money">0</span></div>
+        <button type="button" class="btn-new" onclick="confirmNew()">🔄</button>
+      </div>
+    </div>
+
+```
+<!-- Achievements strip -->
+<div id="badge-strip" class="badge-strip" style="display:none"></div>
+
+<!-- Avatar card -->
+<div class="avatar-card">
+  <div class="ava-emoji" id="ava-emoji">👶</div>
+  <div>
+    <div class="ava-age" id="ava-age">0</div>
+    <div class="ava-label">years old</div>
+    <div class="ava-stage" id="ava-stage">Newborn</div>
+    <div class="ava-job"   id="ava-job">No job yet</div>
   </div>
 </div>
+
+<!-- Stats -->
+<div class="stats-card">
+  <div style="font-size:0.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:12px;">📊 Your Stats</div>
+  <div class="stats-grid">
+    <div class="stat-row">
+      <div class="stat-head"><span class="stat-name">❤️ Health</span><span class="stat-val" id="sv-health">100</span></div>
+      <div class="stat-bar"><div class="stat-fill" id="sf-health" style="width:100%"></div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-head"><span class="stat-name">😊 Happiness</span><span class="stat-val" id="sv-happiness">80</span></div>
+      <div class="stat-bar"><div class="stat-fill" id="sf-happiness" style="width:80%"></div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-head"><span class="stat-name">🧠 Smarts</span><span class="stat-val" id="sv-smarts">50</span></div>
+      <div class="stat-bar"><div class="stat-fill" id="sf-smarts" style="width:50%"></div></div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-head"><span class="stat-name">✨ Looks</span><span class="stat-val" id="sv-looks">50</span></div>
+      <div class="stat-bar"><div class="stat-fill" id="sf-looks" style="width:50%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity panel -->
+<div class="panel-card">
+  <div class="tabs">
+    <button type="button" class="tab-btn on"  id="tab-act" onclick="openTab('act')">🎯 Activities</button>
+    <button type="button" class="tab-btn"     id="tab-work" onclick="openTab('work')">💼 Work</button>
+    <button type="button" class="tab-btn"     id="tab-edu"  onclick="openTab('edu')">📚 Education</button>
+    <button type="button" class="tab-btn"     id="tab-bank" onclick="openTab('bank')">🏦 Money</button>
+  </div>
+  <div id="panel-act"></div>
+  <div id="panel-work" style="display:none"></div>
+  <div id="panel-edu"  style="display:none"></div>
+  <div id="panel-bank" style="display:none"></div>
+</div>
+
+<!-- Life log -->
+<div class="panel-card">
+  <div style="font-size:0.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:10px;">📜 Life Log</div>
+  <div class="log-box" id="life-log"></div>
+</div>
+
+<!-- Age up -->
+<button type="button" class="age-up-btn" id="age-up-btn" onclick="ageUp()">
+  <span>🎂</span><span>Age Up — Turn <span id="next-age">1</span></span>
+</button>
+
+<div style="height:72px"></div>
+```
+
+  </div>
+</div>
+
+<!-- ════════════ MODAL ════════════ -->
+
+<div class="modal-bg" id="modal" style="display:none">
+  <div class="modal-card">
+    <div class="modal-icon" id="m-icon">🎉</div>
+    <div class="modal-title" id="m-title">Something happened!</div>
+    <div class="modal-body"  id="m-body">Description here.</div>
+    <div class="modal-btns" id="m-btns"></div>
+  </div>
+</div>
+
+<!-- Music toggle -->
+
+<button type="button" class="music-btn" id="music-btn" onclick="toggleMusic()" title="Toggle music">🎵</button>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// GAME STATE
-// ══════════════════════════════════════════════════════════
-const DEFAULT_STATE = {
-  name: 'Player',
-  gender: 'male',
-  age: 0,
-  health: 100,
-  happiness: 80,
-  smarts: 50,
-  looks: 50,
-  money: 0,
-  job: null,
-  jobTitle: 'Unemployed',
-  salary: 0,
-  education: 'none',       // none, highschool, university, graduate
-  studyingAt: null,
-  promotionChance: 0,
-  log: [],
+// ══════════════════════════════════════════
+// SOUND ENGINE (Web Audio API)
+// ══════════════════════════════════════════
+let audioCtx = null;
+function getAC() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function beep(freq, type, dur, vol=0.3, delay=0) {
+  try {
+    const c=getAC(), o=c.createOscillator(), g=c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type=type; o.frequency.setValueAtTime(freq, c.currentTime+delay);
+    g.gain.setValueAtTime(vol, c.currentTime+delay);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+delay+dur);
+    o.start(c.currentTime+delay); o.stop(c.currentTime+delay+dur+0.05);
+  } catch(e) {}
+}
+
+const SFX = {
+  ageUp()   { beep(440,'sine',0.06,0.25); beep(554,'sine',0.06,0.25,0.07); beep(659,'sine',0.12,0.25,0.14); },
+  good()    { beep(523,'square',0.07,0.2); beep(659,'square',0.07,0.2,0.08); beep(784,'square',0.12,0.18,0.16); },
+  bad()     { beep(300,'sawtooth',0.1,0.3); beep(220,'sawtooth',0.15,0.3,0.1); },
+  money()   { beep(880,'sine',0.05,0.3); beep(1047,'sine',0.05,0.3,0.06); beep(1319,'sine',0.1,0.25,0.12); },
+  levelUp() { [523,659,784,1047,1319].forEach((f,i)=>beep(f,'sine',0.1,0.25,i*0.08)); },
+  legend()  { [784,988,1175,1319,1568].forEach((f,i)=>beep(f,'sine',0.15,0.3,i*0.07)); },
+  over()    { beep(440,'sawtooth',0.2,0.4); beep(330,'sawtooth',0.25,0.4,0.2); beep(220,'sawtooth',0.4,0.4,0.4); },
+  click()   { beep(600,'sine',0.04,0.15); },
 };
 
-let G = { ...DEFAULT_STATE };
-let selectedGender = 'male';
-let pendingModal = null;
-
-// ── Save / Load ──
-function saveGame() { localStorage.setItem('lifesim_save', JSON.stringify(G)); }
-function loadGame() {
-  const s = localStorage.getItem('lifesim_save');
-  return s ? JSON.parse(s) : null;
+// ── Background music (simple generative loop) ──
+let bgInterval = null, musicOn = false;
+function toggleMusic() {
+  try { getAC().resume(); } catch(e) {}
+  musicOn = !musicOn;
+  document.getElementById('music-btn').textContent = musicOn ? '🔇' : '🎵';
+  if (musicOn) {
+    const melody = [262,294,330,349,392,440,494,523];
+    let i = 0;
+    bgInterval = setInterval(() => {
+      beep(melody[i % melody.length], 'sine', 0.3, 0.06);
+      i++;
+    }, 400);
+  } else {
+    clearInterval(bgInterval);
+  }
 }
-function clearGame() { localStorage.removeItem('lifesim_save'); }
 
-// ══════════════════════════════════════════════════════════
-// JOBS DATA
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// GAME STATE
+// ══════════════════════════════════════════
+const DEFAULT = {
+  name:'Player', gender:'male', age:0,
+  health:100, happiness:80, smarts:50, looks:50,
+  money:0, job:null, jobTitle:'Unemployed', salary:0,
+  education:'none', studyingAt:null, promotionChance:0,
+  achievements:[], log:[],
+};
+let G = { ...DEFAULT };
+let chosenGender = 'male';
+
+function save() { localStorage.setItem('lifestory_v2', JSON.stringify(G)); }
+function load() { const s=localStorage.getItem('lifestory_v2'); return s?JSON.parse(s):null; }
+function clear(){ localStorage.removeItem('lifestory_v2'); }
+
+// ══════════════════════════════════════════
+// ACHIEVEMENTS
+// ══════════════════════════════════════════
+const ACHIEVEMENTS = [
+  { id:'scholar',    emoji:'🎓', label:'Scholar',      check:()=>G.smarts>=90 },
+  { id:'millionaire',emoji:'💎', label:'Millionaire',  check:()=>G.money>=1000000 },
+  { id:'healthy',    emoji:'💪', label:'Iron Body',    check:()=>G.health===100 && G.age>=30 },
+  { id:'happy',      emoji:'😄', label:'Always Happy', check:()=>G.happiness>=95 },
+  { id:'ceo',        emoji:'🏢', label:'Big Boss',     check:()=>G.job==='ceo' },
+  { id:'doctor',     emoji:'👨‍⚕️', label:'Doctor',    check:()=>G.job==='doctor' },
+  { id:'graduate',   emoji:'🏛️', label:'Grad School', check:()=>G.education==='graduate' },
+  { id:'senior',     emoji:'👴', label:'Senior',       check:()=>G.age>=70 },
+  { id:'centenarian',emoji:'🎂', label:'100 Years!',   check:()=>G.age>=100 },
+  { id:'rich_kid',   emoji:'💰', label:'Rich Kid',     check:()=>G.age<18&&G.money>=10000 },
+];
+
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a => {
+    if (!G.achievements.includes(a.id) && a.check()) {
+      G.achievements.push(a.id);
+      addLog(`🏆 Achievement unlocked: ${a.emoji} ${a.label}!`, 'legend');
+      SFX.levelUp();
+      renderBadges();
+    }
+  });
+}
+
+function renderBadges() {
+  const strip = document.getElementById('badge-strip');
+  if (!G.achievements.length) { strip.style.display='none'; return; }
+  strip.style.display = 'flex';
+  strip.innerHTML = G.achievements.map(id => {
+    const a = ACHIEVEMENTS.find(x=>x.id===id);
+    return a ? `<div class="badge-pill">${a.emoji} ${a.label}</div>` : '';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// JOBS
+// ══════════════════════════════════════════
 const JOBS = [
-  { id:'cashier',     title:'Cashier',         salary:1200,  minAge:16, minSmarts:0,  minEdu:'none',        emoji:'🛒' },
-  { id:'waiter',      title:'Waiter',           salary:1500,  minAge:16, minSmarts:0,  minEdu:'none',        emoji:'🍽️' },
-  { id:'driver',      title:'Delivery Driver',  salary:2000,  minAge:18, minSmarts:20, minEdu:'none',        emoji:'🚗' },
-  { id:'nurse',       title:'Nurse',            salary:3500,  minAge:22, minSmarts:55, minEdu:'university',  emoji:'💉' },
-  { id:'teacher',     title:'Teacher',          salary:3000,  minAge:22, minSmarts:60, minEdu:'university',  emoji:'🏫' },
-  { id:'engineer',    title:'Engineer',         salary:6000,  minAge:22, minSmarts:70, minEdu:'university',  emoji:'⚙️' },
-  { id:'doctor',      title:'Doctor',           salary:10000, minAge:26, minSmarts:80, minEdu:'graduate',    emoji:'👨‍⚕️' },
-  { id:'lawyer',      title:'Lawyer',           salary:9000,  minAge:26, minSmarts:75, minEdu:'graduate',    emoji:'⚖️' },
-  { id:'programmer',  title:'Programmer',       salary:7000,  minAge:22, minSmarts:75, minEdu:'university',  emoji:'💻' },
-  { id:'ceo',         title:'CEO',              salary:25000, minAge:30, minSmarts:90, minEdu:'graduate',    emoji:'🏢' },
+  { id:'babysitter', emoji:'🍼', title:'Babysitter',      salary:400,   minAge:12, minSmarts:0,  minEdu:'none' },
+  { id:'cashier',    emoji:'🛒', title:'Cashier',         salary:1200,  minAge:16, minSmarts:0,  minEdu:'none' },
+  { id:'waiter',     emoji:'🍽️', title:'Waiter',          salary:1500,  minAge:16, minSmarts:0,  minEdu:'none' },
+  { id:'driver',     emoji:'🚗', title:'Delivery Driver', salary:2200,  minAge:18, minSmarts:20, minEdu:'none' },
+  { id:'teacher',    emoji:'🏫', title:'Teacher',         salary:3200,  minAge:22, minSmarts:60, minEdu:'university' },
+  { id:'nurse',      emoji:'💉', title:'Nurse',           salary:3800,  minAge:22, minSmarts:55, minEdu:'university' },
+  { id:'programmer', emoji:'💻', title:'Programmer',      salary:7500,  minAge:22, minSmarts:75, minEdu:'university' },
+  { id:'engineer',   emoji:'⚙️', title:'Engineer',        salary:6500,  minAge:22, minSmarts:70, minEdu:'university' },
+  { id:'lawyer',     emoji:'⚖️', title:'Lawyer',          salary:9000,  minAge:26, minSmarts:75, minEdu:'graduate' },
+  { id:'doctor',     emoji:'👨‍⚕️', title:'Doctor',       salary:11000, minAge:28, minSmarts:82, minEdu:'graduate' },
+  { id:'ceo',        emoji:'🏢', title:'CEO',             salary:28000, minAge:32, minSmarts:90, minEdu:'graduate' },
 ];
+const eduRank = { none:0, highschool:1, university:2, graduate:3 };
 
-// ══════════════════════════════════════════════════════════
-// RANDOM EVENTS
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// EVENTS (Data-driven, categorized)
+// ══════════════════════════════════════════
 const EVENTS = [
-  // childhood
-  { minAge:5,  maxAge:12, emoji:'🎁', title:'Birthday Gift!',
-    body:'Someone gave you a really cool birthday gift!',
-    choices:[{ label:'😄 Yay!', fn:()=>applyDelta({happiness:8,smarts:3}) }] },
-  { minAge:6,  maxAge:14, emoji:'😢', title:'You got bullied...',
-    body:'Some kids at school are making fun of you. What do you do?',
+
+  // ── CHILDHOOD (0-12) ──
+  { minAge:4, maxAge:8, rarity:'common', emoji:'🎁', title:'Birthday Gift!',
+    body:'Grandma gave you an amazing birthday present!',
+    choices:[{ label:'😄 Yay! Thank you!', mod:{happiness:10,smarts:2} }] },
+
+  { minAge:5, maxAge:12, rarity:'common', emoji:'😢', title:'You got bullied...',
+    body:'Some kids at school are being mean to you. What will you do?',
     choices:[
-      { label:'🥊 Fight back',  fn:()=>applyDelta({health:-10, happiness:5})  },
-      { label:'🙈 Ignore them', fn:()=>applyDelta({happiness:-5})             },
-      { label:'📢 Tell teacher',fn:()=>applyDelta({happiness:10, smarts:2})   },
+      { label:'🥊 Fight back!',     mod:{health:-10, happiness:8}  },
+      { label:'🙈 Ignore them',     mod:{happiness:-5}             },
+      { label:'📢 Tell the teacher',mod:{happiness:12, smarts:3}   },
     ]},
-  { minAge:8, maxAge:15, emoji:'📚', title:'Science Fair!',
-    body:'Your school is having a science fair. Do you enter?',
+
+  { minAge:6, maxAge:12, rarity:'common', emoji:'🐶', title:'Want a pet?',
+    body:'You found a stray puppy! Can you keep it?',
     choices:[
-      { label:'🔬 Enter!',     fn:()=>applyDelta({smarts:10, happiness:5})  },
-      { label:'😴 Skip it',   fn:()=>applyDelta({happiness:-2})             },
+      { label:'🐶 Please mum!',  mod:{happiness:20, money:-200} },
+      { label:'🥺 Leave it...',  mod:{happiness:-8}             },
     ]},
-  // teen
-  { minAge:13, maxAge:17, emoji:'💕', title:'First crush!',
-    body:'You have a crush on someone at school! What do you do?',
+
+  { minAge:7, maxAge:12, rarity:'common', emoji:'📚', title:'Science Fair!',
+    body:'Your school is hosting a science fair. Enter?',
     choices:[
-      { label:'💌 Ask them out', fn:()=>Math.random()>0.5 ? applyDelta({happiness:20}) : applyDelta({happiness:-10}) },
-      { label:'🤫 Keep it secret', fn:()=>applyDelta({happiness:-5}) },
+      { label:'🔬 Enter the fair!', mod:{smarts:12, happiness:8}   },
+      { label:'😴 Too much work',   mod:{happiness:-3}             },
     ]},
-  { minAge:14, maxAge:18, emoji:'🎮', title:'Gaming addiction risk',
-    body:'You\'ve been playing video games for 12 hours straight!',
+
+  { minAge:6, maxAge:11, rarity:'common', emoji:'⚽', title:'Sports Day!',
+    body:'It\'s the school sports day! Give it your all?',
     choices:[
-      { label:'🛑 Take a break', fn:()=>applyDelta({health:5, smarts:3})  },
-      { label:'🎮 Keep playing', fn:()=>applyDelta({health:-8, smarts:-5, happiness:5}) },
+      { label:'🏃 Run your heart out!', mod:{health:10, happiness:12, looks:3} },
+      { label:'🤷 Just walk it',        mod:{happiness:2}                      },
     ]},
-  // adult
-  { minAge:18, maxAge:30, emoji:'🏠', title:'Move out?',
-    body:'You\'re thinking about getting your own apartment. It\'ll cost $800/month.',
+
+  { minAge:8, maxAge:12, rarity:'common', emoji:'🎨', title:'Art Class',
+    body:'Your art teacher says you have real talent!',
     choices:[
-      { label:'🏠 Move out!',    fn:()=>{ if(G.money>=5000){applyDelta({happiness:15,money:-5000});addLog('Moved into your own apartment! 🏠','good');}else{addLog('Not enough savings yet...','bad');} }},
-      { label:'🏡 Stay home',    fn:()=>applyDelta({happiness:-5}) },
+      { label:'🎨 Practice every day!', mod:{smarts:5, happiness:10, looks:5} },
+      { label:'Meh, not interested',    mod:{}                                },
     ]},
-  { minAge:22, maxAge:40, emoji:'💍', title:'Relationship milestone',
-    body:'Your partner is asking about moving in together. What do you say?',
+
+  { minAge:5, maxAge:10, rarity:'rare', emoji:'🌟', title:'Child Prodigy!',
+    body:'Your teacher says you might be a prodigy. Extra tutoring?',
     choices:[
-      { label:'💍 Yes, let\'s do it!', fn:()=>applyDelta({happiness:20, money:-2000}) },
-      { label:'⏳ Not yet',            fn:()=>applyDelta({happiness:-5}) },
+      { label:'📖 Yes please!',    mod:{smarts:20, happiness:-5} },
+      { label:'🎮 Play instead',   mod:{happiness:10, smarts:-5} },
     ]},
-  { minAge:25, maxAge:45, emoji:'🤒', title:'Fell ill...',
-    body:'You\'re feeling really sick. Fever, cough, the works.',
+
+  { minAge:7, maxAge:12, rarity:'common', emoji:'🍕', title:'Pizza Party!',
+    body:'Your class is having a pizza party for winning the spelling bee!',
+    choices:[{ label:'🎉 Party time!', mod:{happiness:15} }] },
+
+  // ── LEGENDARY CHILDHOOD ──
+  { minAge:6, maxAge:12, rarity:'legendary', emoji:'💰', title:'Found a Treasure!',
+    body:'While digging in the garden you found an old box with money inside!',
+    choices:[{ label:'💰 JACKPOT!', mod:{money:5000, happiness:30} }] },
+
+  { minAge:8, maxAge:12, rarity:'legendary', emoji:'🎬', title:'Child Actor!',
+    body:'A film scout spotted you! They want you in a movie!',
     choices:[
-      { label:'🏥 See a doctor', fn:()=>applyDelta({health:20, money:-500})  },
-      { label:'🛌 Rest at home', fn:()=>applyDelta({health:5})              },
+      { label:'🎬 Action!',   mod:{money:10000, happiness:20, looks:10} },
+      { label:'Too shy...',   mod:{happiness:-5}                        },
     ]},
-  { minAge:30, maxAge:55, emoji:'📈', title:'Investment opportunity!',
-    body:'A friend tells you about a great stock opportunity.',
+
+  // ── TEEN (13-19) ──
+  { minAge:13, maxAge:17, rarity:'common', emoji:'💕', title:'First Crush!',
+    body:'You really like someone at school. What do you do?',
     choices:[
-      { label:'💸 Invest $5,000', fn:()=>{ if(G.money>=5000){ const win=Math.random()>0.4; applyDelta({money: win?8000:-5000}); addLog(win?'Investment paid off! +$8000 💰':'Investment failed... lost $5000 😢', win?'good':'bad'); }else{ addLog('Not enough money to invest!','bad'); } } },
-      { label:'🙅 No thanks',    fn:()=>addLog('Played it safe with your money.','info') },
+      { label:'💌 Ask them out!', fn:'crush_ask'  },
+      { label:'🤫 Keep it secret', mod:{happiness:-5} },
     ]},
-  { minAge:40, maxAge:60, emoji:'😰', title:'Midlife crisis!',
-    body:'You\'re questioning everything about your life. What do you do?',
+
+  { minAge:13, maxAge:17, rarity:'common', emoji:'🎮', title:'Gaming Binge',
+    body:'You\'ve been playing games for 12 hours straight!',
     choices:[
-      { label:'🏋️ Hit the gym',   fn:()=>applyDelta({health:10, looks:10, happiness:10}) },
-      { label:'🎸 Buy a guitar',  fn:()=>applyDelta({happiness:15, money:-800})  },
-      { label:'🧘 Meditate',      fn:()=>applyDelta({happiness:20, smarts:5})    },
+      { label:'🛑 Take a break', mod:{health:5, smarts:3}               },
+      { label:'🎮 One more hour!',mod:{health:-8, smarts:-5, happiness:8}},
     ]},
+
+  { minAge:14, maxAge:18, rarity:'common', emoji:'🎸', title:'Start a Band?',
+    body:'Your friends want to start a band. Join them?',
+    choices:[
+      { label:'🎸 Rock on!', mod:{happiness:18, smarts:5, money:200}  },
+      { label:'Not for me',  mod:{}                                   },
+    ]},
+
+  { minAge:15, maxAge:19, rarity:'common', emoji:'🏆', title:'Sports Tournament',
+    body:'Your school team made it to the regional tournament!',
+    choices:[
+      { label:'⚡ Give 100%!', mod:{health:8, happiness:20, looks:5}  },
+      { label:'🤧 I\'m injured',mod:{health:-5, happiness:-10}        },
+    ]},
+
+  { minAge:16, maxAge:19, rarity:'common', emoji:'🚗', title:'Driving Lesson',
+    body:'Time to learn how to drive!',
+    choices:[
+      { label:'🚗 Let\'s go!',      mod:{smarts:5, happiness:10, money:-300} },
+      { label:'😰 Too scared',      mod:{happiness:-3}                       },
+    ]},
+
+  { minAge:13, maxAge:17, rarity:'common', emoji:'📱', title:'Social Media Famous?',
+    body:'One of your posts went viral! 1,000 new followers!',
+    choices:[{ label:'🌟 Exciting!', mod:{happiness:20, looks:8, money:500} }] },
+
+  { minAge:16, maxAge:19, rarity:'rare', emoji:'🎓', title:'Scholarship Offer!',
+    body:'You\'ve been offered a partial scholarship for your grades!',
+    choices:[
+      { label:'📚 Accept it!', mod:{smarts:15, money:5000, happiness:15} },
+      { label:'Thanks but no', mod:{}                                    },
+    ]},
+
+  { minAge:13, maxAge:19, rarity:'legendary', emoji:'🎵', title:'Viral Music Hit!',
+    body:'A song you recorded in your bedroom went VIRAL! Millions of views!',
+    choices:[{ label:'🎵 FAMOUS!', mod:{money:50000, happiness:30, looks:15} }] },
+
+  { minAge:14, maxAge:18, rarity:'legendary', emoji:'📺', title:'YouTube Star!',
+    body:'Your YouTube channel just hit 1 MILLION subscribers!',
+    choices:[{ label:'📺 LEGEND!', mod:{money:30000, happiness:25, looks:10, smarts:5} }] },
+
+  // ── ADULTHOOD (20-40) ──
+  { minAge:20, maxAge:30, rarity:'common', emoji:'🏠', title:'Move Out?',
+    body:'Thinking about getting your own place. It costs $1,000/month.',
+    choices:[
+      { label:'🏠 Time to fly!',  fn:'move_out'     },
+      { label:'🏡 Stay home',     mod:{happiness:-8} },
+    ]},
+
+  { minAge:22, maxAge:35, rarity:'common', emoji:'💍', title:'Big Question!',
+    body:'Your partner wants to take things to the next level. What do you say?',
+    choices:[
+      { label:'💍 Yes!!',        mod:{happiness:25, money:-3000} },
+      { label:'⏳ Not yet...',   mod:{happiness:-8}              },
+    ]},
+
+  { minAge:25, maxAge:45, rarity:'common', emoji:'🤒', title:'Fell Ill',
+    body:'You\'re really sick. Fever, cough, the works.',
+    choices:[
+      { label:'🏥 See a doctor', mod:{health:20, money:-500}   },
+      { label:'🛌 Rest at home', mod:{health:8}                },
+    ]},
+
+  { minAge:28, maxAge:45, rarity:'common', emoji:'👶', title:'New Baby!',
+    body:'You\'re expecting a baby! Life is about to change.',
+    choices:[
+      { label:'😍 So excited!',  mod:{happiness:25, money:-5000, health:-5} },
+      { label:'😰 Not ready...',  mod:{happiness:-10}                        },
+    ]},
+
+  { minAge:25, maxAge:50, rarity:'common', emoji:'📈', title:'Investment Chance',
+    body:'A friend tells you about a hot stock opportunity.',
+    choices:[
+      { label:'💸 Invest $5,000', fn:'invest_stock'  },
+      { label:'🙅 Too risky',     mod:{}             },
+    ]},
+
+  { minAge:30, maxAge:55, rarity:'common', emoji:'😰', title:'Midlife Check-in',
+    body:'You\'re reflecting on your choices. What do you do?',
+    choices:[
+      { label:'🏋️ Hit the gym!',  mod:{health:12, looks:10, happiness:10} },
+      { label:'📚 Study more',    mod:{smarts:10, happiness:8}             },
+      { label:'🌴 Take a holiday',mod:{happiness:25, money:-2000}          },
+    ]},
+
+  { minAge:22, maxAge:40, rarity:'rare', emoji:'🚀', title:'Business Idea!',
+    body:'You have a GREAT business idea. Take the risk?',
+    choices:[
+      { label:'🚀 Launch it!',    fn:'start_biz'    },
+      { label:'Too risky',        mod:{}            },
+    ]},
+
+  { minAge:22, maxAge:50, rarity:'rare', emoji:'✈️', title:'Dream Holiday!',
+    body:'An amazing travel deal just popped up!',
+    choices:[
+      { label:'✈️ Book it!',      mod:{happiness:30, looks:5, money:-3000} },
+      { label:'💸 Too expensive', mod:{happiness:-5}                       },
+    ]},
+
+  { minAge:30, maxAge:50, rarity:'legendary', emoji:'🏆', title:'World Record!',
+    body:'You accidentally broke a world record! You\'re FAMOUS!',
+    choices:[{ label:'🌍 LEGENDARY!', mod:{happiness:40, money:100000, looks:20} }] },
+
+  { minAge:25, maxAge:50, rarity:'legendary', emoji:'🎰', title:'Lottery Winner!!',
+    body:'You bought a lottery ticket and WON THE JACKPOT!!! 🎰',
+    choices:[{ label:'🎰 I\'M RICH!!', mod:{money:500000, happiness:50} }] },
+
+  // ── LATER LIFE (50+) ──
+  { minAge:50, maxAge:70, rarity:'common', emoji:'🧓', title:'Retirement Planning',
+    body:'Are you ready for retirement someday?',
+    choices:[
+      { label:'📋 Plan carefully', mod:{smarts:5, money:5000, happiness:5} },
+      { label:'Live for today!',   mod:{happiness:10, money:-2000}         },
+    ]},
+
+  { minAge:55, maxAge:80, rarity:'common', emoji:'🏡', title:'Grandchildren!',
+    body:'Your grandchildren come to visit for the week!',
+    choices:[{ label:'🥰 Wonderful!', mod:{happiness:30, health:5} }] },
+
+  { minAge:60, maxAge:90, rarity:'rare', emoji:'🌟', title:'Lifetime Achievement',
+    body:'The community honours you with a lifetime achievement award!',
+    choices:[{ label:'🌟 Honoured!', mod:{happiness:35, smarts:5} }] },
 ];
 
-// ══════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════
-function clamp(v, min=0, max=100) { return Math.max(min, Math.min(max, v)); }
-function rand(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+// ── Special event functions ──
+function evFn(name) {
+  if(name === 'crush_ask') {
+    const success = Math.random() > 0.5;
+    addLog(success ? '💕 They said YES! First relationship! ❤️' : '😢 They said no... heartbroken.', success?'good':'bad');
+    applyMod(success ? {happiness:20} : {happiness:-15});
+  }
+  if(name === 'move_out') {
+    if(G.money>=5000){ applyMod({happiness:18,money:-5000}); addLog('Moved into your own place! 🏠','good'); }
+    else { addLog('Not enough savings to move out yet!','bad'); applyMod({happiness:-5}); }
+  }
+  if(name === 'invest_stock') {
+    if(G.money>=5000){
+      const win = Math.random() > 0.4;
+      applyMod({money: win?9000:-5000});
+      addLog(win ? 'Investment paid off! +$9,000 💰' : 'Investment crashed... -$5,000 😭', win?'good':'bad');
+      if(win) SFX.money();
+    } else { addLog('Not enough money to invest!','bad'); }
+  }
+  if(name === 'start_biz') {
+    if(G.money>=3000){
+      const win = Math.random() > 0.5;
+      applyMod({money: win?20000:-3000, happiness: win?25:-10});
+      addLog(win ? '🚀 Business took off! +$20,000!' : '📉 Business failed... -$3,000','',win?'good':'bad');
+      if(win) { SFX.levelUp(); }
+    } else { addLog('Need $3,000 to start a business!','bad'); }
+  }
+}
 
-function applyDelta(delta) {
-  if(delta.health    !== undefined) G.health    = clamp(G.health    + delta.health);
-  if(delta.happiness !== undefined) G.happiness = clamp(G.happiness + delta.happiness);
-  if(delta.smarts    !== undefined) G.smarts    = clamp(G.smarts    + delta.smarts);
-  if(delta.looks     !== undefined) G.looks     = clamp(G.looks     + delta.looks);
-  if(delta.money     !== undefined) G.money     = Math.max(0, G.money + delta.money);
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function clamp(v,mn=0,mx=100){ return Math.max(mn,Math.min(mx,v)); }
+function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function applyMod(mod, silent=false) {
+  const prev = { health:G.health, happiness:G.happiness, smarts:G.smarts, looks:G.looks, money:G.money };
+  if(mod.health    != null) G.health    = clamp(G.health    + mod.health);
+  if(mod.happiness != null) G.happiness = clamp(G.happiness + mod.happiness);
+  if(mod.smarts    != null) G.smarts    = clamp(G.smarts    + mod.smarts);
+  if(mod.looks     != null) G.looks     = clamp(G.looks     + mod.looks);
+  if(mod.money     != null) { G.money   = Math.max(0, G.money + mod.money); }
+
+  if(!silent) {
+    // Floating numbers for fun feedback
+    if(mod.health    && mod.health    !==0) spawnFloat((mod.health   >0?'+':'')+mod.health+'❤️',   mod.health>0);
+    if(mod.happiness && mod.happiness !==0) spawnFloat((mod.happiness>0?'+':'')+mod.happiness+'😊', mod.happiness>0);
+    if(mod.smarts    && mod.smarts    !==0) spawnFloat((mod.smarts   >0?'+':'')+mod.smarts+'🧠',    mod.smarts>0);
+    if(mod.money     && mod.money     !==0) { spawnFloat((mod.money>0?'+$':'-$')+Math.abs(mod.money).toLocaleString(), mod.money>0, true); if(mod.money>0) SFX.money(); }
+  }
+
   updateUI();
+  checkAchievements();
 }
 
 function addLog(msg, type='info') {
-  G.log.unshift({ msg, type, age: G.age });
-  if(G.log.length > 60) G.log.pop();
+  G.log.unshift({ msg, type, age:G.age });
+  if(G.log.length>80) G.log.pop();
   renderLog();
 }
 
-// ══════════════════════════════════════════════════════════
-// AVATAR
-// ══════════════════════════════════════════════════════════
-function getAvatar(age, gender) {
-  if(age < 4)  return gender==='female' ? '👶' : '👶';
-  if(age < 12) return gender==='female' ? '👧' : '👦';
-  if(age < 18) return gender==='female' ? '👩' : '👦';
-  if(age < 40) return gender==='female' ? '👩' : '👨';
-  if(age < 65) return gender==='female' ? '👩' : '👨';
-  return gender==='female' ? '👵' : '👴';
+function spawnFloat(text, positive, gold=false) {
+  const el = document.createElement('div');
+  el.className = 'float-num ' + (gold?'float-gold':positive?'float-pos':'float-neg');
+  el.textContent = text;
+  el.style.left  = (30 + Math.random()*50) + '%';
+  el.style.top   = (30 + Math.random()*30) + 'vh';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
 }
 
-// ══════════════════════════════════════════════════════════
-// UI CONTROLLER
-// ══════════════════════════════════════════════════════════
+function shakeScreen() {
+  const el = document.getElementById('gs-inner');
+  el.classList.add('shake');
+  setTimeout(()=>el.classList.remove('shake'), 450);
+}
+
+// ══════════════════════════════════════════
+// AVATAR & STAGE
+// ══════════════════════════════════════════
+function getAvatar(age, gender) {
+  if(age < 2)  return '👶';
+  if(age < 5)  return gender==='female'?'👧':'👦';
+  if(age < 13) return gender==='female'?'👧':'👦';
+  if(age < 18) return gender==='female'?'👩':'🧑';
+  if(age < 30) return gender==='female'?'👩':'👨';
+  if(age < 50) return gender==='female'?'👩':'👨';
+  if(age < 65) return gender==='female'?'🧑‍🦳':'🧑‍🦳';
+  return gender==='female'?'👵':'👴';
+}
+function getStage(age) {
+  if(age < 2)  return '👶 Newborn';
+  if(age < 5)  return '🧒 Toddler';
+  if(age < 13) return '🎒 Kid';
+  if(age < 18) return '🎧 Teenager';
+  if(age < 22) return '🎓 Young Adult';
+  if(age < 40) return '💼 Adult';
+  if(age < 65) return '🧠 Middle-aged';
+  return '🌟 Senior';
+}
 function statColor(v) {
-  if(v >= 70) return '#22c55e';
-  if(v >= 40) return '#f59e0b';
+  if(v>=70) return '#10b981';
+  if(v>=40) return '#f59e0b';
   return '#ef4444';
 }
 
+// ══════════════════════════════════════════
+// UI CONTROLLER
+// ══════════════════════════════════════════
 function updateUI() {
-  // Header
   document.getElementById('hdr-name').textContent  = G.name;
-  document.getElementById('hdr-age').textContent   = G.age;
-  document.getElementById('hdr-job').textContent   = G.jobTitle;
   document.getElementById('hdr-money').textContent = G.money.toLocaleString();
-  document.getElementById('next-age').textContent  = G.age + 1;
-  document.getElementById('char-avatar').textContent    = getAvatar(G.age, G.gender);
-  document.getElementById('char-gender-label').textContent = G.gender === 'female' ? 'Girl/Woman' : 'Boy/Man';
+  document.getElementById('hdr-edu').textContent   = { none:'No education yet', highschool:'🎓 High School', university:'🏛️ University', graduate:'🎓 Graduate School' }[G.education];
+  document.getElementById('ava-emoji').textContent = getAvatar(G.age, G.gender);
+  document.getElementById('ava-age').textContent   = G.age;
+  document.getElementById('ava-stage').textContent = getStage(G.age);
+  document.getElementById('ava-job').textContent   = G.job ? (JOBS.find(j=>j.id===G.job)?.emoji||'') + ' ' + G.jobTitle : '💤 Unemployed';
+  document.getElementById('next-age').textContent  = G.age+1;
 
-  // Stats
-  const stats = ['health','happiness','smarts','looks'];
-  stats.forEach(s => {
-    const val = G[s];
-    const fill = document.getElementById('stat-'+s);
-    const lbl  = document.getElementById('stat-'+s+'-val');
-    if(fill) { fill.style.width = val+'%'; fill.style.background = statColor(val); }
-    if(lbl)  lbl.textContent = val;
+  ['health','happiness','smarts','looks'].forEach(s => {
+    const v = G[s];
+    const fill = document.getElementById('sf-'+s);
+    const val  = document.getElementById('sv-'+s);
+    if(fill) { fill.style.width=v+'%'; fill.style.backgroundColor=statColor(v); }
+    if(val)   val.textContent = v;
   });
 
-  // Activities
-  renderActivities();
-  renderWork();
-  renderEducation();
-  renderAssets();
-}
-
-// ══════════════════════════════════════════════════════════
-// RENDER PANELS
-// ══════════════════════════════════════════════════════════
-function renderActivities() {
-  const acts = [];
-
-  if(G.age >= 5)  acts.push({ emoji:'📖', label:'Read a Book',     sub:'+5 Smarts',         fn:()=>{ applyDelta({smarts:5, happiness:3}); addLog('Read a book 📖 +5 Smarts','good'); } });
-  if(G.age >= 6)  acts.push({ emoji:'🎨', label:'Draw / Paint',    sub:'+3 Happiness, +2 Looks', fn:()=>{ applyDelta({happiness:5, looks:2}); addLog('Did some drawing 🎨','good'); } });
-  if(G.age >= 8)  acts.push({ emoji:'🏃', label:'Exercise',        sub:'+5 Health, +3 Looks', fn:()=>{ applyDelta({health:5, looks:3}); addLog('Went for a run 🏃 +5 Health','good'); } });
-  if(G.age >= 10) acts.push({ emoji:'🎵', label:'Play Music',      sub:'+5 Happiness, +2 Smarts', fn:()=>{ applyDelta({happiness:5, smarts:2}); addLog('Played music 🎵','good'); } });
-  if(G.age >= 12) acts.push({ emoji:'🏋️', label:'Go to Gym',      sub:'+8 Health, +5 Looks', fn:()=>{ applyDelta({health:8, looks:5, happiness:3}); addLog('Hit the gym 🏋️','good'); } });
-  if(G.age >= 14) acts.push({ emoji:'👥', label:'Socialise',       sub:'+10 Happiness',      fn:()=>{ applyDelta({happiness:10}); addLog('Hung out with friends 👥','good'); } });
-  if(G.age >= 18) acts.push({ emoji:'🧘', label:'Meditate',        sub:'+8 Happiness, +3 Health', fn:()=>{ applyDelta({happiness:8, health:3}); addLog('Meditated 🧘 +8 Happiness','good'); } });
-  if(G.age >= 18) acts.push({ emoji:'🏥', label:'See a Doctor',    sub:'+15 Health ($200)',  fn:()=>{ if(G.money>=200){ applyDelta({health:15, money:-200}); addLog('Visited the doctor 🏥 +15 Health (-$200)','info'); }else{ addLog('Can\'t afford doctor visit!','bad'); } } });
-  if(G.age >= 21) acts.push({ emoji:'🎰', label:'Casino Night',    sub:'Risk/Reward',        fn:()=>{ const win=Math.random()>0.6; applyDelta({money: win?1000:-500, happiness: win?15:-10}); addLog(win?'Won $1000 at casino! 🎰':'Lost $500 at casino 😢', win?'good':'bad'); } });
-
-  const list = document.getElementById('activity-list');
-  list.innerHTML = acts.map(a => `
-    <div class="act-card" onclick="(${a.fn.toString()})()">
-      <div style="font-size:1.8em">${a.emoji}</div>
-      <div><div class="text-white font-bold text-sm">${a.label}</div><div class="text-slate-400 text-xs">${a.sub}</div></div>
-    </div>`).join('');
-}
-
-function renderWork() {
-  const el = document.getElementById('work-content');
-  if(!el) return;
-
-  if(G.age < 16) {
-    el.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">You can start working at age 16! 🎒</p>';
-    return;
-  }
-
-  let html = '';
-
-  // Current job info
-  if(G.job) {
-    html += `
-      <div class="bg-slate-900 rounded-xl p-4 mb-3">
-        <div class="text-slate-400 text-xs font-bold uppercase mb-1">Current Job</div>
-        <div class="text-white font-black text-lg">${G.jobTitle}</div>
-        <div class="text-green-400 font-bold text-sm">💰 $${G.salary.toLocaleString()}/month</div>
-        <div class="text-slate-400 text-xs mt-1">Promotion chance: ${G.promotionChance}%</div>
-      </div>
-      <button type="button" class="act-card w-full mb-2" onclick="workHard()" style="display:flex">
-        <div style="font-size:1.6em">💪</div>
-        <div><div class="text-white font-bold text-sm">Work Hard</div><div class="text-slate-400 text-xs">+10% promotion chance, +salary</div></div>
-      </button>
-      <button type="button" class="act-card w-full mb-3" onclick="quitJob()" style="display:flex;border-color:#ef4444">
-        <div style="font-size:1.6em">🚪</div>
-        <div><div class="text-red-400 font-bold text-sm">Quit Job</div><div class="text-slate-400 text-xs">Go back to job hunting</div></div>
-      </button>`;
-  }
-
-  // Available jobs
-  const available = JOBS.filter(j =>
-    G.age >= j.minAge &&
-    G.smarts >= j.minSmarts &&
-    eduLevel(G.education) >= eduLevel(j.minEdu) &&
-    j.id !== G.job
-  );
-
-  if(available.length > 0) {
-    html += `<div class="text-slate-400 text-xs font-bold uppercase mb-2">${G.job ? 'Other Jobs Available' : 'Apply for a Job'}</div>`;
-    html += available.map(j => `
-      <div class="act-card mb-2" onclick="applyJob('${j.id}')">
-        <div style="font-size:1.6em">${j.emoji}</div>
-        <div class="flex-1"><div class="text-white font-bold text-sm">${j.title}</div><div class="text-slate-400 text-xs">$${j.salary.toLocaleString()}/mo · Min age ${j.minAge}</div></div>
-        <div class="text-green-400 text-xs font-bold">Apply →</div>
-      </div>`).join('');
-  } else if(!G.job) {
-    html += '<p class="text-slate-400 text-sm text-center py-2">No jobs available yet. Study more! 📚</p>';
-  }
-
-  el.innerHTML = html;
-}
-
-function renderEducation() {
-  const el = document.getElementById('education-content');
-  if(!el) return;
-
-  const eduBadge = { none:'None', highschool:'🎓 High School', university:'🏛️ University', graduate:'🎓 Graduate' };
-
-  let html = `
-    <div class="bg-slate-900 rounded-xl p-4 mb-3">
-      <div class="text-slate-400 text-xs font-bold uppercase mb-1">Education Level</div>
-      <div class="text-white font-bold">${eduBadge[G.education]}</div>
-      ${G.studyingAt ? `<div class="text-blue-400 text-xs mt-1">Currently: ${G.studyingAt}</div>` : ''}
-    </div>`;
-
-  if(G.age < 18) {
-    html += `<div class="act-card mb-2" onclick="studyHard()"><div style="font-size:1.6em">📖</div><div><div class="text-white font-bold text-sm">Study Hard</div><div class="text-slate-400 text-xs">+8 Smarts (at school)</div></div></div>`;
-  } else if(G.age >= 18 && G.education === 'highschool' || G.education === 'none' && G.age >= 18) {
-    if(G.smarts >= 50) {
-      html += `<div class="act-card mb-2" onclick="enrollUniversity()"><div style="font-size:1.8em">🏛️</div><div><div class="text-white font-bold text-sm">Enrol in University</div><div class="text-slate-400 text-xs">Needs Smarts 50+. Opens better jobs.</div></div></div>`;
-    } else {
-      html += `<div class="act-card mb-2" onclick="studyHard()"><div style="font-size:1.6em">📖</div><div><div class="text-white font-bold text-sm">Study Hard</div><div class="text-slate-400 text-xs">+8 Smarts. Need 50+ for university.</div></div></div>`;
-    }
-  }
-
-  if(G.education === 'university' && G.age >= 24 && G.smarts >= 75) {
-    html += `<div class="act-card mb-2" onclick="enrollGraduate()"><div style="font-size:1.8em">🎓</div><div><div class="text-white font-bold text-sm">Graduate School</div><div class="text-slate-400 text-xs">Needs Smarts 75+. Unlocks top jobs.</div></div></div>`;
-  }
-
-  if(G.age >= 18) {
-    html += `<div class="act-card" onclick="studyHard()"><div style="font-size:1.6em">📚</div><div><div class="text-white font-bold text-sm">Self Study</div><div class="text-slate-400 text-xs">+5 Smarts anytime</div></div></div>`;
-  }
-
-  el.innerHTML = html;
-}
-
-function renderAssets() {
-  const el = document.getElementById('assets-content');
-  if(!el) return;
-
-  const netWorth = G.money;
-  const tier = netWorth >= 1000000 ? '🤑 Millionaire' :
-               netWorth >= 100000  ? '💎 Wealthy'     :
-               netWorth >= 10000   ? '💰 Comfortable' :
-               netWorth >= 1000    ? '👍 Getting by'  : '😟 Struggling';
-
-  el.innerHTML = `
-    <div class="bg-slate-900 rounded-xl p-4 mb-3">
-      <div class="text-slate-400 text-xs font-bold uppercase mb-1">Net Worth</div>
-      <div class="text-green-400 font-black text-3xl">$${G.money.toLocaleString()}</div>
-      <div class="text-slate-400 text-sm mt-1">${tier}</div>
-    </div>
-    <div class="bg-slate-900 rounded-xl p-4 mb-3">
-      <div class="text-slate-400 text-xs font-bold uppercase mb-2">Monthly Income</div>
-      <div class="flex justify-between text-sm"><span class="text-slate-300">Salary</span><span class="text-green-400 font-bold">$${G.salary.toLocaleString()}</span></div>
-    </div>
-    ${G.money >= 1000 ? `
-    <div class="act-card" onclick="saveInBank()">
-      <div style="font-size:1.6em">🏦</div>
-      <div><div class="text-white font-bold text-sm">Save in Bank</div><div class="text-slate-400 text-xs">Earn 3% interest on savings</div></div>
-    </div>` : ''}`;
+  renderLog();
 }
 
 function renderLog() {
   const el = document.getElementById('life-log');
-  if(!G.log.length) {
-    el.innerHTML = '<p class="text-slate-500 text-xs text-center py-3">Your life story will appear here...</p>';
-    return;
+  if(!G.log.length){ el.innerHTML='<p style="color:var(--text2);font-size:0.82em;text-align:center;padding:10px">Your story begins here...</p>'; return; }
+  el.innerHTML = G.log.slice(0,30).map(e=>`<div class="log-entry log-${e.type}"><b>Age ${e.age}:</b> ${e.msg}</div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// ACTIVITY TABS
+// ══════════════════════════════════════════
+function openTab(name) {
+  ['act','work','edu','bank'].forEach(t=>{
+    document.getElementById('panel-'+t).style.display = t===name?'block':'none';
+    document.getElementById('tab-'+t).classList.toggle('on', t===name);
+  });
+  SFX.click();
+  if(name==='work')  renderWork();
+  if(name==='edu')   renderEdu();
+  if(name==='bank')  renderBank();
+}
+
+function actBtn(emoji, title, sub, fn) {
+  const d = document.createElement('div');
+  d.className = 'act-item';
+  d.innerHTML = `<div class="act-icon">${emoji}</div><div class="act-info"><div class="act-title">${title}</div><div class="act-sub">${sub}</div></div>`;
+  d.onclick = fn;
+  return d;
+}
+
+function renderActivities() {
+  const el = document.getElementById('panel-act');
+  el.innerHTML = '';
+  const add = (e,t,s,fn) => el.appendChild(actBtn(e,t,s,fn));
+  const a = G.age;
+
+  if(a>=4)  add('📖','Read a Book',     '+6 Smarts, +3 Happy',           ()=>{ applyMod({smarts:6,happiness:3}); addLog('Read a book 📖','good'); SFX.good(); });
+  if(a>=5)  add('🎨','Draw / Paint',    '+4 Happy, +3 Looks',            ()=>{ applyMod({happiness:4,looks:3});  addLog('Got creative with art 🎨','good'); SFX.good(); });
+  if(a>=6)  add('🏃','Exercise',        '+6 Health, +3 Looks',           ()=>{ applyMod({health:6,looks:3});     addLog('Went for a run 🏃','good'); SFX.good(); });
+  if(a>=8)  add('🎵','Play Music',      '+5 Happy, +3 Smarts',           ()=>{ applyMod({happiness:5,smarts:3}); addLog('Played some music 🎵','good'); SFX.good(); });
+  if(a>=12) add('🏋️','Hit the Gym',    '+10 Health, +6 Looks',          ()=>{ applyMod({health:10,looks:6});    addLog('Crushed it at the gym 🏋️','good'); SFX.good(); });
+  if(a>=12) add('👥','Hang with Friends','+12 Happy',                    ()=>{ applyMod({happiness:12});         addLog('Hung out with friends 😄','good'); SFX.good(); });
+  if(a>=16) add('🧘','Meditate',        '+10 Happy, +4 Health',          ()=>{ applyMod({happiness:10,health:4});addLog('Meditated 🧘 Feeling zen','good'); SFX.good(); });
+  if(a>=18) add('🏥','See a Doctor',    '+15 Health (-$200)',             ()=>{ if(G.money>=200){applyMod({health:15,money:-200});addLog('Doctor visit 🏥 +15 Health','info');}else{addLog('Can\'t afford doctor!','bad');SFX.bad();} });
+  if(a>=21) add('🎰','Casino Night',    'Risk $500 for $1,500?',         ()=>{ const w=Math.random()>0.5; applyMod({money:w?1500:-500,happiness:w?15:-10}); addLog(w?'Casino WIN! 🎰 +$1,500':'Casino loss... -$500',w?'good':'bad'); if(w)SFX.money(); else SFX.bad(); });
+  if(a>=25) add('✈️','Take a Trip',    '+25 Happy (-$2,000)',            ()=>{ applyMod({happiness:25,money:-2000,looks:5}); addLog('Took an amazing trip ✈️','good'); SFX.levelUp(); });
+}
+
+function renderWork() {
+  const el = document.getElementById('panel-work');
+  el.innerHTML = '';
+  if(G.age < 12){ el.innerHTML='<p style="color:var(--text2);font-size:0.85em;text-align:center;padding:12px">Can start working from age 12! 🎒</p>'; return; }
+
+  if(G.job) {
+    const job = JOBS.find(j=>j.id===G.job);
+    el.innerHTML += `
+      <div style="background:#ecfdf5;border-radius:18px;padding:16px;margin-bottom:10px;border:2px solid #6ee7b7">
+        <div style="font-size:0.72em;font-weight:900;text-transform:uppercase;color:#065f46;margin-bottom:4px">Current Job</div>
+        <div style="font-size:1.2em;font-weight:900">${job?.emoji||''} ${G.jobTitle}</div>
+        <div style="color:#059669;font-weight:800;font-size:0.9em">💰 $${G.salary.toLocaleString()}/month</div>
+        <div style="color:var(--text2);font-size:0.78em;margin-top:4px">Promotion chance: <b>${G.promotionChance}%</b></div>
+      </div>`;
+    el.appendChild(actBtn('💪','Work Hard','+15% promotion, bonus pay', ()=>{ G.promotionChance=Math.min(G.promotionChance+15,85); const b=Math.floor(G.salary*0.06); applyMod({happiness:-5,money:b}); addLog(`Worked extra hard 💪 +$${b} bonus. Promo: ${G.promotionChance}%`,'good'); SFX.good(); }));
+    el.appendChild(actBtn('🚪','Quit Job','Go back to job hunting', ()=>{ addLog(`Left job as ${G.jobTitle}`,'info'); G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;applyMod({happiness:-10}); SFX.bad(); }));
+    el.innerHTML += '<div style="height:8px"></div>';
   }
-  el.innerHTML = G.log.slice(0,25).map(e =>
-    `<div class="log-entry log-${e.type}"><span class="font-bold opacity-60 mr-1">Age ${e.age}:</span>${e.msg}</div>`
-  ).join('');
-}
 
-// ══════════════════════════════════════════════════════════
-// GAME ACTIONS
-// ══════════════════════════════════════════════════════════
-function eduLevel(e) {
-  return { none:0, highschool:1, university:2, graduate:3 }[e] || 0;
-}
-
-function studyHard() {
-  applyDelta({smarts:8, happiness:-3});
-  addLog('Studied really hard 📚 +8 Smarts','good');
-}
-
-function enrollUniversity() {
-  if(G.smarts < 50) { addLog('Need Smarts 50+ for university!','bad'); return; }
-  if(G.money < 3000 && G.money > 0) { addLog('Need $3000 for university fees!','bad'); return; }
-  G.education   = 'university';
-  G.studyingAt  = 'University 🏛️';
-  applyDelta({smarts:10, money:-3000, happiness:-5});
-  addLog('Enrolled in University! 🏛️ Studies begin!','good');
-}
-
-function enrollGraduate() {
-  G.education  = 'graduate';
-  G.studyingAt = 'Graduate School 🎓';
-  applyDelta({smarts:15, money:-5000});
-  addLog('Enrolled in Graduate School! 🎓','good');
-}
-
-function applyJob(jobId) {
-  const job = JOBS.find(j => j.id === jobId);
-  if(!job) return;
-  const chance = 40 + G.smarts * 0.5;
-  if(Math.random()*100 < chance) {
-    G.job = job.id; G.jobTitle = job.title; G.salary = job.salary; G.promotionChance = 10;
-    addLog(`Got the job! Now a ${job.title} ${job.emoji} earning $${job.salary.toLocaleString()}/mo 🎉`,'good');
-  } else {
-    addLog(`Applied for ${job.title} but didn't get it. Keep trying! 💪`,'bad');
+  const avail = JOBS.filter(j=>G.age>=j.minAge && G.smarts>=j.minSmarts && eduRank[G.education]>=eduRank[j.minEdu] && j.id!==G.job);
+  if(avail.length) {
+    const lbl = document.createElement('div');
+    lbl.style.cssText='font-size:0.72em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:8px';
+    lbl.textContent = G.job ? 'Other Jobs Available' : 'Apply for a Job';
+    el.appendChild(lbl);
+    avail.forEach(j=>{
+      el.appendChild(actBtn(j.emoji, j.title, `$${j.salary.toLocaleString()}/mo · Min age ${j.minAge}`, ()=>{
+        const chance = 35 + G.smarts*0.5;
+        if(Math.random()*100<chance){ G.job=j.id;G.jobTitle=j.title;G.salary=j.salary;G.promotionChance=10;addLog(`Got the job! ${j.emoji} ${j.title} $${j.salary.toLocaleString()}/mo 🎉`,'good');SFX.levelUp();applyMod({happiness:15}); }
+        else { addLog(`Applied for ${j.title} but didn\'t get it. Try harder!`,'bad'); SFX.bad(); }
+        renderWork();
+      }));
+    });
+  } else if(!G.job) {
+    el.innerHTML += '<p style="color:var(--text2);font-size:0.85em;text-align:center;padding:8px">Study more to unlock better jobs! 📚</p>';
   }
-  applyDelta({});
 }
 
-function workHard() {
-  G.promotionChance = Math.min(G.promotionChance + 10, 80);
-  const bonus = Math.floor(G.salary * 0.05);
-  applyDelta({happiness:-5, money: bonus});
-  addLog(`Worked extra hard 💪 +$${bonus} bonus. Promotion chance: ${G.promotionChance}%`,'good');
+function renderEdu() {
+  const el = document.getElementById('panel-edu');
+  el.innerHTML = '';
+  const badge = { none:'None', highschool:'🎓 High School', university:'🏛️ University', graduate:'🎓 Graduate School' };
+  el.innerHTML = `<div style="background:#eff6ff;border-radius:18px;padding:14px;margin-bottom:10px;border:2px solid #bfdbfe"><div style="font-size:0.72em;font-weight:900;text-transform:uppercase;color:#1e40af;margin-bottom:4px">Education</div><div style="font-weight:900">${badge[G.education]}</div>${G.studyingAt?`<div style="color:#3b82f6;font-size:0.8em;margin-top:2px">📖 ${G.studyingAt}</div>`:''}</div>`;
+
+  el.appendChild(actBtn('📖','Study Hard', G.age<18?'+9 Smarts (school)':'+6 Smarts (self-study)', ()=>{ applyMod({smarts:G.age<18?9:6,happiness:-3}); addLog('Studied hard 📖 +Smarts','good'); SFX.good(); }));
+
+  if(G.age>=18 && eduRank[G.education]<2 && G.smarts>=50) {
+    el.appendChild(actBtn('🏛️','Enrol in University','Needs Smarts 50+. Opens great jobs!',()=>{ if(G.money<3000&&G.money>0){addLog('Need $3,000 for tuition!','bad');return;} G.education='university';G.studyingAt='University 🏛️';applyMod({smarts:12,money:-3000,happiness:-5});addLog('Enrolled in University! 🏛️','event');SFX.levelUp();renderEdu(); }));
+  }
+  if(G.age>=24 && G.education==='university' && G.smarts>=75) {
+    el.appendChild(actBtn('🎓','Graduate School','Needs Smarts 75+. Unlocks top jobs!',()=>{ G.education='graduate';G.studyingAt='Graduate School 🎓';applyMod({smarts:18,money:-6000});addLog('Enrolled in Graduate School! 🎓','event');SFX.levelUp();renderEdu(); }));
+  }
 }
 
-function quitJob() {
-  addLog(`Left your job as ${G.jobTitle}. Time for something new.`,'info');
-  G.job = null; G.jobTitle = 'Unemployed'; G.salary = 0; G.promotionChance = 0;
-  applyDelta({happiness:-10});
+function renderBank() {
+  const el = document.getElementById('panel-bank');
+  const tier = G.money>=1000000?'🤑 Millionaire!':G.money>=100000?'💎 Wealthy':G.money>=10000?'💰 Comfortable':G.money>=1000?'👍 Getting by':'😟 Struggling';
+  el.innerHTML = `
+    <div style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:20px;padding:18px;margin-bottom:12px;border:2px solid #6ee7b7;text-align:center">
+      <div style="font-size:2.2em;font-weight:900;color:#059669">$${G.money.toLocaleString()}</div>
+      <div style="color:#065f46;font-weight:800;font-size:0.9em">${tier}</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:16px;padding:14px;margin-bottom:10px;border:2px solid #e2e8f0">
+      <div style="font-size:0.72em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:8px">Monthly Income</div>
+      <div style="display:flex;justify-content:space-between"><span style="font-weight:700;color:var(--text2)">Salary</span><span style="font-weight:900;color:#059669">$${G.salary.toLocaleString()}</span></div>
+    </div>`;
+  if(G.money>=500) {
+    el.appendChild(actBtn('🏦','Save in Bank','Earn 4% interest on your money',()=>{ const i=Math.floor(G.money*0.04); applyMod({money:i}); addLog(`Bank interest: +$${i} 🏦`,'good'); SFX.money(); }));
+  }
 }
 
-function saveInBank() {
-  const interest = Math.floor(G.money * 0.03);
-  applyDelta({money: interest});
-  addLog(`Bank saved! Earned $${interest} in interest 🏦`,'good');
-}
-
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 // AGE UP — THE MAIN LOOP
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function ageUp() {
+  try { getAC().resume(); } catch(e) {}
+  SFX.ageUp();
   G.age++;
 
-  // Natural stat drift
-  G.happiness = clamp(G.happiness - rand(1,4));
-  G.health    = clamp(G.health    - (G.age > 50 ? rand(1,3) : 1));
+  // Natural drift
+  G.happiness = clamp(G.happiness - rand(1,3));
+  G.health    = clamp(G.health    - (G.age>50 ? rand(1,3) : 1));
 
-  // Salary income per year
-  if(G.salary > 0) {
-    applyDelta({money: G.salary});
-    addLog(`Earned $${G.salary.toLocaleString()} salary this year 💰`,'good');
+  // Salary collected
+  if(G.salary>0) {
+    G.money += G.salary;
+    addLog(`Earned $${G.salary.toLocaleString()} salary this year 💰`, 'good');
+    SFX.money();
   }
 
-  // Age milestones
-  if(G.age === 5)  addLog('Started primary school! 🎒','info');
-  if(G.age === 13) addLog('Became a teenager! 🎉','event');
-  if(G.age === 18) { addLog('You\'re officially an adult! 🎓 High school completed!','event'); G.education = 'highschool'; }
-  if(G.age === 65) addLog('Reached retirement age 🎉 Consider taking it easy!','event');
+  // Milestones
+  if(G.age===5)  addLog('Started school! First day 🎒', 'event');
+  if(G.age===13) addLog('Officially a teenager! 🎉', 'event');
+  if(G.age===18) { addLog('You\'re 18! High school done! 🎓', 'event'); G.education='highschool'; }
+  if(G.age===30) addLog('Turned 30! Feeling wiser 🌟', 'event');
+  if(G.age===50) addLog('Half a century! Big 50! 🎂', 'event');
+  if(G.age===65) addLog('Retirement age reached! 🏖️', 'event');
 
-  // University graduation
-  if(G.studyingAt && G.studyingAt.includes('University') && G.age >= 22) {
-    G.studyingAt = null;
-    addLog('Graduated from University! 🎓 New jobs unlocked!','event');
-  }
-  if(G.studyingAt && G.studyingAt.includes('Graduate') && G.age >= 28) {
-    G.studyingAt = null;
-    addLog('Completed Graduate School! 🎓 Top-tier jobs available!','event');
-  }
+  // Graduation
+  if(G.studyingAt?.includes('University') && G.age>=22){ G.studyingAt=null; addLog('Graduated University! 🎓 New jobs unlocked!','event'); SFX.levelUp(); }
+  if(G.studyingAt?.includes('Graduate') && G.age>=28){ G.studyingAt=null; addLog('Completed Grad School! 🎓 Top jobs available!','event'); SFX.legend(); }
 
-  // Promotion check
-  if(G.job && Math.random()*100 < G.promotionChance) {
-    const raise = Math.floor(G.salary * 0.15);
-    G.salary += raise;
-    G.promotionChance = Math.max(0, G.promotionChance - 20);
-    addLog(`Got promoted! New salary: $${G.salary.toLocaleString()} 🎉 (+$${raise})`, 'good');
+  // Promotion
+  if(G.job && Math.random()*100<G.promotionChance) {
+    const raise=Math.floor(G.salary*0.18);
+    G.salary+=raise; G.promotionChance=Math.max(0,G.promotionChance-20);
+    addLog(`Promoted! 🎉 New salary: $${G.salary.toLocaleString()} (+$${raise})`, 'good');
+    SFX.levelUp();
   }
 
-  // Death check
-  if(G.age >= 100 || G.health <= 0) {
-    addLog(`Your life ended at age ${G.age}. What a journey... 🕊️`,'bad');
-    showEndScreen();
+  // Death
+  if(G.age>=100||G.health<=0) {
+    addLog(`A full life, ended at age ${G.age}. What a journey 🕊️`, 'bad');
+    SFX.over();
+    showModal('🕊️','Life Complete',
+      `${G.name} lived to age ${G.age}. Final wealth: $${G.money.toLocaleString()}.`,
+      [{ label:'🌱 Begin a New Life', fn:'_restart', style:'primary' }]
+    );
     return;
   }
 
-  // Random event (30% chance)
-  if(Math.random() < 0.3) {
-    const eligible = EVENTS.filter(e => G.age >= e.minAge && G.age <= e.maxAge);
-    if(eligible.length) {
-      const ev = eligible[Math.floor(Math.random()*eligible.length)];
-      showModal(ev.emoji, ev.title, ev.body, ev.choices);
-    }
+  // Random event — rarity system
+  const roll = Math.random()*100;
+  const rarity = roll<1?'legendary': roll<12?'rare': 'common';
+  const pool = EVENTS.filter(e=>G.age>=e.minAge && G.age<=e.maxAge && e.rarity===rarity);
+  if(pool.length && (rarity!=='common'||Math.random()<0.35)) {
+    const ev = pool[Math.floor(Math.random()*pool.length)];
+    if(ev.rarity==='legendary') SFX.legend();
+    showModal(ev.emoji, ev.title, ev.body, ev.choices.map(c=>({ ...c, style:c.style||'secondary' })));
   }
 
-  saveGame();
+  if(G.health<30||G.happiness<25) shakeScreen();
+
+  checkAchievements();
+  save();
   updateUI();
+  renderActivities();
 }
 
-// ══════════════════════════════════════════════════════════
-// MODAL SYSTEM
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════
 function showModal(icon, title, body, choices) {
-  document.getElementById('modal-icon').textContent  = icon;
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').textContent  = body;
-
-  const choicesEl = document.getElementById('modal-choices');
-  choicesEl.innerHTML = '';
-  choices.forEach(c => {
+  document.getElementById('m-icon').textContent  = icon;
+  document.getElementById('m-title').textContent = title;
+  document.getElementById('m-body').textContent  = body;
+  const btns = document.getElementById('m-btns');
+  btns.innerHTML='';
+  choices.forEach((c,i) => {
     const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn-secondary w-full text-left px-4 py-3';
+    btn.type='button';
+    btn.className = 'modal-btn ' + (c.style || (i===0?'primary':'secondary'));
     btn.textContent = c.label;
-    btn.onclick = () => { c.fn(); closeModal(); updateUI(); };
-    choicesEl.appendChild(btn);
+    btn.onclick = () => {
+      closeModal();
+      if(c.fn==='_restart'){ clear(); location.reload(); return; }
+      if(c.fn) evFn(c.fn);
+      if(c.mod) { applyMod(c.mod); }
+      if(c.mod?.health<0||c.mod?.money<0) SFX.bad(); else SFX.good();
+    };
+    btns.appendChild(btn);
   });
-
-  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal').style.display='flex';
 }
+function closeModal(){ document.getElementById('modal').style.display='none'; }
 
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-}
-
-// ══════════════════════════════════════════════════════════
-// END SCREEN
-// ══════════════════════════════════════════════════════════
-function showEndScreen() {
-  showModal('🕊️', 'Life Complete',
-    `${G.name} lived to age ${G.age}. Final net worth: $${G.money.toLocaleString()}. ${G.jobTitle !== 'Unemployed' ? 'Career: '+G.jobTitle+'.' : ''}`,
-    [{ label:'🌱 Start a New Life', fn:()=>{ clearGame(); location.reload(); } }]
-  );
-}
-
-// ══════════════════════════════════════════════════════════
-// TABS
-// ══════════════════════════════════════════════════════════
-function switchTab(name) {
-  ['activities','work','education','assets'].forEach(t => {
-    document.getElementById('panel-'+t).style.display = t===name ? 'block' : 'none';
-    const btn = document.getElementById('tab-'+t);
-    if(btn) { btn.classList.toggle('active', t===name); }
-  });
-  if(name==='work')      renderWork();
-  if(name==='education') renderEducation();
-  if(name==='assets')    renderAssets();
-}
-
-// ══════════════════════════════════════════════════════════
-// START / CONTINUE / NEW LIFE
-// ══════════════════════════════════════════════════════════
-function selectGender(g) {
-  selectedGender = g;
-  document.getElementById('btn-male').classList.toggle('active', g==='male');
-  document.getElementById('btn-female').classList.toggle('active', g==='female');
+// ══════════════════════════════════════════
+// START / CONTINUE
+// ══════════════════════════════════════════
+function pickGender(g) {
+  chosenGender=g;
+  document.getElementById('btn-male').classList.toggle('selected',g==='male');
+  document.getElementById('btn-female').classList.toggle('selected',g==='female');
 }
 
 function startLife() {
-  const nameEl = document.getElementById('char-name');
-  const name = nameEl.value.trim() || (selectedGender==='female' ? 'Aisha' : 'Aqmal');
-  G = { ...DEFAULT_STATE, name, gender: selectedGender, log:[] };
-  addLog(`${name} was born! A new life begins... 🌱`, 'good');
-  saveGame();
-  showGameScreen();
+  try { getAC().resume(); } catch(e) {}
+  const name = (document.getElementById('char-name').value.trim()) || (chosenGender==='female'?'Sofia':'Alex');
+  G = { ...DEFAULT, name, gender:chosenGender, log:[] };
+  addLog(`${name} was born! 🌱 A brand new story begins...`, 'good');
+  SFX.levelUp();
+  save();
+  launchGame();
 }
 
 function continueLife() {
-  const saved = loadGame();
-  if(saved) { G = saved; showGameScreen(); }
+  try { getAC().resume(); } catch(e) {}
+  const saved = load();
+  if(saved) { G=saved; launchGame(); }
 }
 
-function showGameScreen() {
+function launchGame() {
   document.getElementById('start-screen').classList.remove('active');
   document.getElementById('game-screen').classList.add('active');
+  renderActivities();
+  renderBadges();
   updateUI();
-  renderLog();
 }
 
-function confirmNewLife() {
-  showModal('⚠️','Start Over?',
-    'This will delete your current life. Are you sure?',
-    [
-      { label:'🌱 Yes, new life!', fn:()=>{ clearGame(); location.reload(); } },
-      { label:'❌ Cancel',         fn:()=>{} },
-    ]
-  );
+function confirmNew() {
+  showModal('⚠️','Start Over?','This will erase your current life. Sure?',[
+    { label:'🌱 Yes, new life!', fn:'_restart', style:'danger' },
+    { label:'❌ Cancel', mod:{}, style:'secondary' },
+  ]);
 }
 
-// ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = loadGame();
-  if(saved) document.getElementById('continue-btn-wrap').style.display = 'block';
+// ══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved = load();
+  if(saved) document.getElementById('continue-btn').style.display='block';
 });
 </script>
 
