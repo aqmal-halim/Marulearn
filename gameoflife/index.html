@@ -1177,19 +1177,18 @@ function launchGame() {
 }
 
 function confirmNew() {
-  showModal('⚠️','Start Over?','This will erase your current life. Sure?',[
-    {l:'🌱 Yes, new life!',fn:'_restart',style:'dan'},
-    {l:'❌ Cancel',m:{},style:'sec'},
+  showModal('⚠️', 'Start Over?', 'This will erase your current life and progress forever. Are you sure?', [
+    { label: '🔥 Reset Everything', fn: '_restart', style: 'dan' },
+    { label: '🔙 Keep Playing', style: 'sec' }
   ]);
 }
 
-// ══════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════
-window.addEventListener('DOMContentLoaded',()=>{
-  const saved=load();
-  if(saved) document.getElementById('continue-btn').style.display='block';
-});
+// Initialize the start screen if a save exists
+window.onload = () => {
+  if (load()) {
+    document.getElementById('continue-btn').style.display = 'block';
+  }
+};
 </script>
 </body>
 </html>
