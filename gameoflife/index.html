@@ -1176,19 +1176,34 @@ function launchGame() {
   renderActivities(); renderBadges(); updateUI();
 }
 
+// ══════════════════════════════════════════
+// MODAL & GAME FLOW COMPLETION
+// ══════════════════════════════════════════
+
+/**
+ * Triggered when the user clicks the 🔄 button.
+ * Uses the modal system to prevent accidental resets.
+ */
 function confirmNew() {
-  showModal('⚠️', 'Start Over?', 'This will erase your current life and progress forever. Are you sure?', [
-    { label: '🔥 Reset Everything', fn: '_restart', style: 'dan' },
-    { label: '🔙 Keep Playing', style: 'sec' }
-  ]);
+  showModal('⚠️', 'Start a New Life?', 
+    'Are you sure you want to end this story? All progress will be lost forever!', 
+    [
+      { l: '🌱 Yes, Start Fresh', style: 'dan', fn: '_restart' },
+      { l: '🔙 No, Stay Here', style: 'sec' }
+    ]
+  );
 }
 
-// Initialize the start screen if a save exists
+/**
+ * Finalizing the start-up logic to check for existing saves.
+ */
 window.onload = () => {
-  if (load()) {
-    document.getElementById('continue-btn').style.display = 'block';
+  const savedGame = load();
+  if (savedGame) {
+    const contBtn = document.getElementById('continue-btn');
+    if (contBtn) {
+      contBtn.style.display = 'block';
+      contBtn.textContent = `▶️ Continue ${savedGame.name}'s Story (Age ${savedGame.age})`;
+    }
   }
 };
-</script>
-</body>
-</html>
