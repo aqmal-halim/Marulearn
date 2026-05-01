@@ -1105,7 +1105,7 @@ function ageUp() {
 
   // Misfortune: inject a negative event override occasionally
   const negEvents = [
-    {minAge:16,maxAge:99,r:'c',emoji:'🔥',title:'Fired!',body:'Your boss let you go. You're unemployed.',choices:[{l:'😤 Start fresh',fn:'_fired',style:'dan'},{l:'💔 I saw it coming',fn:'_fired',style:'sec'}]},
+    {minAge:16,maxAge:99,r:'c',emoji:'🔥',title:'Fired!',body:'Your boss let you go. You\'re unemployed.',choices:[{l:'😤 Start fresh',fn:'_fired',style:'dan'},{l:'💔 I saw it coming',fn:'_fired',style:'sec'}]},
     {minAge:18,maxAge:99,r:'c',emoji:'🏚️',title:'Bad Luck Week',body:'Everything that could go wrong, did. Your mood crashed.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5}},{l:'😴 Rest it off',m:{happiness:-10,health:5}}]},
     {minAge:20,maxAge:80,r:'c',emoji:'💸',title:'Unexpected Bill!',body:'A huge unexpected bill just landed. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10}},{l:'😰 Ignore it',m:{happiness:-20}}]},
   ];
