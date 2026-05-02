@@ -863,7 +863,7 @@ function applyInflation() {
 // RETIREMENT SYSTEM
 // ══════════════════════════════════════════
 function handleRetirement() {
-  if(G.age === 65 && !G.retired) {
+  if(G.age >= 65 && !G.retired) {
     const peakSalary = G.peakSalary || G.salary || 0;
     const tier = G.job ? (JOBS.find(j=>j.id===G.job)?.tier || 1) : 1;
     G.pension = Math.floor(peakSalary * 0.35) + (tier * 200);
