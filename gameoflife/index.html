@@ -6,423 +6,410 @@
 <title>🌱 Life Story!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ══ RESET & ROOT ══ */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --amber:#f59e0b;--amber-dark:#d97706;--green:#10b981;--green-dark:#059669;
-  --indigo:#6366f1;--indigo-dark:#4f46e5;--violet:#8b5cf6;--gold:#f59e0b;
-  --red:#ef4444;--blue:#3b82f6;--pink:#ec4899;
-  --text:#1e1b4b;--text2:#64748b;--border:#c7d2fe;
-  --glass:rgba(255,255,255,0.65);--glass2:rgba(255,255,255,0.45);
-  --shadow:rgba(99,102,241,0.15);--shadow2:rgba(139,92,246,0.12);
-  --bg1:#f0f4ff;--bg2:#faf5ff;--bg3:#fff1f9;
+  --sun:#FFD93D;--sun-dark:#F4B400;
+  --grass:#4CAF50;--grass-dark:#388E3C;
+  --sky:#4FC3F7;--sky-dark:#0288D1;
+  --coral:#FF6B6B;--coral-dark:#E53935;
+  --candy:#CE93D8;--candy-dark:#8E24AA;
+  --mint:#69F0AE;--mint-dark:#00C853;
+  --peach:#FFAB76;--peach-dark:#F57C00;
+  --white:#FFFFFF;--offwhite:#FFF9F0;
+  --ink:#2D1B00;--ink2:#5C4033;
+  --border-w:3px;
+  --radius:20px;--radius-lg:28px;--radius-xl:36px;
+  --shadow:6px 6px 0px rgba(0,0,0,0.18);
+  --shadow-sm:3px 3px 0px rgba(0,0,0,0.15);
+  --shadow-lg:8px 8px 0px rgba(0,0,0,0.2);
 }
-body{
-  font-family:'Quicksand','Nunito',sans-serif;
-  background:linear-gradient(135deg,#667eea 0%,#764ba2 30%,#f093fb 60%,#f5576c 100%);
-  background-attachment:fixed;
-  min-height:100vh;color:var(--text);overflow-x:hidden
-}
-body::before{
-  content:'';position:fixed;inset:0;
-  background:linear-gradient(135deg,rgba(99,102,241,.08) 0%,rgba(139,92,246,.06) 50%,rgba(236,72,153,.05) 100%);
-  pointer-events:none;z-index:0
-}
+body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflow-x:hidden;color:var(--ink)}
 
-/* ── GLASS UTILITIES ── */
-.glass{
-  background:var(--glass);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1.5px solid rgba(255,255,255,0.7);
-}
-.glass2{
-  background:var(--glass2);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1.5px solid rgba(255,255,255,0.5);
-}
+/* ══ SCENE BACKGROUNDS ══ */
+.scene-baby{background:linear-gradient(180deg,#FFE0B2 0%,#FFECB3 40%,#E8F5E9 100%)}
+.scene-kid{background:linear-gradient(180deg,#B3E5FC 0%,#E1F5FE 40%,#F1F8E9 100%)}
+.scene-teen{background:linear-gradient(180deg,#E8EAF6 0%,#C5CAE9 30%,#EEEEEE 100%)}
+.scene-adult{background:linear-gradient(180deg,#E3F2FD 0%,#F3E5F5 40%,#FFF3E0 100%)}
+.scene-prime{background:linear-gradient(180deg,#FFF8E1 0%,#F3E5F5 50%,#E8F5E9 100%)}
+.scene-senior{background:linear-gradient(180deg,#FFF3E0 0%,#FCE4EC 50%,#F3E5F5 100%)}
+.scene-elder{background:linear-gradient(180deg,#E0F7FA 0%,#B2EBF2 40%,#FFF9C4 100%)}
 
-/* ── SCREENS ── */
+/* ══ SCREENS ══ */
 .screen{display:none}.screen.active{display:block}
-#start-screen{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;position:relative;z-index:1}
+#start-screen{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;position:relative;overflow:hidden}
 #start-screen.active{display:flex}
 
-/* ── START ── */
-.start-logo{font-size:5.5em;animation:bounce-in .6s cubic-bezier(.34,1.56,.64,1);margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,158,11,0.4))}
-@keyframes bounce-in{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.start-title{font-size:2.8em;font-weight:900;color:white;margin-bottom:4px;text-shadow:0 2px 20px rgba(0,0,0,0.2);font-family:'Nunito',sans-serif;letter-spacing:-1px}
-.start-sub{color:rgba(255,255,255,0.85);font-size:.95em;margin-bottom:28px;text-align:center;font-weight:600}
+/* START BG DECO */
+#start-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#FFD93D 0%,#FF6B6B 35%,#CE93D8 65%,#4FC3F7 100%);z-index:0}
+.start-clouds{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:hidden}
+.cloud{position:absolute;background:rgba(255,255,255,0.7);border-radius:50px;animation:cloud-drift linear infinite}
+@keyframes cloud-drift{from{transform:translateX(-200px)}to{transform:translateX(110vw)}}
+
+.start-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%}
+.start-logo{font-size:6em;animation:logo-bounce 1s cubic-bezier(.34,1.9,.64,1);margin-bottom:4px;filter:drop-shadow(4px 4px 0 rgba(0,0,0,0.2))}
+@keyframes logo-bounce{0%{transform:scale(0) rotate(-30deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.start-title{font-family:'Fredoka One',cursive;font-size:3.2em;color:white;text-shadow:4px 4px 0 rgba(0,0,0,0.2);margin-bottom:4px;letter-spacing:2px}
+.start-sub{color:rgba(255,255,255,0.95);font-size:1em;margin-bottom:24px;text-align:center;font-weight:700;text-shadow:2px 2px 0 rgba(0,0,0,0.15)}
+
 .start-card{
   width:100%;max-width:380px;
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:32px;padding:28px 24px;
-  box-shadow:0 20px 60px rgba(99,102,241,0.25),0 4px 20px rgba(0,0,0,0.1);
-  border:2px solid rgba(255,255,255,0.9)
+  background:white;
+  border:var(--border-w) solid var(--ink);
+  border-radius:var(--radius-xl);
+  padding:28px 22px;
+  box-shadow:var(--shadow-lg);
+  position:relative
 }
-.form-label{font-size:.72em;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--indigo);margin-bottom:6px;display:block}
-.form-input{width:100%;background:rgba(255,255,255,0.8);border:2px solid var(--border);border-radius:16px;padding:12px 16px;font-family:inherit;font-size:1em;font-weight:700;color:var(--text);outline:none;margin-bottom:18px;transition:all .2s}
-.form-input:focus{border-color:var(--indigo);box-shadow:0 0 0 4px rgba(99,102,241,0.15);background:white}
-.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
-.gender-btn{background:rgba(248,250,252,0.9);border:2.5px solid #e2e8f0;border-radius:16px;padding:14px 10px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .2s;color:var(--text2)}
-.gender-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,0.15)}
-.gender-btn.selected{background:linear-gradient(135deg,#eef2ff,#ede9fe);border-color:var(--indigo);color:var(--indigo);box-shadow:0 4px 12px rgba(99,102,241,0.2)}
-.btn-start{width:100%;padding:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-family:inherit;font-weight:900;font-size:1.1em;border:none;border-radius:18px;cursor:pointer;box-shadow:0 6px 0 #4338ca,0 8px 20px rgba(99,102,241,0.4);transition:all .15s;letter-spacing:.5px}
-.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 0 #4338ca,0 12px 28px rgba(99,102,241,0.45)}
-.btn-start:active{transform:translateY(5px);box-shadow:0 1px 0 #4338ca,0 4px 12px rgba(99,102,241,0.3)}
-.btn-continue{width:100%;max-width:380px;margin-top:12px;padding:13px;background:rgba(255,255,255,0.3);color:white;font-family:inherit;font-weight:800;font-size:.95em;border:2px solid rgba(255,255,255,0.5);border-radius:16px;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px)}
-.btn-continue:hover{background:rgba(255,255,255,0.4);transform:translateY(-1px)}
+.start-card::before{content:'';position:absolute;inset:-3px;border-radius:calc(var(--radius-xl)+3px);background:linear-gradient(135deg,var(--sun),var(--coral),var(--candy));z-index:-1}
 
-/* ── GAME SCREEN ── */
-#game-screen{max-width:440px;margin:0 auto;padding:16px 14px 100px;position:relative;z-index:1}
+.form-label{font-size:.78em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--ink2);margin-bottom:6px;display:block}
+.form-input{width:100%;background:var(--offwhite);border:var(--border-w) solid var(--ink);border-radius:14px;padding:12px 16px;font-family:'Nunito',sans-serif;font-size:1em;font-weight:800;color:var(--ink);outline:none;margin-bottom:16px;transition:all .2s;box-shadow:var(--shadow-sm)}
+.form-input:focus{border-color:var(--sky-dark);box-shadow:4px 4px 0 var(--sky)}
 
-/* top bar */
-.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.top-name{font-weight:900;font-size:1.2em;color:white;text-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.top-right{display:flex;align-items:center;gap:8px}
-.top-money{font-weight:800;font-size:.88em;color:white;background:rgba(16,185,129,0.35);padding:5px 12px;border-radius:20px;border:1.5px solid rgba(16,185,129,0.5);backdrop-filter:blur(8px)}
-.save-indicator{font-size:.7em;font-weight:800;color:#10b981;background:rgba(236,253,245,0.9);padding:3px 8px;border-radius:10px;opacity:0;transition:opacity .4s}
+.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.gender-btn{background:var(--offwhite);border:var(--border-w) solid var(--ink);border-radius:16px;padding:14px 10px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1em;cursor:pointer;transition:all .15s;color:var(--ink);box-shadow:var(--shadow-sm)}
+.gender-btn:active{transform:translate(3px,3px);box-shadow:none}
+.gender-btn.selected{background:var(--sun);border-color:var(--sun-dark);box-shadow:4px 4px 0 var(--sun-dark)}
+
+.btn-start{width:100%;padding:16px;background:var(--grass);color:white;font-family:'Fredoka One',cursive;font-size:1.3em;border:var(--border-w) solid var(--grass-dark);border-radius:18px;cursor:pointer;box-shadow:0 6px 0 var(--grass-dark);transition:all .12s;letter-spacing:1px}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--grass-dark)}
+.btn-start:active{transform:translateY(5px);box-shadow:0 1px 0 var(--grass-dark)}
+
+.btn-continue{width:100%;max-width:380px;margin-top:12px;padding:13px;background:rgba(255,255,255,0.25);color:white;font-family:'Nunito',sans-serif;font-weight:900;font-size:.95em;border:3px solid rgba(255,255,255,0.7);border-radius:16px;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);box-shadow:3px 3px 0 rgba(0,0,0,0.1)}
+.btn-continue:hover{background:rgba(255,255,255,0.4);transform:translateY(-2px)}
+
+/* ══ GAME SCREEN ══ */
+#game-screen{max-width:440px;margin:0 auto;padding:12px 12px 100px;position:relative;z-index:1;min-height:100vh;transition:background 1s ease}
+
+/* ══ TOP BAR ══ */
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.top-name{font-family:'Fredoka One',cursive;font-size:1.3em;color:var(--ink);text-shadow:2px 2px 0 rgba(0,0,0,0.1)}
+.top-right{display:flex;align-items:center;gap:6px}
+.top-money{font-weight:900;font-size:.88em;color:var(--ink);background:var(--sun);padding:5px 12px;border-radius:20px;border:var(--border-w) solid var(--sun-dark);box-shadow:var(--shadow-sm)}
+.save-indicator{font-size:.7em;font-weight:900;color:var(--grass-dark);background:white;border:2px solid var(--grass);padding:3px 8px;border-radius:10px;opacity:0;transition:opacity .4s}
 .save-indicator.show{opacity:1}
-.btn-new{background:rgba(255,255,255,0.25);color:white;border:1.5px solid rgba(255,255,255,0.4);padding:6px 10px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer;transition:all .15s;backdrop-filter:blur(8px)}
-.btn-new:hover{background:rgba(255,255,255,0.4);transform:scale(1.05)}
+.btn-new{background:white;color:var(--ink);border:var(--border-w) solid var(--ink);padding:6px 10px;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78em;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .12s}
+.btn-new:active{transform:translate(3px,3px);box-shadow:none}
 
-/* avatar card */
-.avatar-card{
-  background:linear-gradient(135deg,rgba(255,255,255,0.8) 0%,rgba(238,242,255,0.75) 100%);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-radius:28px;padding:20px 22px;
-  box-shadow:0 8px 32px rgba(99,102,241,0.15),0 2px 8px rgba(0,0,0,0.06);
-  border:2px solid rgba(255,255,255,0.85);
-  display:flex;align-items:center;gap:18px;margin-bottom:12px;position:relative;overflow:hidden
-}
-.avatar-card::before{content:'';position:absolute;top:-20px;right:-20px;width:140px;height:140px;background:radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%);pointer-events:none}
-.ava-emoji{font-size:4.2em;line-height:1;animation:float 3s ease-in-out infinite;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.1))}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.ava-age{font-size:3em;font-weight:900;background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
-.ava-label{font-size:.75em;color:var(--text2);font-weight:700}
-.ava-stage{font-size:.9em;font-weight:800;color:var(--text)}
-.ava-job{font-size:.8em;color:var(--indigo);font-weight:700;margin-top:2px}
+/* ══ CARD BASE ══ */
+.card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:10px;position:relative;overflow:hidden}
 
-/* stats card */
-.stats-card{
-  background:rgba(255,255,255,0.75);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:24px;padding:18px;
-  box-shadow:0 4px 20px var(--shadow2);
-  border:2px solid rgba(255,255,255,0.8);margin-bottom:12px
-}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.stat-head{display:flex;justify-content:space-between;margin-bottom:6px}
-.stat-name{font-size:.74em;font-weight:800;color:var(--text2)}
-.stat-val{font-size:.74em;font-weight:900;color:var(--text);transition:all .3s}
+/* ══ AVATAR CARD ══ */
+.avatar-card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:10px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
+.avatar-card-bg{position:absolute;inset:0;opacity:.12;pointer-events:none}
+
+/* ══ CSS CARTOON CHARACTER ══ */
+.char-wrap{position:relative;flex-shrink:0;width:80px;height:90px}
+.char-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
+/* HEAD */
+.char-head{width:52px;height:52px;border-radius:50%;border:3px solid var(--ink);position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;overflow:hidden;animation:char-idle 3s ease-in-out infinite}
+@keyframes char-idle{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+.char-eye{width:7px;height:7px;background:var(--ink);border-radius:50%;animation:blink 4s infinite}
+.char-eye.r{margin-left:4px}
+@keyframes blink{0%,96%,100%{transform:scaleY(1)}97%,99%{transform:scaleY(0.1)}}
+.char-smile{width:16px;height:8px;border-bottom:3px solid var(--ink);border-radius:0 0 16px 16px;position:absolute;bottom:10px;left:50%;transform:translateX(-50%)}
+.char-rosy{width:10px;height:6px;border-radius:50%;background:rgba(255,120,120,0.5);position:absolute;bottom:12px}
+.char-rosy.l{left:6px}
+.char-rosy.r{right:6px}
+/* TORSO */
+.char-torso{width:44px;height:30px;border-radius:12px 12px 8px 8px;border:3px solid var(--ink);position:absolute;top:46px;left:50%;transform:translateX(-50%)}
+/* LEGS */
+.char-legs{position:absolute;top:72px;left:50%;transform:translateX(-50%);display:flex;gap:4px}
+.char-leg{width:14px;height:18px;border-radius:0 0 8px 8px;border:3px solid var(--ink);border-top:none}
+/* emoji fallback for some stages */
+.ava-emoji-wrap{font-size:4em;line-height:1;animation:char-idle 3s ease-in-out infinite;filter:drop-shadow(3px 3px 0 rgba(0,0,0,0.1))}
+
+.ava-info{flex:1}
+.ava-age{font-family:'Fredoka One',cursive;font-size:3em;color:var(--coral);line-height:1;text-shadow:3px 3px 0 var(--coral-dark)}
+.ava-label{font-size:.72em;color:var(--ink2);font-weight:700}
+.ava-stage{font-size:.92em;font-weight:900;color:var(--ink)}
+.ava-job{font-size:.8em;color:var(--sky-dark);font-weight:800;margin-top:2px}
+
+/* ══ STATS ══ */
+.stats-card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px}
+.stats-title{font-family:'Fredoka One',cursive;font-size:.9em;color:var(--ink2);margin-bottom:12px;letter-spacing:.5px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat-item{background:var(--offwhite);border:2px solid var(--ink);border-radius:14px;padding:10px;position:relative;overflow:hidden}
+.stat-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.stat-name{font-size:.72em;font-weight:900;color:var(--ink2)}
+.stat-val{font-size:.78em;font-weight:900;color:var(--ink);transition:all .3s}
 .stat-val.pulse{animation:stat-pulse .5s}
-@keyframes stat-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(--green)}}
+@keyframes stat-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.4);color:var(--grass)}}
 .stat-val.pulse-bad{animation:stat-pulse-bad .5s}
-@keyframes stat-pulse-bad{0%,100%{transform:scale(1)}50%{transform:scale(1.35);color:var(--red)}}
-.stat-bar{height:11px;background:rgba(226,232,240,0.6);border-radius:99px;overflow:hidden}
-.stat-fill{height:100%;border-radius:99px;transition:width .55s ease,background-color .55s}
+@keyframes stat-pulse-bad{0%,100%{transform:scale(1)}50%{transform:scale(1.4);color:var(--coral)}}
+.stat-bar-track{height:12px;background:#EEE;border-radius:99px;overflow:hidden;border:2px solid var(--ink)}
+.stat-bar-fill{height:100%;border-radius:99px;transition:width .55s ease,background-color .55s}
+/* animated icons */
+.stat-icon{font-size:1.4em;margin-bottom:2px;display:block;line-height:1}
+.stat-icon.pulse-anim{animation:icon-pulse 1.2s ease-in-out infinite}
+@keyframes icon-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
 
-/* panel card */
-.panel-card{
-  background:rgba(255,255,255,0.72);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:24px;padding:18px 16px;
-  box-shadow:0 4px 20px var(--shadow2);
-  border:2px solid rgba(255,255,255,0.8);margin-bottom:12px
-}
-.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab-btn{padding:8px 14px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.78em;cursor:pointer;border:none;white-space:nowrap;background:rgba(248,250,252,0.7);color:var(--text2);transition:all .2s}
-.tab-btn:hover{transform:translateY(-1px);background:rgba(238,242,255,0.8)}
-.tab-btn.on{background:linear-gradient(135deg,var(--indigo),var(--violet));color:white;box-shadow:0 3px 12px rgba(99,102,241,0.35)}
+/* ══ ENERGY ══ */
+.energy-wrap{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px}
+.energy-label{font-weight:900;font-size:.8em;white-space:nowrap;min-width:62px;color:var(--ink2)}
+.energy-track{flex:1;height:14px;background:#EEE;border-radius:99px;overflow:hidden;border:2px solid var(--ink)}
+.energy-fill{height:100%;border-radius:99px;transition:width .5s ease,background-color .4s;background:var(--sun)}
+.energy-count{font-weight:900;font-size:.82em;color:var(--sun-dark);min-width:36px;text-align:right}
 
-/* act items */
-.act-item{
-  background:rgba(250,250,252,0.8);
-  border-radius:16px;padding:13px 14px;
-  display:flex;align-items:center;gap:12px;
-  cursor:pointer;border:2px solid transparent;
-  margin-bottom:8px;transition:all .2s;
-  backdrop-filter:blur(8px)
-}
-.act-item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.2);background:rgba(238,242,255,0.85)}
-.act-item:active{transform:scale(.97);border-color:var(--indigo);background:rgba(238,242,255,0.9)}
+/* ══ AGE UP BTN ══ */
+.age-up-btn{width:100%;padding:17px;font-family:'Fredoka One',cursive;font-size:1.25em;background:var(--grass);color:white;border:var(--border-w) solid var(--grass-dark);border-radius:var(--radius);cursor:pointer;box-shadow:0 6px 0 var(--grass-dark);transition:all .12s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:1px;margin-bottom:10px;text-shadow:2px 2px 0 rgba(0,0,0,0.15)}
+.age-up-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--grass-dark)}
+.age-up-btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--grass-dark)}
+
+/* ══ PANEL / TABS ══ */
+.panel-card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow);margin-bottom:10px}
+.tabs-row{display:flex;gap:0;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;border-bottom:3px solid var(--ink)}
+.tabs-row::-webkit-scrollbar{display:none}
+.tab-btn{padding:9px 14px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.78em;cursor:pointer;border:3px solid var(--ink);border-bottom:none;white-space:nowrap;background:var(--offwhite);color:var(--ink2);transition:all .15s;border-radius:12px 12px 0 0;margin-right:4px;position:relative;bottom:-3px}
+.tab-btn.on{background:var(--sun);color:var(--ink);transform:translateY(-3px);z-index:2;border-bottom:3px solid var(--sun)}
+.tab-btn:hover:not(.on){background:#f5f5f5;transform:translateY(-1px)}
+
+/* ══ ACT ITEMS ══ */
+.act-item{background:var(--offwhite);border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:8px;transition:all .12s;box-shadow:var(--shadow-sm)}
+.act-item:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.act-item:active{transform:translate(3px,3px);box-shadow:none}
 .act-item *{pointer-events:none}
-.act-icon{font-size:1.8em;flex-shrink:0}
-.act-title{font-size:.9em;font-weight:800;color:var(--text)}
-.act-sub{font-size:.75em;color:var(--text2);font-weight:600}
+.act-icon{font-size:1.9em;flex-shrink:0}
+.act-title{font-size:.9em;font-weight:900;color:var(--ink)}
+.act-sub{font-size:.74em;color:var(--ink2);font-weight:700}
+.act-item.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
+.act-item.disabled:hover,.act-item.disabled:active{transform:none;box-shadow:var(--shadow-sm)}
 
-/* log */
-.log-box{max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#c7d2fe transparent}
-.log-entry{padding:7px 12px;border-radius:12px;margin-bottom:5px;font-size:.8em;font-weight:700;line-height:1.5;animation:log-in .3s ease-out}
-@keyframes log-in{from{transform:translateX(-10px);opacity:0}to{transform:translateX(0);opacity:1}}
-.log-good{background:rgba(236,253,245,0.9);color:#065f46;border-left:3px solid #10b981}
-.log-bad{background:rgba(254,242,242,0.9);color:#991b1b;border-left:3px solid #ef4444}
-.log-info{background:rgba(239,246,255,0.9);color:#1e40af;border-left:3px solid #3b82f6}
-.log-event{background:rgba(255,251,235,0.9);color:#92400e;border-left:3px solid #f59e0b}
-.log-legend{background:rgba(253,244,255,0.9);color:#6b21a8;border-left:3px solid #a855f7}
+/* ══ LOG (SCRAPBOOK STYLE) ══ */
+.log-box{max-height:220px;overflow-y:auto;scrollbar-width:thin}
+.log-entry{border-radius:12px;margin-bottom:6px;font-size:.8em;font-weight:800;line-height:1.5;animation:log-in .3s ease-out;border:2px solid;padding:7px 12px;transform:rotate(0deg)}
+.log-entry:nth-child(odd){transform:rotate(-0.5deg)}
+.log-entry:nth-child(even){transform:rotate(0.5deg)}
+@keyframes log-in{from{transform:translateX(-14px) rotate(-1deg);opacity:0}to{transform:translateX(0) rotate(0deg);opacity:1}}
+.log-good{background:#E8F5E9;border-color:var(--grass-dark);color:#1B5E20}
+.log-bad{background:#FFEBEE;border-color:var(--coral-dark);color:#B71C1C}
+.log-info{background:#E3F2FD;border-color:var(--sky-dark);color:#0D47A1}
+.log-event{background:#FFF8E1;border-color:var(--sun-dark);color:#E65100}
+.log-legend{background:#F3E5F5;border-color:var(--candy-dark);color:#4A148C}
 
-/* age up btn */
-.age-up-btn,.age-up-top{
-  width:100%;padding:18px;font-family:inherit;font-weight:900;font-size:1.1em;
-  background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;
-  border-radius:22px;cursor:pointer;
-  box-shadow:0 6px 0 #047857,0 8px 24px rgba(16,185,129,0.35);
-  transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;
-  letter-spacing:.5px
-}
-.age-up-top{border-radius:18px;padding:15px;font-size:1em;margin-bottom:12px}
-.age-up-btn:hover,.age-up-top:hover{transform:translateY(-2px);box-shadow:0 8px 0 #047857,0 12px 32px rgba(16,185,129,0.4)}
-.age-up-btn:active,.age-up-top:active{transform:translateY(5px);box-shadow:0 1px 0 #047857,0 3px 10px rgba(16,185,129,0.3)}
-
-/* achievements */
-.badge-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+/* ══ BADGES ══ */
+.badge-strip{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none;margin-bottom:10px}
 .badge-strip::-webkit-scrollbar{display:none}
-.badge-pill{
-  background:linear-gradient(135deg,#fef3c7,#fde68a);
-  border:2px solid #f59e0b;border-radius:20px;
-  padding:5px 12px;font-size:.75em;font-weight:800;color:#92400e;
-  white-space:nowrap;flex-shrink:0;
-  animation:pop-in .4s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 2px 8px rgba(245,158,11,0.25)
-}
+.badge-pill{background:var(--sun);border:var(--border-w) solid var(--sun-dark);border-radius:20px;padding:5px 12px;font-size:.74em;font-weight:900;color:var(--ink);white-space:nowrap;flex-shrink:0;animation:pop-in .4s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow-sm)}
 @keyframes pop-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 
-/* trophy grid */
-.trophy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.trophy-item{background:rgba(248,250,252,0.8);border-radius:16px;padding:12px 8px;text-align:center;border:2px solid rgba(226,232,240,0.7);transition:all .2s}
-.trophy-item:hover{transform:translateY(-2px)}
-.trophy-item.unlocked{background:linear-gradient(135deg,rgba(255,251,235,0.9),rgba(254,243,199,0.8));border-color:#f59e0b;box-shadow:0 4px 12px rgba(245,158,11,0.2)}
-.trophy-emoji{font-size:2em;margin-bottom:4px;display:block}
-.trophy-name{font-size:.7em;font-weight:800;color:var(--text);line-height:1.3}
-.trophy-locked{filter:grayscale(1);opacity:.35}
+/* ══ TROPHY ROOM ══ */
+.trophy-shelf{background:linear-gradient(180deg,#8D6E63 0%,#795548 100%);border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:4px;margin-bottom:10px;box-shadow:var(--shadow)}
+.trophy-shelf-top{background:#A1887F;border-radius:12px 12px 0 0;height:12px;border-bottom:3px solid var(--ink)}
+.trophy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 8px;background:#F5F5F5;border:3px solid var(--ink);border-top:none;border-radius:0 0 12px 12px}
+.trophy-item{background:white;border-radius:12px;padding:10px 6px;text-align:center;border:2px solid #CCC;transition:all .2s;cursor:pointer}
+.trophy-item:hover{transform:translateY(-3px);box-shadow:0 6px 0 rgba(0,0,0,0.15)}
+.trophy-item.unlocked{background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border-color:var(--sun-dark);box-shadow:0 4px 0 var(--sun-dark)}
+.trophy-emoji{font-size:2em;display:block;margin-bottom:4px}
+.trophy-name{font-size:.68em;font-weight:900;color:var(--ink);line-height:1.3}
+.trophy-locked{filter:grayscale(1) opacity(.35)}
+.trophy-counter{font-family:'Fredoka One',cursive;color:var(--ink);font-size:.9em;margin-bottom:8px;text-align:center}
 
-/* floating numbers */
-.float-num{position:fixed;font-size:1.4em;font-weight:900;pointer-events:none;z-index:200;animation:float-up 1s ease-out forwards;text-shadow:0 2px 8px rgba(0,0,0,0.2)}
-.f-pos{color:#10b981}.f-neg{color:#ef4444}.f-gold{color:#f59e0b}
-@keyframes float-up{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-80px) scale(1.2);opacity:0}}
+/* ══ FAMILY ══ */
+.family-card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:10px}
+.family-header{font-family:'Fredoka One',cursive;font-size:1em;color:var(--coral);margin-bottom:10px;letter-spacing:.5px}
+.family-member{background:#FFF0F5;border:2px solid #FFABC2;border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.family-member-icon{font-size:1.6em}
+.family-member-name{font-size:.88em;font-weight:900}
+.family-member-detail{font-size:.74em;color:var(--ink2);font-weight:700}
+.family-status{font-size:.7em;font-weight:900;padding:3px 8px;border-radius:10px;background:var(--sun);color:var(--ink);margin-left:auto;white-space:nowrap;border:2px solid var(--sun-dark)}
 
-/* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(30,27,75,.55);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+/* ══ MODAL (COMIC PANEL) ══ */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-card{
-  background:rgba(255,255,255,0.9);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border-radius:32px;padding:32px 24px;width:88%;max-width:380px;text-align:center;
-  box-shadow:0 30px 80px rgba(30,27,75,0.25),0 4px 20px rgba(0,0,0,0.1);
-  border:2px solid rgba(255,255,255,0.95);
-  animation:modal-in .35s cubic-bezier(.34,1.56,.64,1)
+  background:white;
+  border:4px solid var(--ink);
+  border-radius:var(--radius-xl);
+  padding:28px 22px 24px;
+  width:92%;max-width:380px;text-align:center;
+  box-shadow:8px 8px 0 var(--ink);
+  animation:modal-in .3s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden
 }
-@keyframes modal-in{from{transform:scale(.7) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.modal-icon{font-size:4.5em;margin-bottom:10px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.15))}
-.modal-title{font-size:1.6em;font-weight:900;color:var(--text);margin-bottom:6px;font-family:'Nunito',sans-serif}
-.modal-body{font-size:.9em;color:var(--text2);margin-bottom:20px;line-height:1.6;font-weight:600}
-.modal-btns{display:grid;gap:8px}
-.mbtn{padding:13px 16px;border:none;border-radius:16px;font-family:inherit;font-weight:800;font-size:.95em;cursor:pointer;transition:all .2s;text-align:center}
-.mbtn:hover{transform:translateY(-2px)}
-.mbtn:active{transform:scale(.97) translateY(1px)}
-.mbtn.pri{background:linear-gradient(135deg,var(--indigo),var(--violet));color:white;box-shadow:0 4px 0 #3730a3,0 6px 16px rgba(99,102,241,0.35)}
-.mbtn.pri:hover{box-shadow:0 6px 0 #3730a3,0 8px 24px rgba(99,102,241,0.4)}
-.mbtn.pri:active{transform:translateY(3px);box-shadow:0 1px 0 #3730a3}
-.mbtn.sec{background:rgba(248,250,252,0.9);color:var(--text);border:2px solid #e2e8f0}
-.mbtn.dan{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#991b1b;border:2px solid #fca5a5}
-.mbtn.grn{background:linear-gradient(135deg,#10b981,#059669);color:white;box-shadow:0 4px 0 #047857,0 6px 16px rgba(16,185,129,0.3)}
-.mbtn.grn:hover{box-shadow:0 6px 0 #047857,0 8px 24px rgba(16,185,129,0.4)}
-.mbtn.amb{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;box-shadow:0 4px 0 #b45309,0 6px 16px rgba(245,158,11,0.3)}
+.modal-card::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(0,0,0,.04) 1px,transparent 1px);background-size:12px 12px;pointer-events:none}
+.modal-card.positive{background:linear-gradient(160deg,#FFFDE7 0%,#FFF8E1 100%)}
+.modal-card.negative{background:linear-gradient(160deg,#E3F2FD 0%,#ECEFF1 100%)}
+.modal-card.legendary{background:linear-gradient(160deg,#FFF9C4 0%,#FFF3E0 100%);border-color:var(--sun-dark)}
+.modal-card.legendary::after{content:'⭐';position:absolute;font-size:3em;opacity:.1;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+@keyframes modal-in{from{transform:scale(.6) rotate(-5deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.comic-sfx{font-family:'Fredoka One',cursive;font-size:1.8em;color:var(--sun-dark);text-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg);display:inline-block;margin-bottom:6px}
+.modal-icon{font-size:4em;margin-bottom:8px;display:block;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.15));animation:icon-bounce .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes icon-bounce{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+.modal-title{font-family:'Fredoka One',cursive;font-size:1.6em;color:var(--ink);margin-bottom:6px;text-shadow:2px 2px 0 rgba(0,0,0,.08)}
+.speech-bubble{background:white;border:3px solid var(--ink);border-radius:20px;padding:10px 14px;margin-bottom:18px;position:relative;font-size:.9em;color:var(--ink2);font-weight:700;line-height:1.5}
+.speech-bubble::after{content:'';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--ink)}
+.speech-bubble::before{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:white;z-index:1}
+.modal-btns{display:grid;gap:8px;margin-top:8px}
+.mbtn{padding:13px 16px;border:var(--border-w) solid var(--ink);border-radius:16px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.95em;cursor:pointer;transition:all .12s;text-align:center;box-shadow:var(--shadow-sm)}
+.mbtn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.mbtn:active{transform:translate(3px,3px);box-shadow:none}
+.mbtn.pri{background:var(--grass);color:white;border-color:var(--grass-dark);box-shadow:0 5px 0 var(--grass-dark)}
+.mbtn.pri:active{transform:translateY(4px);box-shadow:0 1px 0 var(--grass-dark)}
+.mbtn.sec{background:var(--offwhite);color:var(--ink)}
+.mbtn.dan{background:var(--coral);color:white;border-color:var(--coral-dark);box-shadow:0 5px 0 var(--coral-dark)}
+.mbtn.grn{background:var(--grass);color:white;border-color:var(--grass-dark);box-shadow:0 5px 0 var(--grass-dark)}
+.mbtn.amb{background:var(--sun);color:var(--ink);border-color:var(--sun-dark);box-shadow:0 5px 0 var(--sun-dark)}
 
-/* mini-game modal */
-.minigame-box{background:rgba(248,250,252,0.9);border-radius:20px;padding:20px;margin-bottom:16px;border:2px solid rgba(226,232,240,0.8);text-align:center}
-.mg-question{font-size:1.8em;font-weight:900;color:var(--text);margin-bottom:14px}
+/* ══ MINIGAME ══ */
+.minigame-box{background:var(--offwhite);border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.mg-question{font-family:'Fredoka One',cursive;font-size:1.7em;color:var(--ink);margin-bottom:14px}
 .mg-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mg-opt{padding:12px;background:white;border:2.5px solid #e2e8f0;border-radius:14px;font-family:inherit;font-weight:800;font-size:1.1em;cursor:pointer;transition:all .2s}
-.mg-opt:hover{transform:scale(1.04);border-color:var(--indigo)}
-.mg-opt:active{transform:scale(.95)}
-.mg-opt.correct{background:rgba(236,253,245,0.9);border-color:#10b981;animation:c-flash .4s}
-.mg-opt.wrong{background:rgba(254,242,242,0.9);border-color:#ef4444;animation:w-shake .35s}
-@keyframes c-flash{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-@keyframes w-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.mg-timer-bar{height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-top:12px}
-.mg-timer-fill{height:100%;background:var(--green);border-radius:99px;transition:width .1s linear}
-.mg-feedback{font-size:.9em;font-weight:800;min-height:22px;margin-top:8px}
+.mg-opt{padding:12px;background:white;border:var(--border-w) solid var(--ink);border-radius:14px;font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1em;cursor:pointer;transition:all .12s;box-shadow:var(--shadow-sm)}
+.mg-opt:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.mg-opt:active{transform:translate(3px,3px);box-shadow:none}
+.mg-opt.correct{background:var(--grass);color:white;border-color:var(--grass-dark)}
+.mg-opt.wrong{background:var(--coral);color:white;border-color:var(--coral-dark);animation:shake .3s}
+.mg-timer-wrap{margin-top:10px;background:#EEE;border:2px solid var(--ink);border-radius:99px;overflow:hidden;height:14px}
+.mg-timer-fill{height:100%;background:var(--grass);transition:width .1s linear;border-radius:99px}
+.mg-feedback{font-size:.88em;font-weight:900;min-height:22px;margin-top:8px;color:var(--grass-dark)}
 
-/* confetti */
+/* scramble */
+.scramble-letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.letter-tile{width:38px;height:38px;background:var(--sky);color:white;border:3px solid var(--sky-dark);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;cursor:pointer;transition:all .12s;user-select:none;box-shadow:0 4px 0 var(--sky-dark)}
+.letter-tile:active{transform:translateY(3px);box-shadow:none}
+.answer-row{display:flex;gap:6px;justify-content:center;margin:8px 0;min-height:40px;flex-wrap:wrap}
+.answer-slot{width:38px;height:38px;border:3px dashed var(--sky-dark);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;background:rgba(79,195,247,.1);cursor:pointer}
+.answer-slot.filled{background:var(--sun);border-color:var(--sun-dark);border-style:solid;color:var(--ink)}
+
+/* ══ MASCOT ══ */
+.mascot-wrap{position:fixed;bottom:70px;right:12px;z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:0}
+.mascot-bubble{background:white;border:3px solid var(--ink);border-radius:18px;padding:10px 14px;max-width:200px;font-size:.78em;font-weight:800;color:var(--ink);box-shadow:var(--shadow);animation:bubble-in .3s cubic-bezier(.34,1.56,.64,1);margin-bottom:8px;position:relative;line-height:1.5}
+.mascot-bubble::after{content:'';position:absolute;bottom:-13px;right:26px;border:7px solid transparent;border-top-color:var(--ink)}
+.mascot-bubble::before{content:'';position:absolute;bottom:-9px;right:26px;border:7px solid transparent;border-top-color:white;z-index:1}
+@keyframes bubble-in{from{transform:scale(0) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.mascot-btn{width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);background:var(--sun);cursor:pointer;font-size:1.8em;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .15s;animation:mascot-idle 2s ease-in-out infinite}
+@keyframes mascot-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.mascot-btn:active{transform:scale(.9);box-shadow:none}
+.mascot-btn.dancing{animation:mascot-dance .5s ease-in-out infinite}
+@keyframes mascot-dance{0%,100%{transform:rotate(-10deg) scale(1.1)}50%{transform:rotate(10deg) scale(1.1)}}
+
+/* ══ FLOAT NUMBERS ══ */
+.float-num{position:fixed;font-family:'Fredoka One',cursive;font-size:1.6em;pointer-events:none;z-index:200;animation:float-up 1.2s ease-out forwards;text-shadow:3px 3px 0 rgba(0,0,0,.15)}
+.f-pos{color:var(--grass-dark)}.f-neg{color:var(--coral-dark)}.f-gold{color:var(--sun-dark)}
+@keyframes float-up{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-90px) scale(1.3);opacity:0}}
+
+/* ══ CONFETTI ══ */
 .confetti-piece{position:fixed;width:10px;height:10px;pointer-events:none;z-index:999;border-radius:2px;animation:c-fall linear forwards}
 @keyframes c-fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
-/* shake */
+/* ══ BALLOONS (age-up) ══ */
+.balloon{position:fixed;pointer-events:none;z-index:998;animation:balloon-rise linear forwards;font-size:2.5em}
+@keyframes balloon-rise{0%{transform:translateY(100vh) rotate(-10deg);opacity:1}100%{transform:translateY(-100px) rotate(10deg);opacity:0}}
+
+/* ══ STAT MILESTONE BANNER ══ */
+.stat-banner{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);z-index:300;font-family:'Fredoka One',cursive;font-size:2em;color:white;text-shadow:4px 4px 0 var(--ink);padding:14px 28px;border-radius:var(--radius);border:4px solid var(--ink);box-shadow:var(--shadow-lg);animation:banner-show .8s ease forwards;pointer-events:none}
+@keyframes banner-show{0%{transform:translate(-50%,-50%) scale(0) rotate(-5deg);opacity:0}40%{transform:translate(-50%,-50%) scale(1.1) rotate(2deg);opacity:1}70%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:1}100%{transform:translate(-50%,-50%) scale(.9) rotate(0);opacity:0}}
+
+/* ══ NEWSPAPER HEADLINE ══ */
+.newspaper{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;background:var(--offwhite);border:4px solid var(--ink);border-radius:8px;padding:16px 20px;width:88%;max-width:340px;text-align:center;box-shadow:var(--shadow-lg);animation:news-in .5s cubic-bezier(.34,1.56,.64,1) forwards;pointer-events:none}
+.newspaper-top{font-family:'Fredoka One',cursive;font-size:.75em;color:var(--ink2);border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:6px;letter-spacing:2px}
+.newspaper-headline{font-family:'Fredoka One',cursive;font-size:1.5em;color:var(--ink);line-height:1.3}
+@keyframes news-in{0%{transform:translate(-50%,-50%) translateY(-40px) rotate(-3deg);opacity:0}100%{transform:translate(-50%,-50%) rotate(-1deg);opacity:1}}
+
+/* ══ MUSIC BTN ══ */
+.music-btn{position:fixed;bottom:10px;right:12px;z-index:85;background:white;border:var(--border-w) solid var(--ink);border-radius:50%;width:50px;height:50px;font-size:1.3em;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.music-btn:active{transform:scale(.9);box-shadow:none}
+
+/* ══ SHAKE ══ */
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 .shake{animation:shake .45s ease}
 
-/* music btn */
-.music-btn{position:fixed;bottom:20px;right:16px;z-index:50;
-  background:rgba(255,255,255,0.4);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:2px solid rgba(255,255,255,0.6);
-  border-radius:50%;width:52px;height:52px;font-size:1.3em;cursor:pointer;
-  box-shadow:0 4px 20px rgba(99,102,241,0.2);
-  display:flex;align-items:center;justify-content:center;transition:all .2s}
-.music-btn:hover{transform:scale(1.1);background:rgba(255,255,255,0.6)}
-.music-btn:active{transform:scale(.9)}
+/* ══ FLASH ══ */
+#flash-overlay{position:fixed;inset:0;pointer-events:none;z-index:199;opacity:0;transition:opacity .1s}
 
-/* word scramble */
-.scramble-letters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-.letter-tile{width:38px;height:38px;background:linear-gradient(135deg,var(--indigo),var(--violet));color:white;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;cursor:pointer;transition:all .15s;user-select:none;box-shadow:0 3px 8px rgba(99,102,241,0.3)}
-.letter-tile:hover{transform:scale(1.1);box-shadow:0 5px 14px rgba(99,102,241,0.4)}
-.letter-tile:active{transform:scale(.9)}
-.answer-row{display:flex;gap:6px;justify-content:center;margin:8px 0;min-height:40px;flex-wrap:wrap}
-.answer-slot{width:38px;height:38px;border:2.5px dashed #c7d2fe;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;background:rgba(238,242,255,0.5);cursor:pointer;transition:all .15px}
-.answer-slot.filled{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;border-color:#f59e0b;border-style:solid}
-
-/* ── ENERGY BAR ── */
-.energy-bar-wrap{
-  background:rgba(255,255,255,0.6);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-radius:18px;padding:12px 16px;margin-bottom:12px;
-  border:2px solid rgba(255,255,255,0.75);
-  box-shadow:0 2px 12px rgba(245,158,11,.1);
-  display:flex;align-items:center;gap:12px
-}
-.energy-label{font-size:.78em;font-weight:900;color:var(--text2);white-space:nowrap;min-width:60px}
-.energy-track{flex:1;height:12px;background:rgba(241,245,249,0.7);border-radius:99px;overflow:hidden}
-.energy-fill{height:100%;border-radius:99px;transition:width .5s ease,background-color .4s}
-.energy-count{font-size:.78em;font-weight:900;color:var(--amber);white-space:nowrap;min-width:36px;text-align:right}
-
-/* greyed out act items */
-.act-item.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.5)}
-.act-item.disabled:hover{transform:none;box-shadow:none}
-.act-item.disabled:active{transform:none;border-color:transparent;background:rgba(250,250,252,0.8)}
-
-/* flash overlay */
-#flash-overlay{position:fixed;inset:0;pointer-events:none;z-index:199;opacity:0;transition:opacity .12s;background:rgba(239,68,68,0)}
-
-/* ── FAMILY DASHBOARD ── */
-.family-card{
-  background:rgba(255,255,255,0.72);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:24px;padding:16px;
-  box-shadow:0 4px 20px rgba(236,72,153,0.12);
-  border:2px solid rgba(252,231,243,0.8);margin-bottom:12px
-}
-.family-header{font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:#be185d;margin-bottom:10px}
-.family-member{
-  background:rgba(253,242,248,0.8);
-  border-radius:14px;padding:10px 12px;
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:6px;border:1.5px solid rgba(251,207,232,0.8)
-}
-.family-member-icon{font-size:1.6em;flex-shrink:0}
-.family-member-name{font-size:.88em;font-weight:900;color:#1e293b}
-.family-member-detail{font-size:.74em;color:#64748b;font-weight:600}
-.family-status{font-size:.7em;font-weight:800;padding:2px 8px;border-radius:10px;background:rgba(252,231,243,0.9);color:#be185d;margin-left:auto;white-space:nowrap}
-.family-empty{color:#94a3b8;font-size:.84em;font-weight:700;text-align:center;padding:10px}
-
-/* interview req */
-.interview-req{background:rgba(240,253,244,0.9);border:1.5px solid #86efac;border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:.8em;font-weight:700;color:#166534}
-.interview-req.fail{background:rgba(254,242,242,0.9);border-color:#fca5a5;color:#991b1b}
-
-/* tombstone */
-.tombstone-card{background:linear-gradient(160deg,#1e293b,#0f172a);border-radius:28px;padding:32px 24px;text-align:center;border:3px solid #334155}
-.tomb-emoji{font-size:5em;margin-bottom:10px;display:block}
-.tomb-title{font-size:1.8em;font-weight:900;color:white;margin-bottom:6px;font-family:'Nunito',sans-serif}
-.tomb-sub{font-size:.95em;color:#94a3b8;margin-bottom:20px;line-height:1.6;font-weight:600}
-.tomb-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
-.tomb-stat{background:rgba(255,255,255,.06);border-radius:14px;padding:10px 8px;text-align:center}
-.tomb-stat-val{font-size:1.2em;font-weight:900;color:white}
-.tomb-stat-lbl{font-size:.68em;color:#64748b;font-weight:700;margin-top:2px}
-.tomb-legacy{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:16px;padding:10px 16px;font-weight:900;font-size:.95em;margin-bottom:10px}
-.tomb-score{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border-radius:16px;padding:10px 16px;font-weight:900;font-size:1.1em;margin-bottom:20px}
-
-/* ── JOB OFFER BANNER ── */
-.job-offer-item{
-  background:linear-gradient(135deg,rgba(238,242,255,0.9),rgba(237,233,254,0.85));
-  border-radius:16px;padding:13px 14px;
-  display:flex;align-items:center;gap:12px;
-  cursor:pointer;border:2px solid rgba(99,102,241,0.35);
-  margin-bottom:8px;transition:all .2s;
-  box-shadow:0 3px 12px rgba(99,102,241,0.12)
-}
-.job-offer-item:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,0.2);border-color:var(--indigo)}
-.job-offer-item:active{transform:scale(.97)}
+/* ══ JOB OFFER ══ */
+.job-offer-item{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border:var(--border-w) solid var(--grass-dark);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:8px;transition:all .12s;box-shadow:var(--shadow-sm)}
+.job-offer-item:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--grass-dark)}
+.job-offer-item:active{transform:translate(3px,3px);box-shadow:none}
 .job-offer-item *{pointer-events:none}
-.offer-badge{font-size:.65em;font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:2px 8px;border-radius:8px;margin-left:auto;white-space:nowrap}
+.offer-badge{font-size:.65em;font-weight:900;background:var(--grass);color:white;padding:3px 8px;border-radius:8px;margin-left:auto;white-space:nowrap;border:2px solid var(--grass-dark)}
+.offer-dot{background:var(--coral);color:white;border-radius:50%;width:16px;height:16px;font-size:.58em;display:inline-flex;align-items:center;justify-content:center;margin-left:3px;font-weight:900;vertical-align:middle;animation:pop-in .3s cubic-bezier(.34,1.56,.64,1)}
 
-/* ── LIFE MILESTONE MODAL ── */
-.milestone-choice{
-  background:rgba(238,242,255,0.85);
-  border:2px solid rgba(99,102,241,0.3);
-  border-radius:16px;padding:14px;
-  margin-bottom:8px;cursor:pointer;transition:all .2s;text-align:left
-}
-.milestone-choice:hover{background:rgba(238,242,255,0.95);transform:translateY(-2px);box-shadow:0 6px 16px rgba(99,102,241,0.15);border-color:var(--indigo)}
-.milestone-choice:active{transform:scale(.98)}
-.mc-title{font-size:.95em;font-weight:900;color:var(--text);margin-bottom:3px}
-.mc-desc{font-size:.78em;color:var(--text2);font-weight:600}
+/* ══ TOMBSTONE ══ */
+.tombstone-card{background:linear-gradient(160deg,#263238,#1C2A33);border-radius:var(--radius-lg);padding:28px 22px;text-align:center;border:4px solid #546E7A}
+.tomb-emoji{font-size:4.5em;display:block;margin-bottom:8px}
+.tomb-title{font-family:'Fredoka One',cursive;font-size:1.8em;color:white;margin-bottom:6px}
+.tomb-sub{font-size:.9em;color:#90A4AE;margin-bottom:18px;font-weight:700;line-height:1.5}
+.tomb-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.tomb-stat{background:rgba(255,255,255,.08);border-radius:12px;padding:10px 8px;text-align:center}
+.tomb-stat-val{font-family:'Fredoka One',cursive;font-size:1.3em;color:white}
+.tomb-stat-lbl{font-size:.68em;color:#607D8B;font-weight:700;margin-top:2px}
+.tomb-legacy{background:var(--sun);border:2px solid var(--sun-dark);color:var(--ink);border-radius:14px;padding:10px 16px;font-weight:900;font-size:.95em;margin-bottom:8px}
+.tomb-score{background:linear-gradient(135deg,var(--sky),var(--candy));color:white;border-radius:14px;padding:10px 16px;font-family:'Fredoka One',cursive;font-size:1.1em;margin-bottom:18px;border:3px solid var(--ink);box-shadow:var(--shadow-sm)}
+
+/* ══ INTERVIEW REQS ══ */
+.interview-req{background:#E8F5E9;border:2px solid var(--grass-dark);border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:.8em;font-weight:800;color:#1B5E20}
+.interview-req.fail{background:#FFEBEE;border-color:var(--coral-dark);color:#B71C1C}
+
+/* ══ PERFORMANCE PANEL ══ */
+.perf-panel{background:#E8F5E9;border:2px solid var(--grass-dark);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}
+.promo-bar-track{height:12px;background:#EEE;border-radius:99px;overflow:hidden;margin-top:6px;border:2px solid var(--ink)}
+.promo-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--grass),var(--mint));transition:width .5s ease}
+
+/* ══ RETIRE BANNER ══ */
+.retire-banner{background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:var(--border-w) solid var(--sun-dark);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+
+/* ══ INFLATION PILL ══ */
+.inflation-pill{display:inline-block;font-size:.65em;font-weight:900;background:var(--coral);color:white;padding:2px 8px;border-radius:8px;margin-left:6px;border:2px solid var(--coral-dark)}
+
+/* ══ MILESTONE CHOICE ══ */
+.milestone-choice{background:var(--offwhite);border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .12s;text-align:left;box-shadow:var(--shadow-sm)}
+.milestone-choice:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.milestone-choice:active{transform:translate(3px,3px);box-shadow:none}
+.mc-title{font-size:.95em;font-weight:900;color:var(--ink);margin-bottom:3px}
+.mc-desc{font-size:.78em;color:var(--ink2);font-weight:700}
 .mc-tag{display:inline-block;font-size:.65em;font-weight:900;padding:2px 7px;border-radius:8px;margin-top:5px}
-.mc-tag.pos{background:rgba(209,250,229,0.9);color:#065f46}
-.mc-tag.neg{background:rgba(254,226,226,0.9);color:#991b1b}
-.mc-tag.neu{background:rgba(224,231,255,0.9);color:#4338ca}
+.mc-tag.pos{background:#E8F5E9;color:#1B5E20;border:1.5px solid var(--grass-dark)}
+.mc-tag.neg{background:#FFEBEE;color:#B71C1C;border:1.5px solid var(--coral-dark)}
+.mc-tag.neu{background:#E3F2FD;color:#0D47A1;border:1.5px solid var(--sky-dark)}
 
-/* ── RETIREMENT BADGE ── */
-.retire-banner{
-  background:linear-gradient(135deg,rgba(255,251,235,0.9),rgba(254,243,199,0.85));
-  border-radius:20px;padding:16px;margin-bottom:10px;
-  border:2px solid rgba(245,158,11,0.4);
-  box-shadow:0 4px 16px rgba(245,158,11,0.15)
+/* ══ PREFERS REDUCED MOTION ══ */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
-
-/* ── INFLATION INDICATOR ── */
-.inflation-pill{
-  display:inline-block;font-size:.65em;font-weight:900;
-  background:rgba(254,226,226,0.9);color:#991b1b;
-  padding:2px 8px;border-radius:8px;margin-left:6px
-}
-
-/* ── PERFORMANCE PANEL ── */
-.perf-panel{
-  background:rgba(238,242,255,0.85);
-  border:2px solid rgba(99,102,241,0.2);
-  border-radius:16px;padding:14px;margin-bottom:10px
-}
-.promo-bar-track{height:10px;background:rgba(226,232,240,0.7);border-radius:99px;overflow:hidden;margin-top:6px}
-.promo-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .5s ease}
-
-/* ── OFFER NOTIFICATION DOT ── */
-.offer-dot{
-  background:#ef4444;color:white;border-radius:50%;
-  width:16px;height:16px;font-size:.58em;
-  display:inline-flex;align-items:center;justify-content:center;
-  margin-left:3px;font-weight:900;vertical-align:middle;
-  animation:pop-in .3s cubic-bezier(.34,1.56,.64,1)
+/* ══ MOBILE ══ */
+@media (max-width:375px){
+  .start-title{font-size:2.6em}
+  .ava-age{font-size:2.5em}
+  .tabs-row{gap:0}
+  .tab-btn{padding:8px 10px;font-size:.72em}
 }
 </style>
 </head>
 <body>
 
-<!-- ════════════ START SCREEN ════════════ -->
+<!-- ══ START SCREEN ══ -->
 <div id="start-screen" class="screen active">
-  <div class="start-logo">🌱</div>
-  <div class="start-title">Life Story!</div>
-  <div class="start-sub">Every choice shapes who you become.<br>What kind of life will you live?</div>
-  <div class="start-card">
-    <span class="form-label">Your Name</span>
-    <input id="char-name" class="form-input" type="text" placeholder="Enter your name..." maxlength="20"/>
-    <span class="form-label">I am a...</span>
-    <div class="gender-grid">
-      <button type="button" class="gender-btn selected" id="btn-male"   onclick="pickGender('male')">👦 Boy</button>
-      <button type="button" class="gender-btn"          id="btn-female" onclick="pickGender('female')">👧 Girl</button>
+  <div class="start-clouds" id="start-clouds"></div>
+  <div class="start-content">
+    <div class="start-logo">🌱</div>
+    <div class="start-title">Life Story!</div>
+    <div class="start-sub">Every choice shapes who you become.<br>What kind of life will you live?</div>
+    <div class="start-card">
+      <span class="form-label">Your Name</span>
+      <input id="char-name" class="form-input" type="text" placeholder="Enter your name..." maxlength="20"/>
+      <span class="form-label">I am a...</span>
+      <div class="gender-grid">
+        <button type="button" class="gender-btn selected" id="btn-male" onclick="pickGender('male')">👦 Boy</button>
+        <button type="button" class="gender-btn" id="btn-female" onclick="pickGender('female')">👧 Girl</button>
+      </div>
+      <button type="button" class="btn-start" onclick="startLife()">🚀 Begin My Life!</button>
     </div>
-    <button type="button" class="btn-start" onclick="startLife()">🚀 Begin My Life!</button>
+    <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()">▶️ Continue My Story</button>
   </div>
-  <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()">▶️ Continue My Story</button>
 </div>
 
-<!-- ════════════ GAME SCREEN ════════════ -->
+<!-- ══ GAME SCREEN ══ -->
 <div id="game-screen" class="screen">
 <div id="gs-inner">
 
   <div class="top-bar">
     <div>
       <div class="top-name" id="hdr-name">---</div>
-      <div style="font-size:.75em;color:rgba(255,255,255,0.8);font-weight:700" id="hdr-edu">No education yet</div>
+      <div style="font-size:.75em;font-weight:800;color:var(--ink2)" id="hdr-edu">No education yet</div>
     </div>
     <div class="top-right">
       <div class="top-money">💰 $<span id="hdr-money">0</span></div>
@@ -433,37 +420,57 @@ body::before{
 
   <div id="badge-strip" class="badge-strip" style="display:none"></div>
 
-  <!-- Energy bar -->
-  <div class="energy-bar-wrap">
+  <!-- Energy -->
+  <div class="energy-wrap">
     <span class="energy-label">⚡ Energy</span>
     <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
     <span class="energy-count" id="energy-count">5/5</span>
   </div>
 
   <!-- Avatar -->
-  <div class="avatar-card">
-    <div class="ava-emoji" id="ava-emoji">👶</div>
-    <div>
+  <div class="avatar-card" id="avatar-card">
+    <div class="avatar-card-bg" id="ava-bg"></div>
+    <div id="char-display" style="flex-shrink:0;width:80px;height:90px;display:flex;align-items:center;justify-content:center">
+      <div class="ava-emoji-wrap" id="ava-emoji">👶</div>
+    </div>
+    <div class="ava-info">
       <div class="ava-age" id="ava-age">0</div>
       <div class="ava-label">years old</div>
       <div class="ava-stage" id="ava-stage">Newborn 👶</div>
-      <div class="ava-job"   id="ava-job">💤 No job yet</div>
+      <div class="ava-job" id="ava-job">💤 No job yet</div>
     </div>
+    <div id="mood-meter" style="font-size:2em;flex-shrink:0;transition:all .3s">😊</div>
   </div>
 
   <!-- Stats -->
   <div class="stats-card">
-    <div style="font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:12px">📊 Your Stats</div>
+    <div class="stats-title">📊 Your Stats</div>
     <div class="stats-grid">
-      <div><div class="stat-head"><span class="stat-name">❤️ Health</span><span class="stat-val" id="sv-health">100</span></div><div class="stat-bar"><div class="stat-fill" id="sf-health" style="width:100%"></div></div></div>
-      <div><div class="stat-head"><span class="stat-name">😊 Happiness</span><span class="stat-val" id="sv-happiness">80</span></div><div class="stat-bar"><div class="stat-fill" id="sf-happiness" style="width:80%"></div></div></div>
-      <div><div class="stat-head"><span class="stat-name">🧠 Smarts</span><span class="stat-val" id="sv-smarts">50</span></div><div class="stat-bar"><div class="stat-fill" id="sf-smarts" style="width:50%"></div></div></div>
-      <div><div class="stat-head"><span class="stat-name">✨ Looks</span><span class="stat-val" id="sv-looks">50</span></div><div class="stat-bar"><div class="stat-fill" id="sf-looks" style="width:50%"></div></div></div>
+      <div class="stat-item" style="border-color:#E53935">
+        <span class="stat-icon" id="si-health">❤️</span>
+        <div class="stat-label-row"><span class="stat-name">Health</span><span class="stat-val" id="sv-health">100</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="sf-health" style="width:100%;background:#ef5350"></div></div>
+      </div>
+      <div class="stat-item" style="border-color:#F57C00">
+        <span class="stat-icon" id="si-happiness">😊</span>
+        <div class="stat-label-row"><span class="stat-name">Happiness</span><span class="stat-val" id="sv-happiness">80</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="sf-happiness" style="width:80%;background:#FFA726"></div></div>
+      </div>
+      <div class="stat-item" style="border-color:#0288D1">
+        <span class="stat-icon" id="si-smarts">💡</span>
+        <div class="stat-label-row"><span class="stat-name">Smarts</span><span class="stat-val" id="sv-smarts">50</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="sf-smarts" style="width:50%;background:#29B6F6"></div></div>
+      </div>
+      <div class="stat-item" style="border-color:#8E24AA">
+        <span class="stat-icon" id="si-looks">✨</span>
+        <div class="stat-label-row"><span class="stat-name">Looks</span><span class="stat-val" id="sv-looks">50</span></div>
+        <div class="stat-bar-track"><div class="stat-bar-fill" id="sf-looks" style="width:50%;background:#CE93D8"></div></div>
+      </div>
     </div>
   </div>
 
   <!-- Age Up -->
-  <button type="button" class="age-up-top" onclick="ageUp()">
+  <button type="button" class="age-up-btn" onclick="ageUp()">
     <span>🎂</span><span>Age Up — Turn <span id="next-age">1</span></span>
   </button>
 
@@ -475,25 +482,25 @@ body::before{
 
   <!-- Main panel -->
   <div class="panel-card">
-    <div class="tabs">
-      <button type="button" class="tab-btn"    id="tab-act"  onclick="openTab('act')">🎯 Do</button>
+    <div class="tabs-row">
+      <button type="button" class="tab-btn" id="tab-act" onclick="openTab('act')">🎯 Do</button>
       <button type="button" class="tab-btn on" id="tab-work" onclick="openTab('work')">💼 Work</button>
-      <button type="button" class="tab-btn"    id="tab-edu"  onclick="openTab('edu')">📚 Learn</button>
-      <button type="button" class="tab-btn"    id="tab-bank" onclick="openTab('bank')">🏦 Money</button>
-      <button type="button" class="tab-btn"    id="tab-fam"  onclick="openTab('fam')">👨‍👩‍👧 Family</button>
-      <button type="button" class="tab-btn"    id="tab-cups" onclick="openTab('cups')">🏆 Trophies</button>
+      <button type="button" class="tab-btn" id="tab-edu" onclick="openTab('edu')">📚 Learn</button>
+      <button type="button" class="tab-btn" id="tab-bank" onclick="openTab('bank')">🏦 Money</button>
+      <button type="button" class="tab-btn" id="tab-fam" onclick="openTab('fam')">👨‍👩‍👧 Family</button>
+      <button type="button" class="tab-btn" id="tab-cups" onclick="openTab('cups')">🏆 Trophies</button>
     </div>
-    <div id="panel-act"  style="display:none"></div>
+    <div id="panel-act" style="display:none"></div>
     <div id="panel-work" style="display:block"></div>
-    <div id="panel-edu"  style="display:none"></div>
+    <div id="panel-edu" style="display:none"></div>
     <div id="panel-bank" style="display:none"></div>
-    <div id="panel-fam"  style="display:none"></div>
+    <div id="panel-fam" style="display:none"></div>
     <div id="panel-cups" style="display:none"></div>
   </div>
 
-  <!-- Log -->
+  <!-- Log / Scrapbook -->
   <div class="panel-card">
-    <div style="font-size:.72em;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-bottom:10px">📜 Life Log</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:1em;color:var(--ink2);margin-bottom:10px;letter-spacing:.5px">📖 Life Scrapbook</div>
     <div class="log-box" id="life-log"></div>
   </div>
 
@@ -501,12 +508,13 @@ body::before{
 </div>
 </div>
 
-<!-- ════════════ MODAL ════════════ -->
+<!-- ══ MODAL ══ -->
 <div class="modal-bg" id="modal" style="display:none">
-  <div class="modal-card">
+  <div class="modal-card" id="modal-card">
+    <div class="comic-sfx" id="m-sfx" style="display:none"></div>
     <div class="modal-icon" id="m-icon">🎉</div>
     <div class="modal-title" id="m-title">Something happened!</div>
-    <div class="modal-body"  id="m-body">Description.</div>
+    <div class="speech-bubble" id="m-body">Description.</div>
     <div id="m-extra"></div>
     <div class="modal-btns" id="m-btns"></div>
   </div>
@@ -515,10 +523,30 @@ body::before{
 <!-- Flash overlay -->
 <div id="flash-overlay"></div>
 
+<!-- Mascot -->
+<div class="mascot-wrap" id="mascot-wrap">
+  <div class="mascot-bubble" id="mascot-bubble" style="display:none"></div>
+  <button type="button" class="mascot-btn" id="mascot-btn" onclick="mascotTap()" title="Tap Ollie for a tip!">🦉</button>
+</div>
+
 <!-- Music -->
 <button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" title="Toggle music">🎵</button>
 
 <script>
+// ══════════════════════════════════════════
+// CLOUD DECO
+// ══════════════════════════════════════════
+(function(){
+  const container=document.getElementById('start-clouds');
+  if(!container)return;
+  for(let i=0;i<6;i++){
+    const c=document.createElement('div');c.className='cloud';
+    const w=80+Math.random()*120,h=w*0.4;
+    c.style.cssText=`width:${w}px;height:${h}px;top:${5+Math.random()*40}%;animation-duration:${20+Math.random()*20}s;animation-delay:-${Math.random()*20}s`;
+    container.appendChild(c);
+  }
+})();
+
 // ══════════════════════════════════════════
 // SOUND MANAGER
 // ══════════════════════════════════════════
@@ -537,18 +565,20 @@ const SoundManager = (() => {
       o.start(ctx.currentTime+delay); o.stop(ctx.currentTime+delay+dur+.05);
     } catch(e){}
   };
+  const boing=(delay=0)=>{beep(350,.05,'sine',.2,delay);beep(500,.08,'sine',.15,delay+.04);};
   return {
     unlock(){ init(); if(ctx && ctx.state==='suspended') ctx.resume().then(()=>{ unlocked=true; }); else if(ctx) unlocked=true; },
+    click(){ boing(); },
     success(){ beep(523,.1,'sine',.12); beep(659,.1,'sine',.12,.1); },
     fail(){ beep(220,.15,'sawtooth',.15); beep(180,.15,'sawtooth',.15,.15); },
     ageUp(){ [523,587,659,784].forEach((f,i)=>beep(f,.12,'sine',.15,i*.1)); },
     levelUp(){ [523,659,784,1047].forEach((f,i)=>beep(f,.15,'sine',.18,i*.1)); },
     money(){ beep(880,.08,'sine',.12); beep(1047,.12,'sine',.12,.08); },
     legend(){ [523,659,784,880,1047].forEach((f,i)=>beep(f,.15,'sine',.2,i*.08)); },
-    click(){ beep(440,.05,'sine',.08); },
     gameOver(){ beep(392,.3,'sawtooth',.2); beep(330,.3,'sawtooth',.15,.25); beep(262,.6,'sawtooth',.2,.5); },
     minigameWin(){ [659,784,1047].forEach((f,i)=>beep(f,.12,'sine',.18,i*.08)); },
     minigameFail(){ beep(311,.2,'sawtooth',.15); beep(262,.3,'sawtooth',.15,.2); },
+    birthday(){ [523,659,784,880,784,659,523].forEach((f,i)=>beep(f,.12,'triangle',.16,i*.12)); },
     toggleMusic(){
       init();
       if(!unlocked) this.unlock();
@@ -557,13 +587,12 @@ const SoundManager = (() => {
       if(!ctx) return;
       if(musicOn){
         try {
-          musicGain = ctx.createGain(); musicGain.gain.value = 0.04;
+          musicGain = ctx.createGain(); musicGain.gain.value = 0.035;
           musicOsc = ctx.createOscillator(); musicOsc.type = 'triangle';
-          musicOsc.frequency.value = 220; musicOsc.connect(musicGain);
-          musicGain.connect(ctx.destination); musicOsc.start();
-          const melody=[261,294,329,349,392,440,494,523];
+          musicOsc.connect(musicGain); musicGain.connect(ctx.destination); musicOsc.start();
+          const melody=[261,329,392,440,392,329,261,294];
           let i=0;
-          const step=()=>{ if(!musicOn||!musicOsc) return; musicOsc.frequency.setValueAtTime(melody[i%melody.length],ctx.currentTime); i++; setTimeout(step,500); };
+          const step=()=>{ if(!musicOn||!musicOsc) return; musicOsc.frequency.setValueAtTime(melody[i%melody.length],ctx.currentTime); i++; setTimeout(step,450); };
           step();
         } catch(e){}
       } else {
@@ -573,6 +602,44 @@ const SoundManager = (() => {
     }
   };
 })();
+
+// ══════════════════════════════════════════
+// MASCOT
+// ══════════════════════════════════════════
+const MASCOT_TIPS = [
+  "Psst! Exercise and reading make you stronger AND smarter! 💪📚",
+  "Don't forget — your energy resets each year when you Age Up! ⚡",
+  "Investing money early means WAY more money later! 📈",
+  "Good health keeps you alive longer. See a doctor! 🏥",
+  "Happiness matters too! Too sad and... well... 😬",
+  "Jobs pay salary every year you Age Up. Pick a good one! 💼",
+  "Your family costs money but brings SO much joy! 👨‍👩‍👧",
+  "Rare (legendary) events can change your life! 🌟",
+  "High smarts means better job opportunities! 🧠",
+  "Investments grow 4% per year automatically! 📊",
+  "Bad luck builds up — watch your misfortune level! 🎲",
+  "Age Up to see what job offers are waiting for you! 📬",
+];
+let mascotTimeout = null;
+function showMascotBubble(msg, duration=4000) {
+  const bubble = document.getElementById('mascot-bubble');
+  if(!bubble) return;
+  bubble.textContent = msg;
+  bubble.style.display = 'block';
+  clearTimeout(mascotTimeout);
+  mascotTimeout = setTimeout(()=>{ bubble.style.display='none'; }, duration);
+}
+function mascotTap() {
+  SoundManager.click();
+  const tip = MASCOT_TIPS[Math.floor(Math.random()*MASCOT_TIPS.length)];
+  showMascotBubble('🦉 Ollie says: ' + tip, 5000);
+}
+function mascotDance() {
+  const btn = document.getElementById('mascot-btn');
+  if(!btn) return;
+  btn.classList.add('dancing');
+  setTimeout(()=>btn.classList.remove('dancing'), 2000);
+}
 
 // ══════════════════════════════════════════
 // GAME STATE
@@ -620,6 +687,7 @@ const clear = () => { try{ localStorage.removeItem('lifestory_v6'); }catch(e){} 
 const rand  = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 
 function applyMod(m) {
+  const prev = {health:G.health, happiness:G.happiness, smarts:G.smarts, looks:G.looks};
   if(m.health    !== undefined) G.health    = Math.min(100,Math.max(0, G.health    + m.health));
   if(m.happiness !== undefined) G.happiness = Math.min(100,Math.max(0, G.happiness + m.happiness));
   if(m.smarts    !== undefined) G.smarts    = Math.min(100,Math.max(0, G.smarts    + m.smarts));
@@ -631,8 +699,39 @@ function applyMod(m) {
     if(m[s]===undefined) return;
     const el=document.getElementById('sv-'+s);
     if(el){ el.classList.remove('pulse','pulse-bad'); void el.offsetWidth; el.classList.add(m[s]>0?'pulse':m[s]<0?'pulse-bad':''); }
+    // check tier change
+    if(m[s] && m[s]!==0) {
+      const oldTier = Math.floor(prev[s]/25);
+      const newTier = Math.floor(G[s]/25);
+      if(newTier!==oldTier) showStatBanner(s, G[s]);
+    }
   });
   if(m.money!==undefined && m.money!==0) spawnFloat((m.money>0?'+':'')+`$${Math.abs(m.money).toLocaleString()}`, m.money>0, true);
+  updateMoodMeter();
+}
+
+function updateMoodMeter() {
+  const el = document.getElementById('mood-meter');
+  if(!el) return;
+  const avg = (G.happiness + G.health) / 2;
+  if(avg>=85) el.textContent='🤩';
+  else if(avg>=70) el.textContent='😄';
+  else if(avg>=55) el.textContent='😊';
+  else if(avg>=40) el.textContent='😐';
+  else if(avg>=25) el.textContent='😟';
+  else el.textContent='😢';
+}
+
+function showStatBanner(stat, val) {
+  const labels = {health:['Barely Alive','Getting Better','Strong!','Iron Body! 💪'], happiness:['Depressed','Feeling OK','Happy!','Super Happy! 😄'], smarts:['Struggling','Learning','Smart!','Super Brain! 🧠'], looks:['Plain','Decent','Good Looking!','Glowing! ✨']};
+  const tier = Math.min(3, Math.floor(val/25));
+  const bg = {health:'#ef5350',happiness:'#FFA726',smarts:'#29B6F6',looks:'#CE93D8'}[stat];
+  const banner = document.createElement('div');
+  banner.className='stat-banner';
+  banner.style.background=bg;
+  banner.textContent = labels[stat][tier];
+  document.body.appendChild(banner);
+  setTimeout(()=>banner.remove(), 1200);
 }
 
 function addLog(msg, type='info') {
@@ -720,7 +819,8 @@ function checkAchievements() {
     if(!G.achievements.includes(a.id) && a.check()) {
       G.achievements.push(a.id);
       addLog(`🏆 Achievement: ${a.emoji} ${a.name} unlocked!`, 'legend');
-      SoundManager.levelUp(); burst(40); renderBadges();
+      SoundManager.levelUp(); burst(50); renderBadges(); mascotDance();
+      showMascotBubble(`🦉 WOW! You earned the "${a.name}" trophy! ${a.emoji}`, 4000);
     }
   });
 }
@@ -740,45 +840,51 @@ function renderBadges() {
 // EVENTS DATA
 // ══════════════════════════════════════════
 const EVENTS = [
-  {minAge:4,maxAge:8,r:'c',emoji:'🎁',title:'Birthday Gift!',body:'Grandma surprised you with the best birthday gift ever!',choices:[{l:'😄 Yay!',m:{happiness:10,smarts:2}}]},
-  {minAge:5,maxAge:12,r:'c',emoji:'😢',title:'Getting Bullied...',body:'Some kids are being mean to you at school. What do you do?',choices:[{l:'🥊 Fight back',m:{health:-10,happiness:8}},{l:'🙈 Ignore them',m:{happiness:-5}},{l:'📢 Tell teacher',m:{happiness:12,smarts:3}}]},
-  {minAge:5,maxAge:12,r:'c',emoji:'🐶',title:'Stray Puppy!',body:'You found an adorable stray puppy outside. Can you keep it?',choices:[{l:'🐶 Please!',m:{happiness:22,money:-200}},{l:'🥺 Leave it',m:{happiness:-8}}]},
-  {minAge:6,maxAge:12,r:'c',emoji:'📚',title:'Science Fair!',body:'Your school is hosting a science fair. Want to enter?',choices:[{l:'🔬 Enter it!',m:{smarts:12,happiness:8}},{l:'😴 Too much work',m:{happiness:-3}}]},
-  {minAge:6,maxAge:11,r:'c',emoji:'⚽',title:'Sports Day!',body:"It's the school sports day! Give it everything?",choices:[{l:'🏃 Run your heart out!',m:{health:10,happiness:12,looks:3}},{l:'🤷 Just walk',m:{happiness:2}}]},
-  {minAge:7,maxAge:12,r:'c',emoji:'🎨',title:'Art Talent!',body:'Your teacher says you have a special gift for art!',choices:[{l:'🎨 Practice every day!',m:{smarts:5,happiness:10,looks:5}},{l:'Meh',m:{}}]},
-  {minAge:5,maxAge:12,r:'c',emoji:'📱',title:'Screen Time Debate',body:"Mum says you're spending too much time on screens.",choices:[{l:'🙅 Put it down',m:{health:5,smarts:5,happiness:-3}},{l:'😤 Keep watching',m:{health:-5,smarts:-5,happiness:5}}]},
-  {minAge:6,maxAge:12,r:'c',emoji:'🍕',title:'Pizza Party!',body:'Your class won the spelling bee — pizza party!',choices:[{l:'🎉 PARTY!',m:{happiness:15}}]},
-  {minAge:8,maxAge:12,r:'c',emoji:'🎭',title:'School Play',body:'You got a big part in the school play!',choices:[{l:'🎭 Nail it!',m:{smarts:6,looks:5,happiness:12}},{l:'😰 Too nervous',m:{happiness:-5}}]},
-  {minAge:7,maxAge:12,r:'c',emoji:'🤝',title:'Homework Help',body:'A classmate asks to copy your homework.',choices:[{l:'📋 Let them copy',m:{happiness:5,smarts:-5}},{l:'✏️ Help them learn',m:{happiness:-3,smarts:8}},{l:'🙅 Refuse',m:{happiness:-5,smarts:3}}]},
-  {minAge:8,maxAge:12,r:'c',emoji:'🏕️',title:'School Camp!',body:"Your class is going on a 3-day outdoor camp!",choices:[{l:'😁 So excited!',m:{happiness:20,health:8}},{l:'😟 Nervous',m:{happiness:5}}]},
-  {minAge:6,maxAge:11,r:'c',emoji:'🎮',title:'New Video Game',body:"You got the new game everyone is talking about!",choices:[{l:'🎮 Play ALL day',m:{happiness:15,health:-5,smarts:-3}},{l:'⏰ Play then study',m:{happiness:8,smarts:5}}]},
-  {minAge:9,maxAge:12,r:'c',emoji:'💸',title:'Lemonade Stand',body:'You want to set up a lemonade stand this weekend!',choices:[{l:'🍋 Do it!',m:{money:50,smarts:8,happiness:10}},{l:'Too hot outside',m:{}}]},
-  {minAge:7,maxAge:12,r:'r',emoji:'🌟',title:'Child Prodigy!',body:'Your teacher thinks you might be a genius. Special tutoring?',choices:[{l:'📖 Yes please!',m:{smarts:22,happiness:-5}},{l:'🎮 Play instead',m:{happiness:10,smarts:-5}}]},
-  {minAge:5,maxAge:12,r:'l',emoji:'💰',title:'Treasure Found!',body:'While digging in the garden you found a box of old money!',choices:[{l:'💰 JACKPOT!',m:{money:5000,happiness:30}}]},
-  {minAge:8,maxAge:12,r:'l',emoji:'🎬',title:'Child Actor!',body:'A film scout spotted you! They want you in a real movie!',choices:[{l:'🎬 Action!',m:{money:10000,happiness:20,looks:10}},{l:'Too shy...',m:{happiness:-5}}]},
-  {minAge:13,maxAge:17,r:'c',emoji:'💕',title:'First Crush!',body:'You really like someone at school. Do you make a move?',choices:[{l:'💌 Ask them out!',fn:'crush'},{l:'🤫 Keep it secret',m:{happiness:-5}}]},
-  {minAge:13,maxAge:17,r:'c',emoji:'🎮',title:'Gaming Binge',body:"You've been playing games for 10 hours straight!",choices:[{l:'🛑 Take a break',m:{health:5,smarts:3}},{l:'🎮 One more hour!',m:{health:-8,smarts:-5,happiness:8}}]},
-  {minAge:14,maxAge:18,r:'c',emoji:'🎸',title:'Start a Band?',body:'Your friends want to start a band. Join them?',choices:[{l:'🎸 Rock on!',m:{happiness:18,smarts:5,money:200}},{l:'Not for me',m:{}}]},
-  {minAge:15,maxAge:19,r:'c',emoji:'🏆',title:'Sports Tournament',body:'Your school team made the regional finals!',choices:[{l:'⚡ Give 100%!',m:{health:8,happiness:20,looks:5}},{l:'🤧 Injured',m:{health:-5,happiness:-10}}]},
-  {minAge:16,maxAge:19,r:'c',emoji:'🚗',title:'Driving Lesson',body:'Time to learn how to drive!',choices:[{l:'🚗 Lets go!',m:{smarts:5,happiness:10,money:-300}},{l:'😰 Too scared',m:{happiness:-3}}]},
-  {minAge:13,maxAge:17,r:'c',emoji:'📱',title:'Viral Post!',body:'One of your posts went viral — 10,000 likes!',choices:[{l:'🌟 Exciting!',m:{happiness:20,looks:8,money:500}}]},
-  {minAge:14,maxAge:18,r:'c',emoji:'😤',title:'Peer Pressure',body:'Your friends want you to skip school and hang out.',choices:[{l:'😎 Skip it!',m:{happiness:10,smarts:-8}},{l:'🏫 Stay in school',m:{smarts:6,happiness:-5}}]},
-  {minAge:15,maxAge:19,r:'c',emoji:'💼',title:'Part-time Job?',body:"There's a part-time job going at the local shop.",choices:[{l:'💼 Apply!',m:{money:800,happiness:5,smarts:3}},{l:'Too busy',m:{}}]},
-  {minAge:13,maxAge:19,r:'c',emoji:'🎓',title:'Study Group',body:'Your classmates invite you to a study group.',choices:[{l:'📚 Join them!',m:{smarts:10,happiness:5}},{l:'Study alone',m:{smarts:7}}]},
-  {minAge:16,maxAge:19,r:'r',emoji:'🎓',title:'Scholarship Offer!',body:"You've been offered a partial scholarship!",choices:[{l:'📚 Accept it!',m:{smarts:15,money:5000,happiness:15}},{l:'Thanks but no',m:{}}]},
-  {minAge:13,maxAge:19,r:'l',emoji:'🎵',title:'Viral Music Hit!',body:'A song you recorded in your bedroom went GLOBAL!',choices:[{l:'🎵 FAMOUS!',m:{money:50000,happiness:30,looks:15}}]},
-  {minAge:14,maxAge:18,r:'l',emoji:'📺',title:'YouTube Star!',body:'Your YouTube channel just hit 1 MILLION subscribers!',choices:[{l:'📺 LEGEND!',m:{money:30000,happiness:25,looks:10,smarts:5}}]},
-  {minAge:20,maxAge:30,r:'c',emoji:'🏠',title:'Move Out?',body:"You're thinking about getting your own place.",choices:[{l:'🏠 Time to fly!',fn:'move_out'},{l:'🏡 Stay home',m:{happiness:-8}}]},
-  {minAge:25,maxAge:45,r:'c',emoji:'🤒',title:'Fell Ill',body:"You're really sick. Fever, cough, the works.",choices:[{l:'🏥 See a doctor',m:{health:20,money:-500}},{l:'🛌 Rest at home',m:{health:8}}]},
-  {minAge:25,maxAge:50,r:'c',emoji:'📈',title:'Investment Chance',body:'A friend tells you about a great stock opportunity.',choices:[{l:'💸 Invest $5,000',fn:'invest'},{l:'🙅 Too risky',m:{}}]},
-  {minAge:30,maxAge:55,r:'c',emoji:'😰',title:'Midlife Check-in',body:"You're reflecting on your life choices.",choices:[{l:'🏋️ Hit the gym!',m:{health:12,looks:10,happiness:10}},{l:'📚 Study more',m:{smarts:10,happiness:8}},{l:'🌴 Take a holiday',m:{happiness:25,money:-2000}}]},
-  {minAge:22,maxAge:40,r:'r',emoji:'🚀',title:'Business Idea!',body:'You have an AMAZING business idea. Risk it?',choices:[{l:'🚀 Launch it!',fn:'start_biz'},{l:'Too risky',m:{}}]},
-  {minAge:22,maxAge:50,r:'r',emoji:'✈️',title:'Dream Holiday!',body:'An incredible travel deal just popped up!',choices:[{l:'✈️ Book it!',m:{happiness:30,looks:5,money:-3000,smarts:5}},{l:'💸 Too expensive',m:{happiness:-5}}]},
-  {minAge:30,maxAge:50,r:'l',emoji:'🏆',title:'World Record!',body:"You accidentally broke a world record! You're GLOBAL NEWS!",choices:[{l:'🌍 LEGENDARY!',m:{happiness:40,money:100000,looks:20}}]},
-  {minAge:25,maxAge:50,r:'l',emoji:'🎰',title:'LOTTERY WINNER!!',body:'You bought a scratch card and WON THE JACKPOT!!!',choices:[{l:'🎰 IM RICH!!',m:{money:500000,happiness:50}}]},
-  {minAge:50,maxAge:70,r:'c',emoji:'🧓',title:'Retirement Plan',body:'Are you thinking about retirement?',choices:[{l:'📋 Plan carefully',m:{smarts:5,money:5000,happiness:5}},{l:'Live for today!',m:{happiness:10,money:-2000}}]},
-  {minAge:55,maxAge:80,r:'c',emoji:'🏡',title:'Grandchildren Visit!',body:'Your grandchildren are here for the week!',choices:[{l:'🥰 Wonderful!',m:{happiness:30,health:5}}]},
-  {minAge:60,maxAge:90,r:'r',emoji:'🌟',title:'Lifetime Award',body:'Your community gives you a lifetime achievement award!',choices:[{l:'🌟 Honoured!',m:{happiness:35,smarts:5}}]},
+  // CHILD (5-12)
+  {minAge:4,maxAge:8,r:'c',emoji:'🎁',sfx:'YAY!',title:'Birthday Gift!',body:'Grandma surprised you with the best birthday gift ever!',choices:[{l:'😄 Yay!',m:{happiness:10,smarts:2}}]},
+  {minAge:5,maxAge:12,r:'c',emoji:'😢',sfx:'UH-OH!',title:'Getting Bullied...',body:'Some kids are being mean at school. What do you do?',choices:[{l:'🥊 Fight back',m:{health:-10,happiness:8}},{l:'🙈 Ignore them',m:{happiness:-5}},{l:'📢 Tell teacher',m:{happiness:12,smarts:3}}]},
+  {minAge:5,maxAge:12,r:'c',emoji:'🐶',sfx:'WOW!',title:'Stray Puppy!',body:'You found an adorable stray puppy! Can you keep it?',choices:[{l:'🐶 Please!',m:{happiness:22,money:-200}},{l:'🥺 Leave it',m:{happiness:-8}}]},
+  {minAge:6,maxAge:12,r:'c',emoji:'📚',sfx:'WOW!',title:'Science Fair!',body:'Your school is hosting a science fair. Enter?',choices:[{l:'🔬 Enter it!',m:{smarts:12,happiness:8}},{l:'😴 Too much work',m:{happiness:-3}}]},
+  {minAge:6,maxAge:11,r:'c',emoji:'⚽',sfx:'YAY!',title:'Sports Day!',body:"It's the school sports day! Give it everything?",choices:[{l:'🏃 Run your heart out!',m:{health:10,happiness:12,looks:3}},{l:'🤷 Just walk',m:{happiness:2}}]},
+  {minAge:7,maxAge:12,r:'c',emoji:'🎨',sfx:'WOW!',title:'Art Talent!',body:'Your teacher says you have a special gift for art!',choices:[{l:'🎨 Practice every day!',m:{smarts:5,happiness:10,looks:5}},{l:'Meh',m:{}}]},
+  {minAge:5,maxAge:12,r:'c',emoji:'📱',sfx:'OOPS!',title:'Screen Time Debate',body:"Mum says you're spending too much time on screens.",choices:[{l:'🙅 Put it down',m:{health:5,smarts:5,happiness:-3}},{l:'😤 Keep watching',m:{health:-5,smarts:-5,happiness:5}}]},
+  {minAge:6,maxAge:12,r:'c',emoji:'🍕',sfx:'YAY!',title:'Pizza Party!',body:'Your class won the spelling bee — pizza party!',choices:[{l:'🎉 PARTY!',m:{happiness:15}}]},
+  {minAge:8,maxAge:12,r:'c',emoji:'🎭',sfx:'WOW!',title:'School Play',body:'You got a big part in the school play!',choices:[{l:'🎭 Nail it!',m:{smarts:6,looks:5,happiness:12}},{l:'😰 Too nervous',m:{happiness:-5}}]},
+  {minAge:7,maxAge:12,r:'c',emoji:'🤝',sfx:'HMMMM',title:'Homework Help',body:'A classmate asks to copy your homework.',choices:[{l:'📋 Let them copy',m:{happiness:5,smarts:-5}},{l:'✏️ Help them learn',m:{happiness:-3,smarts:8}},{l:'🙅 Refuse',m:{happiness:-5,smarts:3}}]},
+  {minAge:8,maxAge:12,r:'c',emoji:'🏕️',sfx:'YAY!',title:'School Camp!',body:"Your class is going on a 3-day outdoor camp!",choices:[{l:'😁 So excited!',m:{happiness:20,health:8}},{l:'😟 Nervous',m:{happiness:5}}]},
+  {minAge:6,maxAge:11,r:'c',emoji:'🎮',sfx:'OOPS!',title:'New Video Game',body:"You got the new game everyone is talking about!",choices:[{l:'🎮 Play ALL day',m:{happiness:15,health:-5,smarts:-3}},{l:'⏰ Play then study',m:{happiness:8,smarts:5}}]},
+  {minAge:9,maxAge:12,r:'c',emoji:'💸',sfx:'YAY!',title:'Lemonade Stand',body:'You want to set up a lemonade stand this weekend!',choices:[{l:'🍋 Do it!',m:{money:50,smarts:8,happiness:10}},{l:'Too hot outside',m:{}}]},
+  {minAge:7,maxAge:12,r:'r',emoji:'🌟',sfx:'WOW!',title:'Child Prodigy!',body:'Your teacher thinks you might be a genius. Special tutoring?',choices:[{l:'📖 Yes please!',m:{smarts:22,happiness:-5}},{l:'🎮 Play instead',m:{happiness:10,smarts:-5}}]},
+  {minAge:5,maxAge:12,r:'l',emoji:'💰',sfx:'WOW!!',title:'Treasure Found!',body:'While digging in the garden you found a box of old money!',choices:[{l:'💰 JACKPOT!',m:{money:5000,happiness:30}}]},
+  {minAge:8,maxAge:12,r:'l',emoji:'🎬',sfx:'WOW!!',title:'Child Actor!',body:'A film scout spotted you! They want you in a real movie!',choices:[{l:'🎬 Action!',m:{money:10000,happiness:20,looks:10}},{l:'Too shy...',m:{happiness:-5}}]},
+  // TEEN (13-17)
+  {minAge:13,maxAge:17,r:'c',emoji:'💕',sfx:'OOH!',title:'First Crush!',body:'You really like someone at school. Make a move?',choices:[{l:'💌 Ask them out!',fn:'crush'},{l:'🤫 Keep it secret',m:{happiness:-5}}]},
+  {minAge:13,maxAge:17,r:'c',emoji:'🎮',sfx:'OOPS!',title:'Gaming Binge',body:"You've been playing games for 10 hours straight!",choices:[{l:'🛑 Take a break',m:{health:5,smarts:3}},{l:'🎮 One more hour!',m:{health:-8,smarts:-5,happiness:8}}]},
+  {minAge:14,maxAge:18,r:'c',emoji:'🎸',sfx:'ROCK!',title:'Start a Band?',body:'Your friends want to start a band. Join them?',choices:[{l:'🎸 Rock on!',m:{happiness:18,smarts:5,money:200}},{l:'Not for me',m:{}}]},
+  {minAge:15,maxAge:19,r:'c',emoji:'🏆',sfx:'YAY!',title:'Sports Tournament',body:'Your school team made the regional finals!',choices:[{l:'⚡ Give 100%!',m:{health:8,happiness:20,looks:5}},{l:'🤧 Injured',m:{health:-5,happiness:-10}}]},
+  {minAge:16,maxAge:19,r:'c',emoji:'🚗',sfx:'ZOOM!',title:'Driving Lesson',body:'Time to learn how to drive!',choices:[{l:'🚗 Lets go!',m:{smarts:5,happiness:10,money:-300}},{l:'😰 Too scared',m:{happiness:-3}}]},
+  {minAge:13,maxAge:17,r:'c',emoji:'📱',sfx:'PING!',title:'Viral Post!',body:'One of your posts went viral — 10,000 likes!',choices:[{l:'🌟 Exciting!',m:{happiness:20,looks:8,money:500}}]},
+  {minAge:14,maxAge:18,r:'c',emoji:'😤',sfx:'OOPS!',title:'Peer Pressure',body:'Your friends want you to skip school and hang out.',choices:[{l:'😎 Skip it!',m:{happiness:10,smarts:-8}},{l:'🏫 Stay in school',m:{smarts:6,happiness:-5}}]},
+  {minAge:15,maxAge:19,r:'c',emoji:'💼',sfx:'YAY!',title:'Part-time Job?',body:"There's a part-time job going at the local shop.",choices:[{l:'💼 Apply!',m:{money:800,happiness:5,smarts:3}},{l:'Too busy',m:{}}]},
+  {minAge:13,maxAge:19,r:'c',emoji:'🎓',sfx:'YAY!',title:'Study Group',body:'Your classmates invite you to a study group.',choices:[{l:'📚 Join them!',m:{smarts:10,happiness:5}},{l:'Study alone',m:{smarts:7}}]},
+  {minAge:14,maxAge:17,r:'c',emoji:'💔',sfx:'OUCH!',title:'First Heartbreak',body:'Your crush started dating someone else. Ouch! 💔',choices:[{l:'😢 Cry it out',m:{happiness:-12,health:3}},{l:'💪 Move on!',m:{happiness:-5,smarts:5}}]},
+  {minAge:16,maxAge:17,r:'c',emoji:'🎊',sfx:'YAY!',title:'Prom Night!',body:"It's prom night! A magical evening awaits.",choices:[{l:'🕺 Dance all night!',m:{happiness:20,looks:8,money:-200}},{l:'🏠 Stay home',m:{happiness:-10}}]},
+  {minAge:15,maxAge:17,r:'c',emoji:'🤳',sfx:'PING!',title:'Social Media Drama',body:"Someone posted something mean about you online!",choices:[{l:'😤 Clap back!',m:{happiness:5,smarts:-5}},{l:'🧘 Ignore it',m:{happiness:-8,smarts:5}},{l:'📢 Tell someone',m:{happiness:5}}]},
+  {minAge:16,maxAge:19,r:'r',emoji:'🎓',sfx:'WOW!',title:'Scholarship Offer!',body:"You've been offered a partial scholarship!",choices:[{l:'📚 Accept it!',m:{smarts:15,money:5000,happiness:15}},{l:'Thanks but no',m:{}}]},
+  {minAge:13,maxAge:19,r:'l',emoji:'🎵',sfx:'WOW!!',title:'Viral Music Hit!',body:'A song you recorded in your bedroom went GLOBAL!',choices:[{l:'🎵 FAMOUS!',m:{money:50000,happiness:30,looks:15}}]},
+  {minAge:14,maxAge:18,r:'l',emoji:'📺',sfx:'WOW!!',title:'YouTube Star!',body:'Your YouTube channel just hit 1 MILLION subscribers!',choices:[{l:'📺 LEGEND!',m:{money:30000,happiness:25,looks:10,smarts:5}}]},
+  // ADULT
+  {minAge:20,maxAge:30,r:'c',emoji:'🏠',sfx:'YAY!',title:'Move Out?',body:"You're thinking about getting your own place.",choices:[{l:'🏠 Time to fly!',fn:'move_out'},{l:'🏡 Stay home',m:{happiness:-8}}]},
+  {minAge:25,maxAge:45,r:'c',emoji:'🤒',sfx:'UH-OH!',title:'Fell Ill',body:"You're really sick. Fever, cough, the works.",choices:[{l:'🏥 See a doctor',m:{health:20,money:-500}},{l:'🛌 Rest at home',m:{health:8}}]},
+  {minAge:25,maxAge:50,r:'c',emoji:'📈',sfx:'PING!',title:'Investment Chance',body:'A friend tells you about a great stock opportunity.',choices:[{l:'💸 Invest $5,000',fn:'invest'},{l:'🙅 Too risky',m:{}}]},
+  {minAge:30,maxAge:55,r:'c',emoji:'😰',sfx:'HMMMM',title:'Midlife Check-in',body:"You're reflecting on your life choices.",choices:[{l:'🏋️ Hit the gym!',m:{health:12,looks:10,happiness:10}},{l:'📚 Study more',m:{smarts:10,happiness:8}},{l:'🌴 Take a holiday',m:{happiness:25,money:-2000}}]},
+  {minAge:22,maxAge:40,r:'r',emoji:'🚀',sfx:'ZOOM!',title:'Business Idea!',body:'You have an AMAZING business idea. Risk it?',choices:[{l:'🚀 Launch it!',fn:'start_biz'},{l:'Too risky',m:{}}]},
+  {minAge:22,maxAge:50,r:'r',emoji:'✈️',sfx:'WOW!',title:'Dream Holiday!',body:'An incredible travel deal just popped up!',choices:[{l:'✈️ Book it!',m:{happiness:30,looks:5,money:-3000,smarts:5}},{l:'💸 Too expensive',m:{happiness:-5}}]},
+  {minAge:30,maxAge:50,r:'l',emoji:'🏆',sfx:'EPIC!',title:'World Record!',body:"You accidentally broke a world record! You're GLOBAL NEWS!",choices:[{l:'🌍 LEGENDARY!',m:{happiness:40,money:100000,looks:20}}]},
+  {minAge:25,maxAge:50,r:'l',emoji:'🎰',sfx:'JACKPOT!',title:'LOTTERY WINNER!!',body:'You bought a scratch card and WON THE JACKPOT!!!',choices:[{l:'🎰 IM RICH!!',m:{money:500000,happiness:50}}]},
+  {minAge:50,maxAge:70,r:'c',emoji:'🧓',sfx:'HMMMM',title:'Retirement Plan',body:'Are you thinking about retirement?',choices:[{l:'📋 Plan carefully',m:{smarts:5,money:5000,happiness:5}},{l:'Live for today!',m:{happiness:10,money:-2000}}]},
+  {minAge:55,maxAge:80,r:'c',emoji:'🏡',sfx:'YAY!',title:'Grandchildren Visit!',body:'Your grandchildren are here for the week!',choices:[{l:'🥰 Wonderful!',m:{happiness:30,health:5}}]},
+  {minAge:60,maxAge:90,r:'r',emoji:'🌟',sfx:'WOW!',title:'Lifetime Award',body:'Your community gives you a lifetime achievement award!',choices:[{l:'🌟 Honoured!',m:{happiness:35,smarts:5}}]},
 ];
 
 // ══════════════════════════════════════════
@@ -803,8 +909,11 @@ function evFn(name) {
     G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married'});
     G.marriageAge = G.age; G._pendingPartner = null;
     applyMod({happiness:25,money:-3000});
-    addLog(`💍 Married ${partnerName} at age ${G.age}! +25 Happy, −$3,000 (wedding).`,'legend');
-    SoundManager.legend(); burst(60); updateUI();
+    addLog(`💍 Married ${partnerName} at age ${G.age}!`,'legend');
+    SoundManager.legend(); burstHearts(); burst(60); updateUI();
+    showNewspaper(`${G.name.toUpperCase()} FINDS TRUE LOVE!`);
+    showMascotBubble(`🦉 Congratulations on your wedding! 💍🎊`, 5000);
+    mascotDance();
   }
   if(name==='_marry_no'){ G.datingAge=null; G._pendingPartner=null; G.datingCooldown=G.age+5; addLog('💔 Said no to marriage.','bad'); applyMod({happiness:-10}); }
   if(name==='_baby_yes'){
@@ -812,8 +921,11 @@ function evFn(name) {
     const babyName = BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
     G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶'});
     applyMod({happiness:20,money:-5000,health:-5});
-    addLog(`👶 ${babyName} was born! +Happy but −$5,000 and −5 Health.`,'legend');
-    SoundManager.levelUp(); burst(50); updateUI();
+    addLog(`👶 ${babyName} was born!`,'legend');
+    SoundManager.levelUp(); burstBabyConfetti(); updateUI();
+    showNewspaper(`NEW BABY ALERT: ${babyName.toUpperCase()} HAS ARRIVED! 👶`);
+    showMascotBubble(`🦉 Aww, little ${babyName} is here! Welcome to the world! 👶`, 5000);
+    mascotDance();
   }
 }
 
@@ -822,7 +934,7 @@ function evFn(name) {
 // ══════════════════════════════════════════
 function generateJobOffers() {
   if (G.pendingOffers && G.pendingOffers.length > 0) {
-    addLog('📬 Last year\'s job offers have expired. New opportunities await.', 'info');
+    addLog('📬 Last year\'s job offers have expired.', 'info');
   }
   const offers = [];
   const eligible = JOBS.filter(j => {
@@ -845,23 +957,17 @@ function generateJobOffers() {
   G.pendingOffers = offers;
 }
 
-// ══════════════════════════════════════════
-// INFLATION SYSTEM
-// ══════════════════════════════════════════
 function applyInflation() {
   if(G.age > 0 && G.age % 10 === 0 && G.age !== G.lastInflationAge) {
     G.inflationMult = (G.inflationMult || 1.0) * 1.05;
     G.lastInflationAge = G.age;
     const cashHit = Math.floor(G.money * 0.01);
     G.money = Math.max(0, G.money - cashHit);
-    addLog(`📈 Inflation tick! Prices up 5% (decade pass). −$${cashHit.toLocaleString()} cash eroded.`, 'event');
+    addLog(`📈 Inflation tick! Prices up 5%. −$${cashHit.toLocaleString()} eroded.`, 'event');
     spawnFloat('📈 Inflation!', false, false);
   }
 }
 
-// ══════════════════════════════════════════
-// RETIREMENT SYSTEM
-// ══════════════════════════════════════════
 function handleRetirement() {
   if(G.age >= 65 && !G.retired) {
     const peakSalary = G.peakSalary || G.salary || 0;
@@ -869,26 +975,24 @@ function handleRetirement() {
     G.pension = Math.floor(peakSalary * 0.35) + (tier * 200);
     G.retired = true;
     if(G.job) {
-      addLog(`🏖️ Mandatory retirement at 65! ${G.jobTitle} career ends. Pension: $${G.pension.toLocaleString()}/mo`, 'legend');
+      addLog(`🏖️ Mandatory retirement at 65! Pension: $${G.pension.toLocaleString()}/mo`, 'legend');
       G.job=null; G.jobTitle='Retired'; G.salary=0; G.promotionChance=0;
     } else {
       addLog(`🏖️ Reached retirement age 65! Pension: $${G.pension.toLocaleString()}/mo`, 'legend');
       G.jobTitle='Retired';
     }
     SoundManager.levelUp(); burst(40);
+    showNewspaper(`${G.name.toUpperCase()} RETIRES AFTER A GREAT CAREER! 🏖️`);
+    showMascotBubble(`🦉 You made it to retirement! Time to relax! 🏖️`, 5000);
     return true;
   }
   if(G.retired && G.pension > 0) {
-    const annualPension = G.pension;
-    applyMod({money:annualPension});
-    addLog(`💰 Annual pension: +$${annualPension.toLocaleString()}`, 'good');
+    applyMod({money:G.pension});
+    addLog(`💰 Annual pension: +$${G.pension.toLocaleString()}`, 'good');
   }
   return false;
 }
 
-// ══════════════════════════════════════════
-// LEGACY / TOMBSTONE SCREEN
-// ══════════════════════════════════════════
 function getLegacy() {
   const netWorth = G.money + (G.investments||0);
   if(netWorth>=1000000) return '💎 Millionaire';
@@ -920,10 +1024,11 @@ function showLegacyScreen() {
   const emoji = G.age>=85?'🏆':G.age>=65?'🌟':G.age>=40?'⭐':'😢';
   const netWorth = G.money + (G.investments||0);
   const famCount = (G.family||[]).length;
-  const bgLine = G.birthBackground ? `<div style="color:#94a3b8;font-size:.8em;margin-bottom:6px">Born into a ${G.birthBackground}</div>` : '';
-  document.getElementById('m-icon').innerHTML='';
+  const bgLine = G.birthBackground ? `<div style="color:#90A4AE;font-size:.8em;margin-bottom:6px">Born: ${G.birthBackground}</div>` : '';
+  document.getElementById('m-sfx').style.display='none';
+  document.getElementById('m-icon').textContent='';
   document.getElementById('m-title').textContent='';
-  document.getElementById('m-body').textContent='';
+  document.getElementById('m-body').style.display='none';
   document.getElementById('m-extra').innerHTML=`
     <div class="tombstone-card">
       <span class="tomb-emoji">${emoji}</span>
@@ -932,7 +1037,7 @@ function showLegacyScreen() {
       <div class="tomb-sub">Lived ${G.age} years · ${cause}</div>
       <div class="tomb-stats">
         <div class="tomb-stat"><div class="tomb-stat-val">$${netWorth.toLocaleString()}</div><div class="tomb-stat-lbl">Net Worth</div></div>
-        <div class="tomb-stat"><div class="tomb-stat-val">${G.age}</div><div class="tomb-stat-lbl">Years Lived</div></div>
+        <div class="tomb-stat"><div class="tomb-stat-val">${G.age}</div><div class="tomb-stat-lbl">Years</div></div>
         <div class="tomb-stat"><div class="tomb-stat-val">${G.smarts}</div><div class="tomb-stat-lbl">Smarts</div></div>
         <div class="tomb-stat"><div class="tomb-stat-val">${famCount}</div><div class="tomb-stat-lbl">Family</div></div>
         <div class="tomb-stat"><div class="tomb-stat-val">${G.happiness}</div><div class="tomb-stat-lbl">Happiness</div></div>
@@ -942,10 +1047,12 @@ function showLegacyScreen() {
       <div class="tomb-score">⭐ Life Score: ${score.toLocaleString()}</div>
     </div>`;
   const btns=document.getElementById('m-btns'); btns.innerHTML='';
-  const btn=document.createElement('button'); btn.type='button'; btn.className='mbtn grn'; btn.style.marginTop='16px';
+  const btn=document.createElement('button'); btn.type='button'; btn.className='mbtn grn'; btn.style.marginTop='14px';
   btn.textContent='🌱 Start a New Life';
   btn.onclick=()=>{clear();location.reload();};
   btns.appendChild(btn);
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card';
   document.getElementById('modal').style.display='flex';
 }
 
@@ -972,16 +1079,21 @@ function startMathMiniGame(onWin,onFail){
   const q=MATH_QS[Math.floor(Math.random()*MATH_QS.length)];
   const opts=[...q.opts].sort(()=>Math.random()-.5);
   let timeLeft=100, timerInterval;
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='QUIZ TIME!';
   document.getElementById('m-icon').textContent='🧮';
   document.getElementById('m-title').textContent='Quick Maths!';
+  document.getElementById('m-body').style.display='block';
   document.getElementById('m-body').textContent='Solve it fast for bonus Smarts!';
   document.getElementById('m-btns').innerHTML='';
-  document.getElementById('m-extra').innerHTML=`<div class="minigame-box"><div class="mg-question">${q.q}</div><div class="mg-opts" id="mg-opts"></div><div class="mg-feedback" id="mg-fb"></div><div class="mg-timer-bar"><div class="mg-timer-fill" id="mg-timer" style="width:100%"></div></div></div>`;
+  document.getElementById('m-extra').innerHTML=`<div class="minigame-box"><div class="mg-question">${q.q}</div><div class="mg-opts" id="mg-opts"></div><div class="mg-feedback" id="mg-fb"></div><div class="mg-timer-wrap"><div class="mg-timer-fill" id="mg-timer" style="width:100%"></div></div></div>`;
   document.getElementById('modal').style.display='flex';
   timerInterval=setInterval(()=>{
     timeLeft-=2;
     const bar=document.getElementById('mg-timer');
-    if(bar){bar.style.width=timeLeft+'%';if(timeLeft<40)bar.style.background='var(--red)';else if(timeLeft<70)bar.style.background='var(--amber)';}
+    if(bar){bar.style.width=timeLeft+'%';if(timeLeft<40)bar.style.background=getComputedStyle(document.documentElement).getPropertyValue('--coral');else if(timeLeft<70)bar.style.background=getComputedStyle(document.documentElement).getPropertyValue('--sun');}
     if(timeLeft<=0){clearInterval(timerInterval);mgDone(false,onFail);}
   },100);
   const grid=document.getElementById('mg-opts');
@@ -994,14 +1106,15 @@ function startMathMiniGame(onWin,onFail){
       if(o===q.a){
         btn.classList.add('correct');
         const fb=document.getElementById('mg-fb');
-        if(fb){fb.textContent='🌟 Correct! +Smarts!';fb.style.color='var(--green)';}
-        SoundManager.minigameWin();
+        if(fb){fb.textContent='🌟 Correct! +Smarts!';fb.style.color='var(--grass-dark)';}
+        SoundManager.minigameWin(); burst(30);
         setTimeout(()=>mgDone(true,onWin),700);
       }else{
         btn.classList.add('wrong');
         const fb=document.getElementById('mg-fb');
-        if(fb){fb.textContent='❌ Wrong! The answer was '+q.a;fb.style.color='var(--red)';}
+        if(fb){fb.textContent='❌ Wrong! The answer was '+q.a;fb.style.color='var(--coral)';}
         SoundManager.minigameFail();
+        showMascotBubble('🦉 Better luck next time! Keep studying! 📚', 3000);
         setTimeout(()=>mgDone(false,onFail),700);
       }
     };
@@ -1016,11 +1129,16 @@ function startScrambleMiniGame(onWin,onFail){
   function render(){
     const extra=document.getElementById('m-extra');
     if(!extra)return;
-    extra.innerHTML=`<div class="minigame-box"><div style="font-size:.85em;font-weight:700;color:var(--text2);margin-bottom:6px">${w.hint}</div><div class="answer-row" id="ans-row">${Array(w.word.length).fill(0).map((_,i)=>`<div class="answer-slot ${i<mgState.chosen.length?'filled':''}" onclick="removeScrambleLetter(${i})">${mgState.chosen[i]||''}</div>`).join('')}</div><div class="scramble-letters" id="scr-letters">${scrambled.map((l,i)=>`<div class="letter-tile" onclick="addScrambleLetter('${l}',${i})">${l}</div>`).join('')}</div><div class="mg-feedback" id="mg-fb"></div><div style="margin-top:10px;display:flex;gap:8px"><button type="button" class="mbtn sec" style="flex:1" onclick="clearScramble()">🔄 Clear</button><button type="button" class="mbtn grn" style="flex:1" onclick="submitScramble()">✅ Submit</button></div></div>`;
+    extra.innerHTML=`<div class="minigame-box"><div style="font-size:.85em;font-weight:800;color:var(--ink2);margin-bottom:6px">${w.hint}</div><div class="answer-row" id="ans-row">${Array(w.word.length).fill(0).map((_,i)=>`<div class="answer-slot ${i<mgState.chosen.length?'filled':''}" onclick="removeScrambleLetter(${i})">${mgState.chosen[i]||''}</div>`).join('')}</div><div class="scramble-letters" id="scr-letters">${scrambled.map((l,i)=>`<div class="letter-tile" onclick="addScrambleLetter('${l}',${i})">${l}</div>`).join('')}</div><div class="mg-feedback" id="mg-fb"></div><div style="margin-top:10px;display:flex;gap:8px"><button type="button" class="mbtn sec" style="flex:1" onclick="clearScramble()">🔄 Clear</button><button type="button" class="mbtn pri" style="flex:1" onclick="submitScramble()">✅ Submit</button></div></div>`;
   }
   window._renderScramble=render;
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='SPELL IT!';
   document.getElementById('m-icon').textContent='🔤';
   document.getElementById('m-title').textContent='Word Scramble!';
+  document.getElementById('m-body').style.display='block';
   document.getElementById('m-body').textContent='Unscramble the letters to earn Smarts!';
   document.getElementById('m-btns').innerHTML='';
   document.getElementById('modal').style.display='flex';
@@ -1046,12 +1164,13 @@ window.submitScramble=function(){
   const guess=mgState.chosen.join('');
   const fb=document.getElementById('mg-fb');
   if(guess===mgState.word){
-    if(fb){fb.textContent='🌟 Correct!';fb.style.color='var(--green)';}
-    SoundManager.minigameWin();
+    if(fb){fb.textContent='🌟 Correct!';fb.style.color='var(--grass-dark)';}
+    SoundManager.minigameWin(); burst(30);
     setTimeout(()=>mgDone(true,mgState.onWin),700);
   }else{
-    if(fb){fb.textContent='❌ Not right! The word was '+mgState.word;fb.style.color='var(--red)';}
+    if(fb){fb.textContent='❌ Not right! The word was '+mgState.word;fb.style.color='var(--coral)';}
     SoundManager.minigameFail();
+    showMascotBubble('🦉 Oops! Try reading more books to boost your vocab! 📚', 3000);
     setTimeout(()=>mgDone(false,mgState.onFail),700);
   }
 };
@@ -1060,7 +1179,7 @@ window.submitScramble=function(){
 // VFX
 // ══════════════════════════════════════════
 function burst(n=30){
-  const colors=['#f59e0b','#10b981','#6366f1','#ec4899','#ef4444','#8b5cf6'];
+  const colors=['#FFD93D','#4CAF50','#4FC3F7','#FF6B6B','#CE93D8','#FFAB76'];
   for(let i=0;i<n;i++){
     const p=document.createElement('div');p.className='confetti-piece';
     p.style.left=Math.random()*100+'vw';p.style.top='-10px';
@@ -1071,6 +1190,48 @@ function burst(n=30){
     setTimeout(()=>p.remove(),2000);
   }
 }
+function burstHearts(){
+  const emojis=['💕','💖','💗','💝','💞'];
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:fixed;font-size:${1.5+Math.random()}em;left:${Math.random()*100}vw;top:-30px;pointer-events:none;z-index:999;animation:c-fall ${.8+Math.random()*1.2}s linear forwards;animation-delay:${Math.random()*.5}s`;
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),2200);
+  }
+}
+function burstBabyConfetti(){
+  const emojis=['👶','⭐','🌟','💛','💙'];
+  const pinks=['#FFB3C1','#B3D9FF','#FFE0B2'];
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:fixed;font-size:${Math.random()>.5?'1.4em':'10px'};left:${Math.random()*100}vw;top:-20px;pointer-events:none;z-index:999;animation:c-fall ${.8+Math.random()*1.2}s linear forwards;animation-delay:${Math.random()*.5}s`;
+    p.textContent=Math.random()>.5?emojis[Math.floor(Math.random()*emojis.length)]:'';
+    if(!p.textContent){p.style.width='10px';p.style.height='10px';p.style.borderRadius='50%';p.style.background=pinks[Math.floor(Math.random()*pinks.length)];}
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),2200);
+  }
+}
+function shootBalloons(){
+  const emojis=['🎈','🎉','🥳','🎊'];
+  for(let i=0;i<6;i++){
+    const p=document.createElement('div');
+    p.className='balloon';
+    p.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left=`${10+Math.random()*80}vw`;
+    p.style.animationDuration=(3+Math.random()*2)+'s';
+    p.style.animationDelay=Math.random()*1+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),5000);
+  }
+}
+function showNewspaper(headline){
+  const el=document.createElement('div');
+  el.className='newspaper';
+  el.innerHTML=`<div class="newspaper-top">📰 BREAKING NEWS</div><div class="newspaper-headline">${headline}</div>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 3000);
+}
 function spawnFloat(text,pos,gold=false){
   const el=document.createElement('div');
   el.className='float-num '+(gold?'f-gold':pos?'f-pos':'f-neg');
@@ -1078,7 +1239,7 @@ function spawnFloat(text,pos,gold=false){
   el.style.left=(20+Math.random()*50)+'%';
   el.style.top=(30+Math.random()*25)+'vh';
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1000);
+  setTimeout(()=>el.remove(),1200);
 }
 function shakeScreen(){
   const el=document.getElementById('gs-inner');
@@ -1089,9 +1250,25 @@ function shakeScreen(){
 function flashRed(){
   const f=document.getElementById('flash-overlay');
   if(!f)return;
-  f.style.background='rgba(239,68,68,0.18)';
+  f.style.background='rgba(239,68,68,0.25)';
   f.style.opacity='1';
   setTimeout(()=>f.style.opacity='0',200);
+}
+
+// ══════════════════════════════════════════
+// SCENE BACKGROUND UPDATE
+// ══════════════════════════════════════════
+function updateSceneBg(){
+  const gs=document.getElementById('game-screen');
+  if(!gs)return;
+  gs.className='screen active';
+  if(G.age<5)      gs.classList.add('scene-baby');
+  else if(G.age<13) gs.classList.add('scene-kid');
+  else if(G.age<18) gs.classList.add('scene-teen');
+  else if(G.age<30) gs.classList.add('scene-adult');
+  else if(G.age<55) gs.classList.add('scene-prime');
+  else if(G.age<65) gs.classList.add('scene-senior');
+  else              gs.classList.add('scene-elder');
 }
 
 // ══════════════════════════════════════════
@@ -1112,13 +1289,10 @@ function updateEnergyUI(){
   const pct=(G.energy/G.maxEnergy)*100;
   const fill=document.getElementById('energy-fill');
   const count=document.getElementById('energy-count');
-  if(fill){fill.style.width=pct+'%';fill.style.backgroundColor=G.energy===0?'#ef4444':G.energy<=1?'#f59e0b':'#10b981';}
+  if(fill){fill.style.width=pct+'%';fill.style.backgroundColor=G.energy===0?'#ef5350':G.energy<=1?'#FFA726':'#66BB6A';}
   if(count)count.textContent=G.energy+'/'+G.maxEnergy;
 }
 
-// ══════════════════════════════════════════
-// DIMINISHING RETURNS
-// ══════════════════════════════════════════
 function actCount(key){if(!G.yearActCounts)G.yearActCounts={};return G.yearActCounts[key]||0;}
 function incActCount(key){if(!G.yearActCounts)G.yearActCounts={};G.yearActCounts[key]=(G.yearActCounts[key]||0)+1;}
 function scaledBonus(key,base,tiers=[1,.5,-0.5]){const used=actCount(key);const mult=used<tiers.length?tiers[used]:tiers[tiers.length-1];return Math.round(base*mult);}
@@ -1126,13 +1300,19 @@ function scaledBonus(key,base,tiers=[1,.5,-0.5]){const used=actCount(key);const 
 // ══════════════════════════════════════════
 // AVATAR & STAGES
 // ══════════════════════════════════════════
-function getAvatar(age,gender){if(age<3)return'👶';if(age<13)return gender==='female'?'👧':'👦';if(age<22)return'🧑‍🎓';if(age<60)return gender==='female'?'👩‍💼':'👨‍💼';return gender==='female'?'👵':'👴';}
-function getStage(age){if(age<3)return'👶 Newborn';if(age<6)return'🧒 Toddler';if(age<13)return'🎒 Kid';if(age<18)return'🎧 Teen';if(age<22)return'🧑‍🎓 Young Adult';if(age<40)return'💼 Adult';if(age<60)return'🧠 Prime';if(age<75)return'🌟 Senior';return'🏆 Elder';}
-function statColor(v){return v>=70?'#10b981':v>=40?'#f59e0b':'#ef4444';}
-
-// ══════════════════════════════════════════
-// OFFER BADGE — shows count on Work tab
-// ══════════════════════════════════════════
+function getAvatar(age,gender){
+  if(age<3)return'👶';
+  if(age<13)return gender==='female'?'👧':'👦';
+  if(age<22)return'🧑‍🎓';
+  if(age<60)return gender==='female'?'👩‍💼':'👨‍💼';
+  return gender==='female'?'👵':'👴';
+}
+function getStage(age){
+  if(age<3)return'👶 Newborn';if(age<6)return'🧒 Toddler';if(age<13)return'🎒 Kid';
+  if(age<18)return'🎧 Teen';if(age<22)return'🧑‍🎓 Young Adult';if(age<40)return'💼 Adult';
+  if(age<60)return'🧠 Prime';if(age<75)return'🌟 Senior';return'🏆 Elder';
+}
+function statColor(v){return v>=70?'#66BB6A':v>=40?'#FFA726':'#ef5350';}
 function updateOfferBadge(){
   const tab=document.getElementById('tab-work');
   if(!tab)return;
@@ -1141,8 +1321,7 @@ function updateOfferBadge(){
   if(existing)existing.remove();
   if(count>0){
     const dot=document.createElement('span');
-    dot.className='offer-dot';
-    dot.textContent=count;
+    dot.className='offer-dot';dot.textContent=count;
     tab.appendChild(dot);
   }
 }
@@ -1165,10 +1344,22 @@ function updateUI(){
     if(fill){fill.style.width=v+'%';fill.style.backgroundColor=statColor(v);}
     if(val)val.textContent=v;
   });
+  // stat icon reactions
+  const h=G.health,hpy=G.happiness,sm=G.smarts,lk=G.looks;
+  const si_health=document.getElementById('si-health');
+  if(si_health){si_health.textContent=h<30?'💔':h<60?'❤️':'❤️';si_health.classList.toggle('pulse-anim',h<30);}
+  const si_hpy=document.getElementById('si-happiness');
+  if(si_hpy)si_hpy.textContent=hpy>=80?'😄':hpy>=50?'😊':hpy>=30?'😐':'😢';
+  const si_sm=document.getElementById('si-smarts');
+  if(si_sm)si_sm.textContent=sm>=75?'💡':sm>=50?'💡':'🌑';
+  const si_lk=document.getElementById('si-looks');
+  if(si_lk)si_lk.textContent=lk>=75?'✨':lk>=50?'✨':'🪞';
   updateEnergyUI();
+  updateMoodMeter();
   renderLog();
   renderFamilyCard();
   updateOfferBadge();
+  updateSceneBg();
 }
 
 function renderFamilyCard(){
@@ -1187,7 +1378,7 @@ function renderFamilyCard(){
 function renderLog(){
   const el=document.getElementById('life-log');
   if(!el)return;
-  if(!G.log||!G.log.length){el.innerHTML='<p style="color:var(--text2);font-size:.82em;text-align:center;padding:10px">Your story begins here...</p>';return;}
+  if(!G.log||!G.log.length){el.innerHTML='<p style="color:var(--ink2);font-size:.82em;text-align:center;padding:10px">Your story begins here...</p>';return;}
   el.innerHTML=G.log.slice(0,30).map(e=>`<div class="log-entry log-${e.type||'info'}"><b>Age ${e.age}:</b> ${e.msg}</div>`).join('');
 }
 
@@ -1217,24 +1408,19 @@ function renderFamilyTab(){
   el.innerHTML='';
   const fam=G.family||[];
   if(!fam.length){
-    el.innerHTML='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:16px">No family yet. You\'ll meet someone when the time is right 💕</p>';
-    if(G.age>=20&&G.age<40&&!G.marriageAge) el.innerHTML+='<p style="color:#be185d;font-size:.8em;text-align:center;padding:4px;font-weight:800">💌 Age 20-40: keep living your life — romance may find you!</p>';
+    el.innerHTML='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:16px">No family yet. You\'ll meet someone when the time is right 💕</p>';
     return;
   }
   fam.forEach(m=>{
     const icon=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<13?'🧒':m.age<18?'🧑':'👤';
     el.innerHTML+=`<div class="family-member"><div class="family-member-icon">${icon}</div><div style="flex:1"><div class="family-member-name">${m.name}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div></div><div class="family-status">${m.status||'Healthy'}</div></div>`;
   });
-  const kids=fam.filter(m=>m.type==='child');
-  const spouse=fam.find(m=>m.type==='spouse');
-  if(spouse) el.innerHTML+=`<div style="background:rgba(253,244,255,0.85);border-radius:12px;padding:10px 14px;font-size:.8em;font-weight:700;color:#6b21a8;margin-top:6px">💍 Married at age ${G.marriageAge||'?'}. Cost of living deducted from salary annually.</div>`;
-  if(kids.length) el.innerHTML+=`<div style="background:rgba(240,253,244,0.85);border-radius:12px;padding:10px 14px;font-size:.8em;font-weight:700;color:#166534;margin-top:6px">👶 ${kids.length} child${kids.length>1?'ren':''}. Each child costs ~$2,500/yr to raise.</div>`;
 }
 
 function actItem(emoji,title,sub,fn){
   const d=document.createElement('div');
   d.className='act-item';
-  d.innerHTML=`<div class="act-icon">${emoji}</div><div class="act-info"><div class="act-title">${title}</div><div class="act-sub">${sub}</div></div>`;
+  d.innerHTML=`<div class="act-icon">${emoji}</div><div><div class="act-title">${title}</div><div class="act-sub">${sub}</div></div>`;
   d.onclick=fn;
   return d;
 }
@@ -1252,7 +1438,7 @@ function renderActivities(){
 
   if(noEnergy){
     const warn=document.createElement('div');
-    warn.style.cssText='background:rgba(255,247,237,0.9);border:2px solid #fed7aa;border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.82em;font-weight:800;color:#c2410c;text-align:center';
+    warn.style.cssText='background:#FFF9C4;border:2px solid #F9A825;border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.82em;font-weight:900;color:#E65100;text-align:center';
     warn.textContent='⚡ No energy left! Click Age Up to rest and refill.';
     el.appendChild(warn);
   }
@@ -1274,39 +1460,39 @@ function renderActivities(){
     el.appendChild(item);
   }
 
-  addAct(5,'📖','Read a Book','+6 Smarts, +3 Happy · −3 Health (sedentary)','read',1,()=>{
+  addAct(5,'📖','Read a Book','+6 Smarts, +3 Happy','read',1,()=>{
     const s=scaledBonus('read',6),h=scaledBonus('read',3);
     incActCount('read');
-    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy, −3 Health`,'good');}
+    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy`,'good');}
     else{applyMod({health:-3});addLog('Read a book — nothing new to learn 📖','info');}
     SoundManager.success();
   });
 
-  addAct(5,'🎨','Draw / Paint','+4 Happy, +3 Looks · −3 Smarts (creative drift)','draw',1,()=>{
+  addAct(5,'🎨','Draw / Paint','+4 Happy, +3 Looks','draw',1,()=>{
     const h=scaledBonus('draw',4),l=scaledBonus('draw',3);
     incActCount('draw');
-    if(h>0||l>0){applyMod({happiness:h,looks:l,smarts:-3});addLog(`Got creative 🎨 +${h} Happy, +${l} Looks, −3 Smarts`,'good');}
+    if(h>0||l>0){applyMod({happiness:h,looks:l,smarts:-3});addLog(`Got creative 🎨 +${h} Happy, +${l} Looks`,'good');}
     else{applyMod({smarts:-3});addLog('Drew a bit — creative drift sets in 🎨','info');}
     SoundManager.success();
   });
 
-  addAct(6,'🏃','Exercise','+6 Health, +3 Looks · −5 Happy (effort/soreness)','run',1,()=>{
+  addAct(6,'🏃','Exercise','+6 Health, +3 Looks','run',1,()=>{
     const h=scaledBonus('run',6),l=scaledBonus('run',3);
     incActCount('run');
-    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5});addLog(`Went for a run 🏃 +${h} Health, +${l} Looks, −5 Happy`,'good');}
-    else{applyMod({happiness:-5});addLog('Ran again — overtrained, mood tanked 🏃','info');}
+    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5});addLog(`Went for a run 🏃 +${h} Health, +${l} Looks`,'good');}
+    else{applyMod({happiness:-5});addLog('Ran again — overtrained! 🏃','info');}
     SoundManager.success();
   });
 
-  addAct(8,'🎵','Play Music','+5 Happy, +3 Smarts · −3 Health (late nights)','music',1,()=>{
+  addAct(8,'🎵','Play Music','+5 Happy, +3 Smarts','music',1,()=>{
     const h=scaledBonus('music',5),s=scaledBonus('music',3);
     incActCount('music');
-    if(h>0||s>0){applyMod({happiness:h,smarts:s,health:-3});addLog(`Played music 🎵 +${h} Happy, +${s} Smarts, −3 Health`,'good');}
+    if(h>0||s>0){applyMod({happiness:h,smarts:s,health:-3});addLog(`Played music 🎵 +${h} Happy, +${s} Smarts`,'good');}
     else{applyMod({health:-3});addLog('Played music — no new growth 🎵','info');}
     SoundManager.success();
   });
 
-  addAct(12,'🏋️','Hit the Gym','+8 Health, +5 Looks · −5 Happy, −4 Smarts','gym',1,()=>{
+  addAct(12,'🏋️','Hit the Gym','+8 Health, +5 Looks','gym',1,()=>{
     const h=scaledBonus('gym',8),l=scaledBonus('gym',5);
     incActCount('gym');
     if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5,smarts:-4});addLog(`Crushed the gym 🏋️ +${h} Health +${l} Looks`,'good');}
@@ -1314,7 +1500,7 @@ function renderActivities(){
     SoundManager.success();
   });
 
-  addAct(12,'👥','Hang with Friends','+12 Happiness · −4 Smarts, −3 Health','social',1,()=>{
+  addAct(12,'👥','Hang with Friends','+12 Happiness','social',1,()=>{
     const h=scaledBonus('social',12);
     incActCount('social');
     if(h>0){applyMod({happiness:h,smarts:-4,health:-3});addLog(`Hung out with friends 😄 +${h} Happy`,'good');}
@@ -1322,10 +1508,10 @@ function renderActivities(){
     SoundManager.success();
   });
 
-  addAct(16,'🧘','Meditate','+10 Happy, +4 Health · −4 Smarts','meditate',1,()=>{
+  addAct(16,'🧘','Meditate','+10 Happy, +4 Health','meditate',1,()=>{
     const h=scaledBonus('meditate',10),hp=scaledBonus('meditate',4);
     incActCount('meditate');
-    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health, −4 Smarts`,'good');}
+    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');}
     else{applyMod({smarts:-4});addLog('Meditated — already at peace 🧘','info');}
     SoundManager.success();
   });
@@ -1337,10 +1523,9 @@ function renderActivities(){
       incActCount('grind');
       const usedGrind=actCount('grind');
       const bonus=Math.round(grindBonus*[1,.7,.4,0][Math.min(usedGrind-1,3)]);
-      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()} (−10 Happy, −5 Health)`,'event');}
-      else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out with no extra pay!','bad');}
-      SoundManager.success();
-      renderActivities();
+      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()}`,'event');}
+      else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out!','bad');}
+      SoundManager.success();renderActivities();
     });
     if(noEnergy)grindItem.classList.add('disabled');
     el.appendChild(grindItem);
@@ -1350,10 +1535,10 @@ function renderActivities(){
     const drRestore=a>=90?2:a>=80?5:a>=70?8:a>=60?11:15;
     const drCost=Math.max(500,Math.floor((G.money+(G.investments||0))*0.03)*inf);
     const adjCost=Math.round(drCost);
-    const doctorItem=actItem('🏥','See a Doctor',`+${drRestore} Health (−$${adjCost.toLocaleString()}, −1⚡)`,()=>{
+    const doctorItem=actItem('🏥','See a Doctor',`+${drRestore} Health · −$${adjCost.toLocaleString()} · ⚡-1`,()=>{
       if(!useEnergy(1))return;
-      if(G.money>=adjCost){applyMod({health:drRestore,money:-adjCost,happiness:-3});addLog(`Doctor visit 🏥 +${drRestore} Health (−$${adjCost.toLocaleString()})`,'info');}
-      else{addLog("Can't afford doctor! 😰 Need $"+adjCost.toLocaleString(),'bad');SoundManager.fail();}
+      if(G.money>=adjCost){applyMod({health:drRestore,money:-adjCost,happiness:-3});addLog(`Doctor visit 🏥 +${drRestore} Health`,'info');}
+      else{addLog("Can't afford doctor! 😰",'bad');SoundManager.fail();}
       renderActivities();
     });
     if(noEnergy)doctorItem.classList.add('disabled');
@@ -1361,9 +1546,8 @@ function renderActivities(){
   }
 
   if(a>=21){
-    addAct(21,'🎰','Casino Night','Risk $500 for $1,500 · −5 Smarts, −3 Health · ⚡-1','casino',1,()=>{
-      const w=Math.random()>.5;
-      incActCount('casino');
+    addAct(21,'🎰','Casino Night','Risk $500 for $1,500','casino',1,()=>{
+      const w=Math.random()>.5;incActCount('casino');
       applyMod({money:w?1500:-500,happiness:w?15:-10,smarts:-5,health:-3});
       if(!w){G.misfortune=Math.min((G.misfortune||0)+8,100);}
       addLog(w?'Casino WIN! 🎰 +$1,500':'Casino loss -$500 😢',w?'good':'bad');
@@ -1373,7 +1557,7 @@ function renderActivities(){
 
   if(a>=25){
     const tripCost=Math.round(2000*inf);
-    addAct(25,'✈️','Take a Trip',`+25 Happy, +5 Looks, +5 Smarts · −8 Health · (−$${tripCost.toLocaleString()}) · ⚡-2`,'travel',2,()=>{
+    addAct(25,'✈️','Take a Trip',`+25 Happy · −$${tripCost.toLocaleString()} · ⚡-2`,'travel',2,()=>{
       incActCount('travel');
       applyMod({happiness:25,money:-tripCost,looks:5,smarts:5,health:-8});
       addLog(`Amazing trip ✈️ (−$${tripCost.toLocaleString()})`,'good');
@@ -1385,7 +1569,7 @@ function renderActivities(){
     const restItem=actItem('😴','Rest Early','End year now — +2⚡ next year, −10 Happy',()=>{
       G.restBonus=(G.restBonus||0)+2;
       applyMod({happiness:-10});
-      addLog('Rested early 😴 — ended year. +2⚡ bonus next year.','info');
+      addLog('Rested early 😴 — +2⚡ bonus next year.','info');
       SoundManager.click();
       ageUp();
     });
@@ -1414,11 +1598,16 @@ function jobInterview(j){
     else reqs.push({txt:'Career path ✓',ok:true});
   }
   const misfortunePenalty=Math.floor((G.misfortune||0)*0.3);
-  if(misfortunePenalty>0)reqs.push({txt:`Misfortune penalty: −${misfortunePenalty}% success chance`,ok:false});
+  if(misfortunePenalty>0)reqs.push({txt:`Misfortune penalty: −${misfortunePenalty}% success`,ok:false});
 
   const reqsHtml=reqs.map(r=>`<div class="${r.ok?'interview-req':'interview-req fail'}">${r.ok?'✅':'❌'} ${r.txt}</div>`).join('');
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='INTERVIEW!';
   document.getElementById('m-icon').textContent='🤝';
   document.getElementById('m-title').textContent=`Interview: ${j.emoji} ${j.title}`;
+  document.getElementById('m-body').style.display='block';
   document.getElementById('m-body').textContent=`Salary: $${inflatedSalary.toLocaleString()}/yr · Are you qualified?`;
   document.getElementById('m-extra').innerHTML=`<div style="margin-bottom:12px">${reqsHtml}</div>`;
   document.getElementById('m-btns').innerHTML='';
@@ -1431,18 +1620,20 @@ function jobInterview(j){
     applyBtn.onclick=()=>{
       closeModal();
       if(Math.random()*100<chance){
-        G.job=j.id;G.jobTitle=j.title;
-        G.salary=inflatedSalary;
+        G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;
         G.promotionChance=10;G.yearsInRole=0;
         if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-        // Remove this offer from pending
         G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
         addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
         SoundManager.levelUp();applyMod({happiness:15});burst(40);
+        showNewspaper(`LOCAL KID LANDS JOB AS ${j.title.toUpperCase()}! 🎉`);
+        showMascotBubble(`🦉 Amazing! You got the ${j.title} job! 🎉`, 4000);
+        mascotDance();
       }else{
-        addLog(`😞 Interview for ${j.title} didn't go well. Keep improving!`,'bad');
+        addLog(`😞 Interview for ${j.title} didn't go well.`,'bad');
         SoundManager.fail();applyMod({happiness:-5});
         G.misfortune=Math.min((G.misfortune||0)+5,100);
+        showMascotBubble('🦉 Don\'t give up! Study more and try again! 💪', 3000);
       }
       checkAchievements();save();updateUI();renderWork();
     };
@@ -1460,20 +1651,16 @@ function renderWork(){
   const el=document.getElementById('panel-work');
   if(!el)return;
   el.innerHTML='';
-  if(G.age<12){el.innerHTML='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:12px">Can start working from age 12! 🎒</p>';return;}
-
+  if(G.age<12){el.innerHTML='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:12px">Can start working from age 12! 🎒</p>';return;}
   if(G.retired){
-    const pension=G.pension||0;
-    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900;color:#78350f">Enjoying retirement!</div><div style="color:#b45309;font-weight:800;font-size:.9em">💰 $${pension.toLocaleString()}/mo pension · $${(pension).toLocaleString()}/yr</div></div>`;
-    el.innerHTML+='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:8px">You\'ve earned your rest! 🌴</p>';
+    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900">Enjoying retirement!</div><div style="color:#BF360C;font-weight:800;font-size:.9em">💰 $${(G.pension||0).toLocaleString()}/yr pension</div></div>`;
+    el.innerHTML+='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:8px">You\'ve earned your rest! 🌴</p>';
     return;
   }
-
-  // ── JOB OFFERS (clickable) ──
   const offers=G.pendingOffers||[];
   if(offers.length>0){
     const lbl=document.createElement('div');
-    lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;background:linear-gradient(135deg,rgba(238,242,255,.9),rgba(237,233,254,.85));border-radius:12px;padding:8px 12px;color:var(--indigo);margin-bottom:8px;margin-top:4px;border:1.5px solid rgba(99,102,241,0.3)';
+    lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;background:#E8F5E9;border-radius:12px;padding:8px 12px;color:var(--grass-dark);margin-bottom:8px;border:2px solid var(--grass-dark)';
     lbl.textContent='📬 Job Offers This Year — Tap to Interview!';
     el.appendChild(lbl);
     offers.forEach(offer=>{
@@ -1482,43 +1669,32 @@ function renderWork(){
       const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
       const item=document.createElement('div');
       item.className='job-offer-item';
-      item.innerHTML=`<div class="act-icon">${j.emoji}</div><div style="flex:1"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr · ${offer.successChance}% success chance</div></div><div class="offer-badge">TAP TO APPLY</div>`;
+      item.innerHTML=`<div class="act-icon">${j.emoji}</div><div style="flex:1"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr · ${offer.successChance}% success</div></div><div class="offer-badge">APPLY</div>`;
       item.onclick=()=>jobInterview(j);
       el.appendChild(item);
     });
     el.innerHTML+='<div style="height:6px"></div>';
-  } else if(G.age>=12) {
+  } else if(G.age>=12){
     const noOffers=document.createElement('div');
-    noOffers.style.cssText='background:rgba(241,245,249,0.8);border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.8em;font-weight:700;color:var(--text2);text-align:center;border:1.5px dashed rgba(203,213,225,0.8)';
+    noOffers.style.cssText='background:var(--offwhite);border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.8em;font-weight:800;color:var(--ink2);text-align:center;border:2px dashed #CCC';
     noOffers.textContent='📭 No offers yet this year. Age Up to get new offers!';
     el.appendChild(noOffers);
   }
-
   if(G.job){
     const j=JOBS.find(x=>x.id===G.job);
-    el.innerHTML+=`<div style="background:linear-gradient(135deg,rgba(236,253,245,0.9),rgba(209,250,229,0.8));border-radius:18px;padding:16px;margin-bottom:10px;border:2px solid rgba(110,231,183,0.6)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#065f46;margin-bottom:4px">Current Job</div><div style="font-size:1.15em;font-weight:900">${j?.emoji||''} ${G.jobTitle}</div><div style="color:#059669;font-weight:800;font-size:.9em">💰 $${G.salary.toLocaleString()}/year · ${G.yearsInRole||0} yr${(G.yearsInRole||0)!==1?'s':''} in role</div></div>`;
-
-    el.innerHTML+=`<div class="perf-panel">
-      <div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--indigo);margin-bottom:6px">📊 Performance</div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.82em;font-weight:700;color:var(--text2)">Promotion chance</span><span style="font-size:.82em;font-weight:900;color:var(--indigo)">${G.promotionChance}%</span></div>
-      <div class="promo-bar-track"><div class="promo-bar-fill" style="width:${Math.min(G.promotionChance,100)}%"></div></div>
-      <div style="font-size:.74em;color:var(--text2);margin-top:6px;font-weight:700">Years in role: ${G.yearsInRole||0} · Passive +${8+Math.floor(G.smarts/20)}%/yr based on smarts</div>
-    </div>`;
-
+    el.innerHTML+=`<div style="background:#E8F5E9;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--grass-dark)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--grass-dark);margin-bottom:4px">Current Job</div><div style="font-size:1.15em;font-weight:900">${j?.emoji||''} ${G.jobTitle}</div><div style="color:var(--grass-dark);font-weight:800;font-size:.9em">💰 $${G.salary.toLocaleString()}/year · ${G.yearsInRole||0} yr${(G.yearsInRole||0)!==1?'s':''} in role</div></div>`;
+    el.innerHTML+=`<div class="perf-panel"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--grass-dark);margin-bottom:6px">📊 Performance</div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.82em;font-weight:800;color:var(--ink2)">Promotion chance</span><span style="font-size:.82em;font-weight:900;color:var(--grass-dark)">${G.promotionChance}%</span></div><div class="promo-bar-track"><div class="promo-bar-fill" style="width:${Math.min(G.promotionChance,100)}%"></div></div></div>`;
     el.appendChild(actItem('🚪','Quit Job','Go back to job hunting',()=>{
       addLog(`Left job as ${G.jobTitle} 🚪`,'info');
       G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
       applyMod({happiness:-10});SoundManager.fail();updateUI();renderWork();
     }));
-    el.innerHTML+='<div style="height:6px"></div>';
   }
-
-  // ── CAREER GUIDE (now clickable for qualified jobs) ──
   const avail=JOBS.filter(j=>j.id!==G.job&&G.age>=j.minAge);
   if(avail.length){
     const lbl=document.createElement('div');
-    lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:8px;margin-top:6px';
-    lbl.textContent='📋 Career Guide — Tap qualified jobs to apply';
+    lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:6px';
+    lbl.textContent='📋 Career Guide';
     el.appendChild(lbl);
     avail.forEach(j=>{
       const qualified=G.age>=j.minAge&&G.smarts>=j.minSmarts&&G.looks>=(j.minLooks||0)&&eduRank[G.education]>=eduRank[j.minEdu]&&(!j.needsDegree||G.hasDegree)&&(!j.requiresJob||(G.job===j.requiresJob&&(G.yearsInRole||0)>=j.requiresYears));
@@ -1526,12 +1702,10 @@ function renderWork(){
       const div=document.createElement('div');
       div.className='act-item';
       if(!qualified){div.style.opacity='.5';div.style.cursor='not-allowed';}
-      div.innerHTML=`<div class="act-icon">${j.emoji}</div><div class="act-info"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr${qualified?' · Tap to apply':'  · 🔒 Requirements not met'}</div></div>`;
+      div.innerHTML=`<div class="act-icon">${j.emoji}</div><div><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr${qualified?' · Tap to apply':'  · 🔒 Requirements not met'}</div></div>`;
       if(qualified) div.onclick=()=>jobInterview(j);
       el.appendChild(div);
     });
-  }else if(!G.job){
-    el.innerHTML+='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:8px">Study more for better jobs! 📚</p>';
   }
 }
 
@@ -1540,20 +1714,20 @@ function renderEdu(){
   if(!el)return;
   el.innerHTML='';
   const badge={none:'None',highschool:'🎓 High School',university:'🏛️ University',graduate:'🎓 Grad School'};
-  el.innerHTML=`<div style="background:rgba(239,246,255,0.85);border-radius:18px;padding:14px;margin-bottom:10px;border:2px solid rgba(191,219,254,0.8)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#1e40af;margin-bottom:4px">Education</div><div style="font-weight:900">${badge[G.education]||'None'}</div>${G.studyingAt?`<div style="color:#3b82f6;font-size:.8em;margin-top:2px">📖 ${G.studyingAt}</div>`:''}</div>`;
+  el.innerHTML=`<div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sky-dark)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--sky-dark);margin-bottom:4px">Education</div><div style="font-weight:900">${badge[G.education]||'None'}</div>${G.studyingAt?`<div style="color:var(--sky-dark);font-size:.8em;margin-top:2px">📖 ${G.studyingAt}</div>`:''}</div>`;
 
-  el.appendChild(actItem('🧮','Study Hard (Mini-game!)','Solve a question to earn Smarts (−5 Happy — it\'s work!)',()=>{
+  el.appendChild(actItem('🧮','Study Hard (Mini-game!)','Solve a question to earn Smarts!',()=>{
     SoundManager.click();
     const type=Math.random()>.5?'math':'scramble';
     if(type==='math'){
       startMathMiniGame(
-        ()=>{applyMod({smarts:12,happiness:-5});addLog('Crushed it! +12 Smarts 🧠 (−5 Happy)','good');},
-        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying (−3 Happy)','info');}
+        ()=>{applyMod({smarts:12,happiness:-5});addLog('Crushed it! +12 Smarts 🧠','good');},
+        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying','info');}
       );
     }else{
       startScrambleMiniGame(
-        ()=>{applyMod({smarts:12,happiness:-5});addLog('Unscrambled it! +12 Smarts 🧠 (−5 Happy)','good');},
-        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying (−3 Happy)','info');}
+        ()=>{applyMod({smarts:12,happiness:-5});addLog('Unscrambled it! +12 Smarts 🧠','good');},
+        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying','info');}
       );
     }
   }));
@@ -1565,6 +1739,7 @@ function renderEdu(){
       applyMod({smarts:12,money:-3000,happiness:-5});
       addLog('Enrolled in University! 🏛️','event');
       SoundManager.levelUp();burst(50);checkAchievements();renderEdu();
+      showMascotBubble('🦉 University opens up amazing career paths! 🎓', 4000);
     }));
   }
 
@@ -1587,52 +1762,51 @@ function renderBank(){
   const familyCount=(G.family||[]).length;
   const familyDrain=G.job&&familyCount>0?Math.floor(G.salary*0.15*familyCount):0;
   const infLabel=(G.inflationMult||1)>1?`<span class="inflation-pill">x${(G.inflationMult||1).toFixed(2)} inflation</span>`:'';
-  const loanLine=(G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Student loan</span><span style="font-weight:900;color:#ef4444">−$${G.loanRepayment.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`:'';
+  const loanLine=(G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Student loan</span><span style="font-weight:900;color:var(--coral)">−$${G.loanRepayment.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`:'';
 
   el.innerHTML=`
-    <div style="background:linear-gradient(135deg,rgba(236,253,245,0.9),rgba(209,250,229,0.8));border-radius:20px;padding:18px;margin-bottom:10px;border:2px solid rgba(110,231,183,0.6);text-align:center">
-      <div style="font-size:.7em;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:1px">Net Worth ${infLabel}</div>
-      <div style="font-size:2em;font-weight:900;color:#059669">$${netWorth.toLocaleString()}</div>
-      <div style="color:#065f46;font-weight:800;font-size:.85em">${tier}</div>
+    <div style="background:#E8F5E9;border-radius:var(--radius);padding:16px;margin-bottom:10px;border:var(--border-w) solid var(--grass-dark);text-align:center">
+      <div style="font-size:.7em;font-weight:900;color:var(--grass-dark);text-transform:uppercase">Net Worth ${infLabel}</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:2.2em;color:var(--grass-dark)">$${netWorth.toLocaleString()}</div>
+      <div style="color:var(--grass-dark);font-weight:900;font-size:.85em">${tier}</div>
     </div>
-    <div style="background:rgba(248,250,252,0.85);border-radius:16px;padding:14px;margin-bottom:10px;border:2px solid rgba(226,232,240,0.7)">
-      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:8px">💵 Cash Savings</div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Cash on hand</span><span style="font-weight:900;color:#059669">$${G.money.toLocaleString()}</span></div>
-      <div style="font-size:.72em;color:#ef4444;font-weight:700">⚠️ 1% inflation tax applied each birthday on cash savings</div>
+    <div style="background:var(--offwhite);border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--ink)">
+      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px">💵 Cash Savings</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Cash on hand</span><span style="font-weight:900;color:var(--grass-dark)">$${G.money.toLocaleString()}</span></div>
     </div>
-    <div style="background:rgba(239,246,255,0.85);border-radius:16px;padding:14px;margin-bottom:10px;border:2px solid rgba(191,219,254,0.7)">
-      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#1e40af;margin-bottom:8px">📈 Investments</div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Portfolio value</span><span style="font-weight:900;color:#3b82f6">$${inv.toLocaleString()}</span></div>
-      <div style="font-size:.72em;color:#3b82f6;font-weight:700">4% annual return · ⚠️ 5-10% crash risk during market events</div>
+    <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sky-dark)">
+      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:var(--sky-dark);margin-bottom:8px">📈 Investments</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Portfolio</span><span style="font-weight:900;color:var(--sky-dark)">$${inv.toLocaleString()}</span></div>
+      <div style="font-size:.72em;color:var(--sky-dark);font-weight:800">4% annual return · 7% crash risk</div>
     </div>
-    <div style="background:rgba(255,251,235,0.85);border-radius:16px;padding:14px;margin-bottom:10px;border:2px solid rgba(253,211,77,0.6)">
-      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:8px">💼 Income & Expenses</div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Salary</span><span style="font-weight:900;color:#059669">+$${(G.retired?0:G.salary).toLocaleString()}/yr</span></div>
-      ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Pension</span><span style="font-weight:900;color:#10b981">+$${(G.pension).toLocaleString()}/yr</span></div>`:''}
-      ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:700;color:var(--text2)">Family expenses</span><span style="font-weight:900;color:#ef4444">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
+    <div style="background:#FFF9C4;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sun-dark)">
+      <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:8px">💼 Income & Expenses</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Salary</span><span style="font-weight:900;color:var(--grass-dark)">+$${(G.retired?0:G.salary).toLocaleString()}/yr</span></div>
+      ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Pension</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.pension.toLocaleString()}/yr</span></div>`:''}
+      ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Family</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
       ${loanLine}
     </div>`;
 
   if(G.money>=1000){
-    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (4% return, market risk)',()=>{
-      if(G.money<1000){addLog('Need at least $1,000 to invest!','bad');SoundManager.fail();return;}
+    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (4% return)',()=>{
+      if(G.money<1000){addLog('Need $1,000!','bad');SoundManager.fail();return;}
       applyMod({money:-1000,investments:1000});
-      addLog('Moved $1,000 into investment portfolio 📈','good');
+      addLog('Moved $1,000 into investments 📈','good');
       SoundManager.money();renderBank();
     }));
   }
   if(G.money>=5000){
-    el.appendChild(actItem('📊','Invest $5,000','Bigger portfolio = bigger returns (and bigger risks)',()=>{
-      if(G.money<5000){addLog('Need at least $5,000 to invest!','bad');SoundManager.fail();return;}
+    el.appendChild(actItem('📊','Invest $5,000','Bigger portfolio = bigger returns',()=>{
+      if(G.money<5000){addLog('Need $5,000!','bad');SoundManager.fail();return;}
       applyMod({money:-5000,investments:5000});
       addLog('Moved $5,000 into investments 📊','good');
       SoundManager.money();renderBank();
     }));
   }
   if(inv>=1000){
-    el.appendChild(actItem('💵','Liquidate Investments','Cash out your portfolio (no growth this year)',()=>{
+    el.appendChild(actItem('💵','Liquidate Investments','Cash out your portfolio',()=>{
       applyMod({money:inv,investments:-inv});
-      addLog(`Cashed out portfolio: +$${inv.toLocaleString()} 💵`,'good');
+      addLog(`Cashed out: +$${inv.toLocaleString()} 💵`,'good');
       SoundManager.money();renderBank();
     }));
   }
@@ -1641,7 +1815,14 @@ function renderBank(){
 function renderTrophies(){
   const el=document.getElementById('panel-cups');
   if(!el)return;
-  el.innerHTML=`<div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:12px">🏆 ${G.achievements.length}/${ALL_ACHIEVEMENTS.length} Unlocked</div><div class="trophy-grid">${ALL_ACHIEVEMENTS.map(a=>{const unlocked=G.achievements.includes(a.id);return`<div class="trophy-item${unlocked?' unlocked':''}"><span class="trophy-emoji${unlocked?'':' trophy-locked'}">${a.emoji}</span><div class="trophy-name">${unlocked?a.name:a.desc}</div></div>`;}).join('')}</div>`;
+  el.innerHTML=`<div class="trophy-counter">🏆 ${G.achievements.length} / ${ALL_ACHIEVEMENTS.length} trophies collected</div>
+  <div class="trophy-shelf">
+    <div class="trophy-shelf-top"></div>
+    <div class="trophy-grid">${ALL_ACHIEVEMENTS.map(a=>{
+      const unlocked=G.achievements.includes(a.id);
+      return`<div class="trophy-item${unlocked?' unlocked':''}" onclick="${unlocked?`showMascotBubble('🦉 ${a.name}: ${a.desc}',4000)`:''}"><span class="trophy-emoji${unlocked?'':' trophy-locked'}">${a.emoji}</span><div class="trophy-name">${unlocked?a.name:a.desc}</div></div>`;
+    }).join('')}</div>
+  </div>`;
 }
 
 // ══════════════════════════════════════════
@@ -1651,16 +1832,16 @@ function triggerRandomEvent(){
   const r=Math.random()*100;
   if(r<7){
     const badEvents=[
-      ()=>{if(G.money<1000)return false;const loss=20000;applyMod({money:-loss,happiness:-10});addLog(`⚖️ LAWSUIT! You were sued and lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();shakeScreen();flashRed();G.misfortune=Math.min((G.misfortune||0)+15,100);return true;},
-      ()=>{applyMod({health:-30,happiness:-15});addLog(`🚑 MEDICAL EMERGENCY! −30 Health. Rushed to hospital!`,'bad');SoundManager.fail();shakeScreen();flashRed();G.survivalBadge=true;return true;},
-      ()=>{if(G.money<500)return false;const loss=Math.floor(G.money*0.10);applyMod({money:-loss,happiness:-8});addLog(`🎣 SCAM! You were tricked out of $${loss.toLocaleString()} (10% savings).`,'bad');SoundManager.fail();flashRed();G.misfortune=Math.min((G.misfortune||0)+10,100);return true;},
+      ()=>{if(G.money<1000)return false;const loss=20000;applyMod({money:-loss,happiness:-10});addLog(`⚖️ LAWSUIT! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();shakeScreen();flashRed();G.misfortune=Math.min((G.misfortune||0)+15,100);return true;},
+      ()=>{applyMod({health:-30,happiness:-15});addLog(`🚑 MEDICAL EMERGENCY! −30 Health!`,'bad');SoundManager.fail();shakeScreen();flashRed();G.survivalBadge=true;return true;},
+      ()=>{if(G.money<500)return false;const loss=Math.floor(G.money*0.10);applyMod({money:-loss,happiness:-8});addLog(`🎣 SCAM! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();flashRed();G.misfortune=Math.min((G.misfortune||0)+10,100);return true;},
     ];
     for(let i=0;i<3;i++){const fn=badEvents[Math.floor(Math.random()*badEvents.length)];if(fn())return;}
   }else if(r<12){
     const goodEvents=[
-      ()=>{const amt=rand(5000,30000);applyMod({money:amt,happiness:15});addLog(`🏛️ INHERITANCE! A relative left you $${amt.toLocaleString()}!`,'good');SoundManager.legend();burst(50);},
-      ()=>{applyMod({looks:10,happiness:20,money:rand(1000,5000)});addLog('🔥 VIRAL POST! Fame boost! +10 Looks, +Happy, +$$$','good');SoundManager.levelUp();burst(40);},
-      ()=>{const amt=rand(2000,8000);applyMod({money:amt,happiness:10});addLog(`🍀 LUCKY BREAK! Surprise windfall: +$${amt.toLocaleString()}`,'good');SoundManager.money();burst(30);},
+      ()=>{const amt=rand(5000,30000);applyMod({money:amt,happiness:15});addLog(`🏛️ INHERITANCE! +$${amt.toLocaleString()}!`,'good');SoundManager.legend();burst(50);},
+      ()=>{applyMod({looks:10,happiness:20,money:rand(1000,5000)});addLog('🔥 VIRAL POST! Fame boost!','good');SoundManager.levelUp();burst(40);},
+      ()=>{const amt=rand(2000,8000);applyMod({money:amt,happiness:10});addLog(`🍀 LUCKY BREAK! +$${amt.toLocaleString()}`,'good');SoundManager.money();burst(30);},
     ];
     const fn=goodEvents[Math.floor(Math.random()*goodEvents.length)]; fn();
   }
@@ -1669,10 +1850,16 @@ function triggerRandomEvent(){
 // ══════════════════════════════════════════
 // MODAL HELPERS
 // ══════════════════════════════════════════
-function showModal(icon,title,body,choices){
+function showModal(icon,title,body,choices,sfx,type){
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card '+(type||'');
+  const sfxEl=document.getElementById('m-sfx');
+  if(sfx){sfxEl.textContent=sfx;sfxEl.style.display='block';}
+  else sfxEl.style.display='none';
   document.getElementById('m-icon').textContent=icon;
   document.getElementById('m-title').textContent=title;
-  document.getElementById('m-body').textContent=body;
+  const bodyEl=document.getElementById('m-body');
+  bodyEl.style.display='block';bodyEl.textContent=body;
   document.getElementById('m-extra').innerHTML='';
   const btns=document.getElementById('m-btns');btns.innerHTML='';
   choices.forEach(c=>{
@@ -1684,7 +1871,7 @@ function showModal(icon,title,body,choices){
       btn.disabled = true;
       btn.style.opacity = '0.4';
       btn.style.cursor = 'not-allowed';
-      btn.textContent += ` (💸 Need $${cost.toLocaleString()})`;
+      btn.textContent += ` (Need $${cost.toLocaleString()})`;
     }
     btn.onclick=()=>{
       if(btn.disabled)return;
@@ -1703,15 +1890,21 @@ function showModal(icon,title,body,choices){
 function closeModal(){
   document.getElementById('modal').style.display='none';
   document.getElementById('m-extra').innerHTML='';
+  document.getElementById('m-sfx').style.display='none';
+  document.getElementById('m-body').style.display='block';
 }
 
 // ══════════════════════════════════════════
 // MILESTONE MODALS
 // ══════════════════════════════════════════
 function showMilestoneModal(icon,title,body,choices,onChoose){
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='none';
   document.getElementById('m-icon').textContent=icon;
   document.getElementById('m-title').textContent=title;
-  document.getElementById('m-body').textContent=body;
+  const bodyEl=document.getElementById('m-body');
+  bodyEl.style.display='block';bodyEl.textContent=body;
   document.getElementById('m-extra').innerHTML='';
   const btns=document.getElementById('m-btns');btns.innerHTML='';
   choices.forEach((c,i)=>{
@@ -1720,10 +1913,8 @@ function showMilestoneModal(icon,title,body,choices,onChoose){
     const cost = c.effect?.money ? Math.abs(Math.min(c.effect.money, 0)) : 0;
     const canAfford = cost === 0 || G.money >= cost;
     if(!canAfford && c.alwaysEnabled !== true) {
-      btn.disabled = true;
-      btn.style.opacity = '0.4';
-      btn.style.cursor = 'not-allowed';
-      btn.textContent += ` (💸 Need $${cost.toLocaleString()})`;
+      btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+      btn.textContent += ` (Need $${cost.toLocaleString()})`;
     }
     btn.onclick=()=>{if(!btn.disabled){closeModal();onChoose(c);}};
     btns.appendChild(btn);
@@ -1734,28 +1925,28 @@ function showMilestoneModal(icon,title,body,choices,onChoose){
 function triggerPrimarySchoolModal(){
   G.schoolChosen=true;
   const isStruggling = (G.birthBackground||'').includes('Struggling');
-  const choices = [
-    {label:'🏫 Public School (Free)',effect:{smarts:5},desc:'Free but larger classes'},
-    {label: isStruggling ? '🏛️ Private School (💸 Family can\'t afford this)' : '🏛️ Private School (−$2,000/yr)',effect:{smarts:15,money:-2000},desc:'Better resources, higher smarts boost', disabled: isStruggling},
-  ];
-  showMilestoneModal('🏫','School Time!','You\'re starting school! Which one will you go to?',choices,choice=>{
+  showMilestoneModal('🏫','School Time!','You\'re starting school! Which one?',[
+    {label:'🏫 Public School (Free)',effect:{smarts:5}},
+    {label:isStruggling?'🏛️ Private (Family can\'t afford)':'🏛️ Private School (−$2,000/yr)',effect:{smarts:15,money:-2000},disabled:isStruggling},
+  ],choice=>{
     if(choice.disabled)return;
     applyMod(choice.effect);
-    addLog(`Started school: ${choice.label}.`, 'event');
+    addLog(`Started school: ${choice.label}.`,'event');
     SoundManager.levelUp();
+    showMascotBubble('🦉 School is SO important! Listen to your teachers! 📚', 4000);
   });
 }
 
 function triggerAge18Modal(){
   G.age18PathChosen=true;
-  showMilestoneModal('🎓','What\'s Next After School?','You\'ve finished secondary school! What path will you take?',[
+  showMilestoneModal('🎓','What\'s Next?','Finished school! What path will you take?',[
     {label:'🏛️ University (3-4 yrs, −$12k)',effect:{smarts:20,money:-12000},education:'university',hasDegree:true,path:'uni'},
     {label:'🔧 Trade School (1-2 yrs, −$3k)',effect:{smarts:10,money:-3000},path:'trade'},
     {label:'💼 Entry Level Job',effect:{happiness:5},path:'work',alwaysEnabled:true},
   ],choice=>{
     if(choice.education){G.education=choice.education;G.hasDegree=choice.hasDegree||false;}
     applyMod(choice.effect);
-    if(choice.path==='uni'){G.studyingAt='University 🏛️';addLog('Enrolled in University! 🏛️','event');SoundManager.levelUp();burst(50);}
+    if(choice.path==='uni'){G.studyingAt='University 🏛️';addLog('Enrolled in University! 🏛️','event');SoundManager.levelUp();burst(50);showMascotBubble('🦉 Great choice! University opens doors! 🏛️', 4000);}
     else if(choice.path==='trade'){addLog('Started Trade School! 🔧','event');SoundManager.success();}
     else{addLog('Hit the job market! 💼','event');}
     checkAchievements();save();updateUI();
@@ -1764,55 +1955,48 @@ function triggerAge18Modal(){
 
 function triggerAge22Modal(){
   G.age22SpecChosen=true;
-  showMilestoneModal('💼','Career Specialization','Age 22 — time to pick a career direction!',[
+  showMilestoneModal('💼','Career Specialization','Age 22 — pick a career direction!',[
     {label:'💻 Tech & Engineering',effect:{smarts:15,happiness:-5}},
     {label:'🏥 Healthcare & Medicine',effect:{smarts:10,health:10,money:-1000}},
     {label:'⚖️ Business & Law',effect:{smarts:10,looks:5,money:-500}},
     {label:'🎨 Creative & Arts',effect:{happiness:15,looks:10}},
   ],choice=>{
     applyMod(choice.effect);
-    addLog(`Career specialization: ${choice.label}!`, 'event');
-    SoundManager.levelUp();
-    checkAchievements();save();updateUI();
+    addLog(`Career specialization: ${choice.label}!`,'event');
+    SoundManager.levelUp();checkAchievements();save();updateUI();
   });
 }
 
-// ══════════════════════════════════════════
-// COLLEGE TUITION MODAL
-// ══════════════════════════════════════════
 function showCollegeTuitionModal(childName, onDone) {
-  document.getElementById('m-icon').textContent = '🎓';
-  document.getElementById('m-title').textContent = `${childName} is going to College!`;
-  document.getElementById('m-body').textContent = `Your child needs support. College costs $50,000. What will you do?`;
-  document.getElementById('m-extra').innerHTML = '';
-  const btns = document.getElementById('m-btns'); btns.innerHTML = '';
-  const choices = [
-    {label:'💰 Pay full tuition', cost:50000, fn:()=>{applyMod({money:-50000,happiness:10});addLog(`🎓 Paid ${childName}'s college tuition in full! +10 Happy`,'legend');SoundManager.levelUp();burst(30);}},
-    {label:'🏦 Student loan (−$25k now, −$3k/yr × 5yrs)', cost:25000, fn:()=>{applyMod({money:-25000,happiness:5});G.loanRepayment=(G.loanRepayment||0)+3000;G.loanYearsLeft=(G.loanYearsLeft||0)+5;addLog(`🏦 Took student loan for ${childName}. −$25,000 now, −$3,000/yr for 5 years.`,'event');SoundManager.fail();}},
-    {label:'😬 Can\'t support them (−25 Happiness)', cost:0, fn:()=>{applyMod({happiness:-25});const child=(G.family||[]).find(m=>m.name===childName&&m.type==='child');if(child)child.status='Estranged 💔';addLog(`💔 Could not support ${childName}'s college. −25 Happy`,'bad');SoundManager.fail();}},
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='BIG MOMENT!';
+  document.getElementById('m-icon').textContent='🎓';
+  document.getElementById('m-title').textContent=`${childName} is going to College!`;
+  const bodyEl=document.getElementById('m-body');
+  bodyEl.style.display='block';bodyEl.textContent=`Your child needs support. College costs $50,000.`;
+  document.getElementById('m-extra').innerHTML='';
+  const btns=document.getElementById('m-btns');btns.innerHTML='';
+  const choices=[
+    {label:'💰 Pay full tuition',cost:50000,fn:()=>{applyMod({money:-50000,happiness:10});addLog(`🎓 Paid ${childName}'s college tuition!`,'legend');SoundManager.levelUp();burst(30);}},
+    {label:'🏦 Student loan (−$25k + −$3k/yr × 5yrs)',cost:25000,fn:()=>{applyMod({money:-25000,happiness:5});G.loanRepayment=(G.loanRepayment||0)+3000;G.loanYearsLeft=(G.loanYearsLeft||0)+5;addLog(`🏦 Took student loan for ${childName}.`,'event');}},
+    {label:'😬 Can\'t support them (−25 Happy)',cost:0,fn:()=>{applyMod({happiness:-25});const child=(G.family||[]).find(m=>m.name===childName&&m.type==='child');if(child)child.status='Estranged 💔';addLog(`💔 Could not support ${childName}'s college.`,'bad');}},
   ];
   choices.forEach((c,i)=>{
-    const btn = document.createElement('button');
-    btn.type='button';
-    btn.className='mbtn '+(i===0?'pri':i===1?'amb':'dan');
-    btn.textContent = c.label;
-    const canAfford = c.cost === 0 || G.money >= c.cost;
-    if(!canAfford){
-      btn.disabled = true;
-      btn.style.opacity = '0.4';
-      btn.style.cursor = 'not-allowed';
-      btn.textContent += ` (💸 Need $${c.cost.toLocaleString()})`;
-    }
-    btn.onclick = ()=>{
+    const btn=document.createElement('button');btn.type='button';btn.className='mbtn '+(i===0?'pri':i===1?'amb':'dan');
+    btn.textContent=c.label;
+    const canAfford=c.cost===0||G.money>=c.cost;
+    if(!canAfford){btn.disabled=true;btn.style.opacity='0.4';btn.style.cursor='not-allowed';btn.textContent+=` (Need $${c.cost.toLocaleString()})`;}
+    btn.onclick=()=>{
       if(btn.disabled)return;
-      closeModal();
-      c.fn();
+      closeModal();c.fn();
       checkAchievements();save();updateUI();
-      if(onDone) onDone();
+      if(onDone)onDone();
     };
     btns.appendChild(btn);
   });
-  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal').style.display='flex';
 }
 
 // ══════════════════════════════════════════
@@ -1833,16 +2017,23 @@ function ageUp(){
   G.energy=Math.min(G.maxEnergy, G.maxEnergy + bonus);
   G.restBonus=0;
 
-  // ── STAT DECAY ──
+  // Birthday celebrations
+  shootBalloons();
+  if([10,16,18,21,30,50,65,80,100].includes(G.age)){
+    SoundManager.birthday();
+    burst(60);
+    showMascotBubble(`🦉 Happy Birthday! You're ${G.age} today! 🎂🎉`, 4000);
+    mascotDance();
+  }
+
   if(G.age>18){
     const healthDecay=rand(2,5);
     const happyDecay=rand(2,4);
     G.health=Math.max(0,G.health-healthDecay);
     G.happiness=Math.max(0,G.happiness-happyDecay);
-    if(G.age%5===0) addLog(`⏳ Age ${G.age}: Life's wear takes −${healthDecay} Health, −${happyDecay} Happy.`, 'info');
+    if(G.age%5===0) addLog(`⏳ Age ${G.age}: −${healthDecay} Health, −${happyDecay} Happy.`,'info');
   }
 
-  // ── AGE FAMILY MEMBERS ──
   if(G.family){
     G.family.forEach(m=>{
       m.age++;
@@ -1855,29 +2046,22 @@ function ageUp(){
     });
   }
 
-  // checkAchievements BEFORE death check so age-based ones fire correctly
   checkAchievements();
 
-  // ── DEATH CHECK ──
   if(G.health<=0||G.happiness<=0||G.age>100){
-    const cause=G.health<=0?'Your health reached zero.':G.happiness<=0?'Your happiness hit zero — a broken spirit.':'A long life, well lived.';
+    const cause=G.health<=0?'Your health reached zero.':G.happiness<=0?'Your happiness hit zero.':'A long life, well lived.';
     G.health=Math.max(G.health,0);G.happiness=Math.max(G.happiness,0);
     addLog(`Life ended at age ${G.age}. ${cause} 🕊️`,'bad');
     SoundManager.gameOver();flashRed();
     save();updateUI();
-    setTimeout(showLegacyScreen,600);return;
+    setTimeout(showLegacyScreen,800);return;
   }
 
-  // ── TRACK PEAK SALARY ──
   if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-
-  // ── YEARS IN ROLE ──
   if(G.job) G.yearsInRole=(G.yearsInRole||0)+1;
 
-  // ── INFLATION ──
   applyInflation();
 
-  // ── INVESTMENT GROWTH ──
   if((G.investments||0)>0){
     const growth=G.investments*0.04;
     const crash=Math.random()<0.07;
@@ -1888,121 +2072,89 @@ function ageUp(){
       SoundManager.fail();
     }else{
       G.investments=Math.floor(G.investments+growth);
-      addLog(`📈 Investments grew by $${Math.floor(growth).toLocaleString()} (4% return)`,'good');
+      addLog(`📈 Investments grew by $${Math.floor(growth).toLocaleString()}! (4%)`,'good');
     }
   }
 
-  // ── ANNUAL SALARY ──
   if(G.job&&!G.retired){
     applyMod({money:G.salary});
-    addLog(`💰 Annual salary: +$${G.salary.toLocaleString()}`, 'good');
-
+    addLog(`💰 Annual salary: +$${G.salary.toLocaleString()}`,'good');
     const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
-
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
       const promoBonus=Math.floor(G.salary*0.1);
       G.salary=Math.floor(G.salary*1.05);
       if(G.salary>G.peakSalary)G.peakSalary=G.salary;
       G.promotionChance=Math.max(0,G.promotionChance-80);
       applyMod({money:promoBonus});
-      addLog(`🎉 PROMOTION! Salary raised to $${G.salary.toLocaleString()}/yr! +$${promoBonus.toLocaleString()} bonus!`,'legend');
+      addLog(`🎉 PROMOTION! New salary: $${G.salary.toLocaleString()}/yr!`,'legend');
       SoundManager.legend();burst(40);
-      showModal('🎉','Promotion!',
-        `You've been promoted! New salary: $${G.salary.toLocaleString()}/yr`,
-        [{l:'🎊 Accept!',m:{happiness:15},style:'pri'}]);
+      showNewspaper(`${G.name.toUpperCase()} GETS PROMOTED! 🎉`);
+      showMascotBubble(`🦉 PROMOTION! Your hard work paid off! 💼`, 4000);
+      mascotDance();
+      showModal('🎉','Promotion!',`You've been promoted! New salary: $${G.salary.toLocaleString()}/yr`,
+        [{l:'🎊 Accept!',m:{happiness:15},style:'pri'}],'YAY!','positive');
       save();updateUI();return;
     }
   }
 
-  // ── STUDENT LOAN REPAYMENT ──
   if((G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0){
     applyMod({money:-G.loanRepayment});
     G.loanYearsLeft--;
-    addLog(`🏦 Student loan repayment: −$${G.loanRepayment.toLocaleString()} (${G.loanYearsLeft} yr${G.loanYearsLeft!==1?'s':''} left)`,'info');
-    if(G.loanYearsLeft===0){
-      G.loanRepayment=0;
-      addLog('🎉 Student loan fully repaid!','good');
-      SoundManager.levelUp();
-    }
+    addLog(`🏦 Loan repayment: −$${G.loanRepayment.toLocaleString()} (${G.loanYearsLeft} yrs left)`,'info');
+    if(G.loanYearsLeft===0){G.loanRepayment=0;addLog('🎉 Student loan fully repaid!','good');SoundManager.levelUp();}
   }
 
-  // ── FAMILY COST OF LIVING ──
   const famCount=(G.family||[]).length;
   if(famCount>0&&G.salary>0){
     const livingCost=Math.floor(G.salary*0.15*famCount);
     applyMod({money:-livingCost});
-    addLog(`👨‍👩‍👧 Family cost of living: −$${livingCost.toLocaleString()} (${famCount} member${famCount>1?'s':''})`, 'info');
+    addLog(`👨‍👩‍👧 Family cost: −$${livingCost.toLocaleString()}`,'info');
   }
 
-  // ── CHILD COLLEGE TUITION ──
   if(G.family){
-    const turningEighteen = G.family.filter(m=>m.type==='child'&&m.age===18);
+    const turningEighteen=G.family.filter(m=>m.type==='child'&&m.age===18);
     if(turningEighteen.length>0){
-      const child = turningEighteen[0];
+      const child=turningEighteen[0];
       save();updateUI();renderWork();
       showCollegeTuitionModal(child.name, ()=>continueAgeUp());
       return;
     }
   }
 
-  // ── CASH INFLATION EROSION ──
   const cashErosion=Math.floor(G.money*0.01);
   G.money=Math.max(0,G.money-cashErosion);
-  if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} of cash savings.`,'info');
+  if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} cash.`,'info');
 
-  // ── RETIREMENT ──
-  if(handleRetirement()){
-    checkAchievements();save();updateUI();renderWork();return;
-  }
+  if(handleRetirement()){checkAchievements();save();updateUI();renderWork();return;}
 
   continueAgeUp();
 }
 
-// ══════════════════════════════════════════
-// CONTINUE AGE UP
-// ══════════════════════════════════════════
 function continueAgeUp(){
-  // ── GENERATE JOB OFFERS (always fires first, so offers are ALWAYS ready) ──
   if(!G.retired&&G.age>=12){
     generateJobOffers();
-    renderWork(); // immediately refresh Work tab so offers appear
-    updateOfferBadge();
+    renderWork();updateOfferBadge();
   }
 
-  // ── MANDATORY AGE MILESTONES ──
-  if(G.age===5&&!G.schoolChosen){
-    checkAchievements();save();updateUI();
-    triggerPrimarySchoolModal();return;
-  }
-  if(G.age===18&&!G.age18PathChosen){
-    checkAchievements();save();updateUI();
-    triggerAge18Modal();return;
-  }
-  if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){
-    checkAchievements();save();updateUI();
-    triggerAge22Modal();return;
-  }
+  if(G.age===5&&!G.schoolChosen){checkAchievements();save();updateUI();triggerPrimarySchoolModal();return;}
+  if(G.age===18&&!G.age18PathChosen){checkAchievements();save();updateUI();triggerAge18Modal();return;}
+  if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){checkAchievements();save();updateUI();triggerAge22Modal();return;}
 
-  // ── HIGH-RISK HEALTH EVENTS ──
   if(G.health<40&&Math.random()<0.30){
-    showModal('🚑','Medical Emergency!',
-      'Your health is critically low and something serious has happened!',
+    showModal('🚑','Medical Emergency!','Your health is critically low!',
       [{l:'🏥 Emergency care (−$3,000)',m:{health:25,money:-3000,happiness:-10},style:'grn'},
-       {l:'😰 Can\'t afford it',m:{health:-15,happiness:-15},style:'dan'}]);
+       {l:'😰 Can\'t afford it',m:{health:-15,happiness:-15},style:'dan'}],'UH-OH!','negative');
     checkAchievements();save();updateUI();return;
   }
 
-  // ── BURNOUT EVENT ──
   if(G.happiness<30&&Math.random()<0.35){
-    showModal('😵','Burnout!',
-      "Your happiness is rock-bottom. You're experiencing a burnout episode.",
+    showModal('😵','Burnout!','Your happiness is rock-bottom. Burnout episode.',
       [{l:'🌴 Take a break (−$1,000)',m:{happiness:20,money:-1000,health:5},style:'grn'},
-       {l:'💪 Push through',m:{happiness:-10,health:-5},style:'sec'}]);
+       {l:'💪 Push through',m:{happiness:-10,health:-5},style:'sec'}],'UH-OH!','negative');
     checkAchievements();save();updateUI();return;
   }
 
-  // ── DATING / MARRIAGE ──
   if(!G.marriageAge&&G.age>=20&&G.age<=45){
     if(!G.datingAge&&Math.random()<0.12&&G.age>(G.datingCooldown||0)){
       const partnerNames=G.gender==='male'?PARTNER_NAMES_F:PARTNER_NAMES_M;
@@ -2012,33 +2164,29 @@ function continueAgeUp(){
     }
     if(G.datingAge&&G.age-G.datingAge>=2&&Math.random()<0.25){
       const partnerName=G._pendingPartner||'your partner';
-      showModal('💍','Proposal!',
-        `${partnerName} thinks you two should get married. What do you say?`,
-        [{l:'💍 Yes, absolutely!',fn:'_marry_yes',style:'pri'},{l:'⏳ Not yet...',fn:'_marry_no',style:'sec'}]);
+      showModal('💍','Proposal!',`${partnerName} wants to get married. What do you say?`,
+        [{l:'💍 Yes, absolutely!',fn:'_marry_yes',style:'pri'},{l:'⏳ Not yet...',fn:'_marry_no',style:'sec'}],'OOH!','positive');
       checkAchievements();save();updateUI();return;
     }
   }
 
-  // ── BABY EVENT ──
   if(G.marriageAge&&G.age>=24&&G.age<=42&&Math.random()<0.10){
     const kids=(G.family||[]).filter(m=>m.type==='child');
     if(kids.length<3){
       showModal('👶','New Baby!','Your family is growing! A baby is on the way.',
-        [{l:'😍 Amazing news!',fn:'_baby_yes',style:'pri'},{l:'😰 Not ready',m:{happiness:-8},style:'sec'}]);
+        [{l:'😍 Amazing news!',fn:'_baby_yes',style:'pri'},{l:'😰 Not ready',m:{happiness:-8},style:'sec'}],'WOW!','positive');
       checkAchievements();save();updateUI();return;
     }
   }
 
-  // ── RANDOM EVENT ENGINE ──
   if(G.age>=18) triggerRandomEvent();
 
-  // ── MISFORTUNE / EVENT POOL ──
   const negEvents=[
-    {minAge:16,maxAge:99,r:'c',emoji:'🔥',title:'Performance Review',body:"Your boss pulled you aside. Work hasn't been up to scratch.",
-     guard:()=>{ if(!G.job) return false; return true; },
+    {minAge:16,maxAge:99,r:'c',emoji:'🔥',sfx:'UH-OH!',title:'Performance Review',body:"Your boss isn't happy with your work.",
+     guard:()=>!!G.job,
      choices:[{l:'💪 Shape up!',m:{happiness:-10,smarts:5},style:'pri'},{l:'😤 Whatever',fn:'_fired',style:'dan'}]},
-    {minAge:18,maxAge:99,r:'c',emoji:'🏚️',title:'Bad Luck Week',body:'Everything that could go wrong, did. Your mood crashed.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5},style:'sec'},{l:'😴 Rest it off',m:{happiness:-10,health:5},style:'grn'}]},
-    {minAge:20,maxAge:80,r:'c',emoji:'💸',title:'Unexpected Bill!',body:'A huge unexpected bill just landed. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10},style:'pri'},{l:'😰 Ignore it',m:{happiness:-20},style:'sec'}]},
+    {minAge:18,maxAge:99,r:'c',emoji:'🏚️',sfx:'UH-OH!',title:'Bad Luck Week',body:'Everything that could go wrong, did.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5},style:'sec'},{l:'😴 Rest it off',m:{happiness:-10,health:5},style:'grn'}]},
+    {minAge:20,maxAge:80,r:'c',emoji:'💸',sfx:'OOPS!',title:'Unexpected Bill!',body:'A huge unexpected bill just landed. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10},style:'pri'},{l:'😰 Ignore it',m:{happiness:-20},style:'sec'}]},
   ];
 
   const roll=Math.random()*100;
@@ -2048,22 +2196,21 @@ function continueAgeUp(){
   let ev=null;
   if(misfortunePull&&Math.random()<.45&&G.age>=16){
     const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
-    if(eligible.length>0){
-      ev=eligible[Math.floor(Math.random()*eligible.length)];
-      G.misfortune=Math.max(0,(G.misfortune||0)-15);
-    }
+    if(eligible.length>0){ev=eligible[Math.floor(Math.random()*eligible.length)];G.misfortune=Math.max(0,(G.misfortune||0)-15);}
   }
   if(!ev&&pool.length&&(rarity!=='c'||Math.random()<.40)){
     ev=pool[Math.floor(Math.random()*pool.length)];
   }
   if(ev){
-    if(ev.r==='l'){SoundManager.legend();burst(70);}
-    showModal(ev.emoji,ev.title,ev.body,ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})));
+    const isLeg = ev.r==='l';
+    const type = isLeg?'legendary':ev.r==='r'?'positive':'';
+    if(isLeg){SoundManager.legend();burst(70);}
+    showModal(ev.emoji,ev.title,ev.body,ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})),ev.sfx||'',type);
     checkAchievements();save();updateUI();return;
   }
 
-  if(G.health<30){shakeScreen();flashRed();addLog('⚠️ Your health is critically low!','bad');}
-  else if(G.happiness<25){shakeScreen();flashRed();addLog('⚠️ Your happiness is dangerously low!','bad');}
+  if(G.health<30){shakeScreen();flashRed();addLog('⚠️ Your health is critically low!','bad');showMascotBubble('🦉 Your health is very low! Please see a doctor! 🏥', 4000);}
+  else if(G.happiness<25){shakeScreen();flashRed();addLog('⚠️ Your happiness is dangerously low!','bad');showMascotBubble('🦉 You seem really unhappy. Try some activities to cheer up! 🌟', 4000);}
 
   checkAchievements();save();updateUI();renderActivities();renderWork();
 }
@@ -2083,18 +2230,18 @@ function startLife(){
   G={...DEFAULT,name,gender:chosenGender,log:[],achievements:[],family:[],yearActCounts:{},pendingOffers:[]};
 
   const birth = rollBirthStats();
-  G.money     = birth.money;
-  G.smarts    = birth.smarts;
-  G.health    = birth.health;
-  G.looks     = birth.looks;
-  G.happiness = birth.happiness;
-  G.birthBackground = birth.background;
-  if(birth.moneyRangeMax >= 12000){ G.smarts = Math.min(100, G.smarts + 5); }
+  G.money=birth.money;G.smarts=birth.smarts;G.health=birth.health;G.looks=birth.looks;G.happiness=birth.happiness;
+  G.birthBackground=birth.background;
+  if(birth.moneyRangeMax>=12000){G.smarts=Math.min(100,G.smarts+5);}
 
-  addLog(`Born into a ${birth.background}. Starting with $${birth.money.toLocaleString()}.`, 'event');
+  addLog(`Born into a ${birth.background}. Starting with $${birth.money.toLocaleString()}.`,'event');
   addLog(`${name} was born! 🌱 A brand new story begins...`,'good');
-  SoundManager.levelUp();burst(40);
+  SoundManager.levelUp();burst(50);
   save();launchGame();
+  setTimeout(()=>{
+    showMascotBubble("🦉 Hi! I'm Ollie the Owl! Tap me anytime for tips! Let's start your amazing life story!", 6000);
+    mascotDance();
+  }, 1000);
 }
 
 function continueLife(){
@@ -2122,6 +2269,7 @@ function continueLife(){
     if(G.loanYearsLeft===undefined)G.loanYearsLeft=0;
     if(G.birthBackground===undefined)G.birthBackground='';
     launchGame();
+    setTimeout(()=>showMascotBubble(`🦉 Welcome back, ${G.name}! You're age ${G.age}! Let's keep going! 🌟`, 4000), 600);
   }
 }
 
@@ -2134,10 +2282,10 @@ function launchGame(){
 }
 
 function confirmNew(){
-  showModal('⚠️','Start Over?','This will erase your current life. Sure?',[
+  showModal('⚠️','Start Over?','This will erase your current life. Are you sure?',[
     {l:'🌱 Yes, new life!',fn:'_restart',style:'dan'},
     {l:'❌ Cancel',m:{},style:'sec'},
-  ]);
+  ],'WAIT!','negative');
 }
 
 // ══════════════════════════════════════════
