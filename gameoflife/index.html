@@ -831,6 +831,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -3482,8 +3483,12 @@ function renderBank(){
   const inv=G.investments||0;
   const netWorth=G.money+inv+(G.houseValue||0)+(G.carValue||0);
   const tier=netWorth>=1000000?'🤑 Millionaire!':netWorth>=100000?'💎 Wealthy':netWorth>=10000?'💰 Comfortable':netWorth>=1000?'👍 Getting by':'😟 Struggling';
-  const familyCount=(G.family||[]).length;
-  const familyDrain=G.job&&familyCount>0?Math.floor(G.salary*0.15*familyCount):0;
+  // Family dependents: under-18 children still living at home + spouse
+  const dependentKids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18);
+  const hasSpouse=(G.family||[]).find(m=>m.type==='spouse');
+  // Display only — actual deduction happens in ageUp (child costs + spouse costs)
+  const actualKidCost=Math.round(2500*(G.inflationMult||1));
+  const familyDrain=(dependentKids.length*actualKidCost) + (hasSpouse?Math.round(2000*(G.inflationMult||1)):0);
   const infLabel=(G.inflationMult||1)>1?`<span class="inflation-pill">x${(G.inflationMult||1).toFixed(2)} inflation</span>`:'';
   const loanLine=(G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Student loan</span><span style="font-weight:900;color:var(--coral)">−$${G.loanRepayment.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`:'';
 
@@ -3506,7 +3511,7 @@ function renderBank(){
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:8px">💼 Income & Expenses</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Salary</span><span style="font-weight:900;color:var(--grass-dark)">+$${(G.retired?0:G.salary).toLocaleString()}/yr</span></div>
       ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Pension</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.pension.toLocaleString()}/yr</span></div>`:''}
-      ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Family</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
+      ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">👨‍👩‍👧 Family (${dependentKids.length} kids${hasSpouse?'+spouse':''})</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
       ${G.mortgagePayment>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🏠 Mortgage</span><span style="font-weight:900;color:var(--coral)">−$${G.mortgagePayment.toLocaleString()}/yr (${G.mortgageYearsLeft}yr left)</span></div>`:''}
       ${G.sideHustleIncome>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">💡 Side Hustle</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.sideHustleIncome.toLocaleString()}/yr</span></div>`:''}
       ${G.totalTaxPaid>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`:''}
@@ -3569,9 +3574,10 @@ function renderBank(){
       {id:'luxury',  label:'🏰 Luxury Mansion',  price:Math.round(500000*inf), bonus:{happiness:25,looks:20},desc:'The ultimate status symbol.'},
     ];
     houses.forEach(h=>{
-      const affordable=G.money>=h.price;
+      const deposit20=Math.round(h.price*0.20);
+      const affordable=G.money>=deposit20; // only need 20% deposit upfront
       const it=actItem(h.id==='luxury'?'🏰':h.id==='family'?'🏡':'🏠', h.label,
-        `$${h.price.toLocaleString()} · ${h.desc} · +${h.bonus.happiness} 😊 +${h.bonus.looks} ✨`, ()=>{
+        `$${h.price.toLocaleString()} · Deposit: $${deposit20.toLocaleString()} (20%) · ${h.desc} · +${h.bonus.happiness} 😊`, ()=>{
         const deposit=Math.round(h.price*0.20);
         const mortgageAmt=h.price-deposit;
         const annualPayment=Math.round(mortgageAmt*0.06); // ~6% interest
@@ -4104,11 +4110,15 @@ function ageUp(){
 
   // Rent drain: every year age 22+ if no house
   if(G.age>=22&&!G.houseType){
-    const baseRent = G.age<30 ? 3000 : G.age<50 ? 5000 : 4000;
-    const rent = Math.round(baseRent * (G.inflationMult||1));
+    // Rent = 30% of annual income, capped between $600 and $8,000
+    const annualIncome = G.retired ? (G.pension||0) :
+                         G.job    ? G.salary :
+                                    Math.round(800*(G.inflationMult||1)); // welfare
+    const rawRent = Math.round(annualIncome * 0.30);
+    const rent = Math.min(Math.max(rawRent, 600), Math.round(8000*(G.inflationMult||1)));
     G.rentPerYear = rent;
     applyMod({money:-rent});
-    if(G.age%3===0) addLog(`🏠 Annual rent: −$${rent.toLocaleString()} (no house)`, 'info');
+    if(G.age%3===0) addLog(`🏠 Rent: −$${rent.toLocaleString()}/yr (30% of income)`, 'info');
   } else {
     G.rentPerYear = 0;
     // House appreciation: 2-3% per year
@@ -4128,6 +4138,13 @@ function ageUp(){
       applyMod({money:-totalKidCost});
       if(G.age%2===0) addLog(`👶 Child expenses: −$${totalKidCost.toLocaleString()} (${kids.length} kid${kids.length>1?'s':''})`, 'info');
     }
+    // Spouse household running costs (food, shared bills — regardless of retirement)
+    const _spouse=(G.family||[]).find(m=>m.type==='spouse');
+    if(_spouse){
+      const spouseHouseCost=Math.round(2000*(G.inflationMult||1));
+      applyMod({money:-spouseHouseCost});
+      if(G.age%5===0) addLog(`💑 Shared household costs: −$${spouseHouseCost.toLocaleString()}/yr`, 'info');
+    }
   }
 
   // Car depreciates 5%/yr
@@ -4146,13 +4163,27 @@ function ageUp(){
   }
 
   // ── Spouse income ──
-  if(G.marriageAge && (G.family||[]).find(m=>m.type==='spouse') && G.spouseIncome>0){
-    applyMod({money:G.spouseIncome});
-    if(G.age%3===0) addLog(`💑 Partner\'s income: +$${G.spouseIncome.toLocaleString()}`, 'good');
+  if(G.marriageAge && (G.family||[]).find(m=>m.type==='spouse')){
+    const spouse=(G.family||[]).find(m=>m.type==='spouse');
+    const spouseAge=spouse?spouse.age:G.age; // spouse age tracked in family array
+    const spouseRetired=spouseAge>=65;
+    if(G.spouseIncome>0 && !spouseRetired){
+      // Spouse income grows ~3% per year (career progression + inflation)
+      G.spouseIncome=Math.round(G.spouseIncome*1.03);
+      applyMod({money:G.spouseIncome});
+      if(G.age%3===0) addLog(`💑 Partner income: +$${G.spouseIncome.toLocaleString()}/yr`, 'good');
+    } else if(spouseRetired && G.spouseIncome>0){
+      // Spouse retired — convert to small pension, log once
+      if(G.spouseIncome>0){
+        const spousePension=Math.round(G.spouseIncome*0.35);
+        G.spouseIncome=spousePension>0?spousePension:0;
+        if(spouseAge===65) addLog(`👴 Your partner retired! Their income now $${spousePension.toLocaleString()}/yr pension.`,'info');
+        if(spousePension>0) applyMod({money:spousePension});
+      }
+    }
     // Spouse mood drifts based on player happiness
     const moodDrift = G.happiness>60 ? rand(2,5) : -rand(3,8);
     G.spouseMood = Math.min(100, Math.max(0, (G.spouseMood||80) + moodDrift));
-    // Low spouse mood risk → divorce event (handled in P3)
   }
 
   // ── Unemployment tracking ──
@@ -5473,6 +5504,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 
