@@ -810,6 +810,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -962,6 +963,7 @@ const DEFAULT = {
   _ollieHappyWarned:false,
   _justUnlockedTrophy:false,
   reportCardDone:[],
+  _examDone:[],
   logStickersAdded:[],
   quietYears:0,
   _promotionPending:false,
@@ -1465,7 +1467,7 @@ function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
           showMascotBubble('🦉 So close! Try applying to more places or boosting your stats! 💪',3000);
           triggerCharReaction('slump');
         }
-        checkAchievements();save();updateUI();renderWork();
+        checkAchievements();save();updateUI();refreshActiveTab();renderWork();
         if(onDone)onDone();
       },
       ()=>{applyMod({happiness:-5});addLog(`😞 Interview for ${j.title} at ${company} didn\'t go well.`,'bad');
@@ -2286,7 +2288,9 @@ function toggleLogExpand(){
 // ══════════════════════════════════════════
 // TABS
 // ══════════════════════════════════════════
+let _activeTab='act';
 function openTab(name){
+  _activeTab=name;
   ['act','work','edu','bank','fam','cups'].forEach(t=>{
     const panel=document.getElementById('panel-'+t);
     const tab=document.getElementById('tab-'+t);
@@ -2294,13 +2298,18 @@ function openTab(name){
     if(tab)tab.classList.toggle('on',t===name);
   });
   SoundManager.click();
-  if(name==='work') renderWork();
-  if(name==='edu')  renderEdu();
-  if(name==='bank') renderBank();
-  if(name==='fam')  renderFamilyTab();
-  if(name==='cups') renderTrophies();
-  if(name==='act')  renderActivities();
+  refreshActiveTab(name);
   updateOfferBadge();
+}
+
+function refreshActiveTab(name){
+  const t=name||_activeTab;
+  if(t==='work') renderWork();
+  else if(t==='edu')  renderEdu();
+  else if(t==='bank') renderBank();
+  else if(t==='fam')  renderFamilyTab();
+  else if(t==='cups') renderTrophies();
+  else renderActivities();
 }
 
 function renderFamilyTab(){
@@ -2954,7 +2963,7 @@ function showModal(icon,title,body,choices,sfx,type){
       if(c.fn)evFn(c.fn);
       if(c.m)applyMod(c.m);
       if(c.m&&(c.m.health<0||c.m.money<0))SoundManager.fail();else if(c.m)SoundManager.success();
-      checkAchievements();save();updateUI();
+      checkAchievements();save();updateUI();refreshActiveTab();
     };
     btns.appendChild(btn);
   });
@@ -3208,7 +3217,7 @@ function ageUp(){
   G.money=Math.max(0,G.money-cashErosion);
   if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} cash.`,'info');
 
-  if(handleRetirement()){checkAchievements();save();updateUI();renderWork();return;}
+  if(handleRetirement()){checkAchievements();save();updateUI();refreshActiveTab();renderWork();return;}
 
   continueAgeUp();
 }
@@ -3223,8 +3232,9 @@ function continueAgeUp(){
   // Helper: fire an event and mark the year as done
   function fireEvent(fn){
     G.eventFiredThisYear=true;
-    G.quietYears=0; // any event resets the quiet counter
+    G.quietYears=0;
     checkAchievements();save();updateUI();
+    refreshActiveTab();
     fn();
   }
 
@@ -3332,12 +3342,19 @@ function continueAgeUp(){
   // ════════════════════════════════════════════
   // PRIORITY 5 — Contextual mini-game events
   // ════════════════════════════════════════════
-  // School test (ages 6–17, ~35% chance per year)
-  if(G.age>=6&&G.age<=17&&Math.random()<0.35){
-    fireEvent(()=>setTimeout(triggerSchoolTest,300));
-    return;
+  if(G.age>=6&&G.age<=17){
+    // Mandatory end-of-year exam at ages 12 and 17
+    if((G.age===12||G.age===17)&&!(G._examDone||[]).includes(G.age)){
+      fireEvent(()=>setTimeout(triggerEndOfYearExam,300));
+      return;
+    }
+    // Random school test ~35% chance
+    if(Math.random()<0.35){
+      fireEvent(()=>setTimeout(triggerSchoolTest,300));
+      return;
+    }
   }
-  // Performance review (ages 18+, employed, ~30% chance — NOT same year as promotion)
+  // Ages 18+: performance review for employed adults
   if(G.age>=18&&G.job&&!G.retired&&Math.random()<0.30){
     fireEvent(()=>setTimeout(triggerPerformanceReview,300));
     return;
@@ -3400,7 +3417,9 @@ function continueAgeUp(){
   if(G.health<30){shakeScreen();flashRed();addLog('⚠️ Your health is critically low!','bad');showMascotBubble('🦉 Your health is very low! Please see a doctor! 🏥', 4000);}
   else if(G.happiness<25){shakeScreen();flashRed();addLog('⚠️ Your happiness is dangerously low!','bad');showMascotBubble('🦉 You seem really unhappy. Try some activities to cheer up! 🌟', 4000);}
 
-  checkAchievements();save();updateUI();renderActivities();renderWork();
+  checkAchievements();save();updateUI();
+  refreshActiveTab();
+  renderActivities();renderWork();
 }
 
 // ══════════════════════════════════════════
@@ -3473,6 +3492,7 @@ function continueLife(){
     if(G._ollieHealthWarned===undefined)G._ollieHealthWarned=false;
     if(G._ollieHappyWarned===undefined)G._ollieHappyWarned=false;
     if(G.reportCardDone===undefined)G.reportCardDone=[];
+    if(G._examDone===undefined)G._examDone=[];
     if(G.logStickersAdded===undefined)G.logStickersAdded=[];
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
@@ -3819,39 +3839,56 @@ window.memCardClick=function(idx){
 
 function triggerPerformanceReview(){
   if(!G.job||G.retired)return;
-  startMemoryCardGame(
-    ()=>{
-      const bonus=Math.floor(G.salary*0.05);
-      G.promotionChance=Math.min(G.promotionChance+15,90);
-      applyMod({happiness:12,money:bonus});
-      addLog(`⭐ Performance review: EXCELLENT! +15% promo chance, +$${bonus.toLocaleString()} bonus!`,'good');
-      showMascotBubble('🦉 Outstanding review! Your boss loves your work! 🌟',4000);
-      triggerCharReaction('jump');burst(30);mascotDance();
-    },
-    ()=>{
-      const score=rand(1,5);
-      if(score===1){
-        // Critical fail — fired
-        addLog('😱 Performance review CATASTROPHIC — fired!','bad');
-        G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
-        applyMod({happiness:-25});SoundManager.fail();shakeScreen();flashRed();
-        showMascotBubble("🦉 Tough break. Time to job hunt again — you've got this! 💪",5000);
-        triggerCharReaction('slump');
-      } else {
-        G.promotionChance=Math.max(0,G.promotionChance-20);
-        applyMod({happiness:-10});
-        addLog('😞 Performance review: needs improvement. −20% promo chance.','bad');
-        showMascotBubble('🦉 Boss gave a warning. Try grinding more and networking! 💼',4000);
-        triggerCharReaction('slump');
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='REVIEW!';
+  document.getElementById('m-icon').textContent='📊';
+  document.getElementById('m-title').textContent='Performance Review!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent='Your boss wants to see what you know!';
+  document.getElementById('m-extra').innerHTML=`
+    <div class="office-scene">
+      <div style="font-size:.75em;font-weight:900;color:var(--ink2);margin-bottom:4px">📋 Annual Review — ${G.jobTitle}</div>
+      <div class="office-desk-big"></div>
+    </div>`;
+  document.getElementById('m-btns').innerHTML='';
+  const startBtn=document.createElement('button');startBtn.type='button';startBtn.className='mbtn pri';
+  startBtn.textContent='🧠 Take Quiz';
+  startBtn.onclick=()=>{
+    startMathMiniGame(
+      ()=>{
+        const bonus=Math.floor(G.salary*0.05);
+        G.promotionChance=Math.min(G.promotionChance+15,90);
+        applyMod({happiness:12,money:bonus});
+        addLog(`⭐ Performance review: EXCELLENT! +15% promo chance, +$${bonus.toLocaleString()} bonus!`,'good');
+        showMascotBubble('🦉 Outstanding review! Your boss loves your work! 🌟',4000);
+        triggerCharReaction('jump');burst(30);mascotDance();
+        checkAchievements();save();updateUI();refreshActiveTab();
+      },
+      ()=>{
+        const score=rand(1,5);
+        if(score===1){
+          addLog('😱 Performance review: FIRED for poor performance!','bad');
+          G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
+          applyMod({happiness:-25});SoundManager.fail();shakeScreen();flashRed();
+          showMascotBubble('🦉 Tough break. Time to job hunt again — you\'ve got this! 💪',5000);
+          triggerCharReaction('slump');
+        } else {
+          G.promotionChance=Math.max(0,G.promotionChance-20);
+          applyMod({happiness:-10});
+          addLog('😞 Performance review: needs improvement. −20% promo chance.','bad');
+          showMascotBubble('🦉 Boss gave a warning. Try grinding more! 💼',4000);
+          triggerCharReaction('slump');
+        }
+        checkAchievements();save();updateUI();refreshActiveTab();
       }
-    }
-  );
+    );
+  };
+  document.getElementById('m-btns').appendChild(startBtn);
+  document.getElementById('modal').style.display='flex';
 }
 
-// ══════════════════════════════════════════
-// RHYTHM TAP GAME (Music Audition)
-// ══════════════════════════════════════════
-let _rhythmState={};
 function triggerMusicAudition(){
   if(G.age<8)return;
   G.musicCount=0; // reset so it doesn't trigger too often
@@ -4117,6 +4154,59 @@ function triggerReportCard(){
 }
 
 // ══════════════════════════════════════════
+// END-OF-YEAR EXAM (mandatory at ages 12 + 17)
+// ══════════════════════════════════════════
+function triggerEndOfYearExam(){
+  if(!G._examDone)G._examDone=[];
+  G._examDone.push(G.age);
+  const isFinal=(G.age===17);
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent=isFinal?'FINALS!':'EXAMS!';
+  document.getElementById('m-icon').textContent=isFinal?'🎓':'📝';
+  document.getElementById('m-title').textContent=isFinal?'Final Year Exams!':'End-of-Year Exams!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent=isFinal
+    ?'Your final school exams! Performance here shapes your future!'
+    :`Big exams this year, ${G.name}. Give it everything!`;
+  document.getElementById('m-extra').innerHTML=`
+    <div class="school-scene">
+      <div class="school-blackboard">${isFinal?'📝 FINAL EXAMS':'📝 END OF YEAR EXAMS'}</div>
+      <div style="font-size:.72em;color:#546E7A;font-weight:800;margin-top:4px">
+        ${isFinal?'Pass well → big Smarts & Looks boost':'Pass → Smarts boost · Fail → Smarts penalty'}
+      </div>
+      <div class="school-desk"></div>
+    </div>`;
+  document.getElementById('m-btns').innerHTML='';
+  const startBtn=document.createElement('button');startBtn.type='button';startBtn.className='mbtn pri';
+  startBtn.textContent='✏️ Sit the Exam!';
+  startBtn.onclick=()=>{
+    const useScramble=Math.random()>.5;
+    const onWin=()=>{
+      const smartsGain=isFinal?12:8, looksGain=isFinal?5:2, happyGain=isFinal?10:8;
+      applyMod({smarts:smartsGain,looks:looksGain,happiness:happyGain});
+      addLog(`🎓 ${isFinal?'Final exams':'End-of-year exams'} PASSED! +${smartsGain} Smarts, +${looksGain} Looks, +${happyGain} Happy`,'good');
+      SoundManager.levelUp();burst(30);triggerCharReaction('spin');
+      showMascotBubble(`🦉 ${isFinal?'You smashed your finals! 🎓':'Excellent results! ⭐'}`,4000);
+      checkAchievements();save();updateUI();refreshActiveTab();
+    };
+    const onFail=()=>{
+      const smartsPen=isFinal?-8:-5;
+      applyMod({smarts:smartsPen,happiness:-10});
+      addLog(`😞 ${isFinal?'Final exams':'End-of-year exams'} failed. ${smartsPen} Smarts, −10 Happy`,'bad');
+      SoundManager.fail();triggerCharReaction('slump');
+      showMascotBubble('🦉 Don\'t give up — study harder next time! 📚',4000);
+      checkAchievements();save();updateUI();refreshActiveTab();
+    };
+    if(useScramble)startScrambleMiniGame(onWin,onFail);
+    else startMathMiniGame(onWin,onFail);
+  };
+  document.getElementById('m-btns').appendChild(startBtn);
+  document.getElementById('modal').style.display='flex';
+}
+
+// ══════════════════════════════════════════
 // RANDOM SCHOOL TEST TRIGGER (ages 6-17)
 // ══════════════════════════════════════════
 function maybeSchoolTest(){
@@ -4175,6 +4265,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 </script>
