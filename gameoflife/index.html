@@ -813,6 +813,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -1089,15 +1090,15 @@ const CAREER_TRACKS = {
   ]},
   medical: {name:'Medical',  emoji:'🏥', prestige:5, rungs:[
     {id:'orderly',      emoji:'🏥', title:'Hospital Orderly',     salary:1800,  minAge:18, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'nurse',        emoji:'💉', title:'Nurse',                salary:3800,  minAge:22, minSmarts:55, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:80, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'nurse',        emoji:'💉', title:'Nurse',                salary:3800,  minAge:22, minSmarts:50, minLooks:0,  minEdu:'highschool', needsDegree:false,  tier:2, yearsRequired:2},
+    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
     {id:'surgeon',      emoji:'🔬', title:'Surgeon',              salary:18000, minAge:33, minSmarts:88, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
     {id:'chief_medicine',emoji:'🏆',title:'Chief of Medicine',    salary:25000, minAge:40, minSmarts:92, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   legal:   {name:'Legal',    emoji:'⚖️', prestige:4, rungs:[
     {id:'paralegal',    emoji:'📋', title:'Paralegal',            salary:2200,  minAge:18, minSmarts:50, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:24, minSmarts:70, minLooks:30, minEdu:'graduate',   needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:78, minLooks:40, minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:22, minSmarts:60, minLooks:20, minEdu:'university', needsDegree:false, tier:2, yearsRequired:2},
+    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:72, minLooks:35, minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
     {id:'sr_partner',   emoji:'🏛️', title:'Senior Partner',       salary:16000, minAge:34, minSmarts:85, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
     {id:'judge',        emoji:'🔨', title:'Judge',                salary:22000, minAge:40, minSmarts:90, minLooks:55, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
@@ -1105,13 +1106,13 @@ const CAREER_TRACKS = {
     {id:'cashier',      emoji:'🛒', title:'Cashier',              salary:1200,  minAge:16, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'supervisor',   emoji:'📋', title:'Supervisor',           salary:2800,  minAge:20, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
     {id:'manager',      emoji:'📊', title:'Manager',              salary:5500,  minAge:25, minSmarts:55, minLooks:35, minEdu:'university', needsDegree:true,  tier:3, yearsRequired:2},
-    {id:'director',     emoji:'🏢', title:'Director',             salary:12000, minAge:32, minSmarts:72, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
+    {id:'director',     emoji:'🏢', title:'Director',             salary:12000, minAge:32, minSmarts:68, minLooks:45, minEdu:'university', needsDegree:false, tier:4, yearsRequired:3},
     {id:'ceo',          emoji:'👑', title:'CEO',                  salary:28000, minAge:38, minSmarts:85, minLooks:65, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   education:{name:'Education',emoji:'🎓', prestige:3, rungs:[
     {id:'teach_asst',   emoji:'📚', title:'Teaching Assistant',   salary:1500,  minAge:18, minSmarts:45, minLooks:0,  minEdu:'university', needsDegree:true,  tier:1, yearsRequired:0},
-    {id:'teacher',      emoji:'🏫', title:'Teacher',              salary:3200,  minAge:22, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'head_teacher', emoji:'⭐', title:'Head Teacher',         salary:5500,  minAge:28, minSmarts:70, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'teacher',      emoji:'🏫', title:'Teacher',              salary:3200,  minAge:22, minSmarts:55, minLooks:0,  minEdu:'highschool', needsDegree:false, tier:2, yearsRequired:2},
+    {id:'head_teacher', emoji:'⭐', title:'Head Teacher',         salary:5500,  minAge:28, minSmarts:65, minLooks:0,  minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
     {id:'principal',    emoji:'🏛️', title:'Principal',            salary:9000,  minAge:35, minSmarts:78, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
   ]},
   creative:{name:'Creative',  emoji:'🎨', prestige:2, rungs:[
@@ -2704,7 +2705,17 @@ function renderWork(){
       const salaryI=Math.round(rung.salary*(G.inflationMult||1));
       const rungDiv=document.createElement('div');
       rungDiv.className='career-rung '+(isCurrent?'current':isPassed?'locked':nextUp?'available':'locked');
-      rungDiv.innerHTML=`<div class="career-rung-emoji">${rung.emoji}</div><div class="career-rung-info"><div class="career-rung-title">${rung.title}</div><div class="career-rung-salary">$${salaryI.toLocaleString()}/yr</div></div><div class="career-rung-badge ${isCurrent?'badge-current':nextUp?'badge-next':'badge-locked'}">${isCurrent?'YOU':'Tier '+rung.tier}</div>`;
+      // Build blocker hint for next-up rungs
+      let blockerHint='';
+      if(nextUp){
+        const reasons=[];
+        if(G.smarts<(rung.minSmarts-15))reasons.push(`🧠 Need ${rung.minSmarts} Smarts`);
+        if(eduRank[G.education]<eduRank[rung.minEdu])reasons.push(`📚 Need ${rung.minEdu}`);
+        if(rung.needsDegree&&!G.hasDegree)reasons.push('🎓 Need degree');
+        if((G.yearsInRole||0)<rung.yearsRequired)reasons.push(`⏳ ${rung.yearsRequired-(G.yearsInRole||0)} yrs left`);
+        if(reasons.length)blockerHint=`<div style="font-size:.6em;color:var(--coral-dark);font-weight:800;margin-top:2px">${reasons.join(' · ')}</div>`;
+      }
+      rungDiv.innerHTML=`<div class="career-rung-emoji">${rung.emoji}</div><div class="career-rung-info"><div class="career-rung-title">${rung.title}</div><div class="career-rung-salary">$${salaryI.toLocaleString()}/yr</div>${blockerHint}</div><div class="career-rung-badge ${isCurrent?'badge-current':nextUp?'badge-next':'badge-locked'}">${isCurrent?'YOU':'Tier '+rung.tier}</div>`;
       ladderDiv.appendChild(rungDiv);
     });
     el.appendChild(ladderDiv);
@@ -4299,6 +4310,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 
