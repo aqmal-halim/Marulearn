@@ -1897,12 +1897,12 @@ function ageUp(){
     applyMod({money:G.salary});
     addLog(`💰 Annual salary: +$${G.salary.toLocaleString()}`, 'good');
 
-    const autoPromoGain = 8 + Math.floor(G.smarts / 20);
+    const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
 
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
-      const promoBonus=Math.floor(G.salary*0.15);
-      G.salary=Math.floor(G.salary*1.15);
+      const promoBonus=Math.floor(G.salary*0.1);
+      G.salary=Math.floor(G.salary*1.05);
       if(G.salary>G.peakSalary)G.peakSalary=G.salary;
       G.promotionChance=Math.max(0,G.promotionChance-20);
       applyMod({money:promoBonus});
