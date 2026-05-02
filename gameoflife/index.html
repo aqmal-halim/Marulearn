@@ -1330,7 +1330,7 @@ function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
       },
       ()=>{applyMod({happiness:-5});addLog(`😞 Interview for ${j.title} at ${company} didn't go well.`,'bad');
         G.misfortune=Math.min((G.misfortune||0)+5,100);
-        showMascotBubble('🦉 Don't give up! Keep studying and try again! 💪',3000);
+        showMascotBubble("🦉 Don't give up! Keep studying and try again! 💪",3000);
         triggerCharReaction('slump');
         if(onDone)onDone();
       }
@@ -2095,7 +2095,7 @@ function jobInterview(j){
         addLog(`😞 Interview for ${j.title} didn't go well.`,'bad');
         SoundManager.fail();applyMod({happiness:-5});
         G.misfortune=Math.min((G.misfortune||0)+5,100);
-        showMascotBubble('🦉 Don\'t give up! Study more and try again! 💪', 3000);
+        showMascotBubble("🦉 Don't give up! Study more and try again! 💪", 3000);
       }
       checkAchievements();save();updateUI();renderWork();
     };
@@ -3031,7 +3031,7 @@ function triggerSchoolTest(){
     if(isScramble){
       startScrambleMiniGame(
         ()=>{applyMod({smarts:10,happiness:8});addLog('Aced the school test! +10 Smarts 📝','good');showMascotBubble('🦉 Brilliant! Teacher is proud of you! ⭐',4000);triggerCharReaction('spin');burst(30);},
-        ()=>{applyMod({smarts:-5,happiness:-8});addLog('Failed the school test 😞 −5 Smarts','bad');showMascotBubble('🦉 Don't worry — keep studying and you'll do better! 📚',4000);triggerCharReaction('slump');}
+        ()=>{applyMod({smarts:-5,happiness:-8});addLog('Failed the school test 😞 −5 Smarts','bad');showMascotBubble("🦉 Don't worry — keep studying and you'll do better! 📚",4000);triggerCharReaction('slump');}
       );
     } else {
       startMathMiniGame(
@@ -3075,7 +3075,7 @@ function startMemoryCardGame(onWin,onFail){
     if(_memState.timer<=0){
       clearInterval(_memState.interval);
       const el=document.getElementById('m-extra');
-      if(el)el.innerHTML+='<div style="text-align:center;font-weight:900;color:var(--coral-dark);font-size:1.1em;margin-top:8px">⏰ Time's up!</div>';
+      if(el)el.innerHTML+="<div style=\"text-align:center;font-weight:900;color:var(--coral-dark);font-size:1.1em;margin-top:8px\">⏰ Time's up!</div>";
       setTimeout(()=>mgDone(false,onFail),800);
     }
   },1000);
@@ -3146,7 +3146,7 @@ function triggerPerformanceReview(){
         addLog('😱 Performance review CATASTROPHIC — fired!','bad');
         G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
         applyMod({happiness:-25});SoundManager.fail();shakeScreen();flashRed();
-        showMascotBubble('🦉 Tough break. Time to job hunt again — you've got this! 💪',5000);
+        showMascotBubble("🦉 Tough break. Time to job hunt again — you've got this! 💪",5000);
         triggerCharReaction('slump');
       } else {
         G.promotionChance=Math.max(0,G.promotionChance-20);
@@ -3173,7 +3173,7 @@ function triggerMusicAudition(){
   document.getElementById('m-icon').textContent='🎵';
   document.getElementById('m-title').textContent='Music Audition!';
   document.getElementById('m-body').style.display='block';
-  document.getElementById('m-body').textContent='You've been practising — time to perform! Tap in rhythm!';
+  document.getElementById('m-body').textContent='You\'ve been practising — time to perform! Tap in rhythm!';
   _rhythmState={round:0,passed:0,failed:0,active:false,pattern:[],expectIdx:0,onFinish:null};
   document.getElementById('m-btns').innerHTML='';
   document.getElementById('m-extra').innerHTML=`
@@ -3203,12 +3203,12 @@ function startRhythmRound(){
         const gig=rand(500,2000);
         applyMod({happiness:20,smarts:10,money:gig});
         addLog(`🎵 Music audition PASSED! +$${gig.toLocaleString()} gig, +20 Happy, +10 Smarts!`,'legend');
-        SoundManager.levelUp();burst(40);showMascotBubble('🦉 You're a STAR! The crowd loved you! 🌟',5000);
+        SoundManager.levelUp();burst(40);showMascotBubble('🦉 You\'re a STAR! The crowd loved you! 🌟',5000);
         triggerCharReaction('spin');mascotDance();
       } else {
         applyMod({happiness:-10});
-        addLog('🎵 Music audition didn't go well... −10 Happiness','bad');
-        showMascotBubble('🦉 Tough crowd! Keep practising — you'll nail it next time! 🎵',4000);
+        addLog('🎵 Music audition didn\'t go well... −10 Happiness','bad');
+        showMascotBubble('🦉 Tough crowd! Keep practising — you\'ll nail it next time! 🎵',4000);
         triggerCharReaction('slump');
       }
       checkAchievements();save();updateUI();
@@ -3318,15 +3318,15 @@ function triggerReflection(age){
   if((G.investments||0)>50000||G.money>100000) positives.push({icon:'💰',text:'Financial security gives you peace of mind.'});
   if((G.family||[]).find(m=>m.type==='spouse')) positives.push({icon:'💍',text:'You found love. What a wonderful thing.'});
   if((G.family||[]).filter(m=>m.type==='child').length>=2) positives.push({icon:'👨‍👩‍👧',text:'Your family fills your heart with pride.'});
-  if(G.smarts>=80) positives.push({icon:'🎓',text:'You're proud of your intellectual journey.'});
+  if(G.smarts>=80) positives.push({icon:'🎓',text:'You\'re proud of your intellectual journey.'});
   if(G.achievements.length>=8) positives.push({icon:'🏆',text:'A life rich with achievements — remarkable.'});
-  if(G.happiness>=75) positives.push({icon:'😄',text:'You've lived with genuine happiness.'});
+  if(G.happiness>=75) positives.push({icon:'😄',text:'You\'ve lived with genuine happiness.'});
 
   const traveled=(G.yearActCounts?.travel||0)>0||(G.log||[]).some(l=>l.msg.includes('trip'));
-  if(!traveled) regrets.push({icon:'✈️',text:'You wish you'd seen more of the world.'});
+  if(!traveled) regrets.push({icon:'✈️',text:'You wish you\'d seen more of the world.'});
   if(!(G.family||[]).find(m=>m.type==='spouse')) regrets.push({icon:'💕',text:'The quiet house feels lonely sometimes.'});
   if(G.smarts<50) regrets.push({icon:'📚',text:'You wonder what you could have achieved with more education.'});
-  if(G.health<50) regrets.push({icon:'❤️',text:'You wish you'd looked after yourself better.'});
+  if(G.health<50) regrets.push({icon:'❤️',text:'You wish you\'d looked after yourself better.'});
 
   // Limit to 3 each
   const showPositives=positives.slice(0,2);
