@@ -1904,7 +1904,7 @@ function ageUp(){
       const promoBonus=Math.floor(G.salary*0.1);
       G.salary=Math.floor(G.salary*1.05);
       if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-      G.promotionChance=Math.max(0,G.promotionChance-20);
+      G.promotionChance=Math.max(0,G.promotionChance-80);
       applyMod({money:promoBonus});
       addLog(`🎉 PROMOTION! Salary raised to $${G.salary.toLocaleString()}/yr! +$${promoBonus.toLocaleString()} bonus!`,'legend');
       SoundManager.legend();burst(40);
