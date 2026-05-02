@@ -621,6 +621,13 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 .hint-btn{padding:6px 14px;font-size:.78em;font-weight:900;background:#FFF9C4;border:2px solid var(--sun-dark);border-radius:10px;cursor:pointer;color:var(--ink)}
 .hint-btn:disabled{opacity:.4;cursor:not-allowed}
 .word-star-rating{text-align:center;font-size:2em;animation:pop-in .4s cubic-bezier(.34,1.56,.64,1)}
+/* ══ SCORE BREAKDOWN ══ */
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;background:rgba(255,255,255,.12);border-radius:10px;padding:7px 10px}
+.score-row-label{font-size:.75em;font-weight:900;color:white;width:110px;flex-shrink:0}
+.score-row-bar-wrap{flex:1;height:9px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden}
+.score-row-bar{height:100%;background:linear-gradient(90deg,#FFD93D,#FFB347);border-radius:99px;transition:width .8s ease}
+.score-row-pts{font-size:.72em;font-weight:900;color:#FFD93D;width:55px;text-align:right;flex-shrink:0}
+
 /* ══ MOBILE ══ */
 @media (max-width:375px){
   .start-title{font-size:2.6em}
@@ -649,6 +656,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
       </div>
       <div style="margin:10px 0 4px"><span class="form-label">Skin Tone</span><div class="skin-swatches"><div class="skin-swatch selected" style="background:#FFDBB4" onclick="pickSkin('#FFDBB4',this)"></div><div class="skin-swatch" style="background:#D4956A" onclick="pickSkin('#D4956A',this)"></div><div class="skin-swatch" style="background:#A0522D" onclick="pickSkin('#A0522D',this)"></div><div class="skin-swatch" style="background:#5C3317" onclick="pickSkin('#5C3317',this)"></div></div></div><button type="button" class="btn-start" onclick="startLife()">🚀 Begin My Life!</button>
     </div>
+    <div id="personal-best-banner" style="display:none;background:rgba(0,0,0,.25);color:white;font-size:.78em;font-weight:800;border-radius:14px;padding:9px 16px;margin-top:10px;text-align:center;line-height:1.5;backdrop-filter:blur(4px)"></div>
     <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()">▶️ Continue My Story</button>
   </div>
 </div>
@@ -659,6 +667,8 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   <div class="end-title" id="end-name-title">Life Story</div>
   <div class="end-sub" id="end-lived">You lived a full life!</div>
   <div class="end-grade-badge end-grade-ap" id="end-grade">A+</div>
+  <div id="end-score-block" style="text-align:center;margin-bottom:14px"></div>
+  <div id="end-score-breakdown" style="width:100%;max-width:380px;margin-bottom:14px"></div>
   <div style="font-family:'Fredoka One',cursive;color:white;font-size:.9em;margin-bottom:8px;opacity:.85">✨ Best Moments</div>
   <div class="end-moments" id="end-moments"></div>
   <div class="end-trophies-row" id="end-trophies-row"></div>
@@ -807,6 +817,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 <button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" title="Toggle music">🎵</button>
 
 <script>
+
 
 
 
@@ -986,6 +997,19 @@ const DEFAULT = {
 };
 let G = {...DEFAULT};
 let chosenGender = 'male';
+
+const BEST_KEY = 'lifestory_best_v1';
+const loadBest = () => { try{ const s=localStorage.getItem(BEST_KEY); return s?JSON.parse(s):null; }catch(e){return null;} };
+const saveBest = (score, name, age, grade) => {
+  try{
+    const cur = loadBest();
+    if(!cur || score > cur.score){
+      localStorage.setItem(BEST_KEY, JSON.stringify({score, name, age, grade, date: new Date().toLocaleDateString()}));
+      return true; // new record
+    }
+    return false;
+  }catch(e){return false;}
+};
 
 const save  = () => { try{ localStorage.setItem('lifestory_v6', JSON.stringify(G)); const ind=document.getElementById('save-ind'); if(ind){ ind.classList.add('show'); setTimeout(()=>ind.classList.remove('show'),1800); } }catch(e){} };
 const load  = () => { try{ const s=localStorage.getItem('lifestory_v6'); return s?JSON.parse(s):null; }catch(e){return null;} };
@@ -1688,35 +1712,140 @@ function getLegacy() {
 }
 
 function calcLegacyScore() {
+  return calcScoreBreakdown().total;
+}
+
+function calcScoreBreakdown() {
   const netWorth = G.money + (G.investments||0);
-  const famScore = (G.family||[]).length * 500;
-  const happyScore = G.happiness * 50;
-  const ageScore = G.age * 200;
-  const wealthScore = Math.min(netWorth / 10, 50000);
-  return Math.floor(ageScore + happyScore + famScore + wealthScore);
+  const trophyCount = (G.achievements||[]).length;
+  const famCount = (G.family||[]).length;
+
+  const categories = [
+    {
+      label: '⏳ Longevity',
+      desc: `Lived to age ${G.age}`,
+      score: Math.min(G.age * 100, 10000),
+      max: 10000
+    },
+    {
+      label: '😊 Happiness',
+      desc: `Final happiness: ${G.happiness}`,
+      score: Math.round(G.happiness * 80),
+      max: 8000
+    },
+    {
+      label: '❤️ Health',
+      desc: `Final health: ${G.health}`,
+      score: Math.round(G.health * 40),
+      max: 4000
+    },
+    {
+      label: '🧠 Smarts',
+      desc: `Final smarts: ${G.smarts}`,
+      score: Math.round(G.smarts * 30),
+      max: 3000
+    },
+    {
+      label: '✨ Looks',
+      desc: `Final looks: ${G.looks}`,
+      score: Math.round(G.looks * 20),
+      max: 2000
+    },
+    {
+      label: '💰 Wealth',
+      desc: `Net worth: $${netWorth.toLocaleString()}`,
+      score: Math.min(Math.floor(netWorth / 20), 15000),
+      max: 15000
+    },
+    {
+      label: '🏆 Trophies',
+      desc: `${trophyCount} / ${ALL_ACHIEVEMENTS.length} unlocked`,
+      score: trophyCount * 500,
+      max: ALL_ACHIEVEMENTS.length * 500
+    },
+    {
+      label: '👨‍👩‍👧 Family',
+      desc: `${famCount} family member${famCount!==1?'s':''}`,
+      score: famCount * 800,
+      max: 5 * 800
+    },
+    {
+      label: '💼 Career',
+      desc: G.retired ? `Retired ${G.jobTitle||''}` : (G.jobTitle||'Unemployed'),
+      score: (() => {
+        const jdef = G.job ? (typeof getJobDef==='function'?getJobDef(G.job):null) : null;
+        const tier = jdef ? (jdef.tier||1) : 0;
+        const trackPrestige = G.careerTrack && CAREER_TRACKS[G.careerTrack] ? CAREER_TRACKS[G.careerTrack].prestige : 1;
+        return tier * trackPrestige * 400 + (G.retired ? 2000 : 0);
+      })(),
+      max: 5 * 5 * 400 + 2000
+    },
+  ];
+
+  const total = categories.reduce((sum, c) => sum + c.score, 0);
+  return { categories, total };
 }
 
 function showEndScreen(){
-  const legacy=getLegacy(), score=calcLegacyScore();
+  const legacy=getLegacy();
+  const breakdown=calcScoreBreakdown();
+  const score=breakdown.total;
   const netWorth=G.money+(G.investments||0);
   const happyAvg=G.happiness;
+
+  // Grade
   let gradeClass='end-grade-c', gradeText='C';
   if(happyAvg>75&&netWorth>100000&&G.achievements.length>8){gradeClass='end-grade-ap';gradeText='A+';}
   else if(happyAvg>65){gradeClass='end-grade-a';gradeText='A';}
   else if(happyAvg>50){gradeClass='end-grade-b';gradeText='B';}
+
+  // Save personal best
+  const isNewBest = saveBest(score, G.name, G.age, gradeText);
+  const prevBest = loadBest();
+
   document.getElementById('end-name-title').textContent=`${G.name}'s Life Story`;
   document.getElementById('end-lived').textContent=`You lived to ${G.age}! ${legacy}`;
   const gradeEl=document.getElementById('end-grade');
   gradeEl.className=`end-grade-badge ${gradeClass}`;
   gradeEl.textContent=gradeText;
+
+  // Score display
+  const scoreEl=document.getElementById('end-score-block');
+  if(scoreEl){
+    const prevLine = prevBest && !isNewBest
+      ? `<div style="font-size:.72em;color:rgba(255,255,255,.7);margin-top:4px">Personal Best: ${prevBest.score.toLocaleString()} pts (${prevBest.name}, age ${prevBest.age})</div>`
+      : isNewBest ? `<div style="font-size:.72em;color:#FFD93D;font-weight:900;margin-top:4px">🎉 New Personal Best!</div>` : '';
+    scoreEl.innerHTML=`
+      <div style="font-family:'Fredoka One',cursive;font-size:2.4em;color:white;text-shadow:3px 3px 0 rgba(0,0,0,.2)">${score.toLocaleString()}</div>
+      <div style="font-size:.78em;color:rgba(255,255,255,.8);font-weight:900;margin-top:2px">LIFE SCORE</div>
+      ${prevLine}`;
+  }
+
+  // Score breakdown
+  const breakdownEl=document.getElementById('end-score-breakdown');
+  if(breakdownEl){
+    breakdownEl.innerHTML=breakdown.categories.map(c=>{
+      const pct=Math.min(100,Math.round(c.score/c.max*100));
+      return `<div class="score-row">
+        <div class="score-row-label">${c.label}</div>
+        <div class="score-row-bar-wrap">
+          <div class="score-row-bar" style="width:${pct}%"></div>
+        </div>
+        <div class="score-row-pts">${c.score.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+  }
+
   // Best moments
   const moments=(G.log||[]).filter(e=>e.type==='legend'||e.type==='event').slice(0,3);
   document.getElementById('end-moments').innerHTML=moments.map(e=>`<div class="end-moment-card">Age ${e.age}: ${e.msg}</div>`).join('') || '<div class="end-moment-card">A life fully lived 🌟</div>';
+
   // Trophy dots
   document.getElementById('end-trophies-row').innerHTML=(G.achievements||[]).map(id=>{
     const a=ALL_ACHIEVEMENTS.find(x=>x.id===id);
     return a?`<div class="end-trophy-dot">${a.emoji}</div>`:'';
   }).join('');
+
   // Switch screens
   document.getElementById('game-screen').classList.remove('active');
   document.getElementById('end-screen').classList.add('active');
@@ -4282,6 +4411,13 @@ function applyActivityBonus(){
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=load();
   if(saved) document.getElementById('continue-btn').style.display='block';
+  // Show personal best on start screen
+  const best=loadBest();
+  const pbEl=document.getElementById('personal-best-banner');
+  if(pbEl&&best){
+    pbEl.innerHTML=`🏆 Personal Best: <b>${best.score.toLocaleString()} pts</b> — ${best.name}, age ${best.age} (Grade ${best.grade}) · ${best.date}`;
+    pbEl.style.display='block';
+  }
 });
 
 function renderCups(){
@@ -4310,6 +4446,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 
