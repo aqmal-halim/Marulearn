@@ -879,6 +879,8 @@ const DEFAULT = {
   birthBackground:'',
   // NEW fields v7
   eventFiredThisYear:false,
+  quietYears:0,
+  _promotionPending:false,
   careerTrack:null,
   relationshipScore:0,
   partnerName:null,
@@ -1209,39 +1211,62 @@ function evFn(name) {
 // ══════════════════════════════════════════
 function generateJobOffers() {
   if(!G.pendingOffers)G.pendingOffers=[];
-  const offers = [];
   if(G.retired)return;
 
-  // Get eligible jobs — prefer next rung in current track
+  const currentSalary = G.salary || 0;
   const currentTrackEntry = G.job ? getJobTrack(G.job) : null;
   const currentTrackKey = currentTrackEntry ? currentTrackEntry[0] : null;
   const eligible = [];
 
-  // Priority 1: next rung in same track
   if(G.job && currentTrackKey){
+    // Only offer the NEXT rung in the same career track, and only if salary is higher
     const nextRung = getNextRungInTrack(G.job);
-    if(nextRung && G.age>=nextRung.minAge && G.smarts>=(nextRung.minSmarts-8) &&
-       G.looks>=(nextRung.minLooks||0)-8 && eduRank[G.education]>=eduRank[nextRung.minEdu] &&
-       (!nextRung.needsDegree||G.hasDegree) && (G.yearsInRole||0)>=nextRung.yearsRequired){
+    const inflatedSalary = nextRung ? Math.round(nextRung.salary*(G.inflationMult||1)) : 0;
+    if(nextRung && inflatedSalary > currentSalary &&
+       G.age>=nextRung.minAge && G.smarts>=(nextRung.minSmarts-8) &&
+       G.looks>=(nextRung.minLooks||0)-8 &&
+       eduRank[G.education]>=eduRank[nextRung.minEdu] &&
+       (!nextRung.needsDegree||G.hasDegree) &&
+       (G.yearsInRole||0)>=nextRung.yearsRequired){
       eligible.push(nextRung);
     }
-  }
-  // Priority 2: entry-level jobs in other tracks (if no current job or low tier)
-  if(!G.job || (getJobDef(G.job)||{tier:0}).tier<=2){
+  } else if(!G.job){
+    // No job: offer entry-level roles across tracks (higher salary than $0 always)
     Object.values(CAREER_TRACKS).forEach(track=>{
       const rung = track.rungs[0];
-      if(rung.id!==G.job && G.age>=rung.minAge && G.smarts>=(rung.minSmarts-10) &&
-         G.looks>=(rung.minLooks||0)-10 && eduRank[G.education]>=eduRank[rung.minEdu] &&
-         (!rung.needsDegree||G.hasDegree)) eligible.push(rung);
+      if(G.age>=rung.minAge && G.smarts>=(rung.minSmarts-10) &&
+         G.looks>=(rung.minLooks||0)-10 &&
+         eduRank[G.education]>=eduRank[rung.minEdu] &&
+         (!rung.needsDegree||G.hasDegree)){
+        eligible.push(rung);
+      }
     });
   }
+  // Rare career pivot: different track entry role, flagged clearly (10% chance, only if employed and tier <= 2)
+  if(G.job && (getJobDef(G.job)||{tier:0}).tier<=2 && Math.random()<0.10){
+    const otherTracks = Object.entries(CAREER_TRACKS).filter(([k])=>k!==currentTrackKey);
+    const pivot = otherTracks[Math.floor(Math.random()*otherTracks.length)];
+    if(pivot){
+      const rung = pivot[1].rungs[0];
+      const inflatedPivot = Math.round(rung.salary*(G.inflationMult||1));
+      if(inflatedPivot > currentSalary && G.age>=rung.minAge &&
+         G.smarts>=(rung.minSmarts-10) && (!rung.needsDegree||G.hasDegree)){
+        eligible.push({...rung, _isPivot:true});
+      }
+    }
+  }
 
-  const shuffled = eligible.sort(()=>Math.random()-.5).slice(0,3);
-  shuffled.forEach(j=>{
+  // Pick best offer (highest inflated salary), not random
+  const ranked = eligible
+    .map(j=>({...j, _inflated:Math.round(j.salary*(G.inflationMult||1))}))
+    .sort((a,b)=>b._inflated-a._inflated)
+    .slice(0,1); // only 1 offer queued at a time
+
+  const offers = ranked.map(j=>{
     const misP = Math.floor((G.misfortune||0)*0.3);
     const chance = Math.min(Math.max(Math.round(40+(G.smarts-j.minSmarts)*0.4+(G.looks-(j.minLooks||0))*0.2-misP),5),90);
     const trackEntry = getJobTrack(j.id);
-    offers.push({jobId:j.id, successChance:chance, trackKey:trackEntry?trackEntry[0]:null});
+    return {jobId:j.id, successChance:chance, trackKey:trackEntry?trackEntry[0]:null, isPivot:!!j._isPivot};
   });
   G.pendingOffers = offers;
 }
@@ -1315,29 +1340,38 @@ function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
   mathBtn.onclick=()=>{
     startMathMiniGame(
       ()=>{
-        G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;
-        G.promotionChance=10;G.yearsInRole=0;
-        if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-        G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
-        const entry=getJobTrack(j.id);
-        if(entry)G.careerTrack=entry[0];
-        addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
-        SoundManager.levelUp();applyMod({happiness:15});burst(40);
-        showNewspaper(`${G.name.toUpperCase()} LANDS ${j.title.toUpperCase()}! 🎉`);
-        showMascotBubble(`🦉 You aced the interview! Welcome to ${company}! 🎉`,4000);
-        mascotDance();triggerCharReaction('jump');
+        // In browse mode, passing the quiz still has a reduced success rate
+        const succeed = !isBrowseMode || (Math.random()*100 < (browseChance||50));
+        if(succeed){
+          G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;
+          G.promotionChance=10;G.yearsInRole=0;
+          if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+          G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
+          const entry=getJobTrack(j.id);
+          if(entry)G.careerTrack=entry[0];
+          addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
+          SoundManager.levelUp();applyMod({happiness:15});burst(40);
+          showNewspaper(`${G.name.toUpperCase()} LANDS ${j.title.toUpperCase()}! 🎉`);
+          showMascotBubble(`🦉 You aced the interview! Welcome to ${company}! 🎉`,4000);
+          mascotDance();triggerCharReaction('jump');
+        } else {
+          applyMod({happiness:-3});
+          addLog(`😐 Quiz passed but ${company} went with another candidate. Keep trying!`,'info');
+          showMascotBubble('🦉 So close! Try applying to more places or boosting your stats! 💪',3000);
+          triggerCharReaction('slump');
+        }
         checkAchievements();save();updateUI();renderWork();
         if(onDone)onDone();
       },
-      ()=>{applyMod({happiness:-5});addLog(`😞 Interview for ${j.title} at ${company} didn't go well.`,'bad');
+      ()=>{applyMod({happiness:-5});addLog(`😞 Interview for ${j.title} at ${company} didn\'t go well.`,'bad');
         G.misfortune=Math.min((G.misfortune||0)+5,100);
-        showMascotBubble("🦉 Don't give up! Keep studying and try again! 💪",3000);
+        showMascotBubble("🦉 Don\'t give up! Keep studying and try again! 💪",3000);
         triggerCharReaction('slump');
         if(onDone)onDone();
       }
     );
   };
-  btns.appendChild(mathBtn);
+    btns.appendChild(mathBtn);
   document.getElementById('modal').style.display='flex';
 }
 
@@ -2022,11 +2056,12 @@ function renderActivities(){
     });
   }
 
-  if(G.energy<G.maxEnergy){
-    const restItem=actItem('😴','Rest Early','End year now — +2⚡ next year, −10 Happy',()=>{
+  // Rest Early: only available at FULL energy (haven't done anything yet this year)
+  if(G.energy===G.maxEnergy){
+    const restItem=actItem('😴','Rest Early','Skip this year — +2⚡ bonus next year, −5 😊',()=>{
       G.restBonus=(G.restBonus||0)+2;
-      applyMod({happiness:-10});
-      addLog('Rested early 😴 — +2⚡ bonus next year.','info');
+      applyMod({happiness:-5});
+      addLog('Rested early 😴 — saved energy for next year. +2⚡ bonus.','info');
       SoundManager.click();
       ageUp();
     });
@@ -2183,29 +2218,41 @@ function renderWork(){
 
 function startBrowseInterview(j){
   const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
-  const misP=Math.floor((G.misfortune||0)*0.3);
-  const chance=Math.min(Math.max(Math.round(25+(G.smarts-j.minSmarts)*0.3+(G.looks-(j.minLooks||0))*0.15-misP),3),70);
-  showModal('💼','Job Application',`Applying for ${j.title} ($${inflatedSalary.toLocaleString()}/yr) — ${chance}% success chance.`,
-    [{l:'📝 Apply (lower odds)',style:'pri'},{l:'❌ Cancel',style:'sec'}],'','');
-  // patch the apply button
-  setTimeout(()=>{
-    const btns=document.querySelectorAll('.mbtn.pri');
-    if(btns.length>0){
-      const applyBtn=btns[btns.length-1];
-      const _orig=applyBtn.onclick;
-      applyBtn.onclick=()=>{
-        closeModal();
-        if(Math.random()*100<chance){
-          G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;G.promotionChance=10;G.yearsInRole=0;
-          const entry=getJobTrack(j.id);if(entry)G.careerTrack=entry[0];
-          if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-          addLog(`🎉 Got the job! ${j.emoji} ${j.title}`,'good');SoundManager.levelUp();applyMod({happiness:12});burst(30);
-          triggerCharReaction('jump');
-        }else{applyMod({happiness:-5});addLog(`😞 Application for ${j.title} rejected.`,'bad');G.misfortune=Math.min((G.misfortune||0)+3,100);}
-        checkAchievements();save();updateUI();renderWork();
-      };
-    }
-  },100);
+  const companyNames=['Apex Corp','NextGen Ltd','Innovate Inc','Summit Group','Stellar Co','Pinnacle Inc','Horizon Tech','Catalyst Corp'];
+  const company=companyNames[Math.floor(Math.random()*companyNames.length)];
+  // Show offer card first (same recruiter flow), then go to interview mini-game on accept
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='APPLY!';
+  document.getElementById('m-icon').textContent='📋';
+  document.getElementById('m-title').textContent='Job Application';
+  document.getElementById('m-body').style.display='none';
+  document.getElementById('m-extra').innerHTML=`
+    <div class="recruiter-popup">
+      <div class="recruiter-scene">
+        <div class="recruiter-avatar">📋</div>
+        <div class="recruiter-bubble">You applied to <b>${company}</b> for <b>${j.title}</b>. They\'ve called you in for an interview!</div>
+      </div>
+      <div class="offer-details">
+        <div class="offer-detail-row"><span class="offer-detail-label">💰 Salary</span><span class="offer-detail-val">$${inflatedSalary.toLocaleString()}/yr</span></div>
+        <div class="offer-detail-row"><span class="offer-detail-label">⚠️ Note</span><span class="offer-detail-val" style="color:var(--coral-dark)">Self-applied (lower odds)</span></div>
+      </div>
+    </div>`;
+  const btns=document.getElementById('m-btns');btns.innerHTML='';
+  const goBtn=document.createElement('button');goBtn.type='button';goBtn.className='mbtn pri';
+  goBtn.textContent='🤝 Go to Interview';
+  goBtn.onclick=()=>{
+    closeModal();
+    startInterviewMiniGame(j,{jobId:j.id,successChance:null,_browseMode:true},inflatedSalary,company,()=>{
+      checkAchievements();save();updateUI();renderWork();
+    });
+  };
+  const cancelBtn=document.createElement('button');cancelBtn.type='button';cancelBtn.className='mbtn sec';
+  cancelBtn.textContent='❌ Cancel Application';
+  cancelBtn.onclick=()=>closeModal();
+  btns.appendChild(goBtn);btns.appendChild(cancelBtn);
+  document.getElementById('modal').style.display='flex';
 }
 
 function renderEdu(){
@@ -2215,21 +2262,38 @@ function renderEdu(){
   const badge={none:'None',highschool:'🎓 High School',university:'🏛️ University',graduate:'🎓 Grad School'};
   el.innerHTML=`<div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sky-dark)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--sky-dark);margin-bottom:4px">Education</div><div style="font-weight:900">${badge[G.education]||'None'}</div>${G.studyingAt?`<div style="color:var(--sky-dark);font-size:.8em;margin-top:2px">📖 ${G.studyingAt}</div>`:''}</div>`;
 
-  el.appendChild(actItem('🧮','Study Hard (Mini-game!)','Solve a question to earn Smarts!',()=>{
-    SoundManager.click();
-    const type=Math.random()>.5?'math':'scramble';
-    if(type==='math'){
-      startMathMiniGame(
-        ()=>{applyMod({smarts:12,happiness:-5});addLog('Crushed it! +12 Smarts 🧠','good');},
-        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying','info');}
-      );
-    }else{
-      startScrambleMiniGame(
-        ()=>{applyMod({smarts:12,happiness:-5});addLog('Unscrambled it! +12 Smarts 🧠','good');},
-        ()=>{applyMod({smarts:5,happiness:-3});addLog('+5 Smarts from studying','info');}
-      );
-    }
-  }));
+  // Passive study activities (mini-games now fire automatically as life events)
+  const studyUsed = (G.yearActCounts?.study||0);
+  const studyBonus = studyUsed===0?10:studyUsed===1?5:0;
+  const studyItem = actItem('📚','Study',
+    studyBonus>0?`+${studyBonus} Smarts, −5 😊 · ⚡-1`:'Studied enough this year — no more gain',
+    ()=>{
+      if(!useEnergy(1))return;
+      G.yearActCounts=G.yearActCounts||{};
+      G.yearActCounts.study=(G.yearActCounts.study||0)+1;
+      if(studyBonus>0){
+        applyMod({smarts:studyBonus,happiness:-5});
+        addLog(`📚 Studied hard! +${studyBonus} Smarts`,'good');
+        showStatCard('📚 Study',[{label:'Smarts',val:studyBonus},{label:'Happiness',val:-5}]);
+        SoundManager.success();
+      } else {
+        addLog('📚 Studied but nothing new to learn right now.','info');
+        SoundManager.click();
+      }
+      renderEdu();
+    });
+  if(studyBonus===0)studyItem.style.opacity='0.5';
+  el.appendChild(studyItem);
+
+  const readItem = actItem('📖','Read Textbooks','+6 Smarts, +2 😊 · ⚡-1 · Slower but enjoyable',()=>{
+    if(!useEnergy(1))return;
+    applyMod({smarts:6,happiness:2});
+    addLog('📖 Read textbooks. +6 Smarts','good');
+    showStatCard('📖 Textbooks',[{label:'Smarts',val:6},{label:'Happiness',val:2}]);
+    SoundManager.success();
+    renderEdu();
+  });
+  el.appendChild(readItem);
 
   if(G.age>=18&&eduRank[G.education]<2&&G.smarts>=50){
     el.appendChild(actItem('🏛️','Enrol University','Smarts 50+ needed. Unlocks great jobs!',()=>{
@@ -2329,18 +2393,26 @@ function renderTrophies(){
 // ══════════════════════════════════════════
 function triggerRandomEvent(){
   const r=Math.random()*100;
-  if(r<7){
+  // Bad rare events (10% up from 7%)
+  if(r<10){
     const badEvents=[
-      ()=>{if(G.money<1000)return false;const loss=20000;applyMod({money:-loss,happiness:-10});addLog(`⚖️ LAWSUIT! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();shakeScreen();flashRed();G.misfortune=Math.min((G.misfortune||0)+15,100);return true;},
-      ()=>{applyMod({health:-30,happiness:-15});addLog(`🚑 MEDICAL EMERGENCY! −30 Health!`,'bad');SoundManager.fail();shakeScreen();flashRed();G.survivalBadge=true;return true;},
-      ()=>{if(G.money<500)return false;const loss=Math.floor(G.money*0.10);applyMod({money:-loss,happiness:-8});addLog(`🎣 SCAM! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();flashRed();G.misfortune=Math.min((G.misfortune||0)+10,100);return true;},
+      ()=>{if(G.money<1000)return false;const loss=rand(5000,20000);applyMod({money:-loss,happiness:-10});addLog(`⚖️ LAWSUIT! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();shakeScreen();flashRed();G.misfortune=Math.min((G.misfortune||0)+15,100);return true;},
+      ()=>{applyMod({health:-30,happiness:-15});addLog('🚑 MEDICAL EMERGENCY! −30 Health!','bad');SoundManager.fail();shakeScreen();flashRed();G.survivalBadge=true;return true;},
+      ()=>{if(G.money<500)return false;const loss=Math.floor(G.money*0.12);applyMod({money:-loss,happiness:-8});addLog(`🎣 SCAM! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();flashRed();G.misfortune=Math.min((G.misfortune||0)+10,100);return true;},
+      ()=>{if(!G.job)return false;applyMod({happiness:-20,money:-rand(500,2000)});G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;addLog('📉 REDUNDANCY! Your position was eliminated.','bad');SoundManager.fail();shakeScreen();return true;},
+      ()=>{if(G.money<200)return false;const cost=rand(800,3500);applyMod({money:-cost,happiness:-8,health:-5});addLog(`🔧 Car breakdown! Repair cost $${cost.toLocaleString()}.`,'bad');SoundManager.fail();return true;},
+      ()=>{applyMod({health:-15,happiness:-10});addLog('🤒 Bad illness — off sick for weeks. −15 Health, −10 Happy.','bad');SoundManager.fail();return true;},
     ];
-    for(let i=0;i<3;i++){const fn=badEvents[Math.floor(Math.random()*badEvents.length)];if(fn())return;}
-  }else if(r<12){
+    for(let i=0;i<4;i++){const fn=badEvents[Math.floor(Math.random()*badEvents.length)];if(fn())return;}
+  // Good rare events (15% up from 5%)
+  }else if(r<25){
     const goodEvents=[
       ()=>{const amt=rand(5000,30000);applyMod({money:amt,happiness:15});addLog(`🏛️ INHERITANCE! +$${amt.toLocaleString()}!`,'good');SoundManager.legend();burst(50);},
-      ()=>{applyMod({looks:10,happiness:20,money:rand(1000,5000)});addLog('🔥 VIRAL POST! Fame boost!','good');SoundManager.levelUp();burst(40);},
+      ()=>{applyMod({looks:10,happiness:20,money:rand(1000,5000)});addLog('🔥 VIRAL POST! Fame boost! +Looks +Happy','good');SoundManager.levelUp();burst(40);},
       ()=>{const amt=rand(2000,8000);applyMod({money:amt,happiness:10});addLog(`🍀 LUCKY BREAK! +$${amt.toLocaleString()}`,'good');SoundManager.money();burst(30);},
+      ()=>{applyMod({smarts:8,happiness:12});addLog('📰 Featured in local news! +8 Smarts, +12 Happy','good');SoundManager.levelUp();burst(25);},
+      ()=>{const amt=rand(1000,4000);applyMod({money:amt,happiness:8});addLog(`🎰 Scratch card win! +$${amt.toLocaleString()}!`,'good');SoundManager.money();},
+      ()=>{applyMod({health:15,looks:8,happiness:10});addLog('🌿 Health retreat gift! +15 Health, +8 Looks, +10 Happy','good');SoundManager.levelUp();burst(20);},
     ];
     const fn=goodEvents[Math.floor(Math.random()*goodEvents.length)]; fn();
   }
@@ -2509,6 +2581,7 @@ function ageUp(){
   G.musicCount=0;
   G._schoolTestThisYear=false;
   G.eventFiredThisYear=false;
+  G._promotionPending=false;
 
   if(G.age < 13)       G.maxEnergy = 3;
   else if(G.age < 18)  G.maxEnergy = 4;
@@ -2584,19 +2657,10 @@ function ageUp(){
     const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
-      const promoBonus=Math.floor(G.salary*0.1);
-      G.salary=Math.floor(G.salary*1.05);
-      if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+      // Promotion requires a mini-game — queue it via continueAgeUp's priority system
+      G._promotionPending=true;
+      G._promotionChanceSnapshot=G.promotionChance;
       G.promotionChance=Math.max(0,G.promotionChance-80);
-      applyMod({money:promoBonus});
-      addLog(`🎉 PROMOTION! New salary: $${G.salary.toLocaleString()}/yr!`,'legend');
-      SoundManager.legend();burst(40);
-      showNewspaper(`${G.name.toUpperCase()} GETS PROMOTED! 🎉`);
-      showMascotBubble(`🦉 PROMOTION! Your hard work paid off! 💼`, 4000);
-      mascotDance();
-      showModal('🎉','Promotion!',`You've been promoted! New salary: $${G.salary.toLocaleString()}/yr`,
-        [{l:'🎊 Accept!',m:{happiness:15},style:'pri'}],'YAY!','positive');
-      save();updateUI();return;
     }
   }
 
@@ -2643,6 +2707,7 @@ function continueAgeUp(){
   // Helper: fire an event and mark the year as done
   function fireEvent(fn){
     G.eventFiredThisYear=true;
+    G.quietYears=0; // any event resets the quiet counter
     checkAchievements();save();updateUI();
     fn();
   }
@@ -2728,6 +2793,60 @@ function continueAgeUp(){
   }
 
   // ════════════════════════════════════════════
+  // PRIORITY 4.5 — Promotion mini-game (if pending)
+  // ════════════════════════════════════════════
+  if(G._promotionPending && G.job && !G.retired){
+    G._promotionPending=false;
+    const prospectiveSalary=Math.floor(G.salary*1.12);
+    const promoBonus=Math.floor(G.salary*0.10);
+    fireEvent(()=>setTimeout(()=>{
+      const mc=document.getElementById('modal-card');
+      mc.className='modal-card positive';
+      document.getElementById('m-sfx').style.display='block';
+      document.getElementById('m-sfx').textContent='PROMO!';
+      document.getElementById('m-icon').textContent='📈';
+      document.getElementById('m-title').textContent='Promotion Opportunity!';
+      document.getElementById('m-body').style.display='block';
+      document.getElementById('m-body').textContent=`Your boss thinks you\'re ready for a promotion. Prove it!`;
+      document.getElementById('m-extra').innerHTML=`
+        <div class="office-scene">
+          <div style="font-size:.75em;font-weight:900;color:var(--ink2);margin-bottom:4px">💼 ${G.jobTitle} → Higher Role</div>
+          <div style="font-size:.82em;font-weight:800;color:var(--grass-dark);margin-bottom:6px">New salary: $${prospectiveSalary.toLocaleString()}/yr (+$${promoBonus.toLocaleString()} bonus)</div>
+          <div class="office-desk-big"></div>
+        </div>`;
+      document.getElementById('m-btns').innerHTML='';
+      const goBtn=document.createElement('button');goBtn.type='button';goBtn.className='mbtn pri';
+      goBtn.textContent='🧠 Take Promotion Test';
+      goBtn.onclick=()=>{
+        startMemoryCardGame(
+          ()=>{
+            G.salary=prospectiveSalary;
+            if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+            applyMod({money:promoBonus,happiness:15});
+            addLog(`🎉 PROMOTION! Passed the test! New salary: $${G.salary.toLocaleString()}/yr +$${promoBonus.toLocaleString()} bonus!`,'legend');
+            SoundManager.legend();burst(40);
+            showNewspaper(`${G.name.toUpperCase()} GETS PROMOTED! 🎉`);
+            showMascotBubble('🦉 PROMOTION! Your hard work paid off! 💼',4000);
+            mascotDance();triggerCharReaction('spin');
+            checkAchievements();save();updateUI();renderWork();
+          },
+          ()=>{
+            G.promotionChance=Math.min(G.promotionChance+20,50); // partial restore
+            applyMod({happiness:-8});
+            addLog('😞 Promotion test failed — not this time. Keep working hard!','bad');
+            showMascotBubble('🦉 So close! Keep grinding and you\'ll get there next year! 💪',4000);
+            triggerCharReaction('slump');
+            checkAchievements();save();updateUI();
+          }
+        );
+      };
+      document.getElementById('m-btns').appendChild(goBtn);
+      document.getElementById('modal').style.display='flex';
+    },300));
+    return;
+  }
+
+  // ════════════════════════════════════════════
   // PRIORITY 5 — Contextual mini-game events
   // ════════════════════════════════════════════
   // School test (ages 6–17, ~35% chance per year)
@@ -2751,30 +2870,46 @@ function continueAgeUp(){
     {minAge:16,maxAge:99,r:'c',emoji:'🔥',sfx:'UH-OH!',title:'Workplace Trouble',body:"Your boss isn\'t happy with your work.",
      guard:()=>!!G.job,
      choices:[{l:'💪 Shape up!',m:{happiness:-10,smarts:5},style:'pri'},{l:'😤 Whatever',fn:'_fired',style:'dan'}]},
-    {minAge:18,maxAge:99,r:'c',emoji:'🏚️',sfx:'UH-OH!',title:'Bad Luck Week',body:'Everything that could go wrong, did.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5},style:'sec'},{l:'😴 Rest it off',m:{happiness:-10,health:5},style:'grn'}]},
-    {minAge:20,maxAge:80,r:'c',emoji:'💸',sfx:'OOPS!',title:'Unexpected Bill!',body:'A huge unexpected bill just landed. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10},style:'pri'},{l:'😰 Ignore it',m:{happiness:-20},style:'sec'}]},
+    {minAge:18,maxAge:99,r:'c',emoji:'🏚️',sfx:'UH-OH!',title:'Bad Luck Week',body:'Everything that could go wrong, did. Your head is spinning.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5},style:'sec'},{l:'😴 Rest it off',m:{happiness:-10,health:5},style:'grn'}]},
+    {minAge:20,maxAge:80,r:'c',emoji:'💸',sfx:'OOPS!',title:'Unexpected Bill!',body:'A huge unexpected expense just landed in your inbox. Ouch!',choices:[{l:'💸 Pay it',m:{money:-2000,happiness:-10},style:'pri'},{l:'😰 Ignore it',m:{happiness:-20,health:-5},style:'sec'}]},
+    {minAge:22,maxAge:70,r:'c',emoji:'🏠',sfx:'UH-OH!',title:'Rent Hike!',body:'Your landlord just raised the rent significantly.',choices:[{l:'💸 Pay up',m:{money:-1500,happiness:-8},style:'pri'},{l:'📦 Move out',m:{happiness:-15,health:-5},style:'sec'}]},
+    {minAge:18,maxAge:60,r:'c',emoji:'😤',sfx:'DRAMA!',title:'Friend Fallout',body:'A close friendship turned sour after a big argument.',choices:[{l:'🤝 Apologise',m:{happiness:-8,smarts:5},style:'pri'},{l:'🚶 Walk away',m:{happiness:-15},style:'sec'}]},
+    {minAge:25,maxAge:65,r:'c',emoji:'🤒',sfx:'OH NO!',title:'Illness',body:'You came down with a nasty illness that knocked you out for weeks.',choices:[{l:'🏥 See a doctor',m:{health:10,money:-800,happiness:-5},style:'grn'},{l:'😴 Tough it out',m:{health:-12,happiness:-8},style:'sec'}]},
+    {minAge:30,maxAge:80,r:'c',emoji:'😰',sfx:'STRESS!',title:'Midlife Stress',body:'The pressure of life is getting to you. Everything feels overwhelming.',choices:[{l:'🧘 Take a break',m:{happiness:15,money:-500,health:5},style:'grn'},{l:'💪 Power through',m:{happiness:-20,health:-8},style:'sec'}]},
+    {minAge:16,maxAge:30,r:'c',emoji:'💔',sfx:'OUCH!',title:'Heartbreak',body:'A relationship ended badly. It hurts more than you expected.',choices:[{l:'🍦 Treat yourself',m:{happiness:-5,money:-200},style:'grn'},{l:'😢 Wallow in it',m:{happiness:-18,health:-5},style:'sec'}]},
   ];
+
+  // Quiet years counter: if 2+ quiet years, force an event this turn
+  const isQuiet=G.quietYears>=2;
 
   const roll=Math.random()*100;
   const rarity=roll<1?'l':roll<12?'r':'c';
   const misfortunePull=(G.misfortune||0)>30;
   const pool=EVENTS.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&e.r===rarity);
   let ev=null;
-  if(misfortunePull&&Math.random()<.45&&G.age>=16){
+  if(misfortunePull&&Math.random()<.55&&G.age>=16){
     const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
     if(eligible.length>0){ev=eligible[Math.floor(Math.random()*eligible.length)];G.misfortune=Math.max(0,(G.misfortune||0)-15);}
   }
-  if(!ev&&pool.length&&(rarity!=='c'||Math.random()<.40)){
+  // Raise common event chance from 40% to 65%, and force if quiet
+  if(!ev&&pool.length&&(isQuiet||rarity!=='c'||Math.random()<.65)){
     ev=pool[Math.floor(Math.random()*pool.length)];
+  }
+  // If still no event and quiet for 2+ years, force a neg event
+  if(!ev&&isQuiet&&G.age>=18){
+    const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
+    if(eligible.length>0) ev=eligible[Math.floor(Math.random()*eligible.length)];
   }
   if(ev){
     const isLeg=ev.r==='l';
     const type=isLeg?'legendary':ev.r==='r'?'positive':'';
     if(isLeg){SoundManager.legend();burst(70);}
     G.eventFiredThisYear=true;
+    G.quietYears=0; // reset quiet counter
     showModal(ev.emoji,ev.title,ev.body,ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})),ev.sfx||'',type);
     checkAchievements();save();updateUI();return;
   }
+  G.quietYears=(G.quietYears||0)+1; // no event fired — increment quiet counter
 
   // ════════════════════════════════════════════
   // No event — just warn if stats critical
@@ -2840,6 +2975,8 @@ function continueLife(){
     if(G.birthBackground===undefined)G.birthBackground='';
     if(G.careerTrack===undefined)G.careerTrack=null;
     if(G.eventFiredThisYear===undefined)G.eventFiredThisYear=false;
+    if(G.quietYears===undefined)G.quietYears=0;
+    if(G._promotionPending===undefined)G._promotionPending=false;
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
     if(G.reflectionsDone===undefined)G.reflectionsDone=[];
