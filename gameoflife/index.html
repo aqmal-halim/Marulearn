@@ -1464,7 +1464,7 @@ function renderWork(){
 
   if(G.retired){
     const pension=G.pension||0;
-    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900;color:#78350f">Enjoying retirement!</div><div style="color:#b45309;font-weight:800;font-size:.9em">💰 $${pension.toLocaleString()}/mo pension · $${(pension*12).toLocaleString()}/yr</div></div>`;
+    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900;color:#78350f">Enjoying retirement!</div><div style="color:#b45309;font-weight:800;font-size:.9em">💰 $${pension.toLocaleString()}/mo pension · $${(pension).toLocaleString()}/yr</div></div>`;
     el.innerHTML+='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:8px">You\'ve earned your rest! 🌴</p>';
     return;
   }
