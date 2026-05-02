@@ -269,7 +269,7 @@ body::before{
 .letter-tile:hover{transform:scale(1.1);box-shadow:0 5px 14px rgba(99,102,241,0.4)}
 .letter-tile:active{transform:scale(.9)}
 .answer-row{display:flex;gap:6px;justify-content:center;margin:8px 0;min-height:40px;flex-wrap:wrap}
-.answer-slot{width:38px;height:38px;border:2.5px dashed #c7d2fe;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;background:rgba(238,242,255,0.5);cursor:pointer;transition:all .15s}
+.answer-slot{width:38px;height:38px;border:2.5px dashed #c7d2fe;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1em;font-weight:900;background:rgba(238,242,255,0.5);cursor:pointer;transition:all .15px}
 .answer-slot.filled{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;border-color:#f59e0b;border-style:solid}
 
 /* ── ENERGY BAR ── */
@@ -384,6 +384,15 @@ body::before{
 }
 .promo-bar-track{height:10px;background:rgba(226,232,240,0.7);border-radius:99px;overflow:hidden;margin-top:6px}
 .promo-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .5s ease}
+
+/* ── OFFER NOTIFICATION DOT ── */
+.offer-dot{
+  background:#ef4444;color:white;border-radius:50%;
+  width:16px;height:16px;font-size:.58em;
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-left:3px;font-weight:900;vertical-align:middle;
+  animation:pop-in .3s cubic-bezier(.34,1.56,.64,1)
+}
 </style>
 </head>
 <body>
@@ -632,34 +641,24 @@ function addLog(msg, type='info') {
   if(G.log.length>60) G.log.pop();
 }
 
-// ══════════════════════════════════════════
-// IMPROVEMENT 9 — BIRTH STATS
-// ══════════════════════════════════════════
 function rollBirthStats() {
   const tier = Math.random();
   let background, moneyRange, smartsBase, healthBase, looksBase, happyBase;
-
   if (tier < 0.20) {
-    background = '🏚️ Struggling Family';
-    moneyRange = [0, 500];
+    background = '🏚️ Struggling Family'; moneyRange = [0, 500];
     smartsBase = [20, 40]; healthBase = [55, 75]; looksBase = [30, 55]; happyBase = [50, 65];
   } else if (tier < 0.50) {
-    background = '🏠 Working Class Family';
-    moneyRange = [500, 3000];
+    background = '🏠 Working Class Family'; moneyRange = [500, 3000];
     smartsBase = [35, 55]; healthBase = [65, 85]; looksBase = [40, 65]; happyBase = [60, 75];
   } else if (tier < 0.80) {
-    background = '🏡 Middle Class Family';
-    moneyRange = [3000, 12000];
+    background = '🏡 Middle Class Family'; moneyRange = [3000, 12000];
     smartsBase = [45, 65]; healthBase = [75, 90]; looksBase = [45, 70]; happyBase = [65, 80];
   } else {
-    background = '🏰 Wealthy Family';
-    moneyRange = [12000, 50000];
+    background = '🏰 Wealthy Family'; moneyRange = [12000, 50000];
     smartsBase = [55, 75]; healthBase = [80, 95]; looksBase = [55, 80]; happyBase = [70, 90];
   }
-
   return {
-    background,
-    moneyRangeMax: moneyRange[1],
+    background, moneyRangeMax: moneyRange[1],
     money:     rand(moneyRange[0], moneyRange[1]),
     smarts:    rand(smartsBase[0], smartsBase[1]),
     health:    rand(healthBase[0], healthBase[1]),
@@ -807,7 +806,6 @@ function evFn(name) {
     addLog(`💍 Married ${partnerName} at age ${G.age}! +25 Happy, −$3,000 (wedding).`,'legend');
     SoundManager.legend(); burst(60); updateUI();
   }
-  // BUG 3 FIX: apply cooldown on marriage refusal
   if(name==='_marry_no'){ G.datingAge=null; G._pendingPartner=null; G.datingCooldown=G.age+5; addLog('💔 Said no to marriage.','bad'); applyMod({happiness:-10}); }
   if(name==='_baby_yes'){
     if(!G.family) G.family=[];
@@ -823,11 +821,9 @@ function evFn(name) {
 // JOB OFFER SYSTEM
 // ══════════════════════════════════════════
 function generateJobOffers() {
-  // BUG 5 FIX: warn about expiring offers
   if (G.pendingOffers && G.pendingOffers.length > 0) {
     addLog('📬 Last year\'s job offers have expired. New opportunities await.', 'info');
   }
-
   const offers = [];
   const eligible = JOBS.filter(j => {
     if(j.id === G.job) return false;
@@ -1121,8 +1117,7 @@ function updateEnergyUI(){
 }
 
 // ══════════════════════════════════════════
-// DIMINISHING RETURNS — IMPROVEMENT 11
-// scaledBonus tiers: [full, half, negative]
+// DIMINISHING RETURNS
 // ══════════════════════════════════════════
 function actCount(key){if(!G.yearActCounts)G.yearActCounts={};return G.yearActCounts[key]||0;}
 function incActCount(key){if(!G.yearActCounts)G.yearActCounts={};G.yearActCounts[key]=(G.yearActCounts[key]||0)+1;}
@@ -1134,6 +1129,23 @@ function scaledBonus(key,base,tiers=[1,.5,-0.5]){const used=actCount(key);const 
 function getAvatar(age,gender){if(age<3)return'👶';if(age<13)return gender==='female'?'👧':'👦';if(age<22)return'🧑‍🎓';if(age<60)return gender==='female'?'👩‍💼':'👨‍💼';return gender==='female'?'👵':'👴';}
 function getStage(age){if(age<3)return'👶 Newborn';if(age<6)return'🧒 Toddler';if(age<13)return'🎒 Kid';if(age<18)return'🎧 Teen';if(age<22)return'🧑‍🎓 Young Adult';if(age<40)return'💼 Adult';if(age<60)return'🧠 Prime';if(age<75)return'🌟 Senior';return'🏆 Elder';}
 function statColor(v){return v>=70?'#10b981':v>=40?'#f59e0b':'#ef4444';}
+
+// ══════════════════════════════════════════
+// OFFER BADGE — shows count on Work tab
+// ══════════════════════════════════════════
+function updateOfferBadge(){
+  const tab=document.getElementById('tab-work');
+  if(!tab)return;
+  const count=(G.pendingOffers||[]).length;
+  const existing=tab.querySelector('.offer-dot');
+  if(existing)existing.remove();
+  if(count>0){
+    const dot=document.createElement('span');
+    dot.className='offer-dot';
+    dot.textContent=count;
+    tab.appendChild(dot);
+  }
+}
 
 // ══════════════════════════════════════════
 // UI CONTROLLER
@@ -1156,6 +1168,7 @@ function updateUI(){
   updateEnergyUI();
   renderLog();
   renderFamilyCard();
+  updateOfferBadge();
 }
 
 function renderFamilyCard(){
@@ -1195,6 +1208,7 @@ function openTab(name){
   if(name==='fam')  renderFamilyTab();
   if(name==='cups') renderTrophies();
   if(name==='act')  renderActivities();
+  updateOfferBadge();
 }
 
 function renderFamilyTab(){
@@ -1226,7 +1240,7 @@ function actItem(emoji,title,sub,fn){
 }
 
 // ══════════════════════════════════════════
-// ACTIVITIES — IMPROVEMENT 11
+// ACTIVITIES
 // ══════════════════════════════════════════
 function renderActivities(){
   const el=document.getElementById('panel-act');
@@ -1260,109 +1274,71 @@ function renderActivities(){
     el.appendChild(item);
   }
 
-  // IMPROVEMENT 11: All activities now have tradeoffs
   addAct(5,'📖','Read a Book','+6 Smarts, +3 Happy · −3 Health (sedentary)','read',1,()=>{
     const s=scaledBonus('read',6),h=scaledBonus('read',3);
-    const penalty=scaledBonus('read',3); // health penalty scales too
     incActCount('read');
-    if(s>0||h>0){
-      applyMod({smarts:s,happiness:h,health:-3});
-      addLog(`Read a book 📖 +${s} Smarts, +${h} Happy, −3 Health (sedentary)`,'good');
-    } else {
-      applyMod({health:-3});
-      addLog('Read a book — nothing new to learn; still sat around all day 📖','info');
-    }
+    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy, −3 Health`,'good');}
+    else{applyMod({health:-3});addLog('Read a book — nothing new to learn 📖','info');}
     SoundManager.success();
   });
 
   addAct(5,'🎨','Draw / Paint','+4 Happy, +3 Looks · −3 Smarts (creative drift)','draw',1,()=>{
     const h=scaledBonus('draw',4),l=scaledBonus('draw',3);
     incActCount('draw');
-    if(h>0||l>0){
-      applyMod({happiness:h,looks:l,smarts:-3});
-      addLog(`Got creative 🎨 +${h} Happy, +${l} Looks, −3 Smarts (creative drift)`,'good');
-    } else {
-      applyMod({smarts:-3});
-      addLog('Drew a bit but inspiration ran dry — creative drift sets in 🎨','info');
-    }
+    if(h>0||l>0){applyMod({happiness:h,looks:l,smarts:-3});addLog(`Got creative 🎨 +${h} Happy, +${l} Looks, −3 Smarts`,'good');}
+    else{applyMod({smarts:-3});addLog('Drew a bit — creative drift sets in 🎨','info');}
     SoundManager.success();
   });
 
   addAct(6,'🏃','Exercise','+6 Health, +3 Looks · −5 Happy (effort/soreness)','run',1,()=>{
     const h=scaledBonus('run',6),l=scaledBonus('run',3);
     incActCount('run');
-    if(h>0||l>0){
-      applyMod({health:h,looks:l,happiness:-5});
-      addLog(`Went for a run 🏃 +${h} Health, +${l} Looks, −5 Happy (sore muscles)`,'good');
-    } else {
-      applyMod({happiness:-5});
-      addLog('Ran again — body is overtrained, mood tanked 🏃','info');
-    }
+    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5});addLog(`Went for a run 🏃 +${h} Health, +${l} Looks, −5 Happy`,'good');}
+    else{applyMod({happiness:-5});addLog('Ran again — overtrained, mood tanked 🏃','info');}
     SoundManager.success();
   });
 
   addAct(8,'🎵','Play Music','+5 Happy, +3 Smarts · −3 Health (late nights)','music',1,()=>{
     const h=scaledBonus('music',5),s=scaledBonus('music',3);
     incActCount('music');
-    if(h>0||s>0){
-      applyMod({happiness:h,smarts:s,health:-3});
-      addLog(`Played music 🎵 +${h} Happy, +${s} Smarts, −3 Health (late nights)`,'good');
-    } else {
-      applyMod({health:-3});
-      addLog('Played music — no new growth, still burning the midnight candle 🎵','info');
-    }
+    if(h>0||s>0){applyMod({happiness:h,smarts:s,health:-3});addLog(`Played music 🎵 +${h} Happy, +${s} Smarts, −3 Health`,'good');}
+    else{applyMod({health:-3});addLog('Played music — no new growth 🎵','info');}
     SoundManager.success();
   });
 
-  addAct(12,'🏋️','Hit the Gym','+8 Health, +5 Looks · −5 Happy, −4 Smarts (time away from study)','gym',1,()=>{
+  addAct(12,'🏋️','Hit the Gym','+8 Health, +5 Looks · −5 Happy, −4 Smarts','gym',1,()=>{
     const h=scaledBonus('gym',8),l=scaledBonus('gym',5);
     incActCount('gym');
-    if(h>0||l>0){
-      applyMod({health:h,looks:l,happiness:-5,smarts:-4});
-      addLog(`Crushed the gym 🏋️ +${h} Health +${l} Looks (−5 Happy from soreness, −4 Smarts)`,'good');
-    } else {
-      applyMod({happiness:-5,smarts:-4});
-      addLog('Hit the gym — need rest for gains, wasting study time 🏋️','info');
-    }
+    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5,smarts:-4});addLog(`Crushed the gym 🏋️ +${h} Health +${l} Looks`,'good');}
+    else{applyMod({happiness:-5,smarts:-4});addLog('Hit the gym — overtrained! 🏋️','info');}
     SoundManager.success();
   });
 
-  addAct(12,'👥','Hang with Friends','+12 Happiness · −4 Smarts, −3 Health (late nights)','social',1,()=>{
+  addAct(12,'👥','Hang with Friends','+12 Happiness · −4 Smarts, −3 Health','social',1,()=>{
     const h=scaledBonus('social',12);
     incActCount('social');
-    if(h>0){
-      applyMod({happiness:h,smarts:-4,health:-3});
-      addLog(`Hung out with friends 😄 +${h} Happy, −4 Smarts, −3 Health (late nights)`,'good');
-    } else {
-      applyMod({smarts:-4,health:-3});
-      addLog('Saw friends — lost study time and sleep, but barely any fun left! 👥','info');
-    }
+    if(h>0){applyMod({happiness:h,smarts:-4,health:-3});addLog(`Hung out with friends 😄 +${h} Happy`,'good');}
+    else{applyMod({smarts:-4,health:-3});addLog('Saw friends — sleep deprived and no fun left! 👥','info');}
     SoundManager.success();
   });
 
-  addAct(16,'🧘','Meditate','+10 Happy, +4 Health · −4 Smarts (time not studying)','meditate',1,()=>{
+  addAct(16,'🧘','Meditate','+10 Happy, +4 Health · −4 Smarts','meditate',1,()=>{
     const h=scaledBonus('meditate',10),hp=scaledBonus('meditate',4);
     incActCount('meditate');
-    if(h>0||hp>0){
-      applyMod({happiness:h,health:hp,smarts:-4});
-      addLog(`Meditated 🧘 +${h} Happy, +${hp} Health, −4 Smarts`,'good');
-    } else {
-      applyMod({smarts:-4});
-      addLog('Meditated — already at peace but skipped studying 🧘','info');
-    }
+    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health, −4 Smarts`,'good');}
+    else{applyMod({smarts:-4});addLog('Meditated — already at peace 🧘','info');}
     SoundManager.success();
   });
 
-  // Grind at Work — HIGH reward, HIGH penalty
   if(a>=18&&G.job&&!G.retired){
     const grindBonus=Math.floor(G.salary*0.10);
-    const grindItem=actItem('💥','Grind at Work',`+$${grindBonus.toLocaleString()} bonus · −10 Happy, −5 Health (burnout risk!) · ⚡-1`,()=>{
+    const grindItem=actItem('💥','Grind at Work',`+$${grindBonus.toLocaleString()} bonus · −10 Happy, −5 Health · ⚡-1`,()=>{
       if(!useEnergy(1))return;
       incActCount('grind');
       const usedGrind=actCount('grind');
       const bonus=Math.round(grindBonus*[1,.7,.4,0][Math.min(usedGrind-1,3)]);
-      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5});addLog(`💥 Grinded hard at work! +$${bonus.toLocaleString()} bonus (−10 Happy, −5 Health — the cost of hustle)`,'event');}
-      else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out with no extra pay. Take a break!','bad');}
+      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()} (−10 Happy, −5 Health)`,'event');}
+      else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out with no extra pay!','bad');}
       SoundManager.success();
       renderActivities();
     });
@@ -1390,17 +1366,17 @@ function renderActivities(){
       incActCount('casino');
       applyMod({money:w?1500:-500,happiness:w?15:-10,smarts:-5,health:-3});
       if(!w){G.misfortune=Math.min((G.misfortune||0)+8,100);}
-      addLog(w?'Casino WIN! 🎰 +$1,500 (−5 Smarts, −3 Health)':'Casino loss -$500 😢 (−5 Smarts, −3 Health)',w?'good':'bad');
+      addLog(w?'Casino WIN! 🎰 +$1,500':'Casino loss -$500 😢',w?'good':'bad');
       if(w)SoundManager.money();else SoundManager.fail();
     });
   }
 
   if(a>=25){
     const tripCost=Math.round(2000*inf);
-    addAct(25,'✈️','Take a Trip',`+25 Happy, +5 Looks, +5 Smarts · −8 Health (travel fatigue) · (−$${tripCost.toLocaleString()}) · ⚡-2`,'travel',2,()=>{
+    addAct(25,'✈️','Take a Trip',`+25 Happy, +5 Looks, +5 Smarts · −8 Health · (−$${tripCost.toLocaleString()}) · ⚡-2`,'travel',2,()=>{
       incActCount('travel');
       applyMod({happiness:25,money:-tripCost,looks:5,smarts:5,health:-8});
-      addLog(`Amazing trip ✈️ (−$${tripCost.toLocaleString()}, −8 Health from fatigue)`,'good');
+      addLog(`Amazing trip ✈️ (−$${tripCost.toLocaleString()})`,'good');
       SoundManager.levelUp();
     });
   }
@@ -1418,7 +1394,7 @@ function renderActivities(){
 }
 
 // ══════════════════════════════════════════
-// WORK PANEL — IMPROVEMENT 10
+// WORK PANEL
 // ══════════════════════════════════════════
 function jobInterview(j){
   const reqs=[];let canApply=true;
@@ -1443,8 +1419,7 @@ function jobInterview(j){
   const reqsHtml=reqs.map(r=>`<div class="${r.ok?'interview-req':'interview-req fail'}">${r.ok?'✅':'❌'} ${r.txt}</div>`).join('');
   document.getElementById('m-icon').textContent='🤝';
   document.getElementById('m-title').textContent=`Interview: ${j.emoji} ${j.title}`;
-  // FIX 7: show inflation-adjusted salary
-  document.getElementById('m-body').textContent=`Salary: $${inflatedSalary.toLocaleString()}/yr (inflation adj.) · Are you qualified?`;
+  document.getElementById('m-body').textContent=`Salary: $${inflatedSalary.toLocaleString()}/yr · Are you qualified?`;
   document.getElementById('m-extra').innerHTML=`<div style="margin-bottom:12px">${reqsHtml}</div>`;
   document.getElementById('m-btns').innerHTML='';
   const btns=document.getElementById('m-btns');
@@ -1457,10 +1432,11 @@ function jobInterview(j){
       closeModal();
       if(Math.random()*100<chance){
         G.job=j.id;G.jobTitle=j.title;
-        // FIX 7: assign inflation-adjusted salary
         G.salary=inflatedSalary;
         G.promotionChance=10;G.yearsInRole=0;
         if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+        // Remove this offer from pending
+        G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
         addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
         SoundManager.levelUp();applyMod({happiness:15});burst(40);
       }else{
@@ -1488,17 +1464,17 @@ function renderWork(){
 
   if(G.retired){
     const pension=G.pension||0;
-    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900;color:#78350f">Enjoying retirement!</div><div style="color:#b45309;font-weight:800;font-size:.9em">💰 $${pension.toLocaleString()}/mo pension · $${(pension).toLocaleString()}/yr</div></div>`;
+    el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#92400e;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900;color:#78350f">Enjoying retirement!</div><div style="color:#b45309;font-weight:800;font-size:.9em">💰 $${pension.toLocaleString()}/mo pension · $${(pension*12).toLocaleString()}/yr</div></div>`;
     el.innerHTML+='<p style="color:var(--text2);font-size:.85em;text-align:center;padding:8px">You\'ve earned your rest! 🌴</p>';
     return;
   }
 
-  // IMPROVEMENT 10 Part A: job offers as read-only career guide with popup-only interviews
+  // ── JOB OFFERS (clickable) ──
   const offers=G.pendingOffers||[];
   if(offers.length>0){
     const lbl=document.createElement('div');
     lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;background:linear-gradient(135deg,rgba(238,242,255,.9),rgba(237,233,254,.85));border-radius:12px;padding:8px 12px;color:var(--indigo);margin-bottom:8px;margin-top:4px;border:1.5px solid rgba(99,102,241,0.3)';
-    lbl.textContent='📬 Job Offers This Year — Act Now!';
+    lbl.textContent='📬 Job Offers This Year — Tap to Interview!';
     el.appendChild(lbl);
     offers.forEach(offer=>{
       const j=JOBS.find(x=>x.id===offer.jobId);
@@ -1506,18 +1482,22 @@ function renderWork(){
       const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
       const item=document.createElement('div');
       item.className='job-offer-item';
-      item.innerHTML=`<div class="act-icon">${j.emoji}</div><div style="flex:1"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr (inflation adj.) · ${offer.successChance}% chance</div></div><div class="offer-badge">OFFER</div>`;
+      item.innerHTML=`<div class="act-icon">${j.emoji}</div><div style="flex:1"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr · ${offer.successChance}% success chance</div></div><div class="offer-badge">TAP TO APPLY</div>`;
       item.onclick=()=>jobInterview(j);
       el.appendChild(item);
     });
     el.innerHTML+='<div style="height:6px"></div>';
+  } else if(G.age>=12) {
+    const noOffers=document.createElement('div');
+    noOffers.style.cssText='background:rgba(241,245,249,0.8);border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.8em;font-weight:700;color:var(--text2);text-align:center;border:1.5px dashed rgba(203,213,225,0.8)';
+    noOffers.textContent='📭 No offers yet this year. Age Up to get new offers!';
+    el.appendChild(noOffers);
   }
 
   if(G.job){
     const j=JOBS.find(x=>x.id===G.job);
     el.innerHTML+=`<div style="background:linear-gradient(135deg,rgba(236,253,245,0.9),rgba(209,250,229,0.8));border-radius:18px;padding:16px;margin-bottom:10px;border:2px solid rgba(110,231,183,0.6)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#065f46;margin-bottom:4px">Current Job</div><div style="font-size:1.15em;font-weight:900">${j?.emoji||''} ${G.jobTitle}</div><div style="color:#059669;font-weight:800;font-size:.9em">💰 $${G.salary.toLocaleString()}/year · ${G.yearsInRole||0} yr${(G.yearsInRole||0)!==1?'s':''} in role</div></div>`;
 
-    // IMPROVEMENT 10 Part B: Replace Work Hard button with Performance panel
     el.innerHTML+=`<div class="perf-panel">
       <div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--indigo);margin-bottom:6px">📊 Performance</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.82em;font-weight:700;color:var(--text2)">Promotion chance</span><span style="font-size:.82em;font-weight:900;color:var(--indigo)">${G.promotionChance}%</span></div>
@@ -1533,22 +1513,21 @@ function renderWork(){
     el.innerHTML+='<div style="height:6px"></div>';
   }
 
-  // IMPROVEMENT 10 Part A: Career Guide is read-only (no interview from list; offers come to you)
+  // ── CAREER GUIDE (now clickable for qualified jobs) ──
   const avail=JOBS.filter(j=>j.id!==G.job&&G.age>=j.minAge);
   if(avail.length){
     const lbl=document.createElement('div');
     lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--text2);margin-bottom:8px;margin-top:6px';
-    lbl.textContent='📋 Career Guide — Offers come to you';
+    lbl.textContent='📋 Career Guide — Tap qualified jobs to apply';
     el.appendChild(lbl);
     avail.forEach(j=>{
       const qualified=G.age>=j.minAge&&G.smarts>=j.minSmarts&&G.looks>=(j.minLooks||0)&&eduRank[G.education]>=eduRank[j.minEdu]&&(!j.needsDegree||G.hasDegree)&&(!j.requiresJob||(G.job===j.requiresJob&&(G.yearsInRole||0)>=j.requiresYears));
       const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
       const div=document.createElement('div');
       div.className='act-item';
-      div.style.cursor='default';
-      if(!qualified)div.style.opacity='.5';
-      div.innerHTML=`<div class="act-icon">${j.emoji}</div><div class="act-info"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr (inflation adj.)${qualified?'':' · 🔒 Requirements not met'}</div></div>`;
-      // read-only: no onclick
+      if(!qualified){div.style.opacity='.5';div.style.cursor='not-allowed';}
+      div.innerHTML=`<div class="act-icon">${j.emoji}</div><div class="act-info"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr${qualified?' · Tap to apply':'  · 🔒 Requirements not met'}</div></div>`;
+      if(qualified) div.onclick=()=>jobInterview(j);
       el.appendChild(div);
     });
   }else if(!G.job){
@@ -1688,7 +1667,7 @@ function triggerRandomEvent(){
 }
 
 // ══════════════════════════════════════════
-// MODAL HELPERS — FIX 8: money gates
+// MODAL HELPERS
 // ══════════════════════════════════════════
 function showModal(icon,title,body,choices){
   document.getElementById('m-icon').textContent=icon;
@@ -1699,8 +1678,6 @@ function showModal(icon,title,body,choices){
   choices.forEach(c=>{
     const btn=document.createElement('button');btn.type='button';btn.className='mbtn '+(c.style||'sec');
     btn.textContent=c.l||c.label||'OK';
-
-    // FIX 8: enforce money gates on modal buttons
     const cost = c.m?.money ? Math.abs(Math.min(c.m.money, 0)) : 0;
     const canAfford = cost === 0 || G.money >= cost;
     if (!canAfford) {
@@ -1709,7 +1686,6 @@ function showModal(icon,title,body,choices){
       btn.style.cursor = 'not-allowed';
       btn.textContent += ` (💸 Need $${cost.toLocaleString()})`;
     }
-
     btn.onclick=()=>{
       if(btn.disabled)return;
       closeModal();
@@ -1741,8 +1717,6 @@ function showMilestoneModal(icon,title,body,choices,onChoose){
   choices.forEach((c,i)=>{
     const btn=document.createElement('button');btn.type='button';btn.className='mbtn '+(i===0?'pri':i===1?'amb':'sec');
     btn.textContent=c.label;
-
-    // Apply money gate to milestone choices too
     const cost = c.effect?.money ? Math.abs(Math.min(c.effect.money, 0)) : 0;
     const canAfford = cost === 0 || G.money >= cost;
     if(!canAfford && c.alwaysEnabled !== true) {
@@ -1751,17 +1725,14 @@ function showMilestoneModal(icon,title,body,choices,onChoose){
       btn.style.cursor = 'not-allowed';
       btn.textContent += ` (💸 Need $${cost.toLocaleString()})`;
     }
-
     btn.onclick=()=>{if(!btn.disabled){closeModal();onChoose(c);}};
     btns.appendChild(btn);
   });
   document.getElementById('modal').style.display='flex';
 }
 
-// Age 5: Primary School
 function triggerPrimarySchoolModal(){
   G.schoolChosen=true;
-  // IMPROVEMENT 9: disable Private School for struggling families
   const isStruggling = (G.birthBackground||'').includes('Struggling');
   const choices = [
     {label:'🏫 Public School (Free)',effect:{smarts:5},desc:'Free but larger classes'},
@@ -1770,12 +1741,11 @@ function triggerPrimarySchoolModal(){
   showMilestoneModal('🏫','School Time!','You\'re starting school! Which one will you go to?',choices,choice=>{
     if(choice.disabled)return;
     applyMod(choice.effect);
-    addLog(`Started school: ${choice.label}. ${choice.effect.smarts>5?'Private school advantage!':'Public school, working hard!'}`, 'event');
+    addLog(`Started school: ${choice.label}.`, 'event');
     SoundManager.levelUp();
   });
 }
 
-// Age 18: Path modal
 function triggerAge18Modal(){
   G.age18PathChosen=true;
   showMilestoneModal('🎓','What\'s Next After School?','You\'ve finished secondary school! What path will you take?',[
@@ -1785,14 +1755,13 @@ function triggerAge18Modal(){
   ],choice=>{
     if(choice.education){G.education=choice.education;G.hasDegree=choice.hasDegree||false;}
     applyMod(choice.effect);
-    if(choice.path==='uni'){G.studyingAt='University 🏛️';addLog('Enrolled in University! Big investment, bigger future. 🏛️','event');SoundManager.levelUp();burst(50);}
-    else if(choice.path==='trade'){addLog('Started Trade School! Practical skills incoming. 🔧','event');SoundManager.success();}
-    else{addLog('Skipped further study. Hit the job market! 💼','event');}
+    if(choice.path==='uni'){G.studyingAt='University 🏛️';addLog('Enrolled in University! 🏛️','event');SoundManager.levelUp();burst(50);}
+    else if(choice.path==='trade'){addLog('Started Trade School! 🔧','event');SoundManager.success();}
+    else{addLog('Hit the job market! 💼','event');}
     checkAchievements();save();updateUI();
   });
 }
 
-// Age 22: Career Specialization
 function triggerAge22Modal(){
   G.age22SpecChosen=true;
   showMilestoneModal('💼','Career Specialization','Age 22 — time to pick a career direction!',[
@@ -1809,7 +1778,7 @@ function triggerAge22Modal(){
 }
 
 // ══════════════════════════════════════════
-// IMPROVEMENT 12 — College modal with loan option
+// COLLEGE TUITION MODAL
 // ══════════════════════════════════════════
 function showCollegeTuitionModal(childName, onDone) {
   document.getElementById('m-icon').textContent = '🎓';
@@ -1817,13 +1786,11 @@ function showCollegeTuitionModal(childName, onDone) {
   document.getElementById('m-body').textContent = `Your child needs support. College costs $50,000. What will you do?`;
   document.getElementById('m-extra').innerHTML = '';
   const btns = document.getElementById('m-btns'); btns.innerHTML = '';
-
   const choices = [
     {label:'💰 Pay full tuition', cost:50000, fn:()=>{applyMod({money:-50000,happiness:10});addLog(`🎓 Paid ${childName}'s college tuition in full! +10 Happy`,'legend');SoundManager.levelUp();burst(30);}},
     {label:'🏦 Student loan (−$25k now, −$3k/yr × 5yrs)', cost:25000, fn:()=>{applyMod({money:-25000,happiness:5});G.loanRepayment=(G.loanRepayment||0)+3000;G.loanYearsLeft=(G.loanYearsLeft||0)+5;addLog(`🏦 Took student loan for ${childName}. −$25,000 now, −$3,000/yr for 5 years.`,'event');SoundManager.fail();}},
-    {label:'😬 Can\'t support them (−25 Happiness)', cost:0, fn:()=>{applyMod({happiness:-25});const child=(G.family||[]).find(m=>m.name===childName&&m.type==='child');if(child)child.status='Estranged 💔';addLog(`💔 Could not support ${childName}'s college. They feel estranged. −25 Happy`,'bad');SoundManager.fail();}},
+    {label:'😬 Can\'t support them (−25 Happiness)', cost:0, fn:()=>{applyMod({happiness:-25});const child=(G.family||[]).find(m=>m.name===childName&&m.type==='child');if(child)child.status='Estranged 💔';addLog(`💔 Could not support ${childName}'s college. −25 Happy`,'bad');SoundManager.fail();}},
   ];
-
   choices.forEach((c,i)=>{
     const btn = document.createElement('button');
     btn.type='button';
@@ -1849,7 +1816,7 @@ function showCollegeTuitionModal(childName, onDone) {
 }
 
 // ══════════════════════════════════════════
-// AGE UP — MAIN FUNCTION (BUG 1, 2, 3, 4, 6)
+// AGE UP — MAIN FUNCTION
 // ══════════════════════════════════════════
 function ageUp(){
   SoundManager.unlock();SoundManager.ageUp();
@@ -1857,24 +1824,22 @@ function ageUp(){
   G.age++;
   G.yearActCounts={};
 
-  // FIX 6: Scale maxEnergy by life stage
   if(G.age < 13)       G.maxEnergy = 3;
   else if(G.age < 18)  G.maxEnergy = 4;
   else if(G.age < 60)  G.maxEnergy = 6;
   else                  G.maxEnergy = 4;
 
-  // Energy reset with rest bonus
   const bonus=(G.restBonus||0);
   G.energy=Math.min(G.maxEnergy, G.maxEnergy + bonus);
   G.restBonus=0;
 
-  // ── STAT DECAY (BUG 1: happens FIRST, before death check) ──
+  // ── STAT DECAY ──
   if(G.age>18){
     const healthDecay=rand(2,5);
     const happyDecay=rand(2,4);
     G.health=Math.max(0,G.health-healthDecay);
     G.happiness=Math.max(0,G.happiness-happyDecay);
-    if(G.age%5===0) addLog(`⏳ Age ${G.age}: Life's wear takes −${healthDecay} Health, −${happyDecay} Happy this year.`, 'info');
+    if(G.age%5===0) addLog(`⏳ Age ${G.age}: Life's wear takes −${healthDecay} Health, −${happyDecay} Happy.`, 'info');
   }
 
   // ── AGE FAMILY MEMBERS ──
@@ -1890,11 +1855,10 @@ function ageUp(){
     });
   }
 
-  // BUG 2 FIX: call checkAchievements BEFORE death check so Centenarian fires at age 100
+  // checkAchievements BEFORE death check so age-based ones fire correctly
   checkAchievements();
 
-  // BUG 1+2 FIX: Death check happens BEFORE salary/income
-  // BUG 2: age > 100 so player lives their 100th birthday turn
+  // ── DEATH CHECK ──
   if(G.health<=0||G.happiness<=0||G.age>100){
     const cause=G.health<=0?'Your health reached zero.':G.happiness<=0?'Your happiness hit zero — a broken spirit.':'A long life, well lived.';
     G.health=Math.max(G.health,0);G.happiness=Math.max(G.happiness,0);
@@ -1933,11 +1897,9 @@ function ageUp(){
     applyMod({money:G.salary});
     addLog(`💰 Annual salary: +$${G.salary.toLocaleString()}`, 'good');
 
-    // IMPROVEMENT 10 Part B: Passive promotion gain based on smarts
     const autoPromoGain = 8 + Math.floor(G.smarts / 20);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
 
-    // Promotion roll
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
       const promoBonus=Math.floor(G.salary*0.15);
       G.salary=Math.floor(G.salary*1.15);
@@ -1946,15 +1908,14 @@ function ageUp(){
       applyMod({money:promoBonus});
       addLog(`🎉 PROMOTION! Salary raised to $${G.salary.toLocaleString()}/yr! +$${promoBonus.toLocaleString()} bonus!`,'legend');
       SoundManager.legend();burst(40);
-      // IMPROVEMENT 10 Part B: Show promotion as popup modal
       showModal('🎉','Promotion!',
-        `You've been promoted! Your hard work paid off. New salary: $${G.salary.toLocaleString()}/yr`,
+        `You've been promoted! New salary: $${G.salary.toLocaleString()}/yr`,
         [{l:'🎊 Accept!',m:{happiness:15},style:'pri'}]);
       save();updateUI();return;
     }
   }
 
-  // ── STUDENT LOAN REPAYMENT (IMPROVEMENT 12) ──
+  // ── STUDENT LOAN REPAYMENT ──
   if((G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0){
     applyMod({money:-G.loanRepayment});
     G.loanYearsLeft--;
@@ -1974,7 +1935,7 @@ function ageUp(){
     addLog(`👨‍👩‍👧 Family cost of living: −$${livingCost.toLocaleString()} (${famCount} member${famCount>1?'s':''})`, 'info');
   }
 
-  // ── CHILD COLLEGE TUITION (IMPROVEMENT 12: replaced with modal) ──
+  // ── CHILD COLLEGE TUITION ──
   if(G.family){
     const turningEighteen = G.family.filter(m=>m.type==='child'&&m.age===18);
     if(turningEighteen.length>0){
@@ -1995,34 +1956,35 @@ function ageUp(){
     checkAchievements();save();updateUI();renderWork();return;
   }
 
-  // ── GENERATE JOB OFFERS (if not retired) ──
-  if(!G.retired&&G.age>=12){
-    generateJobOffers();
-  }
-
   continueAgeUp();
 }
 
 // ══════════════════════════════════════════
-// CONTINUE AGE UP — called after offer modal
+// CONTINUE AGE UP
 // ══════════════════════════════════════════
 function continueAgeUp(){
+  // ── GENERATE JOB OFFERS (always fires first, so offers are ALWAYS ready) ──
+  if(!G.retired&&G.age>=12){
+    generateJobOffers();
+    renderWork(); // immediately refresh Work tab so offers appear
+    updateOfferBadge();
+  }
+
   // ── MANDATORY AGE MILESTONES ──
   if(G.age===5&&!G.schoolChosen){
-    checkAchievements();save();updateUI();renderWork();
+    checkAchievements();save();updateUI();
     triggerPrimarySchoolModal();return;
   }
   if(G.age===18&&!G.age18PathChosen){
-    checkAchievements();save();updateUI();renderWork();
+    checkAchievements();save();updateUI();
     triggerAge18Modal();return;
   }
   if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){
-    checkAchievements();save();updateUI();renderWork();
+    checkAchievements();save();updateUI();
     triggerAge22Modal();return;
   }
 
   // ── HIGH-RISK HEALTH EVENTS ──
-  // IMPROVEMENT 12: enforce money gate on emergency care via showModal's built-in system
   if(G.health<40&&Math.random()<0.30){
     showModal('🚑','Medical Emergency!',
       'Your health is critically low and something serious has happened!',
@@ -2040,7 +2002,7 @@ function continueAgeUp(){
     checkAchievements();save();updateUI();return;
   }
 
-  // ── DATING / MARRIAGE (BUG 3 FIX: datingCooldown guard) ──
+  // ── DATING / MARRIAGE ──
   if(!G.marriageAge&&G.age>=20&&G.age<=45){
     if(!G.datingAge&&Math.random()<0.12&&G.age>(G.datingCooldown||0)){
       const partnerNames=G.gender==='male'?PARTNER_NAMES_F:PARTNER_NAMES_M;
@@ -2070,9 +2032,8 @@ function continueAgeUp(){
   // ── RANDOM EVENT ENGINE ──
   if(G.age>=18) triggerRandomEvent();
 
-  // ── MISFORTUNE POOL / EVENT POOL ──
+  // ── MISFORTUNE / EVENT POOL ──
   const negEvents=[
-    // BUG 4 FIX: performance review only fires if player has a job
     {minAge:16,maxAge:99,r:'c',emoji:'🔥',title:'Performance Review',body:"Your boss pulled you aside. Work hasn't been up to scratch.",
      guard:()=>{ if(!G.job) return false; return true; },
      choices:[{l:'💪 Shape up!',m:{happiness:-10,smarts:5},style:'pri'},{l:'😤 Whatever',fn:'_fired',style:'dan'}]},
@@ -2086,7 +2047,6 @@ function continueAgeUp(){
   const pool=EVENTS.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&e.r===rarity);
   let ev=null;
   if(misfortunePull&&Math.random()<.45&&G.age>=16){
-    // BUG 4: filter negEvents by guard function
     const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
     if(eligible.length>0){
       ev=eligible[Math.floor(Math.random()*eligible.length)];
@@ -2122,7 +2082,6 @@ function startLife(){
   const name=(document.getElementById('char-name').value.trim())||(chosenGender==='female'?'Sofia':'Alex');
   G={...DEFAULT,name,gender:chosenGender,log:[],achievements:[],family:[],yearActCounts:{},pendingOffers:[]};
 
-  // IMPROVEMENT 9: roll birth stats
   const birth = rollBirthStats();
   G.money     = birth.money;
   G.smarts    = birth.smarts;
@@ -2130,11 +2089,7 @@ function startLife(){
   G.looks     = birth.looks;
   G.happiness = birth.happiness;
   G.birthBackground = birth.background;
-
-  // Wealthy family tutor bonus
-  if(birth.moneyRangeMax >= 12000){
-    G.smarts = Math.min(100, G.smarts + 5);
-  }
+  if(birth.moneyRangeMax >= 12000){ G.smarts = Math.min(100, G.smarts + 5); }
 
   addLog(`Born into a ${birth.background}. Starting with $${birth.money.toLocaleString()}.`, 'event');
   addLog(`${name} was born! 🌱 A brand new story begins...`,'good');
@@ -2147,7 +2102,6 @@ function continueLife(){
   const saved=load();
   if(saved){
     G=saved;
-    // Ensure all new fields exist for backward compatibility
     if(!G.pendingOffers)G.pendingOffers=[];
     if(!G.family)G.family=[];
     if(!G.achievements)G.achievements=[];
@@ -2163,9 +2117,7 @@ function continueLife(){
     if(G.schoolChosen===undefined)G.schoolChosen=false;
     if(G.age18PathChosen===undefined)G.age18PathChosen=false;
     if(G.age22SpecChosen===undefined)G.age22SpecChosen=false;
-    // BUG 3 FIX compat
     if(G.datingCooldown===undefined)G.datingCooldown=0;
-    // IMPROVEMENT 12 compat
     if(G.loanRepayment===undefined)G.loanRepayment=0;
     if(G.loanYearsLeft===undefined)G.loanYearsLeft=0;
     if(G.birthBackground===undefined)G.birthBackground='';
