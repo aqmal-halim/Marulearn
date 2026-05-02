@@ -881,6 +881,8 @@ const DEFAULT = {
   eventFiredThisYear:false,
   quietYears:0,
   _promotionPending:false,
+  _promotionSalary:0,
+  _promotionBonus:0,
   careerTrack:null,
   relationshipScore:0,
   partnerName:null,
@@ -1295,7 +1297,7 @@ function showRecruiterOffer(offer, onDone){
     <div class="recruiter-popup">
       <div class="recruiter-scene">
         <div class="recruiter-avatar">💼</div>
-        <div class="recruiter-bubble">Hey <b>${G.name}</b>! I heard great things about you — we'd love to have you at <b>${company}</b> as a <b>${j.title}</b>!</div>
+        <div class="recruiter-bubble">${offer.isPivot?'<span style="background:#FFF9C4;border-radius:6px;padding:1px 5px;font-size:.85em">🔀 Career Pivot</span><br>':''}Hey <b>${G.name}</b>! I heard great things about you — we\'d love to have you at <b>${company}</b> as a <b>${j.title}</b>!${offer.isPivot?' This is a different career track — you\'d start fresh.':''}</div>
       </div>
       <div class="offer-details">
         <div class="offer-detail-row"><span class="offer-detail-label">💰 Salary</span><span class="offer-detail-val">$${inflatedSalary.toLocaleString()}/yr</span></div>
@@ -1320,6 +1322,12 @@ function showRecruiterOffer(offer, onDone){
 function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
   const track = getJobTrack(j.id);
   const trackName = track?track[1].name:'General';
+  // BUG1 FIX: declare browseMode vars at top of function scope
+  const isBrowseMode = !!(offer&&offer._browseMode);
+  const misP = Math.floor((G.misfortune||0)*0.3);
+  const browseChance = isBrowseMode
+    ? Math.min(Math.max(Math.round(25+(G.smarts-j.minSmarts)*0.3+(G.looks-(j.minLooks||0))*0.15-misP),3),55)
+    : 100; // non-browse = always succeed if quiz passed
   const mc=document.getElementById('modal-card');
   mc.className='modal-card positive';
   document.getElementById('m-sfx').style.display='block';
@@ -1502,7 +1510,7 @@ const WORDS=[
 ];
 let mgState={};
 
-function mgDone(won, cb){ closeModal(); if(cb) cb(won); }
+function mgDone(won, cb){ closeModal(); if(cb) cb(); }
 
 function startMathMiniGame(onWin,onFail){
   const q=MATH_QS[Math.floor(Math.random()*MATH_QS.length)];
@@ -2204,7 +2212,14 @@ function renderWork(){
   browseLbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:10px;cursor:pointer;display:flex;align-items:center;gap:6px';
   browseLbl.innerHTML='📋 Browse All Jobs <span style="font-size:.85em;font-weight:800;color:#999">(lower success chance)</span>';
   el.appendChild(browseLbl);
-  const avail=JOBS.filter(j=>j.id!==G.job&&G.age>=j.minAge).slice(0,8);
+  const currentSalaryForBrowse = G.salary || 0;
+  const avail=JOBS.filter(j=>{
+    if(j.id===G.job) return false;
+    if(G.age<j.minAge) return false;
+    const inflated = Math.round(j.salary*(G.inflationMult||1));
+    if(inflated <= currentSalaryForBrowse) return false; // hide lower-salary jobs
+    return true;
+  }).slice(0,8);
   avail.forEach(j=>{
     const qualified=G.age>=j.minAge&&G.smarts>=j.minSmarts&&G.looks>=(j.minLooks||0)&&eduRank[G.education]>=eduRank[j.minEdu]&&(!j.needsDegree||G.hasDegree);
     const salaryI=Math.round(j.salary*(G.inflationMult||1));
@@ -2657,9 +2672,10 @@ function ageUp(){
     const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
-      // Promotion requires a mini-game — queue it via continueAgeUp's priority system
+      // Promotion requires a mini-game — snapshot values NOW before anything else changes
       G._promotionPending=true;
-      G._promotionChanceSnapshot=G.promotionChance;
+      G._promotionSalary=Math.floor(G.salary*1.12);   // new salary if they pass
+      G._promotionBonus=Math.floor(G.salary*0.10);    // one-time bonus
       G.promotionChance=Math.max(0,G.promotionChance-80);
     }
   }
@@ -2714,6 +2730,7 @@ function continueAgeUp(){
 
   // ════════════════════════════════════════════
   // PRIORITY 1 — Milestone story gates (always fire, block everything else)
+  // BUG7 FIX: all go through fireEvent so quietYears resets correctly
   // ════════════════════════════════════════════
   if(G.age===5&&!G.schoolChosen){
     fireEvent(triggerPrimarySchoolModal);return;
@@ -2727,6 +2744,9 @@ function continueAgeUp(){
   if([40,60,80].includes(G.age)&&!(G.reflectionsDone||[]).includes(G.age)){
     fireEvent(()=>triggerReflection(G.age));return;
   }
+  // Also reset quietYears for implicit annual events (salary, loan, family)
+  // that happen every year regardless — these aren't "quiet"
+  if(G.job&&!G.retired) G.quietYears=0;
 
   // ════════════════════════════════════════════
   // PRIORITY 2 — Critical health / happiness crises
@@ -2797,8 +2817,10 @@ function continueAgeUp(){
   // ════════════════════════════════════════════
   if(G._promotionPending && G.job && !G.retired){
     G._promotionPending=false;
-    const prospectiveSalary=Math.floor(G.salary*1.12);
-    const promoBonus=Math.floor(G.salary*0.10);
+    // BUG6 FIX: use snapshotted values set at roll time, not recalculated now
+    const prospectiveSalary = G._promotionSalary || Math.floor(G.salary*1.12);
+    const promoBonus = G._promotionBonus || Math.floor(G.salary*0.10);
+    G._promotionSalary=0; G._promotionBonus=0;
     fireEvent(()=>setTimeout(()=>{
       const mc=document.getElementById('modal-card');
       mc.className='modal-card positive';
@@ -2977,6 +2999,8 @@ function continueLife(){
     if(G.eventFiredThisYear===undefined)G.eventFiredThisYear=false;
     if(G.quietYears===undefined)G.quietYears=0;
     if(G._promotionPending===undefined)G._promotionPending=false;
+    if(G._promotionSalary===undefined)G._promotionSalary=0;
+    if(G._promotionBonus===undefined)G._promotionBonus=0;
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
     if(G.reflectionsDone===undefined)G.reflectionsDone=[];
