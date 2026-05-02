@@ -2992,7 +2992,7 @@ function renderEdu(){
 
   if(G.age>=18&&eduRank[G.education]<2&&G.smarts>=50){
     el.appendChild(actItem('🏛️','Enrol University','Smarts 50+ needed. Unlocks great jobs!',()=>{
-      const uniCost=Math.round(25000*(G.inflationMult||1));
+      const uniCost=Math.round(12000*(G.inflationMult||1));
       if(G.money<uniCost){addLog(`Need $${uniCost.toLocaleString()} for university tuition!`,'bad');SoundManager.fail();return;}
       G.education='university';G.studyingAt='University 🏛️';G.hasDegree=true;
       G.educationDebt=(G.educationDebt||0)+uniCost;
@@ -3005,7 +3005,7 @@ function renderEdu(){
 
   if(G.age>=24&&G.education==='university'&&G.smarts>=75){
     el.appendChild(actItem('🎓','Graduate School','Smarts 75+ needed. Top jobs await!',()=>{
-      const gradCost=Math.round(40000*(G.inflationMult||1));
+      const gradCost=Math.round(25000*(G.inflationMult||1));
       if(G.money<gradCost){addLog(`Need $${gradCost.toLocaleString()} for grad school!`,'bad');SoundManager.fail();return;}
       G.education='graduate';G.studyingAt='Grad School 🎓';
       G.educationDebt=(G.educationDebt||0)+gradCost;
