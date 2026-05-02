@@ -830,6 +830,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -1013,6 +1014,28 @@ const DEFAULT = {
   peakCareerTrack:null,
   // Longevity difficulty
   _agingAcceleration:0,
+  // Income tax
+  totalTaxPaid:0,
+  // Burnout
+  grindStreak:0,
+  burnoutActive:false,
+  // Side hustle
+  sideHustle:null,        // {type, level:1-3, income, yearsActive}
+  sideHustleIncome:0,
+  // Estate
+  willWritten:false,
+  funeralCost:0,
+  // Mortgage
+  mortgageBalance:0,
+  mortgagePayment:0,
+  mortgageYearsLeft:0,
+  // Travel
+  countriesVisited:0,
+  // Lifestyle
+  lifestyleCost:0,
+  savingsMilestones:[],   // [10000,50000,100000,500000] reached
+  // Looks natural decay
+  _looksDecayApplied:false,
   // Social network
   friends:[],             // [{name, type:'career'|'health'|'fun', yearsKnown}]
   friendsIgnoredYears:0,
@@ -1246,6 +1269,15 @@ const ALL_ACHIEVEMENTS = [
   {id:'sr_dev_job', emoji:'🖥️',name:'Senior Dev',    rarity:'common',  desc:'Climb to Senior Developer',    check:()=>G.job==='sr_dev'},
   {id:'retired',    emoji:'🏖️',name:'Retired!',      rarity:'common',  desc:'Reach retirement at 65',       check:()=>!!(G.retired)},
   {id:'pension_king',emoji:'👑',name:'Pension King',  rarity:'rare',    desc:'Earn $5,000+/mo pension',      check:()=>(G.pension||0)>=5000},
+  {id:'globetrotter', emoji:'🌍',name:'Globetrotter',  rarity:'rare',    desc:'Visit 5+ countries',            check:()=>(G.countriesVisited||0)>=5},
+  {id:'side_hustler', emoji:'💡',name:'Side Hustler',  rarity:'common',  desc:'Start a side hustle',           check:()=>!!G.sideHustle},
+  {id:'empire',       emoji:'🏢',name:'Business Empire',rarity:'legendary',desc:'Sell a max-level side hustle',  check:()=>(G.sideHustle===null&&(G.achievements||[]).includes('side_hustler'))},
+  {id:'will_power',   emoji:'📜',name:'Estate Planner',rarity:'common',  desc:'Write your will',               check:()=>!!G.willWritten},
+  {id:'homeowner',    emoji:'🏠',name:'Homeowner',     rarity:'common',  desc:'Buy your first home',           check:()=>!!G.houseType},
+  {id:'mortgage_free',emoji:'🎉',name:'Mortgage Free!',rarity:'rare',    desc:'Pay off your mortgage',         check:()=>G.houseType&&G.mortgageBalance===0},
+  {id:'tax_payer',    emoji:'📊',name:'Good Citizen',  rarity:'common',  desc:'Pay $50,000+ in lifetime tax',  check:()=>(G.totalTaxPaid||0)>=50000},
+  {id:'globetrotter5',emoji:'🗺️',name:'World Explorer',rarity:'legendary',desc:'Visit 10+ countries',          check:()=>(G.countriesVisited||0)>=10},
+  {id:'burnout_beat', emoji:'💚',name:'Burnout Survivor',rarity:'rare',  desc:'Recover from burnout',          check:()=>!G.burnoutActive&&G.grindStreak===0&&(G.achievements||[]).some(a=>a==='workhorse')},
 ];
 
 function checkAchievements() {
@@ -1329,9 +1361,30 @@ const EVENTS = [
   {minAge:22,maxAge:50,r:'r',emoji:'✈️',sfx:'WOW!',title:'Dream Holiday!',body:'An incredible travel deal just popped up!',choices:[{l:'✈️ Book it!',m:{happiness:30,looks:5,money:-3000,smarts:5}},{l:'💸 Too expensive',m:{happiness:-5}}]},
   {minAge:30,maxAge:50,r:'l',emoji:'🏆',sfx:'EPIC!',title:'World Record!',body:"You accidentally broke a world record! You're GLOBAL NEWS!",choices:[{l:'🌍 LEGENDARY!',m:{happiness:40,money:100000,looks:20}}]},
   {minAge:25,maxAge:50,r:'l',emoji:'🎰',sfx:'JACKPOT!',title:'LOTTERY WINNER!!',body:'You bought a scratch card and WON THE JACKPOT!!!',choices:[{l:'🎰 IM RICH!!',m:{money:500000,happiness:50}}]},
+  // MID-LIFE (35-60)
+  {minAge:35,maxAge:55,r:'c',emoji:'🔄',sfx:'HMMMM',title:'Career Pivot?',body:"You're wondering if it's time for a big career change.",choices:[{l:'🚀 Take the leap',fn:'start_biz'},{l:'💼 Stay the course',m:{happiness:-5,smarts:5}},{l:'🌱 Volunteer instead',m:{happiness:15,smarts:5}}]},
+  {minAge:38,maxAge:60,r:'c',emoji:'👴',sfx:'OH NO!',title:'Parent Health Crisis',body:'One of your parents is unwell and needs support.',choices:[{l:'🏥 Help them',m:{money:-2000,happiness:-5,smarts:5}},{l:'💸 Hire a carer',m:{money:-5000,happiness:5}},{l:'😔 Cannot help',m:{happiness:-15}}]},
+  {minAge:40,maxAge:55,r:'c',emoji:'🏠',sfx:'HMMMM',title:'Empty Nest',body:'Your last child left home. The house feels very quiet.',choices:[{l:'🧘 Embrace the peace',m:{happiness:5,smarts:5}},{l:'😢 It hurts',m:{happiness:-10,health:5}},{l:'🐕 Get a pet!',m:{happiness:15,money:-500}}]},
+  {minAge:38,maxAge:65,r:'r',emoji:'💼',sfx:'HMMMM',title:'Sabbatical Offer',body:'Your company offers a 6-month paid sabbatical. Take it?',choices:[{l:'🌍 Absolutely!',m:{happiness:30,smarts:10,health:10}},{l:'💰 Stay and earn',m:{money:5000,happiness:-5}}]},
+  {minAge:40,maxAge:60,r:'c',emoji:'😔',sfx:'OUCH!',title:'Old Flame',body:'You ran into someone from your past. Old feelings resurface.',choices:[{l:'💬 Have coffee',m:{happiness:15,smarts:5}},{l:'💍 Stay loyal',m:{happiness:5}},{l:'🚶 Walk away',m:{happiness:-5}}]},
+  {minAge:45,maxAge:65,r:'r',emoji:'🏛️',sfx:'WOW!',title:'Board Seat Offer',body:"You've been asked to join a company's board of directors!",choices:[{l:'✅ Accept!',m:{money:8000,smarts:10,happiness:10}},{l:'Too busy',m:{}}]},
+  {minAge:50,maxAge:65,r:'c',emoji:'✍️',sfx:'HMMMM',title:'Write a Memoir?',body:"People keep telling you your life story should be a book.",choices:[{l:'📖 Start writing',m:{smarts:8,happiness:15}},{l:'Another time',m:{}}]},
+  {minAge:50,maxAge:65,r:'c',emoji:'🏢',sfx:'UH-OH!',title:'Redundancy at 55',body:"Restructuring hits your department. You might lose your job.",choices:[{l:'💪 Fight to stay',m:{happiness:-10,smarts:5}},{l:'💰 Take the package',fn:'_fired'}]},
   {minAge:50,maxAge:70,r:'c',emoji:'🧓',sfx:'HMMMM',title:'Retirement Plan',body:'Are you thinking about retirement?',choices:[{l:'📋 Plan carefully',m:{smarts:5,money:5000,happiness:5}},{l:'Live for today!',m:{happiness:10,money:-2000}}]},
   {minAge:55,maxAge:80,r:'c',emoji:'🏡',sfx:'YAY!',title:'Grandchildren Visit!',body:'Your grandchildren are here for the week!',choices:[{l:'🥰 Wonderful!',m:{happiness:30,health:5}}]},
   {minAge:60,maxAge:90,r:'r',emoji:'🌟',sfx:'WOW!',title:'Lifetime Award',body:'Your community gives you a lifetime achievement award!',choices:[{l:'🌟 Honoured!',m:{happiness:35,smarts:5}}]},
+  // SENIOR (60+)
+  // MORAL / SOCIAL CHOICES
+  {minAge:18,maxAge:99,r:'c',emoji:'🗳️',sfx:'CIVIC!',title:'Election Day!',body:"It's election day. Go vote?",choices:[{l:'🗳️ Vote',m:{happiness:5,smarts:3}},{l:'🛋️ Stay home',m:{happiness:-3}}]},
+  {minAge:20,maxAge:70,r:'c',emoji:'💛',sfx:'HMMMM',title:'Charity Drive',body:'A colleague is running a charity event. Contribute?',choices:[{l:'💛 Donate $500',m:{money:-500,happiness:12,smarts:3}},{l:'💛 Volunteer time',m:{happiness:15,health:-2}},{l:'Skip it',m:{}}]},
+  {minAge:22,maxAge:70,r:'c',emoji:'🏘️',sfx:'HMMMM',title:'Neighbour Needs Help',body:'Your elderly neighbour needs help with repairs.',choices:[{l:'🔨 Help out',m:{happiness:12,health:-3}},{l:'📞 Call services',m:{money:-200,happiness:8}},{l:'😔 Too busy',m:{happiness:-5}}]},
+  {minAge:25,maxAge:60,r:'r',emoji:'⚖️',sfx:'HMMMM',title:'Jury Duty',body:"You've been called for jury duty. A week away from work.",choices:[{l:'✅ Serve dutifully',m:{smarts:8,happiness:5}},{l:'😤 Try to get out of it',m:{smarts:-3,happiness:3}}]},
+  {minAge:25,maxAge:65,r:'r',emoji:'🏢',sfx:'UH-OH!',title:'Ethical Dilemma',body:"Your boss asks you to falsify some reports. What do you do?",choices:[{l:'✅ Stay ethical',m:{happiness:10,smarts:5}},{l:'💰 Do it for the bonus',m:{money:5000,happiness:-15,misfortune:15}}]},
+  {minAge:62,maxAge:85,r:'c',emoji:'👶',sfx:'YAY!',title:'Grandparent!',body:'Your child just had a baby! You are officially a grandparent!',choices:[{l:'🥰 So wonderful!',m:{happiness:30,health:5}}]},
+  {minAge:65,maxAge:90,r:'c',emoji:'📞',sfx:'PING!',title:'Old Friend Calls',body:"An old friend from decades ago tracked you down. Lovely surprise!",choices:[{l:'📞 Catch up!',m:{happiness:20,smarts:5}},{l:'Busy right now',m:{happiness:-3}}]},
+  {minAge:68,maxAge:90,r:'r',emoji:'🎤',sfx:'WOW!',title:'Wisdom Podcast',body:'A popular podcast wants you as a guest! Share your story.',choices:[{l:'🎙️ Share your wisdom',m:{happiness:20,smarts:5,money:2000}},{l:'Too private',m:{}}]},
+  {minAge:70,maxAge:90,r:'c',emoji:'🏡',sfx:'HMMMM',title:'Downsize Home?',body:'The big house feels too large now. Move to something cosier?',choices:[{l:'🏠 Downsize',m:{happiness:10,money:20000}},{l:'🏡 Stay put',m:{happiness:5}}]},
+  {minAge:72,maxAge:90,r:'r',emoji:'🌍',sfx:'WOW!',title:'Bucket List Trip',body:"There's one place you've always wanted to visit. Now or never.",choices:[{l:'✈️ Do it!',m:{happiness:35,smarts:8,money:-8000,health:-5}},{l:'Next year perhaps',m:{happiness:-5}}]},
 ];
 
 // ══════════════════════════════════════════
@@ -1875,6 +1928,10 @@ function calcScoreBreakdown() {
     },
   ];
 
+  categories.push(
+    {label:'🌍 Travel',   desc:`${G.countriesVisited||0} countries visited`,   score:Math.min((G.countriesVisited||0)*600,6000), max:6000},
+    {label:'💡 Hustle',   desc:G.sideHustle?`${G.sideHustle.label} L${G.sideHustle.level}`:'None', score:G.sideHustle?(G.sideHustle.level*1000):0, max:3000}
+  );
   const total = categories.reduce((sum, c) => sum + c.score, 0);
   return { categories, total };
 }
@@ -2746,7 +2803,16 @@ function renderActivities(){
     const hp=G.age>=90?0:G.age>=85?Math.min(rawHp,1):G.age>=80?Math.min(rawHp,2):rawHp;
     incActCount('meditate');
     const changes=[{label:'Happiness',val:h},{label:'Health',val:hp},{label:'Smarts',val:-4},{label:'Looks',val:-2}];
-    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4,looks:-2});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');}
+    if(h>0||hp>0){
+      applyMod({happiness:h,health:hp,smarts:-4,looks:-2});
+      addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');
+      // Burnout recovery
+      if(G.burnoutActive&&G.happiness>=60){
+        G.burnoutActive=false;G.grindStreak=0;G.maxEnergy=5;
+        addLog('💚 Recovered from burnout! Energy back to 5/yr.','good');
+        showMascotBubble('🦉 Burnout cleared! You\'re refreshed and ready. 💪',4000);
+      }
+    }
     else{applyMod({smarts:-4});addLog('Meditated — already at peace 🧘','info');}
     showStatCard('🧘 Meditate',changes);SoundManager.success();
   });
@@ -2759,7 +2825,17 @@ function renderActivities(){
       const usedGrind=actCount('grind');
       const bonus=Math.round(grindBonus*[1,.7,.4,0][Math.min(usedGrind-1,3)]);
       const changes=[{label:'Money',val:bonus},{label:'Happiness',val:-10},{label:'Health',val:-5},{label:'Looks',val:-3}];
-      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5,looks:-3});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()}`,'event');}
+      if(bonus>0){
+        G.grindStreak=(G.grindStreak||0)+1;
+        applyMod({money:bonus,happiness:-10,health:-5,looks:-3});
+        addLog(`💥 Grinded hard! +$${bonus.toLocaleString()}`,'event');
+        if(G.grindStreak>=3&&!G.burnoutActive){
+          G.burnoutActive=true;
+          addLog('😵 BURNOUT! 3 years of grinding. Energy capped at 3/yr until recovery.','bad');
+          G.maxEnergy=3;SoundManager.fail();shakeScreen();
+          showMascotBubble('🦉 You\'ve hit burnout! Rest or meditate to recover. Max energy reduced to 3!',6000);
+        }
+      }
       else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out!','bad');}
       showStatCard('💥 Grind at Work',changes);SoundManager.success();renderActivities();
     });
@@ -3021,13 +3097,38 @@ function renderActivities(){
   }
 
   if(a>=25){
-    const tripCost=Math.round(2000*inf);
-    addActDual(25,'✈️','Take a Trip',`+25 😊 +5 🧠 +5 ✨ / −8 ❤️ −$${tripCost.toLocaleString()}`,'travel',2,()=>{
-      incActCount('travel');
-      applyMod({happiness:25,money:-tripCost,looks:5,smarts:5,health:-8});
-      const changes=[{label:'Happiness',val:25},{label:'Smarts',val:5},{label:'Looks',val:5},{label:'Health',val:-8}];
-      addLog(`Amazing trip ✈️ (−$${tripCost.toLocaleString()})`,'good');
-      showStatCard('✈️ Take a Trip',changes);triggerCharReaction('jump');SoundManager.levelUp();
+    const destinations=[
+      {id:'beach',   emoji:'🏝️', label:'Beach Holiday',    cost:2000,  mods:{happiness:30,looks:8,health:-5,smarts:2},  desc:'Sun, sea, sand. Pure bliss.'},
+      {id:'trek',    emoji:'🏔️', label:'Adventure Trek',   cost:1500,  mods:{health:12,happiness:20,looks:5,smarts:3},  desc:'Challenge yourself in the wild.'},
+      {id:'culture', emoji:'🏛️', label:'Cultural Tour',    cost:2500,  mods:{smarts:12,happiness:22,looks:5,health:-5}, desc:'Broaden your mind and horizons.'},
+      {id:'backpack',emoji:'🌍', label:'World Backpacking',cost:1000,  mods:{smarts:10,happiness:18,looks:8,health:-8}, desc:'Cheap adventure, maximum freedom.'},
+      {id:'cruise',  emoji:'🛳️', label:'Luxury Cruise',    cost:5000,  mods:{happiness:35,looks:15,health:-5,smarts:5}, desc:'The height of indulgence.'},
+    ];
+    const travelUsed=actCount('travel');
+    const dimNote=travelUsed>=1?' (half bonus)':'';
+    const travelHdr=actItem('✈️','✈️ Take a Trip','Choose your destination'+dimNote+' · ⚡-2',()=>{});
+    travelHdr.style.cursor='default'; travelHdr.style.background='#F0F4FF'; travelHdr.style.border='2px solid #9FA8DA';
+    if(noEnergy||G.energy<2)travelHdr.classList.add('disabled');
+    el.appendChild(travelHdr);
+    destinations.forEach(dest=>{
+      const destCost=Math.round(dest.cost*inf);
+      const canAfford=G.money>=destCost;
+      const it=actItem(dest.emoji,dest.label,`$${destCost.toLocaleString()} · ${dest.desc}`,()=>{
+        if(!useEnergy(2))return;
+        if(!canAfford){addLog(`Need $${destCost.toLocaleString()} for ${dest.label}!`,'bad');SoundManager.fail();renderActivities();return;}
+        incActCount('travel');
+        const mult=travelUsed>=1?0.5:1;
+        const mods=Object.fromEntries(Object.entries(dest.mods).map(([k,v])=>[k,Math.round(v*mult)]));
+        G.countriesVisited=(G.countriesVisited||0)+1;
+        applyMod({...mods,money:-destCost});
+        const changeArr=Object.entries(mods).map(([k,v])=>({label:k,val:v}));
+        addLog(`${dest.emoji} ${dest.label}! Countries visited: ${G.countriesVisited}. (−$${destCost.toLocaleString()})`,'good');
+        showStatCard(dest.emoji+' '+dest.label,changeArr);
+        triggerCharReaction('jump');SoundManager.levelUp();
+        checkAchievements();renderActivities();
+      });
+      if(!canAfford||noEnergy||G.energy<2)it.style.opacity='0.6';
+      el.appendChild(it);
     });
   }
 
@@ -3184,6 +3285,68 @@ function renderWork(){
     el.appendChild(ladderDiv);
   }
 
+  // ── Side Hustle ──
+  const shHdr=document.createElement('div');
+  shHdr.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin:12px 0 6px';
+  shHdr.textContent='💡 Side Hustle';
+  el.appendChild(shHdr);
+
+  if(!G.sideHustle&&G.age>=18&&!G.retired){
+    const hustles=[
+      {type:'freelance', emoji:'🎨', label:'Freelancer',    needs:'Smarts 55+', req:()=>G.smarts>=55,  income:()=>Math.round(rand(800,1800)*(G.inflationMult||1)), desc:'Design, write, code for clients.'},
+      {type:'gig',       emoji:'🚗', label:'Gig Driver',    needs:'Need a car', req:()=>!!G.carType,   income:()=>Math.round(rand(500,1200)*(G.inflationMult||1)), desc:'Drive people around for cash.'},
+      {type:'creator',   emoji:'📱', label:'Content Creator',needs:'Looks 60+', req:()=>G.looks>=60,  income:()=>Math.round(rand(600,2500)*(G.inflationMult||1)), desc:'Build an audience online.'},
+      {type:'store',     emoji:'🛒', label:'Online Store',  needs:'$3,000 start',req:()=>G.money>=3000,income:()=>Math.round(rand(400,1500)*(G.inflationMult||1)), desc:'Sell products online.'},
+    ];
+    hustles.forEach(h=>{
+      const canStart=h.req();
+      const it=actItem(h.emoji,h.label,`${h.needs} · ${h.desc}${canStart?'':' 🔒'}`,()=>{
+        if(!canStart){addLog(`Can\'t start ${h.label}: ${h.needs}`,'bad');SoundManager.fail();return;}
+        if(h.type==='store'){applyMod({money:-3000});}
+        G.sideHustle={type:h.type,emoji:h.emoji,label:h.label,level:1,yearsActive:0};
+        G.sideHustleIncome=h.income();
+        addLog(`💡 Started ${h.label} side hustle! Income: +$${G.sideHustleIncome.toLocaleString()}/yr`,'good');
+        SoundManager.levelUp();checkAchievements();save();renderWork();
+      });
+      if(!canStart)it.style.opacity='0.5';
+      el.appendChild(it);
+    });
+  } else if(G.sideHustle){
+    const sh=G.sideHustle;
+    const shCard=document.createElement('div');
+    shCard.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;border:2px solid var(--grass-dark)';
+    shCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">💡 ${sh.label} — Level ${sh.level}</div><div style="font-weight:900">+$${(G.sideHustleIncome||0).toLocaleString()}/yr</div><div style="font-size:.75em;color:var(--ink2)">${sh.yearsActive} years active · ${sh.level<3?'Grows with time':'Max level reached!'}</div>`;
+    el.appendChild(shCard);
+    if(sh.level<3){
+      const growBtn=document.createElement('div');
+      growBtn.className='act-item';
+      growBtn.innerHTML=`<div class="act-icon">📈</div><div><div class="act-title">Grow the hustle</div><div class="act-sub">−$${Math.round(2000*(G.inflationMult||1)).toLocaleString()} invest · Increase income by 50%</div></div>`;
+      growBtn.onclick=()=>{
+        const cost=Math.round(2000*(G.inflationMult||1));
+        if(G.money<cost){addLog('Need $2,000 to grow your side hustle!','bad');SoundManager.fail();return;}
+        applyMod({money:-cost});
+        sh.level++;G.sideHustleIncome=Math.round(G.sideHustleIncome*1.5);
+        addLog(`📈 Side hustle grew to Level ${sh.level}! Income: +$${G.sideHustleIncome.toLocaleString()}/yr`,'good');
+        SoundManager.levelUp();save();renderWork();
+      };
+      el.appendChild(growBtn);
+    }
+    if(sh.level===3){
+      const sellBtn=document.createElement('div');
+      sellBtn.className='act-item';
+      const salePrice=Math.round(G.sideHustleIncome*4);
+      sellBtn.innerHTML=`<div class="act-icon">💰</div><div><div class="act-title">Sell the business</div><div class="act-sub">Lump sum: $${salePrice.toLocaleString()} (4× annual income)</div></div>`;
+      sellBtn.onclick=()=>{
+        applyMod({money:salePrice,happiness:20});
+        addLog(`💰 Sold your ${sh.label} business for $${salePrice.toLocaleString()}! 🎉`,'legend');
+        SoundManager.legend();burst(50);triggerConfetti();
+        G.sideHustle=null;G.sideHustleIncome=0;
+        checkAchievements();save();renderWork();
+      };
+      el.appendChild(sellBtn);
+    }
+  }
+
   // Browse all jobs
   const browseLbl=document.createElement('div');
   browseLbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:10px;cursor:pointer;display:flex;align-items:center;gap:6px';
@@ -3289,7 +3452,7 @@ function renderEdu(){
 
   if(G.age>=18&&eduRank[G.education]<2&&G.smarts>=50){
     el.appendChild(actItem('🏛️','Enrol University','Smarts 50+ needed. Unlocks great jobs!',()=>{
-      const uniCost=Math.round(12000*(G.inflationMult||1));
+      const uniCost=Math.round(25000*(G.inflationMult||1));
       if(G.money<uniCost){addLog(`Need $${uniCost.toLocaleString()} for university tuition!`,'bad');SoundManager.fail();return;}
       G.education='university';G.studyingAt='University 🏛️';G.hasDegree=true;
       G.educationDebt=(G.educationDebt||0)+uniCost;
@@ -3302,7 +3465,7 @@ function renderEdu(){
 
   if(G.age>=24&&G.education==='university'&&G.smarts>=75){
     el.appendChild(actItem('🎓','Graduate School','Smarts 75+ needed. Top jobs await!',()=>{
-      const gradCost=Math.round(25000*(G.inflationMult||1));
+      const gradCost=Math.round(40000*(G.inflationMult||1));
       if(G.money<gradCost){addLog(`Need $${gradCost.toLocaleString()} for grad school!`,'bad');SoundManager.fail();return;}
       G.education='graduate';G.studyingAt='Grad School 🎓';
       G.educationDebt=(G.educationDebt||0)+gradCost;
@@ -3344,6 +3507,9 @@ function renderBank(){
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Salary</span><span style="font-weight:900;color:var(--grass-dark)">+$${(G.retired?0:G.salary).toLocaleString()}/yr</span></div>
       ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Pension</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.pension.toLocaleString()}/yr</span></div>`:''}
       ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Family</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
+      ${G.mortgagePayment>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🏠 Mortgage</span><span style="font-weight:900;color:var(--coral)">−$${G.mortgagePayment.toLocaleString()}/yr (${G.mortgageYearsLeft}yr left)</span></div>`:''}
+      ${G.sideHustleIncome>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">💡 Side Hustle</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.sideHustleIncome.toLocaleString()}/yr</span></div>`:''}
+      ${G.totalTaxPaid>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`:''}
       ${loanLine}
     </div>`;
 
@@ -3371,6 +3537,23 @@ function renderBank(){
     }));
   }
 
+  // ── ESTATE PLANNING ──
+  if(G.age>=50&&!G.willWritten){
+    const willItem=actItem('📜','Write Your Will','$500 legal fee · Ensures your estate goes to family',()=>{
+      if(G.money<500){addLog('Need $500 for a solicitor to write your will.','bad');SoundManager.fail();return;}
+      applyMod({money:-500,happiness:5});
+      G.willWritten=true;
+      addLog('📜 Will written! Your estate will go to your family. Peace of mind. +5 Happy','good');
+      SoundManager.success();checkAchievements();save();renderBank();
+    });
+    el.appendChild(willItem);
+  } else if(G.willWritten){
+    const wEl=document.createElement('div');
+    wEl.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:8px 14px;margin-bottom:8px;font-size:.8em;font-weight:900;color:var(--grass-dark)';
+    wEl.textContent='📜 Will written — estate protected ✅';
+    el.appendChild(wEl);
+  }
+
   // ── BIG LIFE PURCHASES ──
   const bigPurchasesHeader=document.createElement('div');
   bigPurchasesHeader.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin:12px 0 6px';
@@ -3389,10 +3572,17 @@ function renderBank(){
       const affordable=G.money>=h.price;
       const it=actItem(h.id==='luxury'?'🏰':h.id==='family'?'🏡':'🏠', h.label,
         `$${h.price.toLocaleString()} · ${h.desc} · +${h.bonus.happiness} 😊 +${h.bonus.looks} ✨`, ()=>{
-        if(!affordable){addLog(`Need $${h.price.toLocaleString()} to buy this home!`,'bad');SoundManager.fail();return;}
+        const deposit=Math.round(h.price*0.20);
+        const mortgageAmt=h.price-deposit;
+        const annualPayment=Math.round(mortgageAmt*0.06); // ~6% interest
+        const mortgageYrs=25;
+        if(G.money<deposit){addLog(`Need $${deposit.toLocaleString()} deposit (20%) for this home!`,'bad');SoundManager.fail();return;}
         G.houseType=h.id; G.houseValue=h.price; G.housePurchasePrice=h.price;
-        applyMod({money:-h.price,...h.bonus});
-        addLog(`🏠 Bought a ${h.label}! $${h.price.toLocaleString()}. No more rent!`,'legend');
+        G.mortgageBalance=mortgageAmt;
+        G.mortgagePayment=annualPayment;
+        G.mortgageYearsLeft=mortgageYrs;
+        applyMod({money:-deposit,...h.bonus});
+        addLog(`🏠 Bought ${h.label}! Deposit: $${deposit.toLocaleString()}. Mortgage: $${annualPayment.toLocaleString()}/yr for ${mortgageYrs}yrs.`,'legend');
         SoundManager.levelUp();burst(40);triggerConfetti();
         showMascotBubble('🦉 You\'re a homeowner! Property appreciates over time! 🏠',5000);
         checkAchievements();save();updateUI();renderBank();
@@ -3757,6 +3947,9 @@ function ageUp(){
     else if(G.age>=75){healthDecay+=rand(1,3);}
     G.health=Math.max(0,G.health-healthDecay);
     G.happiness=Math.max(0,G.happiness-happyDecay);
+    // Looks natural decay with age
+    if(G.age>=50){const looksDecay=rand(2,3);G.looks=Math.max(0,G.looks-looksDecay);}
+    else if(G.age>=35){const looksDecay=rand(0,1);G.looks=Math.max(0,G.looks-looksDecay);}
     if(G.age%5===0) addLog(`⏳ Age ${G.age}: −${healthDecay} Health, −${happyDecay} Happy.`,'info');
     // Frailty death check: 90+ with low health = increasing mortality risk
     if(G.age>=90&&G.health<50&&Math.random()<0.15+(G.age-90)*0.04){
@@ -3773,9 +3966,11 @@ function ageUp(){
     G.family.forEach(m=>{
       m.age++;
       if(m.type==='child'){
-        if(m.age===5)m.status='School Age';
-        else if(m.age===13)m.status='Teenager 🎧';
-        else if(m.age===18)m.status='Adult 🎓';
+        if(m.age===5){m.status='School Age';addLog(`🎒 ${m.name} started school!`,'good');applyMod({happiness:5});}
+        else if(m.age===13){m.status='Teenager';addLog(`🧑 ${m.name} is a teenager now!`,'good');applyMod({happiness:3});}
+        else if(m.age===18){m.status='Adult 🎓';}
+        else if(m.age===25){m.status='Independent';addLog(`🏠 ${m.name} moved out! +8 Happy`,'good');applyMod({happiness:8});}
+        else if(m.age===30&&Math.random()<0.6){addLog(`💍 ${m.name} got married! +10 Happy`,'good');applyMod({happiness:10});}
         else if(m.age>18)m.status='Independent';
       }
     });
@@ -3786,6 +3981,20 @@ function ageUp(){
   if(G.health<=0||G.happiness<=0||G.age>100){
     const cause=G.health<=0?'Your health reached zero.':G.happiness<=0?'Your happiness hit zero.':'A long life, well lived.';
     G.health=Math.max(G.health,0);G.happiness=Math.max(G.happiness,0);
+    // Estate settlement
+    const estate=G.money+(G.houseValue||0)+(G.carValue||0)+(G.investments||0)+(G.pensionPot||0);
+    const funeralCost=Math.round(8000*(G.inflationMult||1));
+    const afterFuneral=Math.max(0,estate-funeralCost);
+    const kids=(G.family||[]).filter(m=>m.type==='child');
+    const taxRate=G.willWritten?0.10:0.30;
+    const afterTax=Math.round(afterFuneral*(1-taxRate));
+    if(kids.length>0){
+      const perChild=Math.round(afterTax/kids.length);
+      kids.forEach(k=>addLog(`💛 ${k.name} inherited $${perChild.toLocaleString()} from your estate.`,'legend'));
+    } else if(!G.willWritten){
+      addLog(`⚖️ No will — ${Math.round(taxRate*100)}% of estate went to government taxes.`,'info');
+    }
+    addLog(`📜 Estate: $${estate.toLocaleString()} · Funeral: −$${funeralCost.toLocaleString()} · ${G.willWritten?'Will protected estate':'No will'}`,'info');
     addLog(`Life ended at age ${G.age}. ${cause} 🕊️`,'bad');
     SoundManager.gameOver();flashRed();
     save();updateUI();
@@ -3822,9 +4031,18 @@ function ageUp(){
 
   if(G.job&&!G.retired){
     const worldSalMult=(G.worldModifiers||[]).reduce((m,mod)=>m*(mod.salaryMult||1),1);
-    const effectiveSalary=Math.round(G.salary*worldSalMult);
+    const preTaxSalary=Math.round(G.salary*worldSalMult);
+    // Progressive income tax
+    let taxRate=0;
+    if(preTaxSalary>=30000)taxRate=0.45;
+    else if(preTaxSalary>=15000)taxRate=0.35;
+    else if(preTaxSalary>=5000)taxRate=0.20;
+    const taxAmount=Math.round(preTaxSalary*taxRate);
+    const effectiveSalary=preTaxSalary-taxAmount;
+    G.totalTaxPaid=(G.totalTaxPaid||0)+taxAmount;
     applyMod({money:effectiveSalary});
-    addLog(`💰 Annual salary: +$${effectiveSalary.toLocaleString()}${worldSalMult!==1?` (world x${worldSalMult.toFixed(2)})`:''}`,'good');
+    if(G.age%3===0)addLog(`💰 Salary: +$${preTaxSalary.toLocaleString()} − tax $${taxAmount.toLocaleString()} = +$${effectiveSalary.toLocaleString()}`,'good');
+    else addLog(`💰 Annual take-home: +$${effectiveSalary.toLocaleString()}`,'good');
     const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
@@ -3864,6 +4082,26 @@ function ageUp(){
   G.money=Math.max(0,G.money-cashErosion);
   if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} cash.`,'info');
 
+  // Mortgage repayment
+  if((G.mortgageBalance||0)>0&&(G.mortgageYearsLeft||0)>0){
+    applyMod({money:-G.mortgagePayment});
+    G.mortgageBalance=Math.max(0,G.mortgageBalance-G.mortgagePayment);
+    G.mortgageYearsLeft--;
+    if(G.age%5===0) addLog(`🏠 Mortgage payment: −$${G.mortgagePayment.toLocaleString()} · Balance: $${G.mortgageBalance.toLocaleString()}`,'info');
+    if(G.mortgageYearsLeft===0){
+      G.mortgageBalance=0;G.mortgagePayment=0;
+      addLog('🎉 Mortgage fully paid off! Your home is truly yours! 🏠','legend');
+      applyMod({happiness:15}); SoundManager.levelUp(); burst(30);
+    }
+  }
+
+  // Property tax (0.5%/yr of house value)
+  if(G.houseValue>0){
+    const propTax=Math.round(G.houseValue*0.005);
+    applyMod({money:-propTax});
+    if(G.age%5===0) addLog(`🏠 Property tax: −$${propTax.toLocaleString()}`,'info');
+  }
+
   // Rent drain: every year age 22+ if no house
   if(G.age>=22&&!G.houseType){
     const baseRent = G.age<30 ? 3000 : G.age<50 ? 5000 : 4000;
@@ -3894,6 +4132,18 @@ function ageUp(){
 
   // Car depreciates 5%/yr
   if(G.carValue>0) G.carValue=Math.max(500,Math.floor(G.carValue*0.95));
+
+  // ── Side hustle income ──
+  if(G.sideHustle&&G.sideHustleIncome>0){
+    applyMod({money:G.sideHustleIncome});
+    G.sideHustle.yearsActive=(G.sideHustle.yearsActive||0)+1;
+    // Natural growth over time (max level 3)
+    if(G.sideHustle.level<3&&G.sideHustle.yearsActive%4===0){
+      G.sideHustleIncome=Math.round(G.sideHustleIncome*1.15);
+      addLog(`📈 Side hustle growing! New income: $${G.sideHustleIncome.toLocaleString()}/yr`,'good');
+    }
+    if(G.age%3===0) addLog(`💡 ${G.sideHustle.label} income: +$${G.sideHustleIncome.toLocaleString()}`,'good');
+  }
 
   // ── Spouse income ──
   if(G.marriageAge && (G.family||[]).find(m=>m.type==='spouse') && G.spouseIncome>0){
@@ -3981,6 +4231,18 @@ function ageUp(){
       applyMod({happiness:-15,health:-5});
     }
   }
+
+  // Savings milestones
+  const _allAssets=G.money+(G.investments||0)+(G.houseValue||0)+(G.carValue||0);
+  const _milestones=[10000,50000,100000,500000,1000000];
+  _milestones.forEach(m=>{
+    if(_allAssets>=m&&!(G.savingsMilestones||[]).includes(m)){
+      if(!G.savingsMilestones)G.savingsMilestones=[];
+      G.savingsMilestones.push(m);
+      addLog(`💰 Milestone! Net worth passed $${m.toLocaleString()}! 🎉`,'legend');
+      SoundManager.trophyUnlock&&SoundManager.trophyUnlock(); burst(25);
+    }
+  });
 
   // ── Overdraft spiral ──
   if(G.money<0){
@@ -4393,6 +4655,18 @@ function continueLife(){
     if(G.spouseIncome===undefined)G.spouseIncome=0;
     if(G.spouseMood===undefined)G.spouseMood=80;
     if(G.noStudyYears===undefined)G.noStudyYears=0;
+    if(G.totalTaxPaid===undefined)G.totalTaxPaid=0;
+    if(G.grindStreak===undefined)G.grindStreak=0;
+    if(G.burnoutActive===undefined)G.burnoutActive=false;
+    if(G.sideHustle===undefined)G.sideHustle=null;
+    if(G.sideHustleIncome===undefined)G.sideHustleIncome=0;
+    if(G.willWritten===undefined)G.willWritten=false;
+    if(G.mortgageBalance===undefined)G.mortgageBalance=0;
+    if(G.mortgagePayment===undefined)G.mortgagePayment=0;
+    if(G.mortgageYearsLeft===undefined)G.mortgageYearsLeft=0;
+    if(G.countriesVisited===undefined)G.countriesVisited=0;
+    if(G.savingsMilestones===undefined)G.savingsMilestones=[];
+    if(G.funeralCost===undefined)G.funeralCost=0;
     if(G.logStickersAdded===undefined)G.logStickersAdded=[];
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
@@ -5199,6 +5473,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 
