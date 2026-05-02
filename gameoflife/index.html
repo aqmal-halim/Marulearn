@@ -828,7 +828,7 @@ function handleRetirement() {
     return true;
   }
   if(G.retired && G.pension > 0) {
-    const annualPension = G.pension * 12;
+    const annualPension = G.pension;
     applyMod({money:annualPension});
     addLog(`💰 Annual pension: +$${annualPension.toLocaleString()}`, 'good');
   }
