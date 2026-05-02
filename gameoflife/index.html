@@ -148,7 +148,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 @keyframes icon-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
 
 /* ══ ENERGY ══ */
-.energy-wrap{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px}
+.energy-wrap{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .energy-label{font-weight:900;font-size:.8em;white-space:nowrap;min-width:62px;color:var(--ink2)}
 .energy-track{flex:1;height:14px;background:#EEE;border-radius:99px;overflow:hidden;border:2px solid var(--ink)}
 .energy-fill{height:100%;border-radius:99px;transition:width .5s ease,background-color .4s;background:var(--sun)}
@@ -370,6 +370,197 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+/* ══ NEWS TICKER ══ */
+.ticker-wrap{background:var(--ink);border-radius:10px;overflow:hidden;margin-bottom:8px;height:28px;display:flex;align-items:center;border:2px solid var(--ink)}
+.ticker-label{background:var(--coral);color:white;font-family:'Fredoka One',cursive;font-size:.65em;padding:4px 10px;white-space:nowrap;flex-shrink:0;height:100%;display:flex;align-items:center}
+.ticker-track{overflow:hidden;flex:1;height:100%;position:relative}
+.ticker-content{display:inline-block;white-space:nowrap;animation:ticker-scroll 30s linear infinite;color:var(--sun);font-size:.72em;font-weight:900;padding-left:100%;line-height:28px}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+@media(prefers-reduced-motion:reduce){.ticker-content{animation:none;padding-left:4px;color:var(--sun)}}
+
+/* ══ CSS CHARACTER PANEL ══ */
+.char-panel{position:relative;width:82px;height:100px;flex-shrink:0}
+/* Life stage backgrounds */
+.char-panel-bg-poor{background:linear-gradient(180deg,#B0BEC5 0%,#CFD8DC 100%)}
+.char-panel-bg-mid{background:linear-gradient(180deg,#FFE0B2 0%,#FFF9C4 100%)}
+.char-panel-bg-rich{background:linear-gradient(180deg,#E1BEE7 0%,#FFF8E1 100%)}
+
+/* Character base elements */
+.cchar{position:relative;width:82px;height:100px;cursor:default}
+.cchar-head{position:absolute;border:3px solid var(--ink);border-radius:50%;background:#FFDAB9;left:50%;transform:translateX(-50%);animation:char-idle 3s ease-in-out infinite}
+@keyframes char-idle{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-3px)}}
+.cchar-neck{position:absolute;background:#FFDAB9;border-left:2px solid var(--ink);border-right:2px solid var(--ink);left:50%;transform:translateX(-50%)}
+.cchar-torso{position:absolute;border:3px solid var(--ink);border-radius:10px 10px 8px 8px;left:50%;transform:translateX(-50%)}
+.cchar-leg{position:absolute;border:3px solid var(--ink);border-radius:0 0 8px 8px;background:#FFDAB9}
+.cchar-arm{position:absolute;border:3px solid var(--ink);border-radius:99px;background:#FFDAB9}
+/* Eyes */
+.cchar-eyes{position:absolute;width:100%;display:flex;justify-content:center;gap:6px}
+.cchar-eye{width:7px;height:7px;background:var(--ink);border-radius:50%;animation:char-blink 4s infinite}
+.cchar-eye.sleepy{height:4px;border-radius:4px;margin-top:2px}
+@keyframes char-blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+.cchar-eye.sparkle{box-shadow:0 0 0 2px var(--sun)}
+/* Mouth */
+.cchar-mouth{position:absolute;left:50%;transform:translateX(-50%)}
+.cchar-mouth.smile{width:14px;height:7px;border-bottom:3px solid var(--ink);border-radius:0 0 14px 14px}
+.cchar-mouth.neutral{width:10px;height:2px;background:var(--ink);border-radius:2px}
+.cchar-mouth.sad{width:14px;height:7px;border-top:3px solid var(--ink);border-radius:14px 14px 0 0;margin-top:4px}
+/* Cheeks */
+.cchar-cheeks{position:absolute;width:100%;display:flex;justify-content:space-around;padding:0 6px}
+.cchar-cheek{width:9px;height:6px;border-radius:50%;background:rgba(255,100,100,0.4)}
+/* Special features */
+.cchar-tear{position:absolute;width:4px;height:8px;background:#87CEEB;border-radius:0 0 4px 4px;right:24px}
+.cchar-bandage{position:absolute;width:20px;height:7px;background:#FFF9C4;border:2px solid var(--sun-dark);border-radius:4px;left:50%;transform:translateX(-50%);top:6px}
+.cchar-bandage::before{content:'';position:absolute;width:1px;height:100%;background:var(--sun-dark);left:50%;top:0}
+.cchar-lightbulb{position:absolute;left:50%;transform:translateX(-50%);font-size:1em;animation:float-idea 2s ease-in-out infinite}
+@keyframes float-idea{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-4px)}}
+.cchar-sparkles{position:absolute;inset:-4px;pointer-events:none;overflow:hidden;border-radius:50%}
+.cchar-sparkles::before,.cchar-sparkles::after{content:'✨';position:absolute;font-size:.6em;animation:sparkle-rotate 2s linear infinite}
+.cchar-sparkles::before{top:0;right:0;animation-delay:.5s}
+.cchar-sparkles::after{bottom:0;left:0}
+@keyframes sparkle-rotate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+/* Accessories */
+.cchar-backpack{position:absolute;right:6px;width:12px;height:14px;background:#FF6B6B;border:2px solid var(--ink);border-radius:4px 4px 3px 3px}
+.cchar-headphones{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:36px;height:10px;border:3px solid var(--ink);border-bottom:none;border-radius:20px 20px 0 0}
+.cchar-headphones::before,.cchar-headphones::after{content:'';position:absolute;bottom:-5px;width:8px;height:8px;background:#333;border-radius:50%}
+.cchar-headphones::before{left:-1px}
+.cchar-headphones::after{right:-1px}
+.cchar-stick{position:absolute;bottom:0;width:4px;height:20px;background:#8B4513;border-radius:2px}
+.cchar-pimple{position:absolute;width:5px;height:5px;background:#FF6B6B;border-radius:50%;border:1px solid var(--ink)}
+/* Age-specific torso colors */
+.torso-baby{background:#FFD7E0}
+.torso-kid{background:#B3E5FC}
+.torso-teen{background:#CFD8DC}
+.torso-adult{background:#C8E6C9}
+.torso-mid{background:#D1C4E9}
+.torso-senior{background:#F5F5F5}
+/* Reaction animations */
+@keyframes char-jump{0%,100%{transform:translateX(-50%) translateY(0)}40%{transform:translateX(-50%) translateY(-12px)}}
+@keyframes char-slump{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(4px) rotate(3deg)}}
+@keyframes char-spin{0%{transform:translateX(-50%) rotate(0)}100%{transform:translateX(-50%) rotate(360deg)}}
+.cchar-head.jump{animation:char-jump .5s ease forwards}
+.cchar-head.slump{animation:char-slump .5s ease forwards}
+.cchar-head.spin{animation:char-spin .6s ease forwards}
+/* Pale face for low health */
+.cchar-head.pale{background:#DDD !important}
+
+/* ══ CAREER LADDER ══ */
+.career-track{margin-bottom:16px}
+.career-track-header{font-family:'Fredoka One',cursive;font-size:.85em;color:var(--ink2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.career-rung{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;margin-bottom:4px;border:2px solid transparent;transition:all .2s}
+.career-rung.current{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-color:var(--grass-dark);font-weight:900}
+.career-rung.locked{opacity:.4;filter:grayscale(.5)}
+.career-rung.available{background:#FFF9C4;border-color:var(--sun-dark);cursor:pointer}
+.career-rung.available:hover{transform:translateX(3px)}
+.career-rung-emoji{width:26px;text-align:center;font-size:1.1em}
+.career-rung-info{flex:1}
+.career-rung-title{font-size:.82em;font-weight:900;color:var(--ink)}
+.career-rung-salary{font-size:.7em;color:var(--ink2);font-weight:700}
+.career-rung-badge{font-size:.6em;font-weight:900;padding:2px 6px;border-radius:8px;white-space:nowrap}
+.badge-current{background:var(--grass);color:white}
+.badge-next{background:var(--sun);color:var(--ink)}
+.badge-locked{background:#EEE;color:#999}
+.career-connector{width:2px;height:8px;background:#CCC;margin:0 0 0 21px}
+
+/* ══ RECRUITER POPUP ══ */
+.recruiter-popup{text-align:left;padding:4px 0}
+.recruiter-scene{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.recruiter-avatar{font-size:3em;flex-shrink:0}
+.recruiter-bubble{background:#E3F2FD;border:2px solid var(--sky-dark);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:.85em;font-weight:700;line-height:1.5;color:var(--ink)}
+.offer-details{background:var(--offwhite);border:2px solid var(--ink);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.offer-detail-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.8em}
+.offer-detail-label{font-weight:800;color:var(--ink2)}
+.offer-detail-val{font-weight:900;color:var(--ink)}
+.req-met{color:var(--grass-dark)}
+.req-not{color:var(--coral-dark)}
+
+/* ══ INTERVIEW MINI-GAME ══ */
+.interview-scene{background:linear-gradient(180deg,#E3F2FD,white);border-radius:14px;padding:12px;margin-bottom:12px;text-align:center}
+.interview-desk{width:80px;height:12px;background:#795548;border-radius:4px;margin:8px auto 0;border:2px solid #4E342E}
+
+/* ══ MEMORY CARD GAME ══ */
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.mem-card{aspect-ratio:1;background:var(--sky);border:3px solid var(--sky-dark);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5em;cursor:pointer;transition:all .25s;box-shadow:0 3px 0 var(--sky-dark);user-select:none}
+.mem-card:active{transform:translateY(2px);box-shadow:none}
+.mem-card.flipped{background:white;border-color:var(--ink);animation:card-flip .25s ease}
+.mem-card.matched{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-color:var(--grass-dark);pointer-events:none}
+.mem-card.back{background:linear-gradient(135deg,var(--sky),var(--sky-dark));color:transparent}
+.mem-card.back::after{content:'?';font-size:1.2em;color:white;font-family:'Fredoka One',cursive}
+@keyframes card-flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+/* Candle timer */
+.candle-wrap{display:flex;flex-direction:column;align-items:center;margin:6px 0}
+.candle-body{width:16px;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#FFF9C4,#FFD54F);border:2px solid var(--sun-dark);transition:height .5s ease;position:relative;margin-top:4px}
+.candle-flame{width:10px;height:14px;background:radial-gradient(circle at 50% 60%,#FFD93D,#FF6B6B);border-radius:50% 50% 30% 30%;animation:flicker .3s ease-in-out infinite alternate;margin:0 auto}
+@keyframes flicker{0%{transform:scale(1) rotate(-2deg)}100%{transform:scale(1.1) rotate(2deg)}}
+.candle-base{width:24px;height:6px;background:#A1887F;border-radius:2px;border:2px solid var(--ink)}
+.timer-text{font-size:.75em;font-weight:900;color:var(--ink2)}
+
+/* ══ RHYTHM GAME ══ */
+.rhythm-circles{display:flex;justify-content:center;gap:12px;margin:12px 0}
+.rhythm-dot{width:44px;height:44px;border-radius:50%;background:#EEE;border:3px solid var(--ink);transition:all .15s;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.rhythm-dot.active{background:var(--sun);border-color:var(--sun-dark);transform:scale(1.2);box-shadow:0 0 12px rgba(255,217,61,.6)}
+.rhythm-dot.hit{background:var(--grass);border-color:var(--grass-dark);animation:rhythm-pop .2s ease}
+.rhythm-dot.miss{background:var(--coral);border-color:var(--coral-dark)}
+@keyframes rhythm-pop{0%{transform:scale(1.3)}100%{transform:scale(1)}}
+.rhythm-tap-btn{width:100%;padding:20px;background:var(--coral);color:white;font-family:'Fredoka One',cursive;font-size:1.4em;border:4px solid var(--coral-dark);border-radius:20px;cursor:pointer;box-shadow:0 6px 0 var(--coral-dark);transition:all .1s;margin-top:8px}
+.rhythm-tap-btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--coral-dark)}
+
+/* ══ SCHOOL SCENE ══ */
+.school-scene{background:linear-gradient(180deg,#E8F5E9,#F1F8E9);border-radius:14px;padding:12px;margin-bottom:10px;text-align:center;position:relative;overflow:hidden}
+.school-desk{width:70px;height:8px;background:#A1887F;border-radius:4px;margin:8px auto 0;border:2px solid var(--ink)}
+.school-blackboard{width:100%;height:40px;background:#263238;border-radius:8px;border:3px solid #4E342E;display:flex;align-items:center;justify-content:center;color:#B2DFDB;font-family:'Fredoka One',cursive;font-size:.85em;margin-bottom:8px}
+
+/* ══ REFLECTION PANEL ══ */
+.reflection-panel{background:linear-gradient(160deg,#37474F,#263238);border-radius:20px;padding:20px;color:white;margin-bottom:12px}
+.reflection-char{text-align:center;font-size:3.5em;margin-bottom:8px}
+.reflection-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:10px;border-radius:12px;background:rgba(255,255,255,.08)}
+.reflection-icon{font-size:1.4em;flex-shrink:0}
+.reflection-text{font-size:.82em;font-weight:700;line-height:1.5;color:#B2EBF2}
+.reflection-positive{background:rgba(76,175,80,.15)}
+.reflection-negative{background:rgba(244,67,54,.12)}
+
+/* ══ RELATIONSHIP BAR ══ */
+.rel-bar-wrap{margin:8px 0}
+.rel-bar-label{display:flex;justify-content:space-between;font-size:.72em;font-weight:900;margin-bottom:4px}
+.rel-bar-track{height:10px;background:#EEE;border-radius:99px;border:2px solid var(--ink);overflow:hidden}
+.rel-bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--coral),#FF8A65);transition:width .5s ease}
+
+/* ══ WEALTH BG TIERS (avatar card) ══ */
+.wealth-poor{background:linear-gradient(135deg,#ECEFF1,#CFD8DC) !important}
+.wealth-mid{background:linear-gradient(135deg,#FFF9C4,#FFF3E0) !important}
+.wealth-rich{background:linear-gradient(135deg,#E8EAF6,#F3E5F5) !important}
+.wealth-ultra{background:linear-gradient(135deg,#FFF8E1,#FCE4EC) !important}
+/* Rich deco elements via ::after */
+.wealth-rich .avatar-card-bg::after{content:'🏠';position:absolute;right:8px;bottom:4px;font-size:1.5em;opacity:.15}
+.wealth-ultra .avatar-card-bg::after{content:'🏰';position:absolute;right:8px;bottom:4px;font-size:1.8em;opacity:.15}
+
+/* ══ STAT CHANGE CARD ══ */
+.stat-change-card{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:400;background:white;border:3px solid var(--ink);border-radius:20px;padding:14px 20px;min-width:180px;text-align:center;box-shadow:var(--shadow-lg);pointer-events:none;animation:stat-card-pop .6s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes stat-card-pop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}40%{transform:translate(-50%,-50%) scale(1.08)}60%,80%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1.05) translateY(-20px);opacity:0}}
+.stat-change-title{font-family:'Fredoka One',cursive;font-size:.9em;color:var(--ink2);margin-bottom:6px}
+.stat-change-row{display:flex;justify-content:space-between;gap:14px;font-size:.82em;font-weight:900;margin-bottom:3px}
+.sc-pos{color:var(--grass-dark)}
+.sc-neg{color:var(--coral-dark)}
+
+/* ══ PERFORMANCE REVIEW SCENE ══ */
+.office-scene{background:linear-gradient(180deg,#E8EAF6,white);border-radius:14px;padding:12px;text-align:center;margin-bottom:10px}
+.office-desk-big{width:100%;height:12px;background:#5D4037;border-radius:6px;border:2px solid #3E2723;margin-top:6px}
+
+/* ══ MISFORTUNE METER ══ */
+.misfortune-strip{display:flex;align-items:center;gap:6px;width:100%;margin-top:2px}
+.misfortune-label{font-size:.65em;font-weight:900;color:var(--coral-dark);white-space:nowrap}
+.misfortune-track{flex:1;height:8px;background:#EEE;border-radius:99px;border:1.5px solid var(--ink);overflow:hidden}
+.misfortune-fill{height:100%;background:linear-gradient(90deg,var(--sun),var(--coral));border-radius:99px;transition:width .4s}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .cchar-head { animation: none !important; }
+  .cchar-lightbulb { animation: none !important; }
+  .ticker-content { animation: none; padding-left: 4px; }
+  .candle-flame { animation: none; }
+  .rhythm-dot.active { transform: none; }
+}
+
 /* ══ MOBILE ══ */
 @media (max-width:375px){
   .start-title{font-size:2.6em}
@@ -420,18 +611,28 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
   <div id="badge-strip" class="badge-strip" style="display:none"></div>
 
+  <!-- News Ticker -->
+  <div class="ticker-wrap" id="news-ticker-wrap">
+    <div class="ticker-label">📰 NEWS</div>
+    <div class="ticker-track"><div class="ticker-content" id="ticker-content">Loading news...</div></div>
+  </div>
+
   <!-- Energy -->
   <div class="energy-wrap">
     <span class="energy-label">⚡ Energy</span>
     <div class="energy-track"><div class="energy-fill" id="energy-fill" style="width:100%"></div></div>
     <span class="energy-count" id="energy-count">5/5</span>
+    <div class="misfortune-strip" id="misfortune-strip" style="display:none">
+      <span class="misfortune-label">😈</span>
+      <div class="misfortune-track"><div class="misfortune-fill" id="misfortune-fill" style="width:0%"></div></div>
+    </div>
   </div>
 
   <!-- Avatar -->
   <div class="avatar-card" id="avatar-card">
     <div class="avatar-card-bg" id="ava-bg"></div>
-    <div id="char-display" style="flex-shrink:0;width:80px;height:90px;display:flex;align-items:center;justify-content:center">
-      <div class="ava-emoji-wrap" id="ava-emoji">👶</div>
+    <div class="char-panel" id="char-panel">
+      <div id="cchar-root"></div>
     </div>
     <div class="ava-info">
       <div class="ava-age" id="ava-age">0</div>
@@ -439,7 +640,6 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
       <div class="ava-stage" id="ava-stage">Newborn 👶</div>
       <div class="ava-job" id="ava-job">💤 No job yet</div>
     </div>
-    <div id="mood-meter" style="font-size:2em;flex-shrink:0;transition:all .3s">😊</div>
   </div>
 
   <!-- Stats -->
@@ -677,6 +877,18 @@ const DEFAULT = {
   loanRepayment:0,
   loanYearsLeft:0,
   birthBackground:'',
+  // NEW fields v7
+  careerTrack:null,
+  relationshipScore:0,
+  partnerName:null,
+  divorceAge:null,
+  reflectionsDone:[],
+  relationshipBonus:0,
+  lifeRegrets:[],
+  lifePositives:[],
+  activityBonus:{},
+  activityBonusYearsLeft:0,
+  musicCount:0,
 };
 let G = {...DEFAULT};
 let chosenGender = 'male';
@@ -708,6 +920,8 @@ function applyMod(m) {
   });
   if(m.money!==undefined && m.money!==0) spawnFloat((m.money>0?'+':'')+`$${Math.abs(m.money).toLocaleString()}`, m.money>0, true);
   updateMoodMeter();
+  // Char reaction on stat changes
+  if(m.health!==undefined&&Math.abs(m.health)>=10) triggerCharReaction&&triggerCharReaction(m.health>0?'jump':'slump');
 }
 
 function updateMoodMeter() {
@@ -769,21 +983,81 @@ function rollBirthStats() {
 // ══════════════════════════════════════════
 // JOBS
 // ══════════════════════════════════════════
-const JOBS = [
-  {id:'babysitter', emoji:'🍼', title:'Babysitter',       salary:400,   minAge:12, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, requiresJob:null,      requiresYears:0, tier:1},
-  {id:'cashier',    emoji:'🛒', title:'Cashier',          salary:1200,  minAge:16, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, requiresJob:null,      requiresYears:0, tier:1},
-  {id:'waiter',     emoji:'🍽️', title:'Waiter',           salary:1500,  minAge:16, minSmarts:0,  minLooks:20, minEdu:'none',       needsDegree:false, requiresJob:null,      requiresYears:0, tier:1},
-  {id:'driver',     emoji:'🚗', title:'Delivery Driver',  salary:2200,  minAge:18, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, requiresJob:null,      requiresYears:0, tier:1},
-  {id:'teacher',    emoji:'🏫', title:'Teacher',          salary:3200,  minAge:22, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  requiresJob:null,      requiresYears:0, tier:2},
-  {id:'nurse',      emoji:'💉', title:'Nurse',            salary:3800,  minAge:22, minSmarts:55, minLooks:0,  minEdu:'university', needsDegree:true,  requiresJob:null,      requiresYears:0, tier:2},
-  {id:'jr_dev',     emoji:'💻', title:'Junior Developer', salary:4500,  minAge:22, minSmarts:70, minLooks:0,  minEdu:'university', needsDegree:true,  requiresJob:null,      requiresYears:0, tier:2},
-  {id:'sr_dev',     emoji:'💻', title:'Senior Developer', salary:8500,  minAge:25, minSmarts:80, minLooks:0,  minEdu:'university', needsDegree:true,  requiresJob:'jr_dev',  requiresYears:3, tier:3},
-  {id:'engineer',   emoji:'⚙️', title:'Engineer',         salary:6500,  minAge:22, minSmarts:70, minLooks:0,  minEdu:'university', needsDegree:true,  requiresJob:null,      requiresYears:0, tier:2},
-  {id:'lawyer',     emoji:'⚖️', title:'Lawyer',           salary:9000,  minAge:26, minSmarts:75, minLooks:40, minEdu:'graduate',   needsDegree:true,  requiresJob:null,      requiresYears:0, tier:3},
-  {id:'doctor',     emoji:'👨‍⚕️', title:'Doctor',        salary:11000, minAge:28, minSmarts:82, minLooks:30, minEdu:'graduate',   needsDegree:true,  requiresJob:null,      requiresYears:0, tier:3},
-  {id:'manager',    emoji:'📋', title:'Manager',          salary:15000, minAge:30, minSmarts:80, minLooks:50, minEdu:'graduate',   needsDegree:true,  requiresJob:'sr_dev',  requiresYears:3, tier:4},
-  {id:'ceo',        emoji:'🏢', title:'CEO',              salary:28000, minAge:35, minSmarts:90, minLooks:65, minEdu:'graduate',   needsDegree:true,  requiresJob:'manager', requiresYears:3, tier:4},
-];
+// ══════════════════════════════════════════
+// CAREER TRACKS (replaces flat JOBS array)
+// ══════════════════════════════════════════
+const CAREER_TRACKS = {
+  tech:    {name:'Tech',     emoji:'💻', prestige:4, rungs:[
+    {id:'tech_intern',  emoji:'💻', title:'Tech Intern',          salary:2000,  minAge:18, minSmarts:40, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'jr_dev',       emoji:'💻', title:'Junior Developer',     salary:4500,  minAge:20, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:1},
+    {id:'sr_dev',       emoji:'🖥️', title:'Senior Developer',     salary:8500,  minAge:24, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:true,  tier:3, yearsRequired:3},
+    {id:'eng_manager',  emoji:'🧑‍💼', title:'Engineering Manager', salary:14000, minAge:28, minSmarts:82, minLooks:0,  minEdu:'university', needsDegree:true,  tier:4, yearsRequired:3},
+    {id:'cto',          emoji:'🏢', title:'CTO',                  salary:28000, minAge:35, minSmarts:90, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:4},
+  ]},
+  medical: {name:'Medical',  emoji:'🏥', prestige:5, rungs:[
+    {id:'orderly',      emoji:'🏥', title:'Hospital Orderly',     salary:1800,  minAge:18, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'nurse',        emoji:'💉', title:'Nurse',                salary:3800,  minAge:22, minSmarts:55, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
+    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:80, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:3},
+    {id:'surgeon',      emoji:'🔬', title:'Surgeon',              salary:18000, minAge:33, minSmarts:88, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
+    {id:'chief_medicine',emoji:'🏆',title:'Chief of Medicine',    salary:25000, minAge:40, minSmarts:92, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+  ]},
+  legal:   {name:'Legal',    emoji:'⚖️', prestige:4, rungs:[
+    {id:'paralegal',    emoji:'📋', title:'Paralegal',            salary:2200,  minAge:18, minSmarts:50, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:24, minSmarts:70, minLooks:30, minEdu:'graduate',   needsDegree:true,  tier:2, yearsRequired:2},
+    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:78, minLooks:40, minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:3},
+    {id:'sr_partner',   emoji:'🏛️', title:'Senior Partner',       salary:16000, minAge:34, minSmarts:85, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
+    {id:'judge',        emoji:'🔨', title:'Judge',                salary:22000, minAge:40, minSmarts:90, minLooks:55, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+  ]},
+  business:{name:'Business', emoji:'💼', prestige:3, rungs:[
+    {id:'cashier',      emoji:'🛒', title:'Cashier',              salary:1200,  minAge:16, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'supervisor',   emoji:'📋', title:'Supervisor',           salary:2800,  minAge:20, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
+    {id:'manager',      emoji:'📊', title:'Manager',              salary:5500,  minAge:25, minSmarts:55, minLooks:35, minEdu:'university', needsDegree:true,  tier:3, yearsRequired:3},
+    {id:'director',     emoji:'🏢', title:'Director',             salary:12000, minAge:32, minSmarts:72, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
+    {id:'ceo',          emoji:'👑', title:'CEO',                  salary:28000, minAge:38, minSmarts:85, minLooks:65, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+  ]},
+  education:{name:'Education',emoji:'🎓', prestige:3, rungs:[
+    {id:'teach_asst',   emoji:'📚', title:'Teaching Assistant',   salary:1500,  minAge:18, minSmarts:45, minLooks:0,  minEdu:'university', needsDegree:true,  tier:1, yearsRequired:0},
+    {id:'teacher',      emoji:'🏫', title:'Teacher',              salary:3200,  minAge:22, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
+    {id:'head_teacher', emoji:'⭐', title:'Head Teacher',         salary:5500,  minAge:28, minSmarts:70, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:4},
+    {id:'principal',    emoji:'🏛️', title:'Principal',            salary:9000,  minAge:35, minSmarts:78, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:5},
+  ]},
+  creative:{name:'Creative',  emoji:'🎨', prestige:2, rungs:[
+    {id:'creative_intern',emoji:'🖊️',title:'Creative Intern',    salary:1200,  minAge:18, minSmarts:30, minLooks:30, minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'designer',     emoji:'🎨', title:'Designer',             salary:3000,  minAge:20, minSmarts:40, minLooks:45, minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
+    {id:'art_director', emoji:'🖼️', title:'Art Director',         salary:6000,  minAge:26, minSmarts:55, minLooks:55, minEdu:'university', needsDegree:false, tier:3, yearsRequired:3},
+    {id:'creative_dir', emoji:'✨', title:'Creative Director',    salary:11000, minAge:32, minSmarts:65, minLooks:65, minEdu:'university', needsDegree:false, tier:4, yearsRequired:4},
+  ]},
+  trades:  {name:'Trades',    emoji:'🔧', prestige:2, rungs:[
+    {id:'apprentice',   emoji:'🔧', title:'Apprentice',           salary:1800,  minAge:16, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'tradesperson', emoji:'⚙️', title:'Tradesperson',         salary:3500,  minAge:20, minSmarts:30, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:3},
+    {id:'master_trade', emoji:'🏅', title:'Master Tradesperson',  salary:6500,  minAge:26, minSmarts:40, minLooks:0,  minEdu:'none',       needsDegree:false, tier:3, yearsRequired:5},
+    {id:'trade_owner',  emoji:'🏢', title:'Business Owner',       salary:12000, minAge:32, minSmarts:55, minLooks:0,  minEdu:'none',       needsDegree:false, tier:4, yearsRequired:4},
+  ]},
+  service: {name:'Service',   emoji:'🍽️', prestige:1, rungs:[
+    {id:'waiter',       emoji:'🍽️', title:'Waiter',               salary:1500,  minAge:16, minSmarts:0,  minLooks:20, minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'head_waiter',  emoji:'👨‍🍳', title:'Head Waiter',         salary:2800,  minAge:20, minSmarts:20, minLooks:30, minEdu:'none',       needsDegree:false, tier:2, yearsRequired:3},
+    {id:'resto_manager',emoji:'🏪', title:'Restaurant Manager',   salary:5500,  minAge:26, minSmarts:40, minLooks:40, minEdu:'none',       needsDegree:false, tier:3, yearsRequired:4},
+    {id:'resto_owner',  emoji:'🍾', title:'Restaurant Owner',     salary:10000, minAge:32, minSmarts:55, minLooks:45, minEdu:'none',       needsDegree:false, tier:4, yearsRequired:4},
+  ]},
+  misc:    {name:'Other',     emoji:'💼', prestige:1, rungs:[
+    {id:'babysitter',   emoji:'🍼', title:'Babysitter',           salary:400,   minAge:12, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'driver',       emoji:'🚗', title:'Delivery Driver',      salary:2200,  minAge:18, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
+    {id:'engineer',     emoji:'⚙️', title:'Engineer',             salary:6500,  minAge:22, minSmarts:70, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:0},
+  ]},
+};
+
+// Build flat JOBS array for backward-compatibility
+const JOBS = Object.values(CAREER_TRACKS).flatMap(track =>
+  track.rungs.map(r => ({...r, track: Object.keys(CAREER_TRACKS).find(k=>CAREER_TRACKS[k]===track)}))
+);
+function getJobDef(id){ return JOBS.find(j=>j.id===id)||null; }
+function getJobTrack(id){ return Object.entries(CAREER_TRACKS).find(([k,t])=>t.rungs.find(r=>r.id===id))||null; }
+function getNextRungInTrack(id){
+  const entry=getJobTrack(id); if(!entry)return null;
+  const [,track]=entry; const idx=track.rungs.findIndex(r=>r.id===id);
+  return idx>=0&&idx<track.rungs.length-1?track.rungs[idx+1]:null;
+}
+
 const eduRank = {none:0,highschool:1,university:2,graduate:3};
 
 // ══════════════════════════════════════════
@@ -933,29 +1207,155 @@ function evFn(name) {
 // JOB OFFER SYSTEM
 // ══════════════════════════════════════════
 function generateJobOffers() {
-  if (G.pendingOffers && G.pendingOffers.length > 0) {
-    addLog('📬 Last year\'s job offers have expired.', 'info');
-  }
+  if(!G.pendingOffers)G.pendingOffers=[];
   const offers = [];
-  const eligible = JOBS.filter(j => {
-    if(j.id === G.job) return false;
-    if(G.age < j.minAge) return false;
-    if(G.retired) return false;
-    const smartsOk = G.smarts >= (j.minSmarts - 10);
-    const looksOk  = G.looks  >= ((j.minLooks||0) - 10);
-    const eduOk    = eduRank[G.education] >= eduRank[j.minEdu];
-    const prevOk   = !j.requiresJob || (G.job===j.requiresJob && (G.yearsInRole||0)>= j.requiresYears - 1);
-    return smartsOk && looksOk && eduOk && (!j.needsDegree || G.hasDegree) && prevOk;
-  });
-  const shuffled = eligible.sort(() => Math.random()-.5).slice(0,3);
-  shuffled.forEach(j => {
-    const misfortunePenalty = Math.floor((G.misfortune||0) * 0.3);
-    const baseChance = 40 + (G.smarts - j.minSmarts)*0.4 + (G.looks - (j.minLooks||0))*0.2 - misfortunePenalty;
-    const chance = Math.min(Math.max(Math.round(baseChance), 5), 90);
-    offers.push({ jobId: j.id, successChance: chance });
+  if(G.retired)return;
+
+  // Get eligible jobs — prefer next rung in current track
+  const currentTrackEntry = G.job ? getJobTrack(G.job) : null;
+  const currentTrackKey = currentTrackEntry ? currentTrackEntry[0] : null;
+  const eligible = [];
+
+  // Priority 1: next rung in same track
+  if(G.job && currentTrackKey){
+    const nextRung = getNextRungInTrack(G.job);
+    if(nextRung && G.age>=nextRung.minAge && G.smarts>=(nextRung.minSmarts-8) &&
+       G.looks>=(nextRung.minLooks||0)-8 && eduRank[G.education]>=eduRank[nextRung.minEdu] &&
+       (!nextRung.needsDegree||G.hasDegree) && (G.yearsInRole||0)>=nextRung.yearsRequired){
+      eligible.push(nextRung);
+    }
+  }
+  // Priority 2: entry-level jobs in other tracks (if no current job or low tier)
+  if(!G.job || (getJobDef(G.job)||{tier:0}).tier<=2){
+    Object.values(CAREER_TRACKS).forEach(track=>{
+      const rung = track.rungs[0];
+      if(rung.id!==G.job && G.age>=rung.minAge && G.smarts>=(rung.minSmarts-10) &&
+         G.looks>=(rung.minLooks||0)-10 && eduRank[G.education]>=eduRank[rung.minEdu] &&
+         (!rung.needsDegree||G.hasDegree)) eligible.push(rung);
+    });
+  }
+
+  const shuffled = eligible.sort(()=>Math.random()-.5).slice(0,3);
+  shuffled.forEach(j=>{
+    const misP = Math.floor((G.misfortune||0)*0.3);
+    const chance = Math.min(Math.max(Math.round(40+(G.smarts-j.minSmarts)*0.4+(G.looks-(j.minLooks||0))*0.2-misP),5),90);
+    const trackEntry = getJobTrack(j.id);
+    offers.push({jobId:j.id, successChance:chance, trackKey:trackEntry?trackEntry[0]:null});
   });
   G.pendingOffers = offers;
 }
+
+function showRecruiterOffer(offer, onDone){
+  const j = getJobDef(offer.jobId);
+  if(!j){if(onDone)onDone();return;}
+  const inflatedSalary = Math.round(j.salary*(G.inflationMult||1));
+  const companyNames=['Apex Corp','NextGen Ltd','Innovate Inc','Summit Group','Stellar Co','Pinnacle Inc','Horizon Tech','Catalyst Corp'];
+  const company = companyNames[Math.floor(Math.random()*companyNames.length)];
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='OFFER!';
+  document.getElementById('m-icon').textContent='📬';
+  document.getElementById('m-title').textContent='Job Offer!';
+  document.getElementById('m-body').style.display='none';
+  const reqs=[];
+  let allMet=true;
+  if(G.smarts<j.minSmarts){reqs.push({txt:`Smarts ${j.minSmarts}+ required (you: ${G.smarts})`,ok:false});allMet=false;}
+  else if(j.minSmarts>0)reqs.push({txt:`Smarts ✓ (${G.smarts}/${j.minSmarts})`,ok:true});
+  if((j.minLooks||0)>0&&G.looks<j.minLooks){reqs.push({txt:`Looks ${j.minLooks}+ required`,ok:false});allMet=false;}
+  if(j.needsDegree&&!G.hasDegree){reqs.push({txt:'Degree required',ok:false});allMet=false;}
+  const reqsHtml=reqs.map(r=>`<div class="${r.ok?'interview-req':'interview-req fail'}">${r.ok?'✅':'❌'} ${r.txt}</div>`).join('');
+  document.getElementById('m-extra').innerHTML=`
+    <div class="recruiter-popup">
+      <div class="recruiter-scene">
+        <div class="recruiter-avatar">💼</div>
+        <div class="recruiter-bubble">Hey <b>${G.name}</b>! I heard great things about you — we'd love to have you at <b>${company}</b> as a <b>${j.title}</b>!</div>
+      </div>
+      <div class="offer-details">
+        <div class="offer-detail-row"><span class="offer-detail-label">💰 Salary</span><span class="offer-detail-val">$${inflatedSalary.toLocaleString()}/yr</span></div>
+        <div class="offer-detail-row"><span class="offer-detail-label">📊 Success chance</span><span class="offer-detail-val">${offer.successChance}%</span></div>
+        <div style="margin-top:6px">${reqsHtml}</div>
+      </div>
+    </div>`;
+  const btns=document.getElementById('m-btns'); btns.innerHTML='';
+  if(allMet){
+    const acceptBtn=document.createElement('button');acceptBtn.type='button';acceptBtn.className='mbtn pri';
+    acceptBtn.textContent='🤝 Accept Interview';
+    acceptBtn.onclick=()=>{closeModal();startInterviewMiniGame(j,offer,inflatedSalary,company,onDone);};
+    btns.appendChild(acceptBtn);
+  }
+  const declineBtn=document.createElement('button');declineBtn.type='button';declineBtn.className='mbtn sec';
+  declineBtn.textContent='👋 Not interested';
+  declineBtn.onclick=()=>{closeModal();addLog(`Declined ${company} offer for ${j.title}.`,'info');if(onDone)onDone();};
+  btns.appendChild(declineBtn);
+  document.getElementById('modal').style.display='flex';
+}
+
+function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
+  const track = getJobTrack(j.id);
+  const trackName = track?track[1].name:'General';
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='INTERVIEW!';
+  document.getElementById('m-icon').textContent='🤝';
+  document.getElementById('m-title').textContent=`${j.emoji} Interview at ${company}`;
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent=`Prove yourself for the ${j.title} role!`;
+  document.getElementById('m-extra').innerHTML=`
+    <div class="office-scene">
+      <div style="font-size:.75em;color:var(--ink2);font-weight:800">${company} · ${trackName} Division</div>
+      <div class="office-desk-big"></div>
+    </div>`;
+  document.getElementById('m-btns').innerHTML='';
+  const btns=document.getElementById('m-btns');
+  const mathBtn=document.createElement('button');mathBtn.type='button';mathBtn.className='mbtn pri';
+  mathBtn.textContent='🧠 Take Logic Test';
+  mathBtn.onclick=()=>{
+    startMathMiniGame(
+      ()=>{
+        G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;
+        G.promotionChance=10;G.yearsInRole=0;
+        if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+        G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
+        const entry=getJobTrack(j.id);
+        if(entry)G.careerTrack=entry[0];
+        addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
+        SoundManager.levelUp();applyMod({happiness:15});burst(40);
+        showNewspaper(`${G.name.toUpperCase()} LANDS ${j.title.toUpperCase()}! 🎉`);
+        showMascotBubble(`🦉 You aced the interview! Welcome to ${company}! 🎉`,4000);
+        mascotDance();triggerCharReaction('jump');
+        checkAchievements();save();updateUI();renderWork();
+        if(onDone)onDone();
+      },
+      ()=>{applyMod({happiness:-5});addLog(`😞 Interview for ${j.title} at ${company} didn't go well.`,'bad');
+        G.misfortune=Math.min((G.misfortune||0)+5,100);
+        showMascotBubble('🦉 Don't give up! Keep studying and try again! 💪',3000);
+        triggerCharReaction('slump');
+        if(onDone)onDone();
+      }
+    );
+  };
+  btns.appendChild(mathBtn);
+  document.getElementById('modal').style.display='flex';
+}
+
+// Queue recruiter offers to show one by one
+let _offerQueue=[];
+function showNextOffer(){
+  if(!_offerQueue.length)return;
+  const offer=_offerQueue.shift();
+  showRecruiterOffer(offer, ()=>{
+    G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==offer.jobId);
+    if(_offerQueue.length>0) setTimeout(showNextOffer,400);
+    else {renderWork();updateOfferBadge();}
+  });
+}
+function triggerRecruiterOffers(){
+  _offerQueue=[...(G.pendingOffers||[])];
+  if(_offerQueue.length>0) setTimeout(showNextOffer,600);
+}
+
 
 function applyInflation() {
   if(G.age > 0 && G.age % 10 === 0 && G.age !== G.lastInflationAge) {
@@ -1334,10 +1734,11 @@ function updateUI(){
   const netWorth=G.money+(G.investments||0);
   document.getElementById('hdr-money').textContent=netWorth.toLocaleString();
   document.getElementById('hdr-edu').textContent={none:'No education yet',highschool:'🎓 High School',university:'🏛️ University',graduate:'🎓 Graduate School'}[G.education]||'No education yet';
-  document.getElementById('ava-emoji').textContent=getAvatar(G.age,G.gender);
+  renderCSSCharacter();
   document.getElementById('ava-age').textContent=G.age;
   document.getElementById('ava-stage').textContent=getStage(G.age);
-  document.getElementById('ava-job').textContent=G.retired?'🏖️ Retired':(G.job?(JOBS.find(j=>j.id===G.job)?.emoji||'')+' '+G.jobTitle:'💤 No job yet');
+  const _jdef=getJobDef(G.job);
+  document.getElementById('ava-job').textContent=G.retired?'🏖️ Retired':(G.job?(_jdef?.emoji||'')+' '+G.jobTitle:'💤 No job yet');
   document.getElementById('next-age').textContent=G.age+1;
   ['health','happiness','smarts','looks'].forEach(s=>{
     const v=G[s],fill=document.getElementById('sf-'+s),val=document.getElementById('sv-'+s);
@@ -1356,6 +1757,9 @@ function updateUI(){
   if(si_lk)si_lk.textContent=lk>=75?'✨':lk>=50?'✨':'🪞';
   updateEnergyUI();
   updateMoodMeter();
+  updateWealthBackground();
+  updateMisfortuneMeter();
+  updateTicker();
   renderLog();
   renderFamilyCard();
   updateOfferBadge();
@@ -1460,75 +1864,130 @@ function renderActivities(){
     el.appendChild(item);
   }
 
-  addAct(5,'📖','Read a Book','+6 Smarts, +3 Happy','read',1,()=>{
-    const s=scaledBonus('read',6),h=scaledBonus('read',3);
+  // Helper: show stat change card
+  function showStatCard(title, changes){
+    const existing=document.querySelector('.stat-change-card');
+    if(existing)existing.remove();
+    const card=document.createElement('div');card.className='stat-change-card';
+    const rows=changes.filter(c=>c.val!==0).map(c=>`<div class="stat-change-row"><span>${c.label}</span><span class="${c.val>0?'sc-pos':'sc-neg'}">${c.val>0?'+':''}${c.val}</span></div>`).join('');
+    card.innerHTML=`<div class="stat-change-title">${title}</div>${rows}`;
+    document.body.appendChild(card);
+    setTimeout(()=>{if(card.parentNode)card.remove();},1200);
+  }
+
+  function addActDual(minAge,emoji,title,subFull,key,energyCost,fn){
+    if(a<minAge)return;
+    const used=actCount(key);
+    const dimNote=used===1?' (half bonus)':used>=2?' (neg effect!)':'';
+    const item=actItem(emoji,title,subFull+dimNote+' · ⚡-1',()=>{
+      if(!useEnergy(energyCost))return;
+      fn();
+      renderActivities();
+    });
+    if(noEnergy)item.classList.add('disabled');
+    el.appendChild(item);
+  }
+
+  addActDual(5,'📖','Read a Book','+8 Smarts, +3 😊 / −3 ❤️ −2 ✨','read',1,()=>{
+    const s=scaledBonus('read',8),h=scaledBonus('read',3);
     incActCount('read');
-    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy`,'good');}
+    const changes=[{label:'Smarts',val:s},{label:'Happiness',val:h},{label:'Health',val:-3},{label:'Looks',val:-2}];
+    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3,looks:-2});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy`,'good');}
     else{applyMod({health:-3});addLog('Read a book — nothing new to learn 📖','info');}
-    SoundManager.success();
+    showStatCard('📖 Read a Book',changes);triggerCharReaction(s>0?'jump':'slump');SoundManager.success();
   });
 
-  addAct(5,'🎨','Draw / Paint','+4 Happy, +3 Looks','draw',1,()=>{
+  addActDual(5,'🎨','Draw / Paint','+4 😊 +3 ✨ / −3 🧠','draw',1,()=>{
     const h=scaledBonus('draw',4),l=scaledBonus('draw',3);
     incActCount('draw');
+    const changes=[{label:'Happiness',val:h},{label:'Looks',val:l},{label:'Smarts',val:-3}];
     if(h>0||l>0){applyMod({happiness:h,looks:l,smarts:-3});addLog(`Got creative 🎨 +${h} Happy, +${l} Looks`,'good');}
     else{applyMod({smarts:-3});addLog('Drew a bit — creative drift sets in 🎨','info');}
-    SoundManager.success();
+    showStatCard('🎨 Draw / Paint',changes);SoundManager.success();
   });
 
-  addAct(6,'🏃','Exercise','+6 Health, +3 Looks','run',1,()=>{
+  addActDual(6,'🏃','Exercise','+6 ❤️ +3 ✨ / −5 😊 −4 🧠','run',1,()=>{
     const h=scaledBonus('run',6),l=scaledBonus('run',3);
     incActCount('run');
-    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5});addLog(`Went for a run 🏃 +${h} Health, +${l} Looks`,'good');}
-    else{applyMod({happiness:-5});addLog('Ran again — overtrained! 🏃','info');}
-    SoundManager.success();
+    const changes=[{label:'Health',val:h},{label:'Looks',val:l},{label:'Happiness',val:-5},{label:'Smarts',val:-4}];
+    if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5,smarts:-4});addLog(`Went for a run 🏃 +${h} Health, +${l} Looks`,'good');}
+    else{applyMod({happiness:-5,smarts:-4});addLog('Ran again — overtrained! 🏃','info');}
+    showStatCard('🏃 Exercise',changes);triggerCharReaction(h>0?'jump':'slump');SoundManager.success();
   });
 
-  addAct(8,'🎵','Play Music','+5 Happy, +3 Smarts','music',1,()=>{
+  addActDual(8,'🎵','Play Music','+5 😊 +3 🧠 / −3 ❤️ −2 ✨','music',1,()=>{
     const h=scaledBonus('music',5),s=scaledBonus('music',3);
     incActCount('music');
-    if(h>0||s>0){applyMod({happiness:h,smarts:s,health:-3});addLog(`Played music 🎵 +${h} Happy, +${s} Smarts`,'good');}
+    G.musicCount=(G.musicCount||0)+1;
+    const changes=[{label:'Happiness',val:h},{label:'Smarts',val:s},{label:'Health',val:-3},{label:'Looks',val:-2}];
+    if(h>0||s>0){applyMod({happiness:h,smarts:s,health:-3,looks:-2});addLog(`Played music 🎵 +${h} Happy, +${s} Smarts`,'good');}
     else{applyMod({health:-3});addLog('Played music — no new growth 🎵','info');}
-    SoundManager.success();
+    showStatCard('🎵 Play Music',changes);SoundManager.success();
+    if((G.musicCount||0)>=3) setTimeout(()=>triggerMusicAudition(),300);
   });
 
-  addAct(12,'🏋️','Hit the Gym','+8 Health, +5 Looks','gym',1,()=>{
+  addActDual(12,'🏋️','Hit the Gym','+8 ❤️ +5 ✨ / −5 😊 −4 🧠','gym',1,()=>{
     const h=scaledBonus('gym',8),l=scaledBonus('gym',5);
     incActCount('gym');
+    const changes=[{label:'Health',val:h},{label:'Looks',val:l},{label:'Happiness',val:-5},{label:'Smarts',val:-4}];
     if(h>0||l>0){applyMod({health:h,looks:l,happiness:-5,smarts:-4});addLog(`Crushed the gym 🏋️ +${h} Health +${l} Looks`,'good');}
     else{applyMod({happiness:-5,smarts:-4});addLog('Hit the gym — overtrained! 🏋️','info');}
-    SoundManager.success();
+    showStatCard('🏋️ Hit the Gym',changes);triggerCharReaction(h>0?'jump':'slump');SoundManager.success();
   });
 
-  addAct(12,'👥','Hang with Friends','+12 Happiness','social',1,()=>{
+  addActDual(12,'👥','Hang with Friends','+12 😊 / −4 🧠 −3 ❤️','social',1,()=>{
     const h=scaledBonus('social',12);
     incActCount('social');
+    const changes=[{label:'Happiness',val:h},{label:'Smarts',val:-4},{label:'Health',val:-3}];
     if(h>0){applyMod({happiness:h,smarts:-4,health:-3});addLog(`Hung out with friends 😄 +${h} Happy`,'good');}
     else{applyMod({smarts:-4,health:-3});addLog('Saw friends — sleep deprived and no fun left! 👥','info');}
-    SoundManager.success();
+    showStatCard('👥 Hang with Friends',changes);SoundManager.success();
   });
 
-  addAct(16,'🧘','Meditate','+10 Happy, +4 Health','meditate',1,()=>{
+  addActDual(16,'🧘','Meditate','+10 😊 +4 ❤️ / −4 🧠 −2 ✨','meditate',1,()=>{
     const h=scaledBonus('meditate',10),hp=scaledBonus('meditate',4);
     incActCount('meditate');
-    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');}
+    const changes=[{label:'Happiness',val:h},{label:'Health',val:hp},{label:'Smarts',val:-4},{label:'Looks',val:-2}];
+    if(h>0||hp>0){applyMod({happiness:h,health:hp,smarts:-4,looks:-2});addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');}
     else{applyMod({smarts:-4});addLog('Meditated — already at peace 🧘','info');}
-    SoundManager.success();
+    showStatCard('🧘 Meditate',changes);SoundManager.success();
   });
 
   if(a>=18&&G.job&&!G.retired){
     const grindBonus=Math.floor(G.salary*0.10);
-    const grindItem=actItem('💥','Grind at Work',`+$${grindBonus.toLocaleString()} bonus · −10 Happy, −5 Health · ⚡-1`,()=>{
+    const grindItem=actItem('💥','Grind at Work',`+$${grindBonus.toLocaleString()} bonus / −10 😊 −5 ❤️ −3 ✨ · ⚡-1`,()=>{
       if(!useEnergy(1))return;
       incActCount('grind');
       const usedGrind=actCount('grind');
       const bonus=Math.round(grindBonus*[1,.7,.4,0][Math.min(usedGrind-1,3)]);
-      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()}`,'event');}
+      const changes=[{label:'Money',val:bonus},{label:'Happiness',val:-10},{label:'Health',val:-5},{label:'Looks',val:-3}];
+      if(bonus>0){applyMod({money:bonus,happiness:-10,health:-5,looks:-3});addLog(`💥 Grinded hard! +$${bonus.toLocaleString()}`,'event');}
       else{applyMod({happiness:-8,health:-4});addLog('Grinded too much — burning out!','bad');}
-      SoundManager.success();renderActivities();
+      showStatCard('💥 Grind at Work',changes);SoundManager.success();renderActivities();
     });
     if(noEnergy)grindItem.classList.add('disabled');
     el.appendChild(grindItem);
+  }
+
+  // Dating activity (age 18+, not married)
+  if(a>=18&&!G.marriageAge){
+    const dateItem=actItem('💕','Go on a Date',`+Relationship Score · −$150 · ⚡-1`,()=>{
+      if(!useEnergy(1))return;
+      if(G.money<150){addLog("Can't afford a date! Need $150 😅",'bad');SoundManager.fail();return;}
+      applyMod({money:-150,happiness:8});
+      G.relationshipScore=Math.min(100,(G.relationshipScore||0)+rand(8,16));
+      if(!G.partnerName){
+        const pNames=G.gender==='male'?PARTNER_NAMES_F:PARTNER_NAMES_M;
+        G.partnerName=pNames[Math.floor(Math.random()*pNames.length)];
+        G.datingAge=G.age;
+        addLog(`💕 Started dating ${G.partnerName}! Relationship: ${G.relationshipScore}`,'good');
+      } else {
+        addLog(`💕 Great date with ${G.partnerName}! Relationship: ${G.relationshipScore}/100`,'good');
+      }
+      SoundManager.success();renderActivities();
+    });
+    if(noEnergy)dateItem.classList.add('disabled');
+    el.appendChild(dateItem);
   }
 
   if(a>=18){
@@ -1546,22 +2005,25 @@ function renderActivities(){
   }
 
   if(a>=21){
-    addAct(21,'🎰','Casino Night','Risk $500 for $1,500','casino',1,()=>{
+    addActDual(21,'🎰','Casino Night','±$500-1500 😊 / −5 🧠 −3 ❤️ +😈 if lose','casino',1,()=>{
       const w=Math.random()>.5;incActCount('casino');
+      const changes=[{label:'Money',val:w?1500:-500},{label:'Happiness',val:w?15:-10},{label:'Smarts',val:-5},{label:'Health',val:-3}];
       applyMod({money:w?1500:-500,happiness:w?15:-10,smarts:-5,health:-3});
       if(!w){G.misfortune=Math.min((G.misfortune||0)+8,100);}
       addLog(w?'Casino WIN! 🎰 +$1,500':'Casino loss -$500 😢',w?'good':'bad');
-      if(w)SoundManager.money();else SoundManager.fail();
+      showStatCard('🎰 Casino Night',changes);
+      if(w){SoundManager.money();triggerCharReaction('jump');}else{SoundManager.fail();triggerCharReaction('slump');}
     });
   }
 
   if(a>=25){
     const tripCost=Math.round(2000*inf);
-    addAct(25,'✈️','Take a Trip',`+25 Happy · −$${tripCost.toLocaleString()} · ⚡-2`,'travel',2,()=>{
+    addActDual(25,'✈️','Take a Trip',`+25 😊 +5 🧠 +5 ✨ / −8 ❤️ −$${tripCost.toLocaleString()}`,'travel',2,()=>{
       incActCount('travel');
       applyMod({happiness:25,money:-tripCost,looks:5,smarts:5,health:-8});
+      const changes=[{label:'Happiness',val:25},{label:'Smarts',val:5},{label:'Looks',val:5},{label:'Health',val:-8}];
       addLog(`Amazing trip ✈️ (−$${tripCost.toLocaleString()})`,'good');
-      SoundManager.levelUp();
+      showStatCard('✈️ Take a Trip',changes);triggerCharReaction('jump');SoundManager.levelUp();
     });
   }
 
@@ -1654,59 +2116,101 @@ function renderWork(){
   if(G.age<12){el.innerHTML='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:12px">Can start working from age 12! 🎒</p>';return;}
   if(G.retired){
     el.innerHTML+=`<div class="retire-banner"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:4px">🏖️ Retired</div><div style="font-size:1.1em;font-weight:900">Enjoying retirement!</div><div style="color:#BF360C;font-weight:800;font-size:.9em">💰 $${(G.pension||0).toLocaleString()}/yr pension</div></div>`;
-    el.innerHTML+='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:8px">You\'ve earned your rest! 🌴</p>';
     return;
   }
-  const offers=G.pendingOffers||[];
-  if(offers.length>0){
-    const lbl=document.createElement('div');
-    lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;background:#E8F5E9;border-radius:12px;padding:8px 12px;color:var(--grass-dark);margin-bottom:8px;border:2px solid var(--grass-dark)';
-    lbl.textContent='📬 Job Offers This Year — Tap to Interview!';
-    el.appendChild(lbl);
-    offers.forEach(offer=>{
-      const j=JOBS.find(x=>x.id===offer.jobId);
-      if(!j)return;
-      const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
-      const item=document.createElement('div');
-      item.className='job-offer-item';
-      item.innerHTML=`<div class="act-icon">${j.emoji}</div><div style="flex:1"><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr · ${offer.successChance}% success</div></div><div class="offer-badge">APPLY</div>`;
-      item.onclick=()=>jobInterview(j);
-      el.appendChild(item);
-    });
-    el.innerHTML+='<div style="height:6px"></div>';
-  } else if(G.age>=12){
-    const noOffers=document.createElement('div');
-    noOffers.style.cssText='background:var(--offwhite);border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.8em;font-weight:800;color:var(--ink2);text-align:center;border:2px dashed #CCC';
-    noOffers.textContent='📭 No offers yet this year. Age Up to get new offers!';
-    el.appendChild(noOffers);
-  }
+
+  // Current job card
   if(G.job){
-    const j=JOBS.find(x=>x.id===G.job);
-    el.innerHTML+=`<div style="background:#E8F5E9;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--grass-dark)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--grass-dark);margin-bottom:4px">Current Job</div><div style="font-size:1.15em;font-weight:900">${j?.emoji||''} ${G.jobTitle}</div><div style="color:var(--grass-dark);font-weight:800;font-size:.9em">💰 $${G.salary.toLocaleString()}/year · ${G.yearsInRole||0} yr${(G.yearsInRole||0)!==1?'s':''} in role</div></div>`;
+    const jdef=getJobDef(G.job);
+    el.innerHTML+=`<div style="background:#E8F5E9;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--grass-dark)"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--grass-dark);margin-bottom:4px">Current Job</div><div style="font-size:1.15em;font-weight:900">${jdef?.emoji||''} ${G.jobTitle}</div><div style="color:var(--grass-dark);font-weight:800;font-size:.9em">💰 $${G.salary.toLocaleString()}/year · ${G.yearsInRole||0} yr${(G.yearsInRole||0)!==1?'s':''} in role</div></div>`;
     el.innerHTML+=`<div class="perf-panel"><div style="font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--grass-dark);margin-bottom:6px">📊 Performance</div><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.82em;font-weight:800;color:var(--ink2)">Promotion chance</span><span style="font-size:.82em;font-weight:900;color:var(--grass-dark)">${G.promotionChance}%</span></div><div class="promo-bar-track"><div class="promo-bar-fill" style="width:${Math.min(G.promotionChance,100)}%"></div></div></div>`;
     el.appendChild(actItem('🚪','Quit Job','Go back to job hunting',()=>{
       addLog(`Left job as ${G.jobTitle} 🚪`,'info');
       G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
       applyMod({happiness:-10});SoundManager.fail();updateUI();renderWork();
     }));
+  } else {
+    const noJob=document.createElement('div');
+    noJob.style.cssText='background:var(--offwhite);border-radius:14px;padding:10px 14px;margin-bottom:10px;font-size:.8em;font-weight:800;color:var(--ink2);text-align:center;border:2px dashed #CCC';
+    noJob.textContent='💼 Unemployed — Age Up to receive job offers!';
+    el.appendChild(noJob);
   }
-  const avail=JOBS.filter(j=>j.id!==G.job&&G.age>=j.minAge);
-  if(avail.length){
+
+  // Pending offers notice
+  const offers=G.pendingOffers||[];
+  if(offers.length>0){
+    const offerNotice=document.createElement('div');
+    offerNotice.style.cssText='background:#E8F5E9;border:2px solid var(--grass-dark);border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:.82em;font-weight:900;color:var(--grass-dark);cursor:pointer;text-align:center';
+    offerNotice.innerHTML=`📬 ${offers.length} recruiter offer${offers.length>1?'s':''} waiting! <span style="text-decoration:underline">View now</span>`;
+    offerNotice.onclick=()=>triggerRecruiterOffers();
+    el.appendChild(offerNotice);
+  }
+
+  // Career Ladder
+  const trackKey = G.careerTrack || (G.job ? (getJobTrack(G.job)||[null])[0] : null);
+  if(trackKey && CAREER_TRACKS[trackKey]){
+    const track = CAREER_TRACKS[trackKey];
     const lbl=document.createElement('div');
     lbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:6px';
-    lbl.textContent='📋 Career Guide';
+    lbl.textContent=`${track.emoji} ${track.name} Career Path`;
     el.appendChild(lbl);
-    avail.forEach(j=>{
-      const qualified=G.age>=j.minAge&&G.smarts>=j.minSmarts&&G.looks>=(j.minLooks||0)&&eduRank[G.education]>=eduRank[j.minEdu]&&(!j.needsDegree||G.hasDegree)&&(!j.requiresJob||(G.job===j.requiresJob&&(G.yearsInRole||0)>=j.requiresYears));
-      const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
-      const div=document.createElement('div');
-      div.className='act-item';
-      if(!qualified){div.style.opacity='.5';div.style.cursor='not-allowed';}
-      div.innerHTML=`<div class="act-icon">${j.emoji}</div><div><div class="act-title">${j.title}</div><div class="act-sub">$${inflatedSalary.toLocaleString()}/yr${qualified?' · Tap to apply':'  · 🔒 Requirements not met'}</div></div>`;
-      if(qualified) div.onclick=()=>jobInterview(j);
-      el.appendChild(div);
+    const ladderDiv=document.createElement('div');ladderDiv.className='career-track';
+    track.rungs.forEach((rung,i)=>{
+      if(i>0){const conn=document.createElement('div');conn.className='career-connector';ladderDiv.appendChild(conn);}
+      const isCurrent=G.job===rung.id;
+      const isPassed=track.rungs.slice(0,i).some(r=>r.id===G.job)===false && i<track.rungs.findIndex(r=>r.id===G.job);
+      const nextUp=!G.job||!isCurrent?(i>0&&track.rungs[i-1].id===G.job):false;
+      const salaryI=Math.round(rung.salary*(G.inflationMult||1));
+      const rungDiv=document.createElement('div');
+      rungDiv.className='career-rung '+(isCurrent?'current':isPassed?'locked':nextUp?'available':'locked');
+      rungDiv.innerHTML=`<div class="career-rung-emoji">${rung.emoji}</div><div class="career-rung-info"><div class="career-rung-title">${rung.title}</div><div class="career-rung-salary">$${salaryI.toLocaleString()}/yr</div></div><div class="career-rung-badge ${isCurrent?'badge-current':nextUp?'badge-next':'badge-locked'}">${isCurrent?'YOU':'Tier '+rung.tier}</div>`;
+      ladderDiv.appendChild(rungDiv);
     });
+    el.appendChild(ladderDiv);
   }
+
+  // Browse all jobs
+  const browseLbl=document.createElement('div');
+  browseLbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:10px;cursor:pointer;display:flex;align-items:center;gap:6px';
+  browseLbl.innerHTML='📋 Browse All Jobs <span style="font-size:.85em;font-weight:800;color:#999">(lower success chance)</span>';
+  el.appendChild(browseLbl);
+  const avail=JOBS.filter(j=>j.id!==G.job&&G.age>=j.minAge).slice(0,8);
+  avail.forEach(j=>{
+    const qualified=G.age>=j.minAge&&G.smarts>=j.minSmarts&&G.looks>=(j.minLooks||0)&&eduRank[G.education]>=eduRank[j.minEdu]&&(!j.needsDegree||G.hasDegree);
+    const salaryI=Math.round(j.salary*(G.inflationMult||1));
+    const div=document.createElement('div');div.className='act-item';
+    if(!qualified){div.style.opacity='.5';div.style.cursor='not-allowed';}
+    div.innerHTML=`<div class="act-icon">${j.emoji}</div><div><div class="act-title">${j.title}</div><div class="act-sub">$${salaryI.toLocaleString()}/yr${qualified?' · Tap to apply (−15% chance)':'  · 🔒 Requirements not met'}</div></div>`;
+    if(qualified) div.onclick=()=>startBrowseInterview(j);
+    el.appendChild(div);
+  });
+}
+
+function startBrowseInterview(j){
+  const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
+  const misP=Math.floor((G.misfortune||0)*0.3);
+  const chance=Math.min(Math.max(Math.round(25+(G.smarts-j.minSmarts)*0.3+(G.looks-(j.minLooks||0))*0.15-misP),3),70);
+  showModal('💼','Job Application',`Applying for ${j.title} ($${inflatedSalary.toLocaleString()}/yr) — ${chance}% success chance.`,
+    [{l:'📝 Apply (lower odds)',style:'pri'},{l:'❌ Cancel',style:'sec'}],'','');
+  // patch the apply button
+  setTimeout(()=>{
+    const btns=document.querySelectorAll('.mbtn.pri');
+    if(btns.length>0){
+      const applyBtn=btns[btns.length-1];
+      const _orig=applyBtn.onclick;
+      applyBtn.onclick=()=>{
+        closeModal();
+        if(Math.random()*100<chance){
+          G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;G.promotionChance=10;G.yearsInRole=0;
+          const entry=getJobTrack(j.id);if(entry)G.careerTrack=entry[0];
+          if(G.salary>G.peakSalary)G.peakSalary=G.salary;
+          addLog(`🎉 Got the job! ${j.emoji} ${j.title}`,'good');SoundManager.levelUp();applyMod({happiness:12});burst(30);
+          triggerCharReaction('jump');
+        }else{applyMod({happiness:-5});addLog(`😞 Application for ${j.title} rejected.`,'bad');G.misfortune=Math.min((G.misfortune||0)+3,100);}
+        checkAchievements();save();updateUI();renderWork();
+      };
+    }
+  },100);
 }
 
 function renderEdu(){
@@ -2007,6 +2511,8 @@ function ageUp(){
 
   G.age++;
   G.yearActCounts={};
+  G.musicCount=0;
+  G._schoolTestThisYear=false;
 
   if(G.age < 13)       G.maxEnergy = 3;
   else if(G.age < 18)  G.maxEnergy = 4;
@@ -2135,11 +2641,28 @@ function continueAgeUp(){
   if(!G.retired&&G.age>=12){
     generateJobOffers();
     renderWork();updateOfferBadge();
+    // Trigger recruiter popups after small delay
+    if((G.pendingOffers||[]).length>0) setTimeout(triggerRecruiterOffers,800);
   }
 
   if(G.age===5&&!G.schoolChosen){checkAchievements();save();updateUI();triggerPrimarySchoolModal();return;}
   if(G.age===18&&!G.age18PathChosen){checkAchievements();save();updateUI();triggerAge18Modal();return;}
   if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){checkAchievements();save();updateUI();triggerAge22Modal();return;}
+
+  // Life reflections
+  if([40,60,80].includes(G.age)){if(triggerReflection(G.age)){checkAchievements();save();updateUI();return;}}
+
+  // Relationship events
+  if(G.partnerName||G.datingAge){if(updateRelationshipSystem()){checkAchievements();save();updateUI();return;}}
+
+  // School test (ages 6-17)
+  if(G.age>=6&&G.age<=17&&maybeSchoolTest()){checkAchievements();save();updateUI();return;}
+
+  // Performance review (ages 18+, employed, annually ~35% chance)
+  if(G.age>=18&&G.job&&!G.retired&&Math.random()<0.35){triggerPerformanceReview();checkAchievements();save();updateUI();return;}
+
+  // Activity bonus from reflection
+  applyActivityBonus();
 
   if(G.health<40&&Math.random()<0.30){
     showModal('🚑','Medical Emergency!','Your health is critically low!',
@@ -2268,6 +2791,18 @@ function continueLife(){
     if(G.loanRepayment===undefined)G.loanRepayment=0;
     if(G.loanYearsLeft===undefined)G.loanYearsLeft=0;
     if(G.birthBackground===undefined)G.birthBackground='';
+    if(G.careerTrack===undefined)G.careerTrack=null;
+    if(G.relationshipScore===undefined)G.relationshipScore=0;
+    if(G.partnerName===undefined)G.partnerName=null;
+    if(G.reflectionsDone===undefined)G.reflectionsDone=[];
+    if(G.activityBonus===undefined)G.activityBonus={};
+    if(G.activityBonusYearsLeft===undefined)G.activityBonusYearsLeft=0;
+    if(G.musicCount===undefined)G.musicCount=0;
+    // migrate careerTrack from existing job
+    if(!G.careerTrack&&G.job){
+      const entry=getJobTrack(G.job);
+      if(entry)G.careerTrack=entry[0];
+    }
     launchGame();
     setTimeout(()=>showMascotBubble(`🦉 Welcome back, ${G.name}! You're age ${G.age}! Let's keep going! 🌟`, 4000), 600);
   }
@@ -2291,6 +2826,582 @@ function confirmNew(){
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
+
+// ══════════════════════════════════════════
+// CSS CHARACTER RENDERER
+// ══════════════════════════════════════════
+function getWealthTier(){
+  const nw=G.money+(G.investments||0);
+  if(nw>=200000)return'ultra';
+  if(nw>=30000)return'rich';
+  if(nw>=5000)return'mid';
+  return'poor';
+}
+
+function renderCSSCharacter(){
+  const root=document.getElementById('cchar-root');
+  if(!root)return;
+  const age=G.age,hp=G.health,hpy=G.happiness,sm=G.smarts,lk=G.looks;
+  const isLowHealth=hp<30;
+  const isSadFace=hpy<40;
+  const isHappy=hpy>=75;
+  const isSmart=sm>=80;
+  const isGlowing=lk>=80;
+  let headW,headH,headTop,headColor='#FFDAB9';
+  let torsoW,torsoH,torsoTop,torsoClass='torso-adult';
+  let neckH,neckW;
+  let legH,legW,legGap,legTop;
+  let accessory='';
+  let extraHead='';
+
+  if(age<=4){
+    headW=56;headH=56;headTop=0;
+    torsoW=36;torsoH=22;torsoTop=50;torsoClass='torso-baby';
+    neckH=4;neckW=12;
+    legH=12;legW=10;legGap=4;legTop=68;
+    extraHead='<div class="cchar-cheek" style="position:absolute;width:12px;height:8px;background:rgba(255,100,100,.45);border-radius:50%;left:6px;bottom:16px"></div><div class="cchar-cheek" style="position:absolute;width:12px;height:8px;background:rgba(255,100,100,.45);border-radius:50%;right:6px;bottom:16px"></div>';
+  } else if(age<=12){
+    headW=50;headH=50;headTop=0;
+    torsoW=38;torsoH=26;torsoTop=46;torsoClass='torso-kid';
+    neckH=5;neckW=14;
+    legH=16;legW=11;legGap=4;legTop=68;
+    accessory='<div class="cchar-backpack" style="top:52px"></div>';
+  } else if(age<=17){
+    headW=44;headH=44;headTop=0;
+    torsoW=40;torsoH=30;torsoTop=40;torsoClass='torso-teen';
+    neckH=6;neckW=14;
+    legH=24;legW=12;legGap=5;legTop=66;
+    accessory='<div class="cchar-headphones"></div>';
+    extraHead='<div class="cchar-pimple" style="top:14px;right:10px"></div>';
+  } else if(age<=30){
+    headW=42;headH=42;headTop=2;
+    torsoW=42;torsoH=32;torsoTop=38;torsoClass='torso-adult';
+    neckH=6;neckW=16;
+    legH=26;legW=13;legGap=5;legTop=66;
+  } else if(age<=60){
+    headW=40;headH=40;headTop=4;
+    torsoW=48;torsoH=34;torsoTop=38;torsoClass='torso-mid';
+    neckH=6;neckW=16;
+    legH=26;legW=14;legGap=5;legTop=68;
+    if(hp<50)torsoClass='torso-mid';
+  } else {
+    headW=38;headH=38;headTop=8;
+    torsoW=44;torsoH=32;torsoTop=40;torsoClass='torso-senior';
+    neckH=5;neckW=14;
+    legH=22;legW=13;legGap=4;legTop=68;
+    if(hp<40){
+      accessory='<div class="cchar-stick" style="left:60px;bottom:0"></div>';
+    }
+    headColor='#F0D5B8';
+  }
+
+  if(isLowHealth)headColor='#D8D8D8';
+
+  // Eyes
+  let eyeStyle=isLowHealth?'background:var(--ink);width:10px;height:10px;font-size:.5em;display:flex;align-items:center;justify-content:center;color:white;content:"x"':'';
+  const sparkleEye=isGlowing?'box-shadow:0 0 0 3px rgba(255,217,61,.5)':'';
+  const eyeClass=`cchar-eye${isLowHealth?' sleepy':''}${isGlowing?' sparkle':''}`;
+
+  // Mouth
+  let mouthClass=isHappy?'smile':isSadFace?'sad':'neutral';
+  let tearEl=isSadFace&&!isHappy?'<div class="cchar-tear"></div>':'';
+  let rosy=isHappy?`<div class="cchar-rosy l"></div><div class="cchar-rosy r"></div>`:'';
+
+  // Special overlays
+  let smartBulb=isSmart?'<div class="cchar-lightbulb" style="top:-16px">💡</div>':'';
+  let glowEff=isGlowing?'<div class="cchar-sparkles"></div>':'';
+  let bandage=isLowHealth?'<div class="cchar-bandage"></div>':'';
+
+  const headAnimClass=`cchar-head${isLowHealth?' pale':''}`;
+
+  root.innerHTML=`
+    <div class="cchar" style="width:82px;height:100px;position:relative">
+      ${smartBulb}
+      <div class="${headAnimClass}" style="width:${headW}px;height:${headH}px;top:${headTop}px;background:${headColor};position:absolute;border:3px solid var(--ink);border-radius:50%;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;overflow:hidden;animation:char-idle 3s ease-in-out infinite" id="char-head-el">
+        ${glowEff}
+        ${bandage}
+        <div style="display:flex;gap:6px;position:absolute;top:${headH*0.3}px">
+          <div class="${eyeClass}" style="width:7px;height:7px;background:var(--ink);border-radius:50%;animation:char-blink 4s infinite;${sparkleEye}"></div>
+          <div class="${eyeClass}" style="width:7px;height:7px;background:var(--ink);border-radius:50%;animation:char-blink 4s infinite 0.2s;${sparkleEye}"></div>
+        </div>
+        <div class="cchar-mouth ${mouthClass}" style="position:absolute;bottom:${headH*0.2}px"></div>
+        ${rosy}${tearEl}${extraHead}
+      </div>
+      ${accessory}
+      <div style="width:${neckW}px;height:${neckH}px;background:${headColor};border-left:2px solid var(--ink);border-right:2px solid var(--ink);position:absolute;top:${headTop+headH-2}px;left:50%;transform:translateX(-50%)"></div>
+      <div class="${torsoClass}" style="width:${torsoW}px;height:${torsoH}px;position:absolute;top:${torsoTop}px;left:50%;transform:translateX(-50%);border:3px solid var(--ink);border-radius:10px 10px 8px 8px"></div>
+      <div style="position:absolute;top:${legTop}px;left:50%;transform:translateX(-50%);display:flex;gap:${legGap}px">
+        <div style="width:${legW}px;height:${legH}px;background:${headColor};border:3px solid var(--ink);border-radius:0 0 8px 8px"></div>
+        <div style="width:${legW}px;height:${legH}px;background:${headColor};border:3px solid var(--ink);border-radius:0 0 8px 8px"></div>
+      </div>
+    </div>`;
+}
+
+function triggerCharReaction(type){
+  const el=document.getElementById('char-head-el');
+  if(!el)return;
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  el.style.animation='none';
+  void el.offsetWidth;
+  if(type==='jump')el.style.animation='char-jump .5s ease forwards';
+  else if(type==='slump')el.style.animation='char-slump .5s ease forwards';
+  else if(type==='spin')el.style.animation='char-spin .6s ease forwards';
+  setTimeout(()=>{if(el)el.style.animation='char-idle 3s ease-in-out infinite';},700);
+}
+
+function updateWealthBackground(){
+  const card=document.getElementById('avatar-card');
+  if(!card)return;
+  card.classList.remove('wealth-poor','wealth-mid','wealth-rich','wealth-ultra');
+  card.classList.add('wealth-'+getWealthTier());
+}
+
+function updateMisfortuneMeter(){
+  const strip=document.getElementById('misfortune-strip');
+  const fill=document.getElementById('misfortune-fill');
+  if(!strip||!fill)return;
+  const m=G.misfortune||0;
+  strip.style.display=m>10?'flex':'none';
+  fill.style.width=m+'%';
+}
+
+// ══════════════════════════════════════════
+// NEWS TICKER
+// ══════════════════════════════════════════
+const TICKER_POOLS = {
+  baby:  ['🍼 New arrivals bring joy to the world!','📰 Child development experts share top tips!','☀️ Perfect week for outdoor play!','🌟 Researchers say early learning shapes future success!'],
+  kid:   ['🎒 New school year begins — exciting times ahead!','📚 Education experts recommend daily reading!','🏫 School sports day coming up — get training!','🌧️ Rainy week ahead — great time for indoor learning!'],
+  teen:  ['🎓 University applications open for next year!','📱 Social media use among teens hits record high!','🎸 Local music talent competition coming soon!','🤝 Part-time jobs boost teen confidence, say experts!'],
+  young: ['💼 Job market strong — tech sector hiring surge!','🏠 Renting vs buying: what young adults need to know!','📈 Stock market booming — great time to invest!','🎓 Graduate salaries rise for third straight year!'],
+  adult: ['📉 Recession fears: job market may tighten!','💰 Investment returns up 12% this year!','🏡 Housing market: best time to buy in a decade!','💼 Leadership skills most sought-after quality!'],
+  senior:['🌟 Wellbeing in retirement: how to stay happy!','💊 New health guidelines released for over 60s!','👴 Community support groups expand nationally!','📊 Pension funds see strong performance!'],
+  elder: ['🏆 Centenarian population reaches record high!','🌸 Healthy aging tips from global experts!','💛 Community heroes honoured this month!','⭐ Wisdom and experience valued more than ever!'],
+};
+
+function getTickerMessages(){
+  const age=G.age;
+  let pool;
+  if(age<5)pool=TICKER_POOLS.baby;
+  else if(age<13)pool=TICKER_POOLS.kid;
+  else if(age<22)pool=TICKER_POOLS.teen;
+  else if(age<35)pool=TICKER_POOLS.young;
+  else if(age<60)pool=TICKER_POOLS.adult;
+  else if(age<75)pool=TICKER_POOLS.senior;
+  else pool=TICKER_POOLS.elder;
+  // Dynamic messages based on state
+  const dynamic=[];
+  if(G.misfortune>30)dynamic.push('😈 Trouble brewing — watch your back!');
+  if(G.job)dynamic.push(`💼 ${G.jobTitle} salaries on the rise this year!`);
+  if((G.investments||0)>10000)dynamic.push('📈 Markets stable — your portfolio looking healthy!');
+  if(G.health<40)dynamic.push('🏥 Health awareness week — see your doctor!');
+  if(G.happiness<30)dynamic.push('😊 Mental wellbeing support services available!');
+  const all=[...pool,...dynamic];
+  return all.join(' · ') + ' · ';
+}
+
+function updateTicker(){
+  const el=document.getElementById('ticker-content');
+  if(!el)return;
+  el.textContent=getTickerMessages();
+}
+
+// ══════════════════════════════════════════
+// SCHOOL TEST MINI-GAME (contextual trigger)
+// ══════════════════════════════════════════
+function triggerSchoolTest(){
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='TEST TIME!';
+  document.getElementById('m-icon').textContent='📝';
+  document.getElementById('m-title').textContent='School Test!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent='Quick — your teacher is watching!';
+  document.getElementById('m-extra').innerHTML=`
+    <div class="school-scene">
+      <div class="school-blackboard">📝 EXAM TODAY</div>
+      <div style="font-size:.7em;color:#546E7A;margin-top:4px;font-weight:800">Good luck, ${G.name}!</div>
+      <div class="school-desk"></div>
+    </div>`;
+  document.getElementById('m-btns').innerHTML='';
+  const startBtn=document.createElement('button');startBtn.type='button';startBtn.className='mbtn pri';
+  startBtn.textContent='✏️ Start Test!';
+  startBtn.onclick=()=>{
+    const isScramble=Math.random()>.5;
+    if(isScramble){
+      startScrambleMiniGame(
+        ()=>{applyMod({smarts:10,happiness:8});addLog('Aced the school test! +10 Smarts 📝','good');showMascotBubble('🦉 Brilliant! Teacher is proud of you! ⭐',4000);triggerCharReaction('spin');burst(30);},
+        ()=>{applyMod({smarts:-5,happiness:-8});addLog('Failed the school test 😞 −5 Smarts','bad');showMascotBubble('🦉 Don't worry — keep studying and you'll do better! 📚',4000);triggerCharReaction('slump');}
+      );
+    } else {
+      startMathMiniGame(
+        ()=>{applyMod({smarts:10,happiness:8});addLog('Aced the school test! +10 Smarts 📝','good');showMascotBubble('🦉 Amazing work! Gold star for you! ⭐',4000);triggerCharReaction('spin');burst(30);},
+        ()=>{applyMod({smarts:-5,happiness:-8});addLog('Failed the school test 😞 −5 Smarts','bad');showMascotBubble('🦉 Try harder next time! Study with the Study Hard option! 📚',4000);triggerCharReaction('slump');}
+      );
+    }
+  };
+  document.getElementById('m-btns').appendChild(startBtn);
+  document.getElementById('modal').style.display='flex';
+}
+
+// ══════════════════════════════════════════
+// MEMORY CARD GAME (Performance Review)
+// ══════════════════════════════════════════
+let _memState={};
+function startMemoryCardGame(onWin,onFail){
+  const emojis=['😊','🌟','💡','🎯','🚀','💪','🎨','🎵'];
+  const pairs=[...emojis,...emojis].sort(()=>Math.random()-.5);
+  _memState={pairs,flipped:[],matched:[],timer:30,lockBoard:false,onWin,onFail};
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='REVIEW!';
+  document.getElementById('m-icon').textContent='🃏';
+  document.getElementById('m-title').textContent='Performance Review!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent='Match all pairs before time runs out!';
+  document.getElementById('m-btns').innerHTML='';
+  renderMemoryGame();
+  document.getElementById('modal').style.display='flex';
+  _memState.interval=setInterval(()=>{
+    _memState.timer--;
+    const candleEl=document.getElementById('candle-body');
+    if(candleEl){
+      const pct=(_memState.timer/30)*100;
+      candleEl.style.height=Math.max(4,pct*0.4)+'px';
+    }
+    const timerEl=document.getElementById('mem-timer-txt');
+    if(timerEl)timerEl.textContent=_memState.timer+'s';
+    if(_memState.timer<=0){
+      clearInterval(_memState.interval);
+      const el=document.getElementById('m-extra');
+      if(el)el.innerHTML+='<div style="text-align:center;font-weight:900;color:var(--coral-dark);font-size:1.1em;margin-top:8px">⏰ Time's up!</div>';
+      setTimeout(()=>mgDone(false,onFail),800);
+    }
+  },1000);
+}
+
+function renderMemoryGame(){
+  const el=document.getElementById('m-extra');
+  if(!el)return;
+  const cardsHtml=_memState.pairs.map((emoji,i)=>{
+    const isFlipped=_memState.flipped.includes(i)||_memState.matched.includes(i);
+    const isMatched=_memState.matched.includes(i);
+    return`<div class="mem-card ${isMatched?'matched':isFlipped?'flipped':'back'}" onclick="memCardClick(${i})">${isFlipped||isMatched?emoji:''}</div>`;
+  }).join('');
+  el.innerHTML=`
+    <div class="office-scene">
+      <div style="font-size:.7em;color:var(--ink2);font-weight:800;margin-bottom:4px">🏢 Annual Performance Review</div>
+      <div class="office-desk-big"></div>
+    </div>
+    <div class="candle-wrap">
+      <div class="candle-flame" style="width:10px;height:14px"></div>
+      <div class="candle-body" id="candle-body" style="height:40px;width:16px"></div>
+      <div class="candle-base"></div>
+      <div class="timer-text" id="mem-timer-txt">${_memState.timer}s</div>
+    </div>
+    <div class="memory-grid">${cardsHtml}</div>`;
+}
+
+window.memCardClick=function(idx){
+  if(_memState.lockBoard||_memState.flipped.includes(idx)||_memState.matched.includes(idx))return;
+  _memState.flipped.push(idx);
+  if(_memState.flipped.length===1){renderMemoryGame();return;}
+  renderMemoryGame();
+  const [a,b]=_memState.flipped.slice(-2);
+  if(_memState.pairs[a]===_memState.pairs[b]){
+    _memState.matched.push(a,b);
+    _memState.flipped=_memState.flipped.filter(x=>x!==a&&x!==b);
+    renderMemoryGame();
+    if(_memState.matched.length===_memState.pairs.length){
+      clearInterval(_memState.interval);
+      SoundManager.minigameWin();burst(30);
+      setTimeout(()=>mgDone(true,_memState.onWin),600);
+    }
+  } else {
+    _memState.lockBoard=true;
+    setTimeout(()=>{
+      _memState.flipped=_memState.flipped.filter(x=>x!==a&&x!==b);
+      _memState.lockBoard=false;
+      renderMemoryGame();
+    },900);
+  }
+};
+
+function triggerPerformanceReview(){
+  if(!G.job||G.retired)return;
+  startMemoryCardGame(
+    ()=>{
+      const bonus=Math.floor(G.salary*0.05);
+      G.promotionChance=Math.min(G.promotionChance+15,90);
+      applyMod({happiness:12,money:bonus});
+      addLog(`⭐ Performance review: EXCELLENT! +15% promo chance, +$${bonus.toLocaleString()} bonus!`,'good');
+      showMascotBubble('🦉 Outstanding review! Your boss loves your work! 🌟',4000);
+      triggerCharReaction('jump');burst(30);mascotDance();
+    },
+    ()=>{
+      const score=rand(1,5);
+      if(score===1){
+        // Critical fail — fired
+        addLog('😱 Performance review CATASTROPHIC — fired!','bad');
+        G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;
+        applyMod({happiness:-25});SoundManager.fail();shakeScreen();flashRed();
+        showMascotBubble('🦉 Tough break. Time to job hunt again — you've got this! 💪',5000);
+        triggerCharReaction('slump');
+      } else {
+        G.promotionChance=Math.max(0,G.promotionChance-20);
+        applyMod({happiness:-10});
+        addLog('😞 Performance review: needs improvement. −20% promo chance.','bad');
+        showMascotBubble('🦉 Boss gave a warning. Try grinding more and networking! 💼',4000);
+        triggerCharReaction('slump');
+      }
+    }
+  );
+}
+
+// ══════════════════════════════════════════
+// RHYTHM TAP GAME (Music Audition)
+// ══════════════════════════════════════════
+let _rhythmState={};
+function triggerMusicAudition(){
+  if(G.age<8)return;
+  G.musicCount=0; // reset so it doesn't trigger too often
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='AUDITION!';
+  document.getElementById('m-icon').textContent='🎵';
+  document.getElementById('m-title').textContent='Music Audition!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent='You've been practising — time to perform! Tap in rhythm!';
+  _rhythmState={round:0,passed:0,failed:0,active:false,pattern:[],expectIdx:0,onFinish:null};
+  document.getElementById('m-btns').innerHTML='';
+  document.getElementById('m-extra').innerHTML=`
+    <div style="text-align:center;padding:10px">
+      <div style="font-size:.75em;font-weight:900;color:var(--ink2);margin-bottom:8px">🎭 Stage Spotlight</div>
+      <div class="rhythm-circles" id="rhythm-circles">
+        <div class="rhythm-dot" id="rd0"></div>
+        <div class="rhythm-dot" id="rd1"></div>
+        <div class="rhythm-dot" id="rd2"></div>
+        <div class="rhythm-dot" id="rd3"></div>
+      </div>
+      <div style="font-size:.8em;font-weight:900;color:var(--ink2);margin:6px 0" id="rhythm-status">Round 1 of 3 — Watch the pattern!</div>
+      <button type="button" class="rhythm-tap-btn" id="rhythm-tap-btn" onclick="rhythmTap()">🎵 TAP!</button>
+      <div style="margin-top:8px;font-size:.75em;font-weight:900;color:var(--ink2)" id="rhythm-score">0 / 0 rounds passed</div>
+    </div>`;
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>startRhythmRound(),600);
+}
+
+function startRhythmRound(){
+  if(_rhythmState.round>=3){
+    // end
+    const won=_rhythmState.passed>=2;
+    setTimeout(()=>{
+      closeModal();
+      if(won){
+        const gig=rand(500,2000);
+        applyMod({happiness:20,smarts:10,money:gig});
+        addLog(`🎵 Music audition PASSED! +$${gig.toLocaleString()} gig, +20 Happy, +10 Smarts!`,'legend');
+        SoundManager.levelUp();burst(40);showMascotBubble('🦉 You're a STAR! The crowd loved you! 🌟',5000);
+        triggerCharReaction('spin');mascotDance();
+      } else {
+        applyMod({happiness:-10});
+        addLog('🎵 Music audition didn't go well... −10 Happiness','bad');
+        showMascotBubble('🦉 Tough crowd! Keep practising — you'll nail it next time! 🎵',4000);
+        triggerCharReaction('slump');
+      }
+      checkAchievements();save();updateUI();
+    },400);
+    return;
+  }
+  _rhythmState.round++;
+  const patLen=4;
+  _rhythmState.pattern=Array.from({length:patLen},()=>Math.floor(Math.random()*4));
+  _rhythmState.expectIdx=0;
+  _rhythmState.active=false;
+  const statusEl=document.getElementById('rhythm-status');
+  if(statusEl)statusEl.textContent=`Round ${_rhythmState.round} of 3 — Watch the pattern!`;
+  const scoreEl=document.getElementById('rhythm-score');
+  if(scoreEl)scoreEl.textContent=`${_rhythmState.passed} / ${_rhythmState.round-1} rounds passed`;
+  // Show pattern
+  let delay=0;
+  _rhythmState.pattern.forEach((dotIdx,i)=>{
+    setTimeout(()=>{
+      const d=document.getElementById('rd'+dotIdx);
+      if(d){d.classList.add('active');setTimeout(()=>d.classList.remove('active'),300);}
+      if(i===_rhythmState.pattern.length-1){
+        setTimeout(()=>{
+          _rhythmState.active=true;
+          if(statusEl)statusEl.textContent=`Round ${_rhythmState.round} of 3 — NOW TAP!`;
+        },400);
+      }
+    },delay);
+    delay+=500;
+  });
+}
+
+window.rhythmTap=function(){
+  if(!_rhythmState.active)return;
+  const expected=_rhythmState.pattern[_rhythmState.expectIdx];
+  const d=document.getElementById('rd'+expected);
+  // Accept any tap as a beat tap (simplified — highlights next expected dot)
+  if(d){d.classList.add('hit');setTimeout(()=>d.classList.remove('hit'),200);}
+  _rhythmState.expectIdx++;
+  SoundManager.success&&SoundManager.click();
+  if(_rhythmState.expectIdx>=_rhythmState.pattern.length){
+    _rhythmState.active=false;
+    _rhythmState.passed++;
+    const statusEl=document.getElementById('rhythm-status');
+    if(statusEl)statusEl.textContent='✅ Round passed!';
+    setTimeout(startRhythmRound,1000);
+  }
+};
+
+// ══════════════════════════════════════════
+// RELATIONSHIP DEPTH SYSTEM
+// ══════════════════════════════════════════
+function updateRelationshipSystem(){
+  // Called during ageUp — relationship events
+  if(!G.partnerName||G.marriageAge)return;
+  const relEvents=[
+    {type:'pos',text:'romantic dinner',score:12,chance:.25},
+    {type:'pos',text:'deep conversation',score:8,chance:.3},
+    {type:'neg',text:'had an argument',score:-10,chance:.2},
+    {type:'neg',text:'busy work period',score:-6,chance:.2},
+  ];
+  relEvents.forEach(ev=>{
+    if(Math.random()<ev.chance){
+      G.relationshipScore=Math.min(100,Math.max(0,(G.relationshipScore||0)+ev.score));
+      addLog(`💕 ${G.partnerName} and you had a ${ev.text}. Relationship: ${G.relationshipScore}/100`,ev.type==='pos'?'good':'bad');
+    }
+  });
+
+  // Proposal check
+  if((G.relationshipScore||0)>=70&&G.age>=22&&!G.marriageAge){
+    const pName=G.partnerName||'your partner';
+    showModal('💍','Proposal!',`${pName} wants to get married! You've built a strong relationship.`,
+      [{l:'💍 Yes, absolutely!',fn:'_marry_yes',style:'pri'},{l:'⏳ Not yet...',fn:'_marry_no',style:'sec'}],
+      'OOH!','positive');
+    checkAchievements();save();updateUI();return true;
+  }
+
+  // Divorce check
+  if(G.marriageAge&&(G.relationshipScore||50)<30&&G.age>(G.marriageAge+5)){
+    if(Math.random()<0.25){
+      const spouseName=(G.family||[]).find(m=>m.type==='spouse')?.name||'spouse';
+      const split=Math.floor(G.money*0.5);
+      G.family=(G.family||[]).filter(m=>m.type!=='spouse');
+      G.marriageAge=null;G.partnerName=null;G.datingCooldown=G.age+5;G.relationshipScore=0;
+      applyMod({happiness:-30,money:-split});
+      addLog(`💔 Divorced ${spouseName} at age ${G.age}. Split $${split.toLocaleString()}.`,'bad');
+      SoundManager.fail();shakeScreen();
+      showMascotBubble('🦉 Divorce is tough. Take care of yourself. 💙',5000);
+      return true;
+    }
+  }
+  return false;
+}
+
+// ══════════════════════════════════════════
+// LIFE REFLECTION SYSTEM (ages 40, 60, 80)
+// ══════════════════════════════════════════
+function triggerReflection(age){
+  if((G.reflectionsDone||[]).includes(age))return false;
+  if(!G.reflectionsDone)G.reflectionsDone=[];
+  G.reflectionsDone.push(age);
+
+  const positives=[];
+  const regrets=[];
+
+  // Check conditions
+  if((G.investments||0)>50000||G.money>100000) positives.push({icon:'💰',text:'Financial security gives you peace of mind.'});
+  if((G.family||[]).find(m=>m.type==='spouse')) positives.push({icon:'💍',text:'You found love. What a wonderful thing.'});
+  if((G.family||[]).filter(m=>m.type==='child').length>=2) positives.push({icon:'👨‍👩‍👧',text:'Your family fills your heart with pride.'});
+  if(G.smarts>=80) positives.push({icon:'🎓',text:'You're proud of your intellectual journey.'});
+  if(G.achievements.length>=8) positives.push({icon:'🏆',text:'A life rich with achievements — remarkable.'});
+  if(G.happiness>=75) positives.push({icon:'😄',text:'You've lived with genuine happiness.'});
+
+  const traveled=(G.yearActCounts?.travel||0)>0||(G.log||[]).some(l=>l.msg.includes('trip'));
+  if(!traveled) regrets.push({icon:'✈️',text:'You wish you'd seen more of the world.'});
+  if(!(G.family||[]).find(m=>m.type==='spouse')) regrets.push({icon:'💕',text:'The quiet house feels lonely sometimes.'});
+  if(G.smarts<50) regrets.push({icon:'📚',text:'You wonder what you could have achieved with more education.'});
+  if(G.health<50) regrets.push({icon:'❤️',text:'You wish you'd looked after yourself better.'});
+
+  // Limit to 3 each
+  const showPositives=positives.slice(0,2);
+  const showRegrets=regrets.slice(0,2);
+
+  const happyDelta=(showPositives.length*5)-(showRegrets.length*5);
+  applyMod({happiness:happyDelta});
+
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='none';
+  document.getElementById('m-icon').textContent='🪑';
+  document.getElementById('m-title').textContent=`Looking Back at ${age}...`;
+  document.getElementById('m-body').style.display='none';
+  const reflItems=[
+    ...showPositives.map(p=>`<div class="reflection-item reflection-positive"><div class="reflection-icon">${p.icon}</div><div class="reflection-text">✅ ${p.text}</div></div>`),
+    ...showRegrets.map(r=>`<div class="reflection-item reflection-negative"><div class="reflection-icon">${r.icon}</div><div class="reflection-text">😔 ${r.text}</div></div>`),
+  ].join('');
+  document.getElementById('m-extra').innerHTML=`
+    <div class="reflection-panel">
+      <div class="reflection-char">🪑</div>
+      <div style="text-align:center;color:#B2EBF2;font-size:.8em;font-weight:800;margin-bottom:10px">${G.name}, age ${age} — a moment of reflection</div>
+      ${reflItems}
+    </div>`;
+  const btns=document.getElementById('m-btns');btns.innerHTML='';
+  const changeBtn=document.createElement('button');changeBtn.type='button';changeBtn.className='mbtn pri';
+  changeBtn.textContent='💪 Make a Change!';
+  changeBtn.onclick=()=>{
+    closeModal();
+    G.activityBonusYearsLeft=3;
+    G.activityBonus={smarts:3,health:3,happiness:3};
+    addLog(`💪 ${G.name} decided to make changes at ${age}! Bonus stats for 3 years.`,'good');
+    SoundManager.levelUp();checkAchievements();save();updateUI();
+  };
+  const acceptBtn=document.createElement('button');acceptBtn.type='button';acceptBtn.className='mbtn sec';
+  acceptBtn.textContent='🧘 Accept it wisely';
+  acceptBtn.onclick=()=>{
+    closeModal();
+    applyMod({smarts:5});
+    addLog(`🧘 Accepted life with wisdom at ${age}. +5 Smarts.`,'good');
+    checkAchievements();save();updateUI();
+  };
+  btns.appendChild(changeBtn);btns.appendChild(acceptBtn);
+  document.getElementById('modal').style.display='flex';
+  return true;
+}
+
+// ══════════════════════════════════════════
+// RANDOM SCHOOL TEST TRIGGER (ages 6-17)
+// ══════════════════════════════════════════
+function maybeSchoolTest(){
+  if(G.age>=6&&G.age<=17&&Math.random()<0.35){
+    if(!G._schoolTestThisYear){
+      G._schoolTestThisYear=true;
+      setTimeout(triggerSchoolTest,400);
+      return true;
+    }
+  }
+  G._schoolTestThisYear=false;
+  return false;
+}
+
+// ══════════════════════════════════════════
+// APPLY ACTIVITY BONUS (reflection system)
+// ══════════════════════════════════════════
+function applyActivityBonus(){
+  if((G.activityBonusYearsLeft||0)>0&&G.activityBonus){
+    const b=G.activityBonus;
+    applyMod(b);
+    G.activityBonusYearsLeft--;
+    addLog(`💪 Change bonus year! +${b.smarts||0} Smarts +${b.health||0} Health +${b.happiness||0} Happy`,'good');
+    if(G.activityBonusYearsLeft===0){addLog('✅ Change bonus period ended.','info');}
+  }
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   const saved=load();
   if(saved) document.getElementById('continue-btn').style.display='block';
