@@ -811,6 +811,8 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -1081,54 +1083,54 @@ const CAREER_TRACKS = {
   tech:    {name:'Tech',     emoji:'💻', prestige:4, rungs:[
     {id:'tech_intern',  emoji:'💻', title:'Tech Intern',          salary:2000,  minAge:18, minSmarts:40, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'jr_dev',       emoji:'💻', title:'Junior Developer',     salary:4500,  minAge:20, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:1},
-    {id:'sr_dev',       emoji:'🖥️', title:'Senior Developer',     salary:8500,  minAge:24, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:true,  tier:3, yearsRequired:3},
-    {id:'eng_manager',  emoji:'🧑‍💼', title:'Engineering Manager', salary:14000, minAge:28, minSmarts:82, minLooks:0,  minEdu:'university', needsDegree:true,  tier:4, yearsRequired:3},
-    {id:'cto',          emoji:'🏢', title:'CTO',                  salary:28000, minAge:35, minSmarts:90, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:4},
+    {id:'sr_dev',       emoji:'🖥️', title:'Senior Developer',     salary:8500,  minAge:24, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'eng_manager',  emoji:'🧑‍💼', title:'Engineering Manager', salary:14000, minAge:28, minSmarts:82, minLooks:0,  minEdu:'university', needsDegree:true,  tier:4, yearsRequired:2},
+    {id:'cto',          emoji:'🏢', title:'CTO',                  salary:28000, minAge:35, minSmarts:90, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   medical: {name:'Medical',  emoji:'🏥', prestige:5, rungs:[
     {id:'orderly',      emoji:'🏥', title:'Hospital Orderly',     salary:1800,  minAge:18, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'nurse',        emoji:'💉', title:'Nurse',                salary:3800,  minAge:22, minSmarts:55, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:80, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:3},
-    {id:'surgeon',      emoji:'🔬', title:'Surgeon',              salary:18000, minAge:33, minSmarts:88, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
-    {id:'chief_medicine',emoji:'🏆',title:'Chief of Medicine',    salary:25000, minAge:40, minSmarts:92, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:80, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'surgeon',      emoji:'🔬', title:'Surgeon',              salary:18000, minAge:33, minSmarts:88, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
+    {id:'chief_medicine',emoji:'🏆',title:'Chief of Medicine',    salary:25000, minAge:40, minSmarts:92, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   legal:   {name:'Legal',    emoji:'⚖️', prestige:4, rungs:[
     {id:'paralegal',    emoji:'📋', title:'Paralegal',            salary:2200,  minAge:18, minSmarts:50, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:24, minSmarts:70, minLooks:30, minEdu:'graduate',   needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:78, minLooks:40, minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:3},
-    {id:'sr_partner',   emoji:'🏛️', title:'Senior Partner',       salary:16000, minAge:34, minSmarts:85, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
-    {id:'judge',        emoji:'🔨', title:'Judge',                salary:22000, minAge:40, minSmarts:90, minLooks:55, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:78, minLooks:40, minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'sr_partner',   emoji:'🏛️', title:'Senior Partner',       salary:16000, minAge:34, minSmarts:85, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
+    {id:'judge',        emoji:'🔨', title:'Judge',                salary:22000, minAge:40, minSmarts:90, minLooks:55, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   business:{name:'Business', emoji:'💼', prestige:3, rungs:[
     {id:'cashier',      emoji:'🛒', title:'Cashier',              salary:1200,  minAge:16, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'supervisor',   emoji:'📋', title:'Supervisor',           salary:2800,  minAge:20, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
-    {id:'manager',      emoji:'📊', title:'Manager',              salary:5500,  minAge:25, minSmarts:55, minLooks:35, minEdu:'university', needsDegree:true,  tier:3, yearsRequired:3},
-    {id:'director',     emoji:'🏢', title:'Director',             salary:12000, minAge:32, minSmarts:72, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:4},
-    {id:'ceo',          emoji:'👑', title:'CEO',                  salary:28000, minAge:38, minSmarts:85, minLooks:65, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:5},
+    {id:'manager',      emoji:'📊', title:'Manager',              salary:5500,  minAge:25, minSmarts:55, minLooks:35, minEdu:'university', needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'director',     emoji:'🏢', title:'Director',             salary:12000, minAge:32, minSmarts:72, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
+    {id:'ceo',          emoji:'👑', title:'CEO',                  salary:28000, minAge:38, minSmarts:85, minLooks:65, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   education:{name:'Education',emoji:'🎓', prestige:3, rungs:[
     {id:'teach_asst',   emoji:'📚', title:'Teaching Assistant',   salary:1500,  minAge:18, minSmarts:45, minLooks:0,  minEdu:'university', needsDegree:true,  tier:1, yearsRequired:0},
     {id:'teacher',      emoji:'🏫', title:'Teacher',              salary:3200,  minAge:22, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
-    {id:'head_teacher', emoji:'⭐', title:'Head Teacher',         salary:5500,  minAge:28, minSmarts:70, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:4},
-    {id:'principal',    emoji:'🏛️', title:'Principal',            salary:9000,  minAge:35, minSmarts:78, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:5},
+    {id:'head_teacher', emoji:'⭐', title:'Head Teacher',         salary:5500,  minAge:28, minSmarts:70, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:3, yearsRequired:2},
+    {id:'principal',    emoji:'🏛️', title:'Principal',            salary:9000,  minAge:35, minSmarts:78, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
   ]},
   creative:{name:'Creative',  emoji:'🎨', prestige:2, rungs:[
     {id:'creative_intern',emoji:'🖊️',title:'Creative Intern',    salary:1200,  minAge:18, minSmarts:30, minLooks:30, minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'designer',     emoji:'🎨', title:'Designer',             salary:3000,  minAge:20, minSmarts:40, minLooks:45, minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
-    {id:'art_director', emoji:'🖼️', title:'Art Director',         salary:6000,  minAge:26, minSmarts:55, minLooks:55, minEdu:'university', needsDegree:false, tier:3, yearsRequired:3},
-    {id:'creative_dir', emoji:'✨', title:'Creative Director',    salary:11000, minAge:32, minSmarts:65, minLooks:65, minEdu:'university', needsDegree:false, tier:4, yearsRequired:4},
+    {id:'art_director', emoji:'🖼️', title:'Art Director',         salary:6000,  minAge:26, minSmarts:55, minLooks:55, minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
+    {id:'creative_dir', emoji:'✨', title:'Creative Director',    salary:11000, minAge:32, minSmarts:65, minLooks:65, minEdu:'university', needsDegree:false, tier:4, yearsRequired:3},
   ]},
   trades:  {name:'Trades',    emoji:'🔧', prestige:2, rungs:[
     {id:'apprentice',   emoji:'🔧', title:'Apprentice',           salary:1800,  minAge:16, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'tradesperson', emoji:'⚙️', title:'Tradesperson',         salary:3500,  minAge:20, minSmarts:30, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:3},
-    {id:'master_trade', emoji:'🏅', title:'Master Tradesperson',  salary:6500,  minAge:26, minSmarts:40, minLooks:0,  minEdu:'none',       needsDegree:false, tier:3, yearsRequired:5},
-    {id:'trade_owner',  emoji:'🏢', title:'Business Owner',       salary:12000, minAge:32, minSmarts:55, minLooks:0,  minEdu:'none',       needsDegree:false, tier:4, yearsRequired:4},
+    {id:'tradesperson', emoji:'⚙️', title:'Tradesperson',         salary:3500,  minAge:20, minSmarts:30, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
+    {id:'master_trade', emoji:'🏅', title:'Master Tradesperson',  salary:6500,  minAge:26, minSmarts:40, minLooks:0,  minEdu:'none',       needsDegree:false, tier:3, yearsRequired:3},
+    {id:'trade_owner',  emoji:'🏢', title:'Business Owner',       salary:12000, minAge:32, minSmarts:55, minLooks:0,  minEdu:'none',       needsDegree:false, tier:4, yearsRequired:3},
   ]},
   service: {name:'Service',   emoji:'🍽️', prestige:1, rungs:[
     {id:'waiter',       emoji:'🍽️', title:'Waiter',               salary:1500,  minAge:16, minSmarts:0,  minLooks:20, minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'head_waiter',  emoji:'👨‍🍳', title:'Head Waiter',         salary:2800,  minAge:20, minSmarts:20, minLooks:30, minEdu:'none',       needsDegree:false, tier:2, yearsRequired:3},
-    {id:'resto_manager',emoji:'🏪', title:'Restaurant Manager',   salary:5500,  minAge:26, minSmarts:40, minLooks:40, minEdu:'none',       needsDegree:false, tier:3, yearsRequired:4},
-    {id:'resto_owner',  emoji:'🍾', title:'Restaurant Owner',     salary:10000, minAge:32, minSmarts:55, minLooks:45, minEdu:'none',       needsDegree:false, tier:4, yearsRequired:4},
+    {id:'head_waiter',  emoji:'👨‍🍳', title:'Head Waiter',         salary:2800,  minAge:20, minSmarts:20, minLooks:30, minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
+    {id:'resto_manager',emoji:'🏪', title:'Restaurant Manager',   salary:5500,  minAge:26, minSmarts:40, minLooks:40, minEdu:'none',       needsDegree:false, tier:3, yearsRequired:3},
+    {id:'resto_owner',  emoji:'🍾', title:'Restaurant Owner',     salary:10000, minAge:32, minSmarts:55, minLooks:45, minEdu:'none',       needsDegree:false, tier:4, yearsRequired:3},
   ]},
   misc:    {name:'Other',     emoji:'💼', prestige:1, rungs:[
     {id:'babysitter',   emoji:'🍼', title:'Babysitter',           salary:400,   minAge:12, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
@@ -1320,16 +1322,20 @@ function generateJobOffers() {
   const eligible = [];
 
   if(G.job && currentTrackKey){
-    // Only offer the NEXT rung in the same career track, and only if salary is higher
     const nextRung = getNextRungInTrack(G.job);
     const inflatedSalary = nextRung ? Math.round(nextRung.salary*(G.inflationMult||1)) : 0;
-    if(nextRung && inflatedSalary > currentSalary &&
-       G.age>=nextRung.minAge && G.smarts>=(nextRung.minSmarts-8) &&
-       G.looks>=(nextRung.minLooks||0)-8 &&
-       eduRank[G.education]>=eduRank[nextRung.minEdu] &&
-       (!nextRung.needsDegree||G.hasDegree) &&
-       (G.yearsInRole||0)>=nextRung.yearsRequired){
-      eligible.push(nextRung);
+    if(nextRung && inflatedSalary > currentSalary && G.age>=nextRung.minAge){
+      // Broader tolerance: -15 smarts, -10 looks so offers appear earlier
+      const smartsOk = G.smarts >= (nextRung.minSmarts - 15);
+      const looksOk  = G.looks  >= ((nextRung.minLooks||0) - 10);
+      const eduOk    = eduRank[G.education] >= eduRank[nextRung.minEdu];
+      const degreeOk = !nextRung.needsDegree || G.hasDegree;
+      const yearsOk  = (G.yearsInRole||0) >= nextRung.yearsRequired;
+      if(smartsOk && looksOk && eduOk && degreeOk && yearsOk){
+        // Fully eligible — show offer
+        eligible.push(nextRung);
+      }
+      // If not ready: no offer popup (player sees next rung in Work tab career ladder)
     }
   } else if(!G.job){
     // No job: offer entry-level roles across tracks (higher salary than $0 always)
@@ -1365,7 +1371,7 @@ function generateJobOffers() {
 
   const offers = ranked.map(j=>{
     const misP = Math.floor((G.misfortune||0)*0.3);
-    const chance = Math.min(Math.max(Math.round(40+(G.smarts-j.minSmarts)*0.4+(G.looks-(j.minLooks||0))*0.2-misP),5),90);
+    let chance = Math.min(Math.max(Math.round(40+(G.smarts-j.minSmarts)*0.4+(G.looks-(j.minLooks||0))*0.2-misP),5),90);
     const trackEntry = getJobTrack(j.id);
     return {jobId:j.id, successChance:chance, trackKey:trackEntry?trackEntry[0]:null, isPivot:!!j._isPivot};
   });
@@ -3242,8 +3248,13 @@ function continueAgeUp(){
   // PRIORITY 1 — Milestone story gates (always fire, block everything else)
   // BUG7 FIX: all go through fireEvent so quietYears resets correctly
   // ════════════════════════════════════════════
-  // School report card (ages 6-17, once per age)
+  // School year events — once per age, 6-17
+  // Ages 12 and 17: End-of-Year Exam (mandatory, interactive mini-game)
+  // All other school years: Report Card (passive grade summary)
   if(G.age>=6&&G.age<=17&&!(G.reportCardDone||[]).includes(G.age)){
+    if(G.age===12||G.age===17){
+      fireEvent(()=>triggerEndOfYearExam());return;
+    }
     fireEvent(()=>triggerReportCard());return;
   }
   if(G.age===5&&!G.schoolChosen){
@@ -3342,17 +3353,13 @@ function continueAgeUp(){
   // ════════════════════════════════════════════
   // PRIORITY 5 — Contextual mini-game events
   // ════════════════════════════════════════════
-  if(G.age>=6&&G.age<=17){
-    // Mandatory end-of-year exam at ages 12 and 17
-    if((G.age===12||G.age===17)&&!(G._examDone||[]).includes(G.age)){
-      fireEvent(()=>setTimeout(triggerEndOfYearExam,300));
-      return;
-    }
-    // Random school test ~35% chance
-    if(Math.random()<0.35){
-      fireEvent(()=>setTimeout(triggerSchoolTest,300));
-      return;
-    }
+  // Random quiz during school years (35% chance — fires AFTER report card in same age-up)
+  // The report card fires at P1, then if there's still room this fires too
+  // But since fireEvent returns early, this only fires in years when NO P1 event fired.
+  // Ages 12/17: exam is already handled at P1, so quiz won't double-fire.
+  if(G.age>=6&&G.age<=17&&Math.random()<0.35){
+    fireEvent(()=>setTimeout(triggerSchoolTest,300));
+    return;
   }
   // Ages 18+: performance review for employed adults
   if(G.age>=18&&G.job&&!G.retired&&Math.random()<0.30){
@@ -4106,39 +4113,68 @@ function triggerReflection(age){
 function triggerReportCard(){
   if(!G.reportCardDone)G.reportCardDone=[];
   G.reportCardDone.push(G.age);
+
   const subjects=['Maths','English','Science','Art','PE','History'];
   const picked=subjects.sort(()=>Math.random()-.5).slice(0,3);
-  const gradeFor=(sub)=>{
-    const base=G.smarts+(Math.random()*30-15);
-    if(base>=80)return'A'; if(base>=60)return'B'; if(base>=40)return'C'; return'D';
+
+  // Show school scene, then launch math quiz
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='REPORT!';
+  document.getElementById('m-icon').textContent='📋';
+  document.getElementById('m-title').textContent='End of Year Report!';
+  document.getElementById('m-body').style.display='block';
+  document.getElementById('m-body').textContent=`Year ${G.age-5} results are in, ${G.name}! Take a quick quiz to see how well you did.`;
+  document.getElementById('m-extra').innerHTML=`
+    <div class="school-scene">
+      <div class="school-blackboard">📋 END OF YEAR REPORT</div>
+      <div style="font-size:.72em;color:#546E7A;font-weight:800;margin-top:4px">Subjects: ${picked.join(' · ')}</div>
+      <div class="school-desk"></div>
+    </div>`;
+  document.getElementById('m-btns').innerHTML='';
+  const startBtn=document.createElement('button');startBtn.type='button';startBtn.className='mbtn pri';
+  startBtn.textContent='✏️ Take the Quiz!';
+  startBtn.onclick=()=>{
+    startMathMiniGame(
+      ()=>{
+        // Quiz passed → good grades → stat boost
+        const grades=picked.map(s=>({subject:s,grade:Math.random()>.3?'A':'B'}));
+        const smartsGain=3, happyGain=5, looksGain=1;
+        applyMod({smarts:smartsGain,happiness:happyGain,looks:looksGain});
+        const gradeHtml=grades.map(g=>`<div class="report-subject"><span>${g.subject}</span><div class="report-grade grade-${g.grade.toLowerCase()}">${g.grade}</div></div>`).join('');
+        showReportSummary(gradeHtml, `🌟 Great results! +${smartsGain} Smarts, +${happyGain} Happy, +${looksGain} Looks`,
+          `📋 Year ${G.age-5} report: ${grades.map(g=>g.subject+' '+g.grade).join(', ')} — Pass`,'good');
+      },
+      ()=>{
+        // Quiz failed → poor grades → smaller or no gain
+        const grades=picked.map(s=>({subject:s,grade:Math.random()>.5?'C':'D'}));
+        const smartsLoss=-2, happyLoss=-5;
+        applyMod({smarts:smartsLoss,happiness:happyLoss});
+        const gradeHtml=grades.map(g=>`<div class="report-subject"><span>${g.subject}</span><div class="report-grade grade-${g.grade.toLowerCase()}">${g.grade}</div></div>`).join('');
+        showReportSummary(gradeHtml, `📉 Needs improvement. ${smartsLoss} Smarts, ${happyLoss} Happy`,
+          `📋 Year ${G.age-5} report: ${grades.map(g=>g.subject+' '+g.grade).join(', ')} — Fail`,'bad');
+      }
+    );
   };
-  const grades=picked.map(s=>({subject:s,grade:gradeFor(s)}));
-  const aCount=grades.filter(g=>g.grade==='A').length;
-  const dCount=grades.filter(g=>g.grade==='D').length;
-  let smartsDelta=0;
-  if(aCount===3)smartsDelta=3;
-  else if(aCount>=2)smartsDelta=1;
-  else if(dCount>=2)smartsDelta=-1;
-  if(smartsDelta!==0)applyMod({smarts:smartsDelta});
+  document.getElementById('m-btns').appendChild(startBtn);
+  document.getElementById('modal').style.display='flex';
+}
 
-  const gradeHtml=grades.map(g=>{
-    const cls=g.grade==='A'?'grade-a':g.grade==='B'?'grade-b':g.grade==='C'?'grade-c':'grade-d';
-    return `<div class="report-subject"><span>${g.subject}</span><div class="report-grade ${cls}">${g.grade}</div></div>`;
-  }).join('');
-
+function showReportSummary(gradeHtml, summaryText, logMsg, logType){
   const mc=document.getElementById('modal-card');
   mc.className='modal-card positive';
   document.getElementById('m-sfx').style.display='none';
   document.getElementById('m-icon').textContent='📋';
-  document.getElementById('m-title').textContent='End of Year Report';
+  document.getElementById('m-title').textContent='Your Report Card';
   document.getElementById('m-body').style.display='none';
   document.getElementById('m-extra').innerHTML=`
     <div class="report-card">
-      <div class="report-card-header">📋 End of Year Report</div>
+      <div class="report-card-header">📋 End of Year Report — Year ${G.age-5}</div>
       <div class="report-card-body">
-        <div style="font-size:.8em;font-weight:900;color:var(--ink2);margin-bottom:8px">${G.name} · Age ${G.age} · Year ${G.age-5}</div>
+        <div style="font-size:.8em;font-weight:900;color:var(--ink2);margin-bottom:8px">${G.name} · Age ${G.age}</div>
         ${gradeHtml}
-        <div style="margin-top:8px;font-size:.78em;font-weight:800;color:var(--ink2)">${smartsDelta>0?'🌟 Excellent work! +'+smartsDelta+' Smarts':smartsDelta<0?'📉 Needs more effort. '+smartsDelta+' Smarts':'📝 Satisfactory performance'}</div>
+        <div style="margin-top:8px;font-size:.78em;font-weight:800;color:var(--ink2)">${summaryText}</div>
       </div>
     </div>`;
   const btns=document.getElementById('m-btns');btns.innerHTML='';
@@ -4146,16 +4182,14 @@ function triggerReportCard(){
   okBtn.textContent='📚 Thanks, keep going!';
   okBtn.onclick=()=>{
     closeModal();
-    addLog(`📋 Year ${G.age-5} report: ${grades.map(g=>g.subject+' '+g.grade).join(', ')}`,smartsDelta>=0?'good':'bad');
-    checkAchievements();save();updateUI();renderActivities();
+    addLog(logMsg, logType);
+    checkAchievements();save();updateUI();refreshActiveTab();
   };
   btns.appendChild(okBtn);
   document.getElementById('modal').style.display='flex';
 }
 
-// ══════════════════════════════════════════
-// END-OF-YEAR EXAM (mandatory at ages 12 + 17)
-// ══════════════════════════════════════════
+
 function triggerEndOfYearExam(){
   if(!G._examDone)G._examDone=[];
   G._examDone.push(G.age);
@@ -4265,6 +4299,8 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
+
 
 
 
