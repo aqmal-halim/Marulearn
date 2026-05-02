@@ -878,6 +878,7 @@ const DEFAULT = {
   loanYearsLeft:0,
   birthBackground:'',
   // NEW fields v7
+  eventFiredThisYear:false,
   careerTrack:null,
   relationshipScore:0,
   partnerName:null,
@@ -1340,20 +1341,14 @@ function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
   document.getElementById('modal').style.display='flex';
 }
 
-// Queue recruiter offers to show one by one
-let _offerQueue=[];
-function showNextOffer(){
-  if(!_offerQueue.length)return;
-  const offer=_offerQueue.shift();
-  showRecruiterOffer(offer, ()=>{
-    G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==offer.jobId);
-    if(_offerQueue.length>0) setTimeout(showNextOffer,400);
-    else {renderWork();updateOfferBadge();}
-  });
-}
+// triggerRecruiterOffers: show ONE offer from the Work tab "View now" button
+// (Age Up only ever shows the top offer via priority queue)
 function triggerRecruiterOffers(){
-  _offerQueue=[...(G.pendingOffers||[])];
-  if(_offerQueue.length>0) setTimeout(showNextOffer,600);
+  const offers=G.pendingOffers||[];
+  if(!offers.length)return;
+  const offer=offers[0];
+  G.pendingOffers=offers.slice(1);
+  showRecruiterOffer(offer,()=>{renderWork();updateOfferBadge();});
 }
 
 
@@ -2513,6 +2508,7 @@ function ageUp(){
   G.yearActCounts={};
   G.musicCount=0;
   G._schoolTestThisYear=false;
+  G.eventFiredThisYear=false;
 
   if(G.age < 13)       G.maxEnergy = 3;
   else if(G.age < 18)  G.maxEnergy = 4;
@@ -2638,74 +2634,121 @@ function ageUp(){
 }
 
 function continueAgeUp(){
+  // ── Generate job offers silently (stored, NOT auto-popped) ──
   if(!G.retired&&G.age>=12){
     generateJobOffers();
     renderWork();updateOfferBadge();
-    // Trigger recruiter popups after small delay
-    if((G.pendingOffers||[]).length>0) setTimeout(triggerRecruiterOffers,800);
   }
 
-  if(G.age===5&&!G.schoolChosen){checkAchievements();save();updateUI();triggerPrimarySchoolModal();return;}
-  if(G.age===18&&!G.age18PathChosen){checkAchievements();save();updateUI();triggerAge18Modal();return;}
-  if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){checkAchievements();save();updateUI();triggerAge22Modal();return;}
+  // Helper: fire an event and mark the year as done
+  function fireEvent(fn){
+    G.eventFiredThisYear=true;
+    checkAchievements();save();updateUI();
+    fn();
+  }
 
-  // Life reflections
-  if([40,60,80].includes(G.age)){if(triggerReflection(G.age)){checkAchievements();save();updateUI();return;}}
+  // ════════════════════════════════════════════
+  // PRIORITY 1 — Milestone story gates (always fire, block everything else)
+  // ════════════════════════════════════════════
+  if(G.age===5&&!G.schoolChosen){
+    fireEvent(triggerPrimarySchoolModal);return;
+  }
+  if(G.age===18&&!G.age18PathChosen){
+    fireEvent(triggerAge18Modal);return;
+  }
+  if(G.age===22&&!G.age22SpecChosen&&eduRank[G.education]>=1){
+    fireEvent(triggerAge22Modal);return;
+  }
+  if([40,60,80].includes(G.age)&&!(G.reflectionsDone||[]).includes(G.age)){
+    fireEvent(()=>triggerReflection(G.age));return;
+  }
 
-  // Relationship events
-  if(G.partnerName||G.datingAge){if(updateRelationshipSystem()){checkAchievements();save();updateUI();return;}}
-
-  // School test (ages 6-17)
-  if(G.age>=6&&G.age<=17&&maybeSchoolTest()){checkAchievements();save();updateUI();return;}
-
-  // Performance review (ages 18+, employed, annually ~35% chance)
-  if(G.age>=18&&G.job&&!G.retired&&Math.random()<0.35){triggerPerformanceReview();checkAchievements();save();updateUI();return;}
-
-  // Activity bonus from reflection
-  applyActivityBonus();
-
+  // ════════════════════════════════════════════
+  // PRIORITY 2 — Critical health / happiness crises
+  // ════════════════════════════════════════════
   if(G.health<40&&Math.random()<0.30){
-    showModal('🚑','Medical Emergency!','Your health is critically low!',
+    fireEvent(()=>showModal('🚑','Medical Emergency!','Your health is critically low!',
       [{l:'🏥 Emergency care (−$3,000)',m:{health:25,money:-3000,happiness:-10},style:'grn'},
-       {l:'😰 Can\'t afford it',m:{health:-15,happiness:-15},style:'dan'}],'UH-OH!','negative');
-    checkAchievements();save();updateUI();return;
+       {l:'😰 Can\'t afford it',m:{health:-15,happiness:-15},style:'dan'}],'UH-OH!','negative'));
+    return;
   }
-
   if(G.happiness<30&&Math.random()<0.35){
-    showModal('😵','Burnout!','Your happiness is rock-bottom. Burnout episode.',
+    fireEvent(()=>showModal('😵','Burnout!','Your happiness is rock-bottom. Burnout episode.',
       [{l:'🌴 Take a break (−$1,000)',m:{happiness:20,money:-1000,health:5},style:'grn'},
-       {l:'💪 Push through',m:{happiness:-10,health:-5},style:'sec'}],'UH-OH!','negative');
-    checkAchievements();save();updateUI();return;
+       {l:'💪 Push through',m:{happiness:-10,health:-5},style:'sec'}],'UH-OH!','negative'));
+    return;
   }
 
+  // ════════════════════════════════════════════
+  // PRIORITY 3 — Relationship & family story events
+  // ════════════════════════════════════════════
+  // Dating starts silently (no popup, just a log entry)
   if(!G.marriageAge&&G.age>=20&&G.age<=45){
     if(!G.datingAge&&Math.random()<0.12&&G.age>(G.datingCooldown||0)){
       const partnerNames=G.gender==='male'?PARTNER_NAMES_F:PARTNER_NAMES_M;
       G._pendingPartner=partnerNames[Math.floor(Math.random()*partnerNames.length)];
       G.datingAge=G.age;
       addLog(`💕 Started dating ${G._pendingPartner}!`,'good');
+      // Dating start is just a log — does NOT consume the event slot
     }
     if(G.datingAge&&G.age-G.datingAge>=2&&Math.random()<0.25){
       const partnerName=G._pendingPartner||'your partner';
-      showModal('💍','Proposal!',`${partnerName} wants to get married. What do you say?`,
-        [{l:'💍 Yes, absolutely!',fn:'_marry_yes',style:'pri'},{l:'⏳ Not yet...',fn:'_marry_no',style:'sec'}],'OOH!','positive');
-      checkAchievements();save();updateUI();return;
+      fireEvent(()=>showModal('💍','Proposal!',`${partnerName} wants to get married. What do you say?`,
+        [{l:'💍 Yes, absolutely!',fn:'_marry_yes',style:'pri'},{l:'⏳ Not yet...',fn:'_marry_no',style:'sec'}],'OOH!','positive'));
+      return;
     }
   }
-
+  // New baby
   if(G.marriageAge&&G.age>=24&&G.age<=42&&Math.random()<0.10){
     const kids=(G.family||[]).filter(m=>m.type==='child');
     if(kids.length<3){
-      showModal('👶','New Baby!','Your family is growing! A baby is on the way.',
-        [{l:'😍 Amazing news!',fn:'_baby_yes',style:'pri'},{l:'😰 Not ready',m:{happiness:-8},style:'sec'}],'WOW!','positive');
-      checkAchievements();save();updateUI();return;
+      fireEvent(()=>showModal('👶','New Baby!','Your family is growing! A baby is on the way.',
+        [{l:'😍 Amazing news!',fn:'_baby_yes',style:'pri'},{l:'😰 Not ready',m:{happiness:-8},style:'sec'}],'WOW!','positive'));
+      return;
     }
   }
+  // Relationship score events (divorce etc) — only if no other story event fired
+  if(G.partnerName||G.datingAge){
+    const relFired=updateRelationshipSystem();
+    if(relFired){G.eventFiredThisYear=true;checkAchievements();save();updateUI();return;}
+  }
 
+  // ════════════════════════════════════════════
+  // PRIORITY 4 — ONE recruiter job offer popup (best offer only)
+  // ════════════════════════════════════════════
+  if(!G.retired&&G.age>=12&&(G.pendingOffers||[]).length>0){
+    // Show only the single best offer — others stay silently in Work tab
+    const bestOffer=G.pendingOffers[0];
+    G.pendingOffers=G.pendingOffers.slice(1); // remove it from queue
+    // Store the rest for manual browsing in Work tab
+    fireEvent(()=>setTimeout(()=>showRecruiterOffer(bestOffer,()=>{
+      renderWork();updateOfferBadge();
+    }),400));
+    return;
+  }
+
+  // ════════════════════════════════════════════
+  // PRIORITY 5 — Contextual mini-game events
+  // ════════════════════════════════════════════
+  // School test (ages 6–17, ~35% chance per year)
+  if(G.age>=6&&G.age<=17&&Math.random()<0.35){
+    fireEvent(()=>setTimeout(triggerSchoolTest,300));
+    return;
+  }
+  // Performance review (ages 18+, employed, ~30% chance — NOT same year as promotion)
+  if(G.age>=18&&G.job&&!G.retired&&Math.random()<0.30){
+    fireEvent(()=>setTimeout(triggerPerformanceReview,300));
+    return;
+  }
+
+  // ════════════════════════════════════════════
+  // PRIORITY 6 — Random world events (EVENTS array + neg events)
+  // ════════════════════════════════════════════
+  applyActivityBonus();
   if(G.age>=18) triggerRandomEvent();
 
   const negEvents=[
-    {minAge:16,maxAge:99,r:'c',emoji:'🔥',sfx:'UH-OH!',title:'Performance Review',body:"Your boss isn't happy with your work.",
+    {minAge:16,maxAge:99,r:'c',emoji:'🔥',sfx:'UH-OH!',title:'Workplace Trouble',body:"Your boss isn\'t happy with your work.",
      guard:()=>!!G.job,
      choices:[{l:'💪 Shape up!',m:{happiness:-10,smarts:5},style:'pri'},{l:'😤 Whatever',fn:'_fired',style:'dan'}]},
     {minAge:18,maxAge:99,r:'c',emoji:'🏚️',sfx:'UH-OH!',title:'Bad Luck Week',body:'Everything that could go wrong, did.',choices:[{l:'💪 Push through',m:{happiness:-15,health:-5},style:'sec'},{l:'😴 Rest it off',m:{happiness:-10,health:5},style:'grn'}]},
@@ -2725,13 +2768,17 @@ function continueAgeUp(){
     ev=pool[Math.floor(Math.random()*pool.length)];
   }
   if(ev){
-    const isLeg = ev.r==='l';
-    const type = isLeg?'legendary':ev.r==='r'?'positive':'';
+    const isLeg=ev.r==='l';
+    const type=isLeg?'legendary':ev.r==='r'?'positive':'';
     if(isLeg){SoundManager.legend();burst(70);}
+    G.eventFiredThisYear=true;
     showModal(ev.emoji,ev.title,ev.body,ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})),ev.sfx||'',type);
     checkAchievements();save();updateUI();return;
   }
 
+  // ════════════════════════════════════════════
+  // No event — just warn if stats critical
+  // ════════════════════════════════════════════
   if(G.health<30){shakeScreen();flashRed();addLog('⚠️ Your health is critically low!','bad');showMascotBubble('🦉 Your health is very low! Please see a doctor! 🏥', 4000);}
   else if(G.happiness<25){shakeScreen();flashRed();addLog('⚠️ Your happiness is dangerously low!','bad');showMascotBubble('🦉 You seem really unhappy. Try some activities to cheer up! 🌟', 4000);}
 
@@ -2792,6 +2839,7 @@ function continueLife(){
     if(G.loanYearsLeft===undefined)G.loanYearsLeft=0;
     if(G.birthBackground===undefined)G.birthBackground='';
     if(G.careerTrack===undefined)G.careerTrack=null;
+    if(G.eventFiredThisYear===undefined)G.eventFiredThisYear=false;
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
     if(G.reflectionsDone===undefined)G.reflectionsDone=[];
