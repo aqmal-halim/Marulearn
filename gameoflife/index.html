@@ -673,6 +673,8 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   <div class="end-moments" id="end-moments"></div>
   <div class="end-trophies-row" id="end-trophies-row"></div>
   <div class="end-btns"><button type="button" class="btn-start" style="font-size:1em;padding:14px" onclick="confirmNew()">🔄 Play Again</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px" onclick="toggleEndStory()">📖 Read My Story</button></div>
+  <div id="end-biography" style="background:rgba(255,255,255,.1);border-radius:14px;padding:12px 16px;margin:8px 0;color:white;font-size:.78em;font-weight:700;line-height:1.6;max-width:420px;text-align:left"></div>
+  <div id="end-missed" style="width:100%;max-width:420px;margin-bottom:8px"></div>
   <div class="end-story-log" id="end-story-log"></div>
 </div>
 
@@ -817,6 +819,8 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 <button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" title="Toggle music">🎵</button>
 
 <script>
+
+
 
 
 
@@ -1008,7 +1012,26 @@ const DEFAULT = {
   peakCareerTier:0,    // snapshot for scoring
   peakCareerTrack:null,
   // Longevity difficulty
-  _agingAcceleration:0, // stacks after 80 to make 100 harder
+  _agingAcceleration:0,
+  // Social network
+  friends:[],             // [{name, type:'career'|'health'|'fun', yearsKnown}]
+  friendsIgnoredYears:0,
+  // Health conditions
+  conditions:[],          // [{id, label, drain, managedCost}]
+  conditionMeds:{},       // {conditionId: true} if paying for meds
+  // World decade modifiers
+  worldModifiers:[],      // [{label, salaryMult, eventChance, expires}]
+  // Unemployment tracking
+  unemployedYears:0,
+  // Pension pot
+  pensionPot:0,
+  pensionContributing:false,
+  // Spouse income
+  spouseIncome:0,
+  spouseMood:80,          // affects divorce risk
+  // Smarts decay tracking
+  noStudyYears:0,
+  // Child traits
 };
 let G = {...DEFAULT};
 let chosenGender = 'male';
@@ -1052,6 +1075,10 @@ function applyMod(m) {
     }
   });
   if(m.money!==undefined && m.money!==0) spawnFloat((m.money>0?'+':'')+`$${Math.abs(m.money).toLocaleString()}`, m.money>0, true);
+  // Unemployment cap on happiness
+  if(!G.job&&!G.retired&&G.age>=18&&(G.unemployedYears||0)>=3){
+    if(G.happiness>80){G.happiness=80;} // purpose penalty
+  }
   updateMoodMeter();
   // Char reaction on stat changes
   if(m.health!==undefined&&Math.abs(m.health)>=10) triggerCharReaction&&triggerCharReaction(m.health>0?'jump':'slump');
@@ -1319,6 +1346,8 @@ function evFn(name) {
   if(name==='move_out'){ if(G.money>=5000){applyMod({happiness:18,money:-5000});addLog('Moved into your own place! 🏠','good');}else{addLog('Not enough savings to move out!','bad');applyMod({happiness:-5});} }
   if(name==='invest'){ if(G.money>=5000){const w=Math.random()>.4;applyMod({money:w?9000:-5000});addLog(w?'Investment paid off! +$9,000 💰':'Investment crashed... -$5,000 😭',w?'good':'bad');if(w)SoundManager.money();}else{addLog('Not enough money to invest!','bad');} }
   if(name==='start_biz'){ if(G.money>=3000){const w=Math.random()>.5;applyMod({money:w?20000:-3000,happiness:w?25:-10});addLog(w?'🚀 Business took off! +$20,000!':'📉 Business failed... -$3,000',w?'good':'bad');if(w){SoundManager.levelUp();burst(50);}}else{addLog('Need $3,000 to start a business!','bad');} }
+  if(name&&name.startsWith('_cond_manage_')){const id=name.replace('_cond_manage_','');if(!G.conditionMeds)G.conditionMeds={};G.conditionMeds[id]=true;addLog(`💊 Started managing ${id} with medication. Costs handled annually.`,'good');}
+  if(name&&name.startsWith('_cond_ignore_')){addLog('😤 Chose to manage condition naturally. Watch your health!','info');}
   if(name==='_fired'){
     if(G.job){ addLog(`Lost job as ${G.jobTitle}! 😤`,'bad'); G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0; applyMod({happiness:-15}); SoundManager.fail(); G.misfortune=Math.min((G.misfortune||0)+20,100); }
   }
@@ -1326,9 +1355,13 @@ function evFn(name) {
     const partnerName = G._pendingPartner || 'your partner';
     if(!G.family) G.family=[];
     const partnerAge = G.age - rand(0,3);
-    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married'});
+    // Spouse brings own income (based on player's career tier roughly)
+    const tier = G.job ? (getJobDef(G.job)||{tier:1}).tier : 1;
+    G.spouseIncome = Math.round((2000 + tier*800) * (G.inflationMult||1));
+    G.spouseMood = 80;
+    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married', mood:80});
     G.marriageAge = G.age; G._pendingPartner = null;
-    applyMod({happiness:25,money:-3000});
+    applyMod({happiness:25});  // wedding cost handled separately in Bank tab
     addLog(`💍 Married ${partnerName} at age ${G.age}!`,'legend');
     SoundManager.legend(); burstHearts(); burst(60); updateUI();
     showNewspaper(`${G.name.toUpperCase()} FINDS TRUE LOVE!`);
@@ -1339,7 +1372,9 @@ function evFn(name) {
   if(name==='_baby_yes'){
     if(!G.family) G.family=[];
     const babyName = BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
-    G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶'});
+    const _traits=['studious','athletic','creative','rebellious'];
+    const _trait=_traits[Math.floor(Math.random()*_traits.length)];
+    G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶', trait:_trait});
     applyMod({happiness:20,money:-5000,health:-5});
     addLog(`👶 ${babyName} was born!`,'legend');
     SoundManager.levelUp(); burstBabyConfetti(); updateUI();
@@ -1400,6 +1435,30 @@ function generateJobOffers() {
          G.smarts>=(rung.minSmarts-10) && (!rung.needsDegree||G.hasDegree)){
         eligible.push({...rung, _isPivot:true});
       }
+    }
+  }
+
+  // Job hunt boost: player actively hunted this year
+  if(G._jobHuntBoost){
+    G._jobHuntBoost=false;
+    // Add any blocked next-rung as eligible with a lower smarts bar
+    if(G.job&&currentTrackKey){
+      const nextRung=getNextRungInTrack(G.job);
+      if(nextRung&&!eligible.find(e=>e.id===nextRung.id)){
+        const inf=Math.round(nextRung.salary*(G.inflationMult||1));
+        if(inf>currentSalary&&G.age>=nextRung.minAge&&G.smarts>=(nextRung.minSmarts-20)){
+          eligible.push(nextRung);
+        }
+      }
+    }
+    if(!G.job){
+      // Unemployed job hunt — wider net across tracks
+      Object.values(CAREER_TRACKS).forEach(track=>{
+        const r=track.rungs[0];
+        if(!eligible.find(e=>e.id===r.id)&&G.age>=r.minAge&&G.smarts>=(r.minSmarts-15)&&(!r.needsDegree||G.hasDegree)){
+          eligible.push(r);
+        }
+      });
     }
   }
 
@@ -1688,9 +1747,10 @@ function applyInflation() {
 
 function handleRetirement() {
   if(G.age >= 65 && !G.retired) {
-    const peakSalary = G.peakSalary || G.salary || 0;
-    const tier = G.job ? (JOBS.find(j=>j.id===G.job)?.tier || 1) : 1;
-    G.pension = Math.floor(peakSalary * 0.35) + (tier * 200);
+    // Pension from pot (4% rule) + small state pension if no pot
+    const potAnnual = G.pensionPot>0 ? Math.floor(G.pensionPot*0.04) : 0;
+    const statePension = Math.round(400*(G.inflationMult||1));
+    G.pension = Math.max(statePension, potAnnual);
     G.retired = true;
     if(G.job) {
       addLog(`🏖️ Mandatory retirement at 65! Pension: $${G.pension.toLocaleString()}/mo`, 'legend');
@@ -1879,6 +1939,42 @@ function showEndScreen(){
     const a=ALL_ACHIEVEMENTS.find(x=>x.id===id);
     return a?`<div class="end-trophy-dot">${a.emoji}</div>`:'';
   }).join('');
+
+  // Auto-biography paragraph
+  const bioEl=document.getElementById('end-biography');
+  if(bioEl){
+    const spouse=(G.family||[]).find(m=>m.type==='spouse');
+    const kids=(G.family||[]).filter(m=>m.type==='child');
+    const trackName=G.peakCareerTrack&&CAREER_TRACKS[G.peakCareerTrack]?CAREER_TRACKS[G.peakCareerTrack].name:'';
+    const eduStr={none:'no formal education',highschool:'high school',university:'university',graduate:'graduate school'}[G.education]||'no education';
+    let bio=`${G.name} was born and grew up to live a remarkable life. `;
+    if(G.education!=='none')bio+=`They pursued ${eduStr}${G.educationDebt>0?`, investing $${G.educationDebt.toLocaleString()} in their future`:''}. `;
+    if(G.peakCareerTier>0)bio+=`Their career peak was as a ${G.jobTitle||'professional'} in the ${trackName} field (Tier ${G.peakCareerTier}). `;
+    if(spouse||G.marriageAge)bio+=`They ${G.marriageAge?`married at age ${G.marriageAge}`:'found love'} and ${kids.length>0?`raised ${kids.length} child${kids.length>1?'ren':''}`:G.marriageAge?'shared their life with their partner':''}. `;
+    if(G.houseType)bio+=`They owned a ${G.houseType} home worth $${(G.houseValue||0).toLocaleString()}. `;
+    bio+=`They lived to ${G.age}, leaving a net worth of $${(G.money+(G.investments||0)+(G.houseValue||0)+(G.carValue||0)).toLocaleString()}.`;
+    bioEl.textContent=bio;
+  }
+
+  // What you missed
+  const missedEl=document.getElementById('end-missed');
+  if(missedEl){
+    const missed=[];
+    if(!G.marriageAge) missed.push('💍 Never married');
+    if(!(G.family||[]).find(m=>m.type==='child')) missed.push('👶 Never had children');
+    if(!G.houseType) missed.push('🏠 Never bought a home');
+    if(!G.carType) missed.push('🚗 Never owned a car');
+    if(G.education==='none') missed.push('📚 Never pursued education');
+    if(G.achievements.length<3) missed.push('🏆 Few trophies unlocked');
+    // Near misses
+    ALL_ACHIEVEMENTS.filter(a=>!G.achievements.includes(a.id)).slice(0,2).forEach(a=>{
+      missed.push(`⭐ Almost: ${a.name} — ${a.desc}`);
+    });
+    if(missed.length>0){
+      missedEl.innerHTML=`<div style="font-family:'Fredoka One',cursive;color:white;font-size:.85em;margin-bottom:6px;opacity:.8">🔍 What you missed</div>`+
+        missed.slice(0,4).map(m=>`<div class="end-moment-card" style="opacity:.85">${m}</div>`).join('');
+    }
+  }
 
   // Switch screens
   document.getElementById('game-screen').classList.remove('active');
@@ -2493,8 +2589,31 @@ function renderFamilyTab(){
   }
   fam.forEach(m=>{
     const icon=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<13?'🧒':m.age<18?'🧑':'👤';
-    el.innerHTML+=`<div class="family-member"><div class="family-member-icon">${icon}</div><div style="flex:1"><div class="family-member-name">${m.name}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div></div><div class="family-status">${m.status||'Healthy'}</div></div>`;
+    const traitLabel=m.trait?`<span style="font-size:.7em;background:#E8F5E9;border-radius:6px;padding:1px 5px;color:#2E7D32">${{studious:'📚 Studious',athletic:'⚽ Athletic',creative:'🎨 Creative',rebellious:'😈 Rebellious'}[m.trait]||''}</span>`:'';
+    const spouseExtra=m.type==='spouse'?`<div style="font-size:.72em;color:var(--ink2)">💑 Mood: ${G.spouseMood>=70?'😊 Happy':G.spouseMood>=40?'😐 Ok':'😟 Unhappy'} · Income: +$${(G.spouseIncome||0).toLocaleString()}/yr</div>`:'';
+    el.innerHTML+=`<div class="family-member"><div class="family-member-icon">${icon}</div><div style="flex:1"><div class="family-member-name">${m.name} ${traitLabel}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div>${spouseExtra}</div><div class="family-status">${m.status||'Healthy'}</div></div>`;
   });
+
+  // Health conditions section
+  if((G.conditions||[]).length>0){
+    const condEl=document.createElement('div');
+    condEl.style.cssText='background:#FFEBEE;border-radius:var(--radius);padding:10px 14px;margin-top:8px;border:2px solid #EF9A9A';
+    condEl.innerHTML='<div style="font-size:.72em;font-weight:900;color:#C62828;margin-bottom:4px">🏥 Health Conditions</div>'+
+      G.conditions.map(c=>{
+        const managed=G.conditionMeds?.[c.id];
+        return `<div style="font-size:.8em;font-weight:800;color:var(--ink);margin-bottom:3px">• ${c.label} <span style="color:${managed?'#2E7D32':'#C62828'}">${managed?`💊 Managed ($${c.managedCost.toLocaleString()}/yr)`:`⚠️ Unmanaged (−${c.drain} Health/yr)`}</span></div>`;
+      }).join('');
+    el.appendChild(condEl);
+  }
+
+  // World modifiers section
+  if((G.worldModifiers||[]).filter(m=>m.expires>G.age).length>0){
+    const wEl=document.createElement('div');
+    wEl.style.cssText='background:#E8EAF6;border-radius:var(--radius);padding:10px 14px;margin-top:8px;border:2px solid #9FA8DA';
+    wEl.innerHTML='<div style="font-size:.72em;font-weight:900;color:#283593;margin-bottom:4px">🌍 World Events Active</div>'+
+      G.worldModifiers.filter(m=>m.expires>G.age).map(m=>`<div style="font-size:.8em;font-weight:800;color:var(--ink)">• ${m.label} (${m.expires-G.age}yr${m.expires-G.age!==1?'s':''} left)</div>`).join('');
+    el.appendChild(wEl);
+  }
 }
 
 function actItem(emoji,title,sub,fn){
@@ -2674,6 +2793,184 @@ function renderActivities(){
       showStatCard('🎭 Drama Club',[{label:'Happiness',val:2},{label:'Looks',val:2}]);
       SoundManager.success();
     });
+  }
+
+  // ── Teen-specific activities (13-17) ──
+  if(a>=13&&a<=17){
+    addActDual(13,'📱','Social Media','+8 ✨ +5 😊 / −5 🧠 −3 ❤️','socialmedia',1,()=>{
+      const l=scaledBonus('socialmedia',8),h=scaledBonus('socialmedia',5);
+      incActCount('socialmedia');
+      applyMod({looks:l,happiness:h,smarts:-5,health:-3});
+      addLog(`📱 Spent time on social media. +${l} Looks`,'info');
+      showStatCard('📱 Social Media',[{label:'Looks',val:l},{label:'Happiness',val:h},{label:'Smarts',val:-5},{label:'Health',val:-3}]);
+      SoundManager.success();
+    });
+    addActDual(14,'💼','Part-time Job','+$600 +3 🧠 / −5 😊','parttime',1,()=>{
+      const s=scaledBonus('parttime',3);incActCount('parttime');
+      applyMod({money:Math.round(600*(G.inflationMult||1)),smarts:s,happiness:-5});
+      addLog(`💼 Worked part-time. +$600, +${s} Smarts`,'good');
+      showStatCard('💼 Part-time Job',[{label:'Money',val:600},{label:'Smarts',val:s},{label:'Happiness',val:-5}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Young adult networking (18-35) ──
+  if(a>=18&&a<=35){
+    addActDual(18,'🤝','Networking Event','+Career% +3 🧠 / −$200 −3 😊','network',1,()=>{
+      incActCount('network');
+      G.promotionChance=Math.min((G.promotionChance||0)+8,90);
+      applyMod({smarts:3,happiness:-3,money:-Math.round(200*(G.inflationMult||1))});
+      addLog('🤝 Networked at industry event. +8% promo chance','good');
+      showStatCard('🤝 Networking',[{label:'Promo%',val:8},{label:'Smarts',val:3},{label:'Happiness',val:-3}]);
+      SoundManager.success();
+    });
+    addActDual(20,'🌱','Volunteer Work','+10 😊 +5 🧠 / −$0 (free)','volunteer',1,()=>{
+      const h=scaledBonus('volunteer',10),s=scaledBonus('volunteer',5);
+      incActCount('volunteer');
+      applyMod({happiness:h,smarts:s});
+      addLog(`🌱 Volunteered in the community. +${h} Happy, +${s} Smarts`,'good');
+      showStatCard('🌱 Volunteer',[{label:'Happiness',val:h},{label:'Smarts',val:s}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Mid-life family activities (30-55) ──
+  if(a>=30&&a<=55&&(G.family||[]).length>0){
+    addActDual(30,'🍽️','Family Dinner','+15 😊 +spouse mood / −$100','familydinner',1,()=>{
+      incActCount('familydinner');
+      G.spouseMood=Math.min(100,(G.spouseMood||80)+10);
+      applyMod({happiness:15,money:-Math.round(100*(G.inflationMult||1))});
+      addLog('🍽️ Family dinner night! +15 Happy, partner happier 💑','good');
+      showStatCard('🍽️ Family Dinner',[{label:'Happiness',val:15},{label:'Mood',val:10}]);
+      SoundManager.success();
+    });
+  }
+  if(a>=30&&a<=55&&G.houseType){
+    addActDual(30,'🔨','Home Improvement','+house value +5 ✨ / −$2000','homeimprove',1,()=>{
+      const cost=Math.round(2000*(G.inflationMult||1));
+      if(G.money<cost){addLog('Need $2,000 for home improvements!','bad');SoundManager.fail();return;}
+      incActCount('homeimprove');
+      G.houseValue=Math.floor(G.houseValue*1.05);
+      applyMod({money:-cost,looks:5,happiness:8});
+      addLog(`🔨 Home improvements done! House value +5% → $${G.houseValue.toLocaleString()}`,'good');
+      SoundManager.success();
+    });
+  }
+
+  // ── Senior activities (60+) ──
+  if(a>=60){
+    const gardenItem=actItem('🌻','Gardening','+8 😊 +4 ❤️ · Free · Peaceful · ⚡-1',()=>{
+      if(!useEnergy(1))return;
+      applyMod({happiness:8,health:4,smarts:2});
+      addLog('🌻 Spent the morning gardening. So peaceful. +8 Happy +4 Health','good');
+      showStatCard('🌻 Gardening',[{label:'Happiness',val:8},{label:'Health',val:4},{label:'Smarts',val:2}]);
+      SoundManager.success();renderActivities();
+    });
+    if(noEnergy)gardenItem.classList.add('disabled');
+    el.appendChild(gardenItem);
+  }
+  if(a>=65&&(G.family||[]).filter(m=>m.type==='child'&&m.age>=25).length>0){
+    const grandItem=actItem('👴','Visit Grandchildren','+20 😊 +5 ❤️ · Free · ⚡-1',()=>{
+      if(!useEnergy(1))return;
+      applyMod({happiness:20,health:5});
+      addLog('👴 Spent the day with grandchildren. Pure joy! +20 Happy +5 Health','good');
+      showStatCard('👴 Grandchildren',[{label:'Happiness',val:20},{label:'Health',val:5}]);
+      SoundManager.success();renderActivities();
+    });
+    if(noEnergy)grandItem.classList.add('disabled');
+    el.appendChild(grandItem);
+  }
+  if(a>=65){
+    addActDual(65,'📖','Reminisce','+12 😊 +3 🧠 / −2 ❤️ (bittersweet)','reminisce',1,()=>{
+      incActCount('reminisce');
+      applyMod({happiness:12,smarts:3,health:-2});
+      addLog('📖 Spent time looking through old memories. Bittersweet but wonderful.','good');
+      showStatCard('📖 Reminisce',[{label:'Happiness',val:12},{label:'Smarts',val:3},{label:'Health',val:-2}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Spouse activities (when married) ──
+  if(G.marriageAge&&(G.family||[]).find(m=>m.type==='spouse')){
+    addActDual(18,'💑','Spend Time Together','+10 😊 +spouse mood / free','spousetime',1,()=>{
+      incActCount('spousetime');
+      G.spouseMood=Math.min(100,(G.spouseMood||80)+15);
+      applyMod({happiness:10});
+      G.relationshipScore=Math.min(100,(G.relationshipScore||0)+5);
+      addLog('💑 Quality time with partner. Relationship stronger.','good');
+      showStatCard('💑 Together',[{label:'Happiness',val:10},{label:'Relationship',val:5}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Wealth-tier activity upgrades ──
+  const wealthT=getWealthTier();
+  if(a>=18&&wealthT==='rich'||wealthT==='ultra'){
+    addActDual(18,'🏊','Private Trainer',`+14 ❤️ +8 ✨ / −$1500 −3 😊 (premium gym)`,'pvttrainer',1,()=>{
+      const cost=Math.round(1500*(G.inflationMult||1));
+      if(G.money<cost){addLog('Need $1,500 for private trainer!','bad');SoundManager.fail();return;}
+      const h=scaledBonus('pvttrainer',14),l=scaledBonus('pvttrainer',8);
+      incActCount('pvttrainer');
+      applyMod({health:h,looks:l,happiness:-3,money:-cost});
+      addLog(`🏊 Private trainer session! +${h} Health, +${l} Looks`,'good');
+      showStatCard('🏊 Private Trainer',[{label:'Health',val:h},{label:'Looks',val:l},{label:'Happiness',val:-3}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Pension contribution toggle ──
+  if(a>=25&&G.job&&!G.retired){
+    const penItem=actItem('🏦',G.pensionContributing?'Stop Pension Contributions':'💰 Contribute to Pension',
+      G.pensionContributing?`Currently contributing 5% salary/yr. Pot: $${(G.pensionPot||0).toLocaleString()}`:`Save 5% salary/yr into pension pot. Pot: $${(G.pensionPot||0).toLocaleString()}`,()=>{
+      G.pensionContributing=!G.pensionContributing;
+      addLog(G.pensionContributing?'🏦 Started contributing 5% salary to pension pot.':'🏦 Stopped pension contributions.',G.pensionContributing?'good':'info');
+      SoundManager.click();renderActivities();
+    });
+    el.appendChild(penItem);
+  }
+
+  // ── Job hunting (unemployed) ──
+  if(!G.job&&!G.retired&&a>=18){
+    addActDual(18,'🔍','Job Hunt','+20% offer chance this year / −5 😊','jobhunt',1,()=>{
+      incActCount('jobhunt');
+      G._jobHuntBoost=true;
+      applyMod({happiness:-5});
+      addLog('🔍 Actively job hunting. Better chance of an offer this Age Up!','info');
+      showStatCard('🔍 Job Hunting',[{label:'Offer Chance',val:20},{label:'Happiness',val:-5}]);
+      SoundManager.success();
+    });
+  }
+
+  // ── Social friends system ──
+  if(a>=12){
+    const friendNames=['Jamie','Sam','Riley','Morgan','Casey','Alex','Jordan','Taylor','Robin','Drew'];
+    const canMakeFriend=(G.friends||[]).length<3;
+    const socialUsed=(G.yearActCounts?.social||0)>0;
+    if(canMakeFriend&&socialUsed&&Math.random()<0.2&&(G.friends||[]).length<3){
+      const usedNames=(G.friends||[]).map(f=>f.name);
+      const available=friendNames.filter(n=>n!==G.name&&!usedNames.includes(n));
+      if(available.length){
+        const newFriend={name:available[Math.floor(Math.random()*available.length)],
+          type:['career','health','fun'][Math.floor(Math.random()*3)], yearsKnown:0};
+        G.friends.push(newFriend);
+        addLog(`👋 Made a new friend: ${newFriend.name}! (${newFriend.type} friend)`,'good');
+        applyMod({happiness:5});
+      }
+    }
+    if((G.friends||[]).length>0){
+      const fEl=document.createElement('div');
+      fEl.style.cssText='background:#F3E5F5;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;border:2px solid #CE93D8';
+      const friendBenefits={career:'💼 Career boosts',health:'❤️ Free health tips',fun:'😄 Extra happiness'};
+      fEl.innerHTML='<div style="font-size:.72em;font-weight:900;color:#7B1FA2;margin-bottom:4px">👫 Your Friends</div>'+
+        G.friends.map(f=>`<div style="font-size:.8em;font-weight:800;color:var(--ink)">• ${f.name} <span style="color:#7B1FA2">(${friendBenefits[f.type]||''})</span> · ${f.yearsKnown}yr${f.yearsKnown!==1?'s':''}</div>`).join('');
+      el.appendChild(fEl);
+      G.friends.forEach(f=>f.yearsKnown=(f.yearsKnown||0)+1);
+      // Apply friend benefits
+      const careerFriend=G.friends.find(f=>f.type==='career');
+      const healthFriend=G.friends.find(f=>f.type==='health');
+      if(careerFriend&&G.job) G.promotionChance=Math.min((G.promotionChance||0)+3,90);
+      if(healthFriend&&Math.random()<0.3){applyMod({health:3});addLog(`❤️ ${healthFriend.name} gave you great health advice. +3 Health`,'good');}
+    }
   }
 
   // Dating activity (age 18+, not married)
@@ -2992,7 +3289,7 @@ function renderEdu(){
 
   if(G.age>=18&&eduRank[G.education]<2&&G.smarts>=50){
     el.appendChild(actItem('🏛️','Enrol University','Smarts 50+ needed. Unlocks great jobs!',()=>{
-      const uniCost=Math.round(12000*(G.inflationMult||1));
+      const uniCost=Math.round(25000*(G.inflationMult||1));
       if(G.money<uniCost){addLog(`Need $${uniCost.toLocaleString()} for university tuition!`,'bad');SoundManager.fail();return;}
       G.education='university';G.studyingAt='University 🏛️';G.hasDegree=true;
       G.educationDebt=(G.educationDebt||0)+uniCost;
@@ -3005,7 +3302,7 @@ function renderEdu(){
 
   if(G.age>=24&&G.education==='university'&&G.smarts>=75){
     el.appendChild(actItem('🎓','Graduate School','Smarts 75+ needed. Top jobs await!',()=>{
-      const gradCost=Math.round(25000*(G.inflationMult||1));
+      const gradCost=Math.round(40000*(G.inflationMult||1));
       if(G.money<gradCost){addLog(`Need $${gradCost.toLocaleString()} for grad school!`,'bad');SoundManager.fail();return;}
       G.education='graduate';G.studyingAt='Grad School 🎓';
       G.educationDebt=(G.educationDebt||0)+gradCost;
@@ -3217,6 +3514,30 @@ function triggerRandomEvent(){
     ];
     for(let i=0;i<4;i++){const fn=badEvents[Math.floor(Math.random()*badEvents.length)];if(fn())return;}
   // Good rare events (15% up from 5%)
+  }else if(r>=10&&r<16&&G.age>=30){
+    // Health condition events
+    const condPool=[
+      {id:'diabetes',  label:'Type 2 Diabetes', drain:3, managedCost:Math.round(800*(G.inflationMult||1))},
+      {id:'backpain',  label:'Chronic Back Pain',drain:2, managedCost:Math.round(500*(G.inflationMult||1))},
+      {id:'anxiety',   label:'Anxiety Disorder', drain:0, managedCost:Math.round(600*(G.inflationMult||1)), happyDrain:3},
+      {id:'hypertension',label:'High Blood Pressure',drain:2,managedCost:Math.round(400*(G.inflationMult||1))},
+    ];
+    const existing=(G.conditions||[]).map(c=>c.id);
+    const eligible=condPool.filter(c=>!existing.includes(c.id));
+    if(eligible.length>0){
+      const cond=eligible[Math.floor(Math.random()*eligible.length)];
+      if(!G.conditions)G.conditions=[];
+      G.conditions.push(cond);
+      applyMod({health:-10,happiness:-8});
+      addLog(`🏥 Diagnosed with ${cond.label}. Ongoing health impact.`,'bad');
+      SoundManager.fail();shakeScreen();
+      showModal('🏥','Health Diagnosis',
+        `You\'ve been diagnosed with ${cond.label}. You can manage it with medication ($${cond.managedCost.toLocaleString()}/yr) or ignore it (−${cond.drain} Health/yr).`,
+        [{l:'💊 Start medication',fn:`_cond_manage_${cond.id}`,style:'grn'},
+         {l:'😤 Deal with it naturally',fn:`_cond_ignore_${cond.id}`,style:'sec'}],
+        'OH NO!','negative');
+      checkAchievements();save();updateUI();return;
+    }
   }else if(r<25){
     const goodEvents=[
       ()=>{const amt=rand(5000,30000);applyMod({money:amt,happiness:15});addLog(`🏛️ INHERITANCE! +$${amt.toLocaleString()}!`,'good');SoundManager.legend();burst(50);},
@@ -3500,8 +3821,10 @@ function ageUp(){
   }
 
   if(G.job&&!G.retired){
-    applyMod({money:G.salary});
-    addLog(`💰 Annual salary: +$${G.salary.toLocaleString()}`,'good');
+    const worldSalMult=(G.worldModifiers||[]).reduce((m,mod)=>m*(mod.salaryMult||1),1);
+    const effectiveSalary=Math.round(G.salary*worldSalMult);
+    applyMod({money:effectiveSalary});
+    addLog(`💰 Annual salary: +$${effectiveSalary.toLocaleString()}${worldSalMult!==1?` (world x${worldSalMult.toFixed(2)})`:''}`,'good');
     const autoPromoGain = 2 + Math.floor(G.smarts / 50);
     G.promotionChance = Math.min(G.promotionChance + autoPromoGain, 90);
     if(G.promotionChance>0&&Math.random()*100<G.promotionChance){
@@ -3569,9 +3892,121 @@ function ageUp(){
     }
   }
 
-  // Car depreciates 5%/yr after purchase
-  if(G.carValue>0){
-    G.carValue=Math.max(500,Math.floor(G.carValue*0.95));
+  // Car depreciates 5%/yr
+  if(G.carValue>0) G.carValue=Math.max(500,Math.floor(G.carValue*0.95));
+
+  // ── Spouse income ──
+  if(G.marriageAge && (G.family||[]).find(m=>m.type==='spouse') && G.spouseIncome>0){
+    applyMod({money:G.spouseIncome});
+    if(G.age%3===0) addLog(`💑 Partner\'s income: +$${G.spouseIncome.toLocaleString()}`, 'good');
+    // Spouse mood drifts based on player happiness
+    const moodDrift = G.happiness>60 ? rand(2,5) : -rand(3,8);
+    G.spouseMood = Math.min(100, Math.max(0, (G.spouseMood||80) + moodDrift));
+    // Low spouse mood risk → divorce event (handled in P3)
+  }
+
+  // ── Unemployment tracking ──
+  if(!G.job && !G.retired && G.age>=18){
+    G.unemployedYears = (G.unemployedYears||0)+1;
+    // Welfare payment
+    const welfare = Math.round(800*(G.inflationMult||1));
+    applyMod({money:welfare});
+    if(G.unemployedYears===1) addLog(`🏦 Unemployment welfare: +$${welfare.toLocaleString()}/yr`, 'info');
+    // Happiness penalty for extended unemployment
+    if(G.unemployedYears>=3){
+      applyMod({happiness:-3});
+      if(G.age%2===0) addLog(`😔 Unemployment weighing on your mood.`, 'bad');
+    }
+  } else if(G.job) {
+    G.unemployedYears = 0;
+  }
+
+  // ── Pension pot contribution ──
+  if(G.pensionContributing && G.salary>0 && !G.retired){
+    const contrib = Math.floor(G.salary * 0.05);
+    G.pensionPot = (G.pensionPot||0) + contrib;
+    applyMod({money:-contrib});
+    if(G.age%5===0) addLog(`🏦 Pension pot: +$${contrib.toLocaleString()} → total $${G.pensionPot.toLocaleString()}`, 'info');
+  }
+  if(G.pensionPot>0 && !G.retired){
+    const potGrowth = Math.floor(G.pensionPot*0.04);
+    G.pensionPot += potGrowth;
+  }
+
+  // ── Health conditions drain ──
+  if((G.conditions||[]).length>0){
+    G.conditions.forEach(cond=>{
+      const managed = G.conditionMeds?.[cond.id];
+      if(managed){
+        applyMod({money:-cond.managedCost});
+      } else {
+        applyMod({health:-cond.drain});
+        if(G.age%2===0) addLog(`🤒 ${cond.label} affecting your health. −${cond.drain} Health.`, 'bad');
+      }
+    });
+  }
+
+  // ── Smarts decay (age 70+, no studying) ──
+  if(G.age>=70){
+    const studiedThisYear=(G.yearActCounts?.study||0)+(G.yearActCounts?.read||0)>0;
+    if(!studiedThisYear){
+      G.noStudyYears=(G.noStudyYears||0)+1;
+      if(G.noStudyYears>=2){
+        applyMod({smarts:-2});
+        if(G.age%3===0) addLog(`🧠 Mental sharpness fading — try reading or studying!`, 'info');
+      }
+    } else {
+      G.noStudyYears=0;
+    }
+  }
+
+  // ── Friends drifting away ──
+  if((G.friends||[]).length>0){
+    const socialised=(G.yearActCounts?.social||0)>0;
+    if(!socialised){
+      G.friendsIgnoredYears=(G.friendsIgnoredYears||0)+1;
+      if(G.friendsIgnoredYears>=5){
+        const lost = G.friends.splice(0,1)[0];
+        G.friendsIgnoredYears=0;
+        addLog(`😔 Drifted apart from ${lost.name}. Life got in the way.`, 'bad');
+        applyMod({happiness:-5});
+      }
+    } else {
+      G.friendsIgnoredYears=0;
+    }
+    // Old friends dying (age 65+)
+    if(G.age>=65 && G.friends.length>0 && Math.random()<0.12){
+      const lost=G.friends.splice(Math.floor(Math.random()*G.friends.length),1)[0];
+      addLog(`💔 Your old friend ${lost.name} passed away. You\'ll miss them dearly.`, 'bad');
+      applyMod({happiness:-15,health:-5});
+    }
+  }
+
+  // ── Overdraft spiral ──
+  if(G.money<0){
+    const interest=Math.floor(Math.abs(G.money)*0.05);
+    G.money=Math.min(0,G.money-interest);
+    addLog(`💳 Overdraft interest: −$${interest.toLocaleString()}`, 'bad');
+    if(G.money<-20000){
+      // Force sell car first, then house
+      if(G.carType){
+        const carSale=G.carValue;
+        G.money+=carSale; G.carType=null; G.carValue=0;
+        addLog(`😰 Forced to sell your car to cover debts. +$${carSale.toLocaleString()}`, 'bad');
+        applyMod({happiness:-15});
+      } else if(G.houseType){
+        const houseSale=G.houseValue;
+        G.money+=houseSale; G.houseType=null; G.houseValue=0;
+        addLog(`😱 Forced to sell your home to clear debts!`, 'bad');
+        applyMod({happiness:-30});
+        SoundManager.fail(); shakeScreen();
+      }
+    }
+  }
+
+  // ── World decade modifiers ──
+  if(G.worldModifiers){
+    G.worldModifiers=G.worldModifiers.filter(m=>m.expires>G.age);
   }
 
   if(handleRetirement()){checkAchievements();save();updateUI();refreshActiveTab();renderWork();return;}
@@ -3659,6 +4094,48 @@ function continueAgeUp(){
       return;
     }
   }
+  // Child milestone events (trait-based)
+  if((G.family||[]).some(m=>m.type==='child')){
+    const kids=G.family.filter(m=>m.type==='child');
+    kids.forEach(kid=>{
+      // Good grades log entry for studious kids
+      if(kid.trait==='studious'&&kid.age>=6&&kid.age<=17&&Math.random()<0.3){
+        addLog(`📚 ${kid.name} topped ${kid.age<13?'class':'year'}! You feel so proud. +2 Smarts`,  'good');
+        applyMod({smarts:2,happiness:5});
+      }
+      // Athletic kid sports win
+      if(kid.trait==='athletic'&&kid.age>=8&&kid.age<=18&&Math.random()<0.25){
+        addLog(`⚽ ${kid.name} won their sports tournament! +5 Happy`, 'good');
+        applyMod({happiness:5,health:2});
+      }
+      // Creative kid art show
+      if(kid.trait==='creative'&&kid.age>=6&&kid.age<=20&&Math.random()<0.2){
+        addLog(`🎨 ${kid.name}\'s artwork was exhibited! +5 Happy`, 'good');
+        applyMod({happiness:5});
+      }
+      // Rebellious kid trouble event
+      if(kid.trait==='rebellious'&&kid.age>=12&&kid.age<=20&&Math.random()<0.2){
+        fireEvent(()=>showModal('😤','Teenage Trouble!',
+          `${kid.name} got into trouble at school. How do you handle it?`,
+          [{l:'🤝 Talk it through',m:{happiness:-5,smarts:3},style:'pri'},
+           {l:'📵 Ground them',m:{happiness:-10},style:'sec'},
+           {l:'🙈 Ignore it',m:{happiness:-3},style:'sec'}],
+          'UH-OH!',''));
+        return; // one event per year
+      }
+      // Grown child visits (age 25+, independent)
+      if(kid.age>=25&&Math.random()<0.15){
+        addLog(`🏠 ${kid.name} visited for the weekend. Wonderful to see them! +8 Happy`, 'good');
+        applyMod({happiness:8});
+      }
+      // Child at 18: uni outcome
+      if(kid.age===18&&kid.trait==='studious'){
+        addLog(`🎓 ${kid.name} got into university! You\'re so proud! +10 Happy`, 'good');
+        applyMod({happiness:10});
+      }
+    });
+  }
+
   // New baby
   if(G.marriageAge&&G.age>=24&&G.age<=42&&Math.random()<0.10){
     const kids=(G.family||[]).filter(m=>m.type==='child');
@@ -3668,6 +4145,25 @@ function continueAgeUp(){
       return;
     }
   }
+  // Spouse death (age 70+ — probability based)
+  if(G.marriageAge&&G.age>=70){
+    const spouse=(G.family||[]).find(m=>m.type==='spouse');
+    if(spouse){
+      const deathChance=0.03+(G.age-70)*0.008;
+      if(Math.random()<deathChance){
+        G.family=G.family.filter(m=>m!==spouse);
+        G.spouseIncome=0; G.spouseMood=0;
+        applyMod({happiness:-35,health:-10});
+        addLog(`💔 ${spouse.name} passed away at age ${G.age}. A piece of your heart went with them. 🕊️`,'bad');
+        SoundManager.gameOver(); shakeScreen();
+        fireEvent(()=>showModal('💔','A Great Loss...',
+          `${spouse.name} has passed away. You shared ${G.age-G.marriageAge} wonderful years together.`,
+          [{l:'💙 Cherish the memories',m:{happiness:5},style:'pri'}],'',  'negative'));
+        return;
+      }
+    }
+  }
+
   // Relationship score events (divorce etc) — only if no other story event fired
   if(G.partnerName||G.datingAge){
     const relFired=updateRelationshipSystem();
@@ -3722,6 +4218,30 @@ function continueAgeUp(){
   // PRIORITY 6 — Random world events (EVENTS array + neg events)
   // ════════════════════════════════════════════
   applyActivityBonus();
+
+  // ── Decade world events (every 10 years) ──
+  if(G.age>=20&&G.age%10===0){
+    const decadePool=[
+      {label:'📉 Global Recession',  desc:'Salaries down for a few years. Job market tough.',     happiness:-8, salaryMult:0.85, dur:3},
+      {label:'💻 Tech Boom',          desc:'Tech sector surging! Great time to be in tech.',        happiness:5,  salaryMult:1.20, dur:4, trackBonus:'tech'},
+      {label:'🏠 Housing Boom',       desc:'Property values spiking. Rent rises too.',             happiness:0,  houseMult:1.30, dur:3},
+      {label:'🦠 Health Crisis',      desc:'Health costs rise. Look after yourself.',              happiness:-5, healthPenalty:5, dur:2},
+      {label:'🌱 Wave of Optimism',   desc:'People feel hopeful. Opportunities abound!',           happiness:10, salaryMult:1.05, dur:2},
+    ];
+    const dev=decadePool[Math.floor(Math.random()*decadePool.length)];
+    if(!G.worldModifiers)G.worldModifiers=[];
+    G.worldModifiers.push({...dev, expires:G.age+(dev.dur||3)});
+    if(dev.happiness)applyMod({happiness:dev.happiness});
+    if(dev.healthPenalty)applyMod({health:-dev.healthPenalty});
+    if(dev.houseMult&&G.houseValue>0){G.houseValue=Math.floor(G.houseValue*dev.houseMult);addLog(`🏠 Housing boom: home now $${G.houseValue.toLocaleString()}!`,'good');}
+    addLog(`🌍 ${dev.label} — ${dev.desc}`,'event');
+    fireEvent(()=>showModal('🌍','World Event!',`${dev.label}
+
+${dev.desc}`,
+      [{l:'👍 Got it',style:'pri'}],'BREAKING!','positive'));
+    return;
+  }
+
   if(G.age>=18) triggerRandomEvent();
 
   const negEvents=[
@@ -3862,6 +4382,17 @@ function continueLife(){
     if(G.peakCareerTier===undefined)G.peakCareerTier=0;
     if(G.peakCareerTrack===undefined)G.peakCareerTrack=null;
     if(G._agingAcceleration===undefined)G._agingAcceleration=0;
+    if(G.friends===undefined)G.friends=[];
+    if(G.friendsIgnoredYears===undefined)G.friendsIgnoredYears=0;
+    if(G.conditions===undefined)G.conditions=[];
+    if(G.conditionMeds===undefined)G.conditionMeds={};
+    if(G.worldModifiers===undefined)G.worldModifiers=[];
+    if(G.unemployedYears===undefined)G.unemployedYears=0;
+    if(G.pensionPot===undefined)G.pensionPot=0;
+    if(G.pensionContributing===undefined)G.pensionContributing=false;
+    if(G.spouseIncome===undefined)G.spouseIncome=0;
+    if(G.spouseMood===undefined)G.spouseMood=80;
+    if(G.noStudyYears===undefined)G.noStudyYears=0;
     if(G.logStickersAdded===undefined)G.logStickersAdded=[];
     if(G.relationshipScore===undefined)G.relationshipScore=0;
     if(G.partnerName===undefined)G.partnerName=null;
@@ -4381,8 +4912,8 @@ function updateRelationshipSystem(){
     checkAchievements();save();updateUI();return true;
   }
 
-  // Divorce check
-  if(G.marriageAge&&(G.relationshipScore||50)<30&&G.age>(G.marriageAge+5)){
+  // Divorce check — now also driven by spouseMood
+  if(G.marriageAge&&((G.relationshipScore||50)<30||(G.spouseMood||80)<25)&&G.age>(G.marriageAge+5)){
     if(Math.random()<0.25){
       const spouseName=(G.family||[]).find(m=>m.type==='spouse')?.name||'spouse';
       const split=Math.floor(G.money*0.5);
@@ -4668,6 +5199,8 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
+
 
 
 
