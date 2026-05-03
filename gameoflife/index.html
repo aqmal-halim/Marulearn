@@ -1635,7 +1635,7 @@ function startInterviewMiniGame(j, offer, inflatedSalary, company, onDone){
           if(G.salary>G.peakSalary)G.peakSalary=G.salary;
           G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
           const entry=getJobTrack(j.id);
-          if(entry)G.careerTrack=entry[0];
+          if(entry){G.careerTrack=entry[0];if(!G.careerHistory)G.careerHistory=[];if(!G.careerHistory.includes(entry[0]))G.careerHistory.push(entry[0]);}
           addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
           SoundManager.levelUp();applyMod({happiness:15});burst(40);
           showNewspaper(`${G.name.toUpperCase()} LANDS ${j.title.toUpperCase()}! 🎉`);
@@ -3221,7 +3221,7 @@ function jobInterview(j){
         G.job=j.id;G.jobTitle=j.title;G.salary=inflatedSalary;
         G.promotionChance=10;G.yearsInRole=0;
         if(G.salary>G.peakSalary)G.peakSalary=G.salary;
-        G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);
+        G.pendingOffers=(G.pendingOffers||[]).filter(o=>o.jobId!==j.id);const _entry3=getJobTrack(j.id);if(_entry3){G.careerTrack=_entry3[0];if(!G.careerHistory)G.careerHistory=[];if(!G.careerHistory.includes(_entry3[0]))G.careerHistory.push(_entry3[0]);}
         addLog(`🎉 Got the job! ${j.emoji} ${j.title} at $${G.salary.toLocaleString()}/yr`,'good');
         SoundManager.levelUp();applyMod({happiness:15});burst(40);
         showNewspaper(`LOCAL KID LANDS JOB AS ${j.title.toUpperCase()}! 🎉`);
@@ -3387,13 +3387,22 @@ function renderWork(){
   const currentSalaryForBrowse = G.salary || 0;
   // If employed, restrict to same career track — cross-track pivots only via recruiter offers
   const currentTrackKeyForBrowse = G.careerTrack || (G.job ? (getJobTrack(G.job)||[null])[0] : null);
+  // Track history: which tracks has the player ever worked in?
+  const workedTracks = new Set(G.careerHistory || []);
+  if(G.job && currentTrackKeyForBrowse) workedTracks.add(currentTrackKeyForBrowse);
+
   const avail=JOBS.filter(j=>{
     if(j.id===G.job) return false;
     if(G.age<j.minAge) return false;
     const inflated = Math.round(j.salary*(G.inflationMult||1));
     if(inflated <= currentSalaryForBrowse) return false;
-    // If currently employed, only show jobs in the same track (or if unemployed, show all)
     if(G.job && currentTrackKeyForBrowse && j.track !== currentTrackKeyForBrowse) return false;
+    // When unemployed: only allow Tier 1 entry roles, OR Tier 2 in a track the player has worked before
+    if(!G.job){
+      const hasTrackHistory = workedTracks.has(j.track);
+      if(!hasTrackHistory && j.tier > 1) return false;   // no history → entry only
+      if(hasTrackHistory && j.tier > 2) return false;    // returning → max Tier 2 via browse
+    }
     return true;
   }).slice(0,8);
   avail.forEach(j=>{
