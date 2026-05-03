@@ -3882,7 +3882,12 @@ function showModal(icon,title,body,choices,sfx,type){
       if(c.fn)evFn(c.fn);
       if(c.m)applyMod(c.m);
       if(c.m&&(c.m.health<0||c.m.money<0))SoundManager.fail();else if(c.m)SoundManager.success();
-      checkAchievements();save();updateUI();refreshActiveTab();
+      checkAchievements();save();updateUI();
+      refreshActiveTab();
+      // Also refresh work and do tabs regardless of which is active,
+      // since ageUp events can affect both
+      if(_activeTab!=='work') renderWork();
+      if(_activeTab!=='act') renderActivities();
     };
     btns.appendChild(btn);
   });
@@ -4008,6 +4013,7 @@ function ageUp(){
   SoundManager.unlock();SoundManager.ageUp();
 
   G.age++;
+  _lastAvatarUrl = ''; // Force avatar refresh on age-up
   G.yearActCounts={};
   G.musicCount=0;
   G._schoolTestThisYear=false;
@@ -4572,7 +4578,7 @@ function continueAgeUp(){
   // Relationship score events (divorce etc) — only if no other story event fired
   if(G.partnerName||G.datingAge){
     const relFired=updateRelationshipSystem();
-    if(relFired){G.eventFiredThisYear=true;checkAchievements();save();updateUI();return;}
+    if(relFired){G.eventFiredThisYear=true;checkAchievements();save();updateUI();refreshActiveTab();return;}
   }
 
   // ════════════════════════════════════════════
@@ -4690,7 +4696,7 @@ ${dev.desc}`,
     G.eventFiredThisYear=true;
     G.quietYears=0; // reset quiet counter
     showModal(ev.emoji,ev.title,ev.body,ev.choices.map((c,i)=>({...c,style:c.style||(i===0?'pri':'sec')})),ev.sfx||'',type);
-    checkAchievements();save();updateUI();return;
+    checkAchievements();save();updateUI();refreshActiveTab();return;
   }
   G.quietYears=(G.quietYears||0)+1; // no event fired — increment quiet counter
 
@@ -4702,7 +4708,6 @@ ${dev.desc}`,
 
   checkAchievements();save();updateUI();
   refreshActiveTab();
-  renderActivities();renderWork();
 }
 
 // ══════════════════════════════════════════
