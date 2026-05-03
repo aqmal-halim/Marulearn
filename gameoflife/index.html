@@ -1238,10 +1238,12 @@ const CAREER_TRACKS = {
     {id:'resto_manager',emoji:'🏪', title:'Restaurant Manager',   salary:5500,  minAge:26, minSmarts:40, minLooks:40, minEdu:'none',       needsDegree:false, tier:3, yearsRequired:3},
     {id:'resto_owner',  emoji:'🍾', title:'Restaurant Owner',     salary:10000, minAge:32, minSmarts:55, minLooks:45, minEdu:'none',       needsDegree:false, tier:4, yearsRequired:3},
   ]},
-  misc:    {name:'Other',     emoji:'💼', prestige:1, rungs:[
+  misc:    {name:'Logistics',  emoji:'🚚', prestige:1, rungs:[
     {id:'babysitter',   emoji:'🍼', title:'Babysitter',           salary:400,   minAge:12, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'driver',       emoji:'🚗', title:'Delivery Driver',      salary:2200,  minAge:18, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'engineer',     emoji:'⚙️', title:'Engineer',             salary:6500,  minAge:22, minSmarts:70, minLooks:0,  minEdu:'university', needsDegree:true,  tier:2, yearsRequired:0},
+    {id:'courier_lead', emoji:'📦', title:'Courier Team Lead',    salary:3500,  minAge:22, minSmarts:30, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
+    {id:'logistics_mgr',emoji:'🚚', title:'Logistics Manager',    salary:6000,  minAge:27, minSmarts:45, minLooks:0,  minEdu:'highschool', needsDegree:false, tier:3, yearsRequired:3},
+    {id:'ops_director', emoji:'🏢', title:'Operations Director',  salary:11000, minAge:34, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:false, tier:4, yearsRequired:3},
   ]},
 };
 
@@ -1466,30 +1468,32 @@ function generateJobOffers() {
   const currentTrackKey = currentTrackEntry ? currentTrackEntry[0] : null;
   const eligible = [];
 
+  // Helper: check all hard requirements are truly met (no tolerance gap)
+  function meetsAllReqs(rung){
+    if(G.age < rung.minAge) return false;
+    if(G.smarts < rung.minSmarts) return false;
+    if((rung.minLooks||0) > 0 && G.looks < rung.minLooks) return false;
+    if(eduRank[G.education] < eduRank[rung.minEdu]) return false;
+    if(rung.needsDegree && !G.hasDegree) return false;
+    return true;
+  }
+
   if(G.job && currentTrackKey){
     const nextRung = getNextRungInTrack(G.job);
     const inflatedSalary = nextRung ? Math.round(nextRung.salary*(G.inflationMult||1)) : 0;
-    if(nextRung && inflatedSalary > currentSalary && G.age>=nextRung.minAge){
-      // Broader tolerance: -15 smarts, -10 looks so offers appear earlier
-      const smartsOk = G.smarts >= (nextRung.minSmarts - 15);
-      const looksOk  = G.looks  >= ((nextRung.minLooks||0) - 10);
-      const eduOk    = eduRank[G.education] >= eduRank[nextRung.minEdu];
-      const degreeOk = !nextRung.needsDegree || G.hasDegree;
-      const yearsOk  = (G.yearsInRole||0) >= nextRung.yearsRequired;
-      if(smartsOk && looksOk && eduOk && degreeOk && yearsOk){
-        // Fully eligible — show offer
+    if(nextRung && inflatedSalary > currentSalary){
+      const yearsOk = (G.yearsInRole||0) >= nextRung.yearsRequired;
+      // Only offer if ALL hard requirements are met AND enough years in role
+      if(meetsAllReqs(nextRung) && yearsOk){
         eligible.push(nextRung);
       }
       // If not ready: no offer popup (player sees next rung in Work tab career ladder)
     }
   } else if(!G.job){
-    // No job: offer entry-level roles across tracks (higher salary than $0 always)
+    // No job: offer entry-level roles across tracks where player fully qualifies
     Object.values(CAREER_TRACKS).forEach(track=>{
       const rung = track.rungs[0];
-      if(G.age>=rung.minAge && G.smarts>=(rung.minSmarts-10) &&
-         G.looks>=(rung.minLooks||0)-10 &&
-         eduRank[G.education]>=eduRank[rung.minEdu] &&
-         (!rung.needsDegree||G.hasDegree)){
+      if(meetsAllReqs(rung)){
         eligible.push(rung);
       }
     });
@@ -1501,8 +1505,8 @@ function generateJobOffers() {
     if(pivot){
       const rung = pivot[1].rungs[0];
       const inflatedPivot = Math.round(rung.salary*(G.inflationMult||1));
-      if(inflatedPivot > currentSalary && G.age>=rung.minAge &&
-         G.smarts>=(rung.minSmarts-10) && (!rung.needsDegree||G.hasDegree)){
+      // Only pivot-offer if player fully qualifies for entry rung
+      if(inflatedPivot > currentSalary && meetsAllReqs(rung)){
         eligible.push({...rung, _isPivot:true});
       }
     }
@@ -1511,21 +1515,22 @@ function generateJobOffers() {
   // Job hunt boost: player actively hunted this year
   if(G._jobHuntBoost){
     G._jobHuntBoost=false;
-    // Add any blocked next-rung as eligible with a lower smarts bar
+    // Add next rung only if player fully qualifies
     if(G.job&&currentTrackKey){
       const nextRung=getNextRungInTrack(G.job);
       if(nextRung&&!eligible.find(e=>e.id===nextRung.id)){
         const inf=Math.round(nextRung.salary*(G.inflationMult||1));
-        if(inf>currentSalary&&G.age>=nextRung.minAge&&G.smarts>=(nextRung.minSmarts-20)){
+        const yearsOk=(G.yearsInRole||0)>=nextRung.yearsRequired;
+        if(inf>currentSalary&&meetsAllReqs(nextRung)&&yearsOk){
           eligible.push(nextRung);
         }
       }
     }
     if(!G.job){
-      // Unemployed job hunt — wider net across tracks
+      // Unemployed job hunt — same strict requirements
       Object.values(CAREER_TRACKS).forEach(track=>{
         const r=track.rungs[0];
-        if(!eligible.find(e=>e.id===r.id)&&G.age>=r.minAge&&G.smarts>=(r.minSmarts-15)&&(!r.needsDegree||G.hasDegree)){
+        if(!eligible.find(e=>e.id===r.id)&&meetsAllReqs(r)){
           eligible.push(r);
         }
       });
