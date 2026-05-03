@@ -5072,35 +5072,6 @@ function loadAvatarInto(ring, src, onDone){
 // Track last loaded URL to avoid redundant fetches
 let _lastAvatarUrl = '';
 
-function buildBabyAvatarUrl(sz){
-  sz = sz || 200;
-  const gender = G.gender || 'male';
-  const skinKey = _skinKeyFromColor(G.skinTone);
-  const skinHex = CHAR_SKIN_HEX[skinKey] || 'ffdbb4';
-  // Use a very young-looking seed, no hair/accessories/facial hair
-  // Use the 'avataaars-neutral' style which has a rounder, more infantile face
-  // Actually use avataaars with baby-specific params: no top hair or baby hair only
-  const seed = encodeURIComponent((G.name||'x') + '_baby');
-  const p = new URLSearchParams({
-    seed,
-    size: sz,
-    skinColor: skinHex,
-    top: 'noHair',           // bald newborn head
-    accessories: 'none',
-    accessoriesProbability: 0,
-    facialHairProbability: 0,
-    clothing: 'graphicShirt',
-    clothesColor: gender === 'female' ? 'ff9ebc' : '5199e4',
-    eyes: 'happy',
-    eyebrows: 'raisedExcitedNatural',
-    mouth: 'default',
-    // rosy cheeks effect via backgroundColor
-    backgroundColor: 'ffd5dc,ffdfbf',
-    backgroundType: 'gradientLinear'
-  });
-  return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
-}
-
 function renderCSSCharacter(){
   const root = document.getElementById('cchar-root');
   if(!root) return;
@@ -5109,23 +5080,17 @@ function renderCSSCharacter(){
   const hpy = G.happiness;
   const sm  = G.smarts;
   const lk  = G.looks;
-  const age = G.age;
 
   const isLowHealth = hp  < 30;
   const isSmart     = sm  >= 80;
   const isGlowing   = lk  >= 80;
   const isSadFace   = hpy < 40;
   const isHappy     = hpy >= 75;
-  const isBaby      = age <= 1;
 
-  // For newborns/infants, render a baby-specific avatar
-  const avatarUrl = isBaby ? buildBabyAvatarUrl(200) : buildInGameAvatarUrl(200);
+  const avatarUrl = buildInGameAvatarUrl(200);
 
   // Stat overlays rendered as floating emoji badges
-  const overlays = isBaby ? [
-    '<div class="av-overlay" style="top:-16px;left:50%;transform:translateX(-50%)">👶</div>',
-    '<div class="av-overlay" style="bottom:2px;right:0">🍼</div>',
-  ].join('') : [
+  const overlays = [
     isSmart    ? '<div class="av-overlay" style="top:-16px;left:50%;transform:translateX(-50%)">💡</div>' : '',
     isGlowing  ? '<div class="av-overlay" style="top:-12px;right:-2px">✨</div>' : '',
     isLowHealth? '<div class="av-overlay" style="top:2px;right:0">🩹</div>' : '',
@@ -5133,11 +5098,6 @@ function renderCSSCharacter(){
   ].join('');
 
   const healthFilter = isLowHealth ? 'filter:grayscale(.45) brightness(.88)' : '';
-  // Baby gets a softer pink/blue border and slightly smaller ring for cuteness
-  const ringBorder = isBaby
-    ? (G.gender === 'female' ? '3px solid #FF9EBC' : '3px solid #5199E4')
-    : '3px solid var(--ink)';
-  const ringBg = isBaby ? '#FFF0F5' : '#F0F4FF';
 
   if(avatarUrl !== _lastAvatarUrl || !root.querySelector('.av-ring')){
     _lastAvatarUrl = avatarUrl;
@@ -5149,7 +5109,7 @@ function renderCSSCharacter(){
     root.innerHTML = `
       <div id="char-head-el" style="position:relative;width:88px;height:88px;animation:av-float 3s ease-in-out infinite;flex-shrink:0">
         ${overlays}
-        <div class="av-ring" style="width:88px;height:88px;border-radius:50%;border:${ringBorder};overflow:hidden;background:${ringBg};box-shadow:3px 3px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;${healthFilter}">
+        <div class="av-ring" style="width:88px;height:88px;border-radius:50%;border:3px solid var(--ink);overflow:hidden;background:#F0F4FF;box-shadow:3px 3px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;${healthFilter}">
         </div>
       </div>`;
 
