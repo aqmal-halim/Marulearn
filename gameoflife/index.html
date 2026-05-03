@@ -5643,7 +5643,7 @@ function applyDivorce(){
   applyMod({happiness:-35,health:-10});
   G.misfortune=Math.min((G.misfortune||0)+30,100);
   SoundManager.gameOver(); shakeScreen();
-  showMascotBubble('🦉 Divorce is one of life's hardest events. Take time to recover. 💙',5000);
+  showMascotBubble("🦉 Divorce is one of life's hardest events. Take time to recover. 💙",5000);
 }
 
 function updateRelationshipSystem(){
