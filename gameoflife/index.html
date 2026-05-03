@@ -3655,7 +3655,7 @@ function renderBank(){
     <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sky-dark)">
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:var(--sky-dark);margin-bottom:8px">📈 Investments</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Portfolio</span><span style="font-weight:900;color:var(--sky-dark)">$${inv.toLocaleString()}</span></div>
-      <div style="font-size:.72em;color:var(--sky-dark);font-weight:800">4% annual return · 7% crash risk</div>
+      <div style="font-size:.72em;color:var(--sky-dark);font-weight:800">${(()=>{ const trauma=Math.min((G.financialTrauma||0)*0.005,0.015); const rate=Math.max(0.01,0.025-trauma); return (rate*100).toFixed(1); })()}% annual return · 10% crash risk</div>
     </div>
     <div style="background:#FFF9C4;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sun-dark)">
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:8px">💼 Income & Expenses</div>
@@ -3711,7 +3711,7 @@ function renderBank(){
     </div>`;
 
   if(G.money>=1000){
-    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (4% return)',()=>{
+    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (2.5% return)',()=>{
       if(G.money<1000){addLog('Need $1,000!','bad');SoundManager.fail();return;}
       applyMod({money:-1000,investments:1000});
       addLog('Moved $1,000 into investments 📈','good');
