@@ -567,6 +567,28 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 }
 
 
+/* ══ FAMILY MEMBER AVATAR ══ */
+.fam-member-card{background:white;border:var(--border-w) solid var(--ink);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow-sm);display:flex;align-items:flex-start;gap:12px;position:relative}
+.fam-avatar-wrap{position:relative;flex-shrink:0}
+.fam-avatar-ring{width:62px;height:62px;border-radius:50%;border:3px solid var(--ink);overflow:hidden;background:#F0F4FF;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+.fam-avatar-ring img{width:100%;height:100%;object-fit:cover}
+.fam-avatar-age-badge{position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);background:var(--coral);color:white;font-family:'Fredoka One',cursive;font-size:.62em;border-radius:99px;padding:1px 6px;border:2px solid var(--ink);white-space:nowrap}
+.fam-info{flex:1;min-width:0}
+.fam-name{font-weight:900;font-size:.95em;color:var(--ink);margin-bottom:2px}
+.fam-detail{font-size:.74em;color:var(--ink2);font-weight:700;margin-bottom:4px}
+.fam-mood-bar{height:6px;background:#EEE;border-radius:99px;border:1.5px solid var(--ink);overflow:hidden;margin-top:3px}
+.fam-mood-fill{height:100%;border-radius:99px;transition:width .4s}
+.fam-trait-tag{display:inline-block;font-size:.65em;font-weight:900;padding:2px 7px;border-radius:8px;background:#E8F5E9;border:1.5px solid var(--grass-dark);color:#1B5E20;margin-top:3px;margin-right:3px}
+.fam-status-pill{font-size:.68em;font-weight:900;padding:3px 8px;border-radius:10px;background:var(--sun);color:var(--ink);border:2px solid var(--sun-dark);white-space:nowrap;margin-left:auto;align-self:flex-start;flex-shrink:0}
+
+/* ══ FAMILY EVENT SCENE (modal) ══ */
+.fam-event-scene{background:linear-gradient(135deg,#FCE4EC,#FFF9C4);border-radius:16px;padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.fam-event-portrait{width:72px;height:72px;border-radius:50%;border:3px solid var(--ink);overflow:hidden;background:#F0F4FF;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
+.fam-event-portrait img{width:100%;height:100%;object-fit:cover}
+.fam-event-bubble{flex:1;background:white;border:2px solid var(--ink);border-radius:14px;padding:9px 12px;font-size:.82em;font-weight:800;color:var(--ink);line-height:1.5;position:relative}
+.fam-event-bubble::before{content:'';position:absolute;left:-10px;top:50%;transform:translateY(-50%);border:5px solid transparent;border-right-color:var(--ink)}
+.fam-event-bubble::after{content:'';position:absolute;left:-7px;top:50%;transform:translateY(-50%);border:5px solid transparent;border-right-color:white;z-index:1}
+
 /* ══ SKIN TONE SWATCHES ══ */
 .skin-swatches{display:flex;gap:10px;justify-content:center;margin:10px 0 4px}
 .skin-swatch{width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm)}
@@ -1433,6 +1455,17 @@ function evFn(name) {
   if(name==='start_biz'){ if(G.money>=3000){const w=Math.random()>.5;applyMod({money:w?20000:-3000,happiness:w?25:-10});addLog(w?'🚀 Business took off! +$20,000!':'📉 Business failed... -$3,000',w?'good':'bad');if(w){SoundManager.levelUp();burst(50);}}else{addLog('Need $3,000 to start a business!','bad');} }
   if(name&&name.startsWith('_cond_manage_')){const id=name.replace('_cond_manage_','');if(!G.conditionMeds)G.conditionMeds={};G.conditionMeds[id]=true;addLog(`💊 Started managing ${id} with medication. Costs handled annually.`,'good');}
   if(name&&name.startsWith('_cond_ignore_')){addLog('😤 Chose to manage condition naturally. Watch your health!','info');}
+  if(name==='_spouse_study_yes'){
+    const raise=Math.round(3000*(G.inflationMult||1));
+    G.spouseIncome=(G.spouseIncome||0)+raise;
+    addLog(`📚 Your partner went back to study! Their income will rise by $${raise.toLocaleString()}/yr.`,'good');
+    applyMod({happiness:5});
+  }
+  if(name==='_spouse_reconnect'){
+    G.spouseMood=Math.min(100,(G.spouseMood||40)+30);
+    G.relationshipScore=Math.min(100,(G.relationshipScore||0)+20);
+    addLog(`💑 Reconnected with your partner. Relationship stronger. +30 Spouse Mood.`,'good');
+  }
   if(name==='_fired'){
     if(G.job){ addLog(`Lost job as ${G.jobTitle}! 😤`,'bad'); G.job=null;G.jobTitle='Unemployed';G.salary=0;G.promotionChance=0;G.yearsInRole=0;G.careerTrack=null; applyMod({happiness:-15}); SoundManager.fail(); G.misfortune=Math.min((G.misfortune||0)+20,100); }
   }
@@ -1444,7 +1477,13 @@ function evFn(name) {
     const tier = G.job ? (getJobDef(G.job)||{tier:1}).tier : 1;
     G.spouseIncome = Math.round((2000 + tier*800) * (G.inflationMult||1));
     G.spouseMood = 80;
-    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married', mood:80});
+    // Roll a distinct avatar for the spouse (opposite gender to player)
+    const spouseGender = G.gender==='male' ? 'female' : 'male';
+    const spouseRoll = rollRandomCharacter();
+    spouseRoll.gender = spouseGender;
+    const spouseHairPool = spouseGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
+    spouseRoll.hairStyle = spouseHairPool[Math.floor(Math.random()*spouseHairPool.length)];
+    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married', mood:80, avatarRoll:spouseRoll});
     G.marriageAge = G.age; G._pendingPartner = null;
     applyMod({happiness:25});  // wedding cost handled separately in Bank tab
     addLog(`💍 Married ${partnerName} at age ${G.age}!`,'legend');
@@ -1496,7 +1535,12 @@ function evFn(name) {
     const babyName = BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
     const _traits=['studious','athletic','creative','rebellious'];
     const _trait=_traits[Math.floor(Math.random()*_traits.length)];
-    G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶', trait:_trait});
+    // Roll a random avatar for the child — inherit parent skin tone roughly
+    const childRoll = rollRandomCharacter();
+    // 50% chance child inherits player skin key
+    const playerSkinKey = _skinKeyFromColor(G.skinTone);
+    if(Math.random()<0.5) childRoll.skinKey = playerSkinKey;
+    G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶', trait:_trait, avatarRoll:childRoll});
     applyMod({happiness:20,money:-5000,health:-5});
     addLog(`👶 ${babyName} was born!`,'legend');
     SoundManager.levelUp(); burstBabyConfetti(); updateUI();
@@ -2670,10 +2714,39 @@ function renderFamilyCard(){
   if(!card||!membersEl)return;
   if(!fam.length){card.style.display='none';return;}
   card.style.display='block';
-  membersEl.innerHTML=fam.map(m=>{
-    const icon=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<13?'🧒':m.age<18?'🧑':'👤';
-    return`<div class="family-member"><div class="family-member-icon">${icon}</div><div style="flex:1"><div class="family-member-name">${m.name}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div></div><div class="family-status">${m.status||'Healthy'}</div></div>`;
-  }).join('');
+  membersEl.innerHTML='';
+  fam.forEach(m=>{
+    const row=document.createElement('div');
+    row.className='family-member';
+    // Small avatar ring
+    const avatarWrap=document.createElement('div');
+    avatarWrap.style.cssText='width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);overflow:hidden;background:#F0F4FF;flex-shrink:0;display:flex;align-items:center;justify-content:center';
+    const avatarUrl = m.avatarRoll ? buildFamilyMemberAvatarUrl(m) : null;
+    if(avatarUrl){
+      avatarWrap.innerHTML='<div style="width:12px;height:12px;border:2px solid #DDD;border-top-color:var(--coral);border-radius:50%;animation:rot .8s linear infinite"></div>';
+      const img=new Image();
+      img.onload=()=>{ avatarWrap.innerHTML=''; img.style.cssText='width:100%;height:100%;object-fit:cover'; avatarWrap.appendChild(img); };
+      const fe=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<5?'👶':m.age<13?'🧒':'👤';
+      img.onerror=()=>{ avatarWrap.innerHTML=`<span style="font-size:1.2em">${fe}</span>`; };
+      img.src=avatarUrl;
+    } else {
+      const fe=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<5?'👶':m.age<13?'🧒':'👤';
+      avatarWrap.innerHTML=`<span style="font-size:1.2em">${fe}</span>`;
+    }
+    row.appendChild(avatarWrap);
+    // Info
+    const infoDiv=document.createElement('div');
+    infoDiv.style.flex='1';
+    infoDiv.innerHTML=`<div class="family-member-name">${m.name}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div>`;
+    row.appendChild(infoDiv);
+    // Status pill
+    const statusDiv=document.createElement('div');
+    statusDiv.className='family-status';
+    statusDiv.textContent=m.status||'Healthy';
+    if(m.status==='Estranged 💔') statusDiv.style.background='var(--coral)';
+    row.appendChild(statusDiv);
+    membersEl.appendChild(row);
+  });
 }
 
 function renderLog(){
@@ -2723,6 +2796,54 @@ function refreshActiveTab(name){
   else renderActivities();
 }
 
+// Build a DiceBear URL for a family member using their stored avatarRoll
+function buildFamilyMemberAvatarUrl(member){
+  const roll = member.avatarRoll;
+  if(!roll) return null;
+  const age = member.age || 0;
+  const gender = roll.gender || 'male';
+  const skinHex = CHAR_SKIN_HEX[roll.skinKey] || 'ffdbb4';
+  // Age the hair: grey at 65+
+  let hcKey = roll.hcKey || 'brown';
+  if(age>=65) hcKey='silverGray';
+  else if(age>=50&&['black','brown'].includes(hcKey)) hcKey='brownDark';
+  const hairHex = CHAR_HAIR_HEX[hcKey] || '724133';
+  // Hair style: use stored or infer from gender + age
+  let hairStyle = roll.hairStyle || (gender==='female'?'straight01':'shortFlat');
+  // Small kids get simpler hair styles
+  if(age<5){ hairStyle = gender==='female'?'bigHair':'shortFlat'; }
+  // Accessories and clothing scaled to age
+  let acc='', ap=0;
+  if(age>=65){acc='prescription02';ap=75;}
+  else if(age>=40){acc='prescription01';ap=30;}
+  let fh='',fp=0;
+  if(gender==='male'){ if(age>=30){fh='beardLight';fp=40;} if(age>=65){fh='beardMajestic';fp=55;} }
+  let cl='collarAndSweater',cc='3c4f5c';
+  if(age<5){cl='graphicShirt';cc='f59797';}
+  else if(age<=12){cl='graphicShirt';cc='5199e4';}
+  else if(age<=17){cl='hoodie';cc='262e33';}
+  else if(age<=30){cl='blazerAndShirt';cc='25557c';}
+  else if(age<=60){cl='blazerAndSweater';cc='3c4f5c';}
+  else{cl='shirtCrewNeck';cc='929598';}
+  // Happiness/health from member mood if available
+  const mood = member.mood || member.status==='Estranged 💔' ? 20 : 70;
+  const m = mood>=75?'smile':mood<35?'sad':'default';
+  const e = mood>=80?'happy':'default';
+  const b = mood<35?'sadConcernedNatural':mood>=75?'raisedExcitedNatural':'defaultNatural';
+  const seed = encodeURIComponent((member.name||'x')+'_fam_'+age+'_'+roll.skinKey);
+  const p = new URLSearchParams({
+    seed, size:150,
+    skinColor:skinHex, top:hairStyle, hairColor:hairHex,
+    accessoriesProbability:ap, facialHairProbability:fp,
+    clothing:cl, clothesColor:cc, eyes:e, eyebrows:b, mouth:m,
+    backgroundColor:'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf',
+    backgroundType:'gradientLinear'
+  });
+  if(acc) p.set('accessories',acc);
+  if(fh) p.set('facialHair',fh);
+  return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
+}
+
 function renderFamilyTab(){
   const el=document.getElementById('panel-fam');
   if(!el)return;
@@ -2732,18 +2853,93 @@ function renderFamilyTab(){
     el.innerHTML='<p style="color:var(--ink2);font-size:.85em;text-align:center;padding:16px">No family yet. You\'ll meet someone when the time is right 💕</p>';
     return;
   }
+
   fam.forEach(m=>{
-    const icon=m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<13?'🧒':m.age<18?'🧑':'👤';
-    const traitLabel=m.trait?`<span style="font-size:.7em;background:#E8F5E9;border-radius:6px;padding:1px 5px;color:#2E7D32">${{studious:'📚 Studious',athletic:'⚽ Athletic',creative:'🎨 Creative',rebellious:'😈 Rebellious'}[m.trait]||''}</span>`:'';
-    const spouseExtra=m.type==='spouse'?`<div style="font-size:.72em;color:var(--ink2)">💑 Mood: ${G.spouseMood>=70?'😊 Happy':G.spouseMood>=40?'😐 Ok':'😟 Unhappy'} · Income: +$${(G.spouseIncome||0).toLocaleString()}/yr</div>`:'';
-    el.innerHTML+=`<div class="family-member"><div class="family-member-icon">${icon}</div><div style="flex:1"><div class="family-member-name">${m.name} ${traitLabel}</div><div class="family-member-detail">${m.type==='spouse'?'Spouse':'Child'} · Age ${m.age}</div>${spouseExtra}</div><div class="family-status">${m.status||'Healthy'}</div></div>`;
+    const card=document.createElement('div');
+    card.className='fam-member-card';
+
+    // Avatar
+    const avatarWrap=document.createElement('div');
+    avatarWrap.className='fam-avatar-wrap';
+    const ring=document.createElement('div');
+    ring.className='fam-avatar-ring';
+    const ageBadge=document.createElement('div');
+    ageBadge.className='fam-avatar-age-badge';
+    ageBadge.textContent=m.type==='spouse'?`Age ${m.age}`:`Age ${m.age}`;
+    avatarWrap.appendChild(ring);
+    avatarWrap.appendChild(ageBadge);
+
+    // Load avatar from DiceBear if roll exists, else emoji fallback
+    const avatarUrl = m.avatarRoll ? buildFamilyMemberAvatarUrl(m) : null;
+    if(avatarUrl){
+      ring.innerHTML='<div style="width:18px;height:18px;border:3px solid #DDD;border-top-color:var(--coral);border-radius:50%;animation:rot .8s linear infinite"></div>';
+      const img=new Image();
+      img.onload=()=>{ ring.innerHTML=''; img.style.cssText='width:100%;height:100%;object-fit:cover'; ring.appendChild(img); };
+      const fallbackEmoji = m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<5?'👶':m.age<13?'🧒':m.age<18?'🧑':'👤';
+      img.onerror=()=>{ ring.innerHTML=`<span style="font-size:1.8em">${fallbackEmoji}</span>`; };
+      img.src=avatarUrl;
+    } else {
+      const fallbackEmoji = m.type==='spouse'?(G.gender==='male'?'👩':'👨'):m.age<5?'👶':m.age<13?'🧒':m.age<18?'🧑':'👤';
+      ring.innerHTML=`<span style="font-size:1.8em">${fallbackEmoji}</span>`;
+    }
+
+    // Info panel
+    const info=document.createElement('div');
+    info.className='fam-info';
+
+    // Name row
+    const nameRow=document.createElement('div');
+    nameRow.className='fam-name';
+    nameRow.textContent=m.name;
+    info.appendChild(nameRow);
+
+    // Detail row
+    const detail=document.createElement('div');
+    detail.className='fam-detail';
+    if(m.type==='spouse'){
+      const moodLabel=G.spouseMood>=70?'😊 Happy':G.spouseMood>=40?'😐 OK':'😟 Unhappy';
+      detail.innerHTML=`Spouse · Age ${m.age} · ${moodLabel}`;
+    } else {
+      const stageLabel=m.age<5?'👶 Baby':m.age<13?'🎒 Kid':m.age<18?'🎧 Teen':m.age<25?'🧑 Young Adult':'🏠 Independent';
+      detail.innerHTML=`Child · ${stageLabel}`;
+    }
+    info.appendChild(detail);
+
+    // Trait tags for children
+    if(m.trait){
+      const traitMap={studious:'📚 Studious',athletic:'⚽ Athletic',creative:'🎨 Creative',rebellious:'😈 Rebellious'};
+      const tag=document.createElement('span');
+      tag.className='fam-trait-tag';
+      tag.textContent=traitMap[m.trait]||m.trait;
+      info.appendChild(tag);
+    }
+
+    // Spouse mood bar
+    if(m.type==='spouse'){
+      const moodVal=G.spouseMood||80;
+      const incomeNote=G.spouseIncome>0?`<div style="font-size:.7em;color:var(--grass-dark);font-weight:900;margin-top:3px">💰 +$${(G.spouseIncome).toLocaleString()}/yr income</div>`:'';
+      const moodBar=document.createElement('div');
+      moodBar.innerHTML=`<div style="font-size:.68em;font-weight:900;color:var(--ink2);margin-top:5px;display:flex;justify-content:space-between"><span>💑 Relationship</span><span>${moodVal}/100</span></div><div class="fam-mood-bar"><div class="fam-mood-fill" style="width:${moodVal}%;background:${moodVal>=70?'var(--grass)':moodVal>=40?'var(--sun)':'var(--coral)'}"></div></div>${incomeNote}`;
+      info.appendChild(moodBar);
+    }
+
+    // Status pill
+    const statusPill=document.createElement('div');
+    statusPill.className='fam-status-pill';
+    statusPill.textContent=m.status||'Healthy';
+    if(m.status==='Estranged 💔') statusPill.style.background='var(--coral)';
+
+    card.appendChild(avatarWrap);
+    card.appendChild(info);
+    card.appendChild(statusPill);
+    el.appendChild(card);
   });
 
   // Health conditions section
   if((G.conditions||[]).length>0){
     const condEl=document.createElement('div');
     condEl.style.cssText='background:#FFEBEE;border-radius:var(--radius);padding:10px 14px;margin-top:8px;border:2px solid #EF9A9A';
-    condEl.innerHTML='<div style="font-size:.72em;font-weight:900;color:#C62828;margin-bottom:4px">🏥 Health Conditions</div>'+
+    condEl.innerHTML='<div style="font-size:.72em;font-weight:900;color:#C62828;margin-bottom:4px">🏥 Your Health Conditions</div>'+
       G.conditions.map(c=>{
         const managed=G.conditionMeds?.[c.id];
         return `<div style="font-size:.8em;font-weight:800;color:var(--ink);margin-bottom:3px">• ${c.label} <span style="color:${managed?'#2E7D32':'#C62828'}">${managed?`💊 Managed ($${c.managedCost.toLocaleString()}/yr)`:`⚠️ Unmanaged (−${c.drain} Health/yr)`}</span></div>`;
@@ -3676,22 +3872,7 @@ function renderBank(){
         const spouseHouse = hasSpouse ? Math.round(2000*(G.inflationMult||1)) : 0;
         const loan = (G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0 ? G.loanRepayment : 0;
         const propTaxTotal = (G.properties||[]).reduce((s,p)=>s+Math.round(p.value*0.005),0);
-        // ── NEW: Healthcare costs (age 65+) ──
-        const healthcareCost = G.age>=65 ? Math.round((G.age>=85?4500:G.age>=75?3000:1500)*(G.inflationMult||1)) : 0;
-        // ── NEW: Health condition medication costs ──
-        const condMedCost = (()=>{
-          let total=0;
-          (G.conditions||[]).forEach(cond=>{ if(G.conditionMeds&&G.conditionMeds[cond.id]) total+=cond.managedCost||0; });
-          return total;
-        })();
-        // ── NEW: Pension contribution (5% salary, if opted in) ──
-        const pensionContrib = (G.pensionContributing && salary>0 && !G.retired) ? Math.floor(salary*0.05) : 0;
-        // ── NEW: Family general living cost (15% salary × all dependents) ──
-        const famCount = (G.family||[]).length;
-        const famLivingCost = (famCount>0 && salary>0) ? Math.floor(salary*0.15*famCount) : 0;
-        // ── NEW: Cash inflation erosion (1%/yr on positive cash) ──
-        const cashErosion = G.money>0 ? Math.floor(G.money*0.01) : 0;
-        const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan + propTaxTotal + healthcareCost + condMedCost + pensionContrib + famLivingCost + cashErosion;
+        const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan + propTaxTotal;
         // ── TAX on employment income ──
         const preTaxIncome = salary + sideInc;
         let taxRate=0;
@@ -3717,13 +3898,8 @@ function renderBank(){
         if(rent>0) html+=row('🏘️ Rent',rent,true);
         if(kidCostDisplay>0){ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); html+=row(`👶 Children (${kids.length})`,kidCostDisplay,true); }
         if(spouseHouse>0) html+=row('💑 Shared household',spouseHouse,true);
-        if(famLivingCost>0) html+=row(`👨‍👩‍👧 Family living costs (${famCount} member${famCount!==1?'s':''})`,famLivingCost,true);
         if(loan>0) html+=`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🎓 Student loan</span><span style="font-weight:900;color:var(--coral)">−$${loan.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`;
         if(propTaxTotal>0){ const props=G.properties||[]; html+=row(`🏠 Property Tax (${props.length} prop${props.length!==1?'s':''}, 0.5%/yr)`,propTaxTotal,true); }
-        if(healthcareCost>0) html+=row(`🏥 Healthcare (age ${G.age}+)`,healthcareCost,true);
-        if(condMedCost>0){ const condNames=(G.conditions||[]).filter(c=>G.conditionMeds&&G.conditionMeds[c.id]).map(c=>c.label).join(', ')||'conditions'; html+=row(`💊 Medication (${condNames})`,condMedCost,true); }
-        if(pensionContrib>0) html+=row('🏦 Pension contribution (5%)',pensionContrib,true);
-        if(cashErosion>0) html+=row('💸 Cash inflation erosion (1%)',cashErosion,true);
         if(taxAmount>0) html+=row(`💸 Income Tax (${Math.round(taxRate*100)}%)`,taxAmount,true);
         html+=`<div style="border-top:2px dashed var(--sun-dark);margin:6px 0 4px"></div>`;
         html+=`<div style="display:flex;justify-content:space-between"><span style="font-weight:900;color:var(--ink)">📊 Net P&amp;L / year</span><span style="font-weight:900;color:${netColor}">${netSign}$${Math.abs(netPL).toLocaleString()}/yr</span></div>`;
@@ -3929,6 +4105,62 @@ function renderTrophies(){
       return`<div class="trophy-item${unlocked?' unlocked':''}" onclick="${unlocked?`showMascotBubble('🦉 ${a.name}: ${a.desc}',4000)`:''}"><span class="trophy-emoji${unlocked?'':' trophy-locked'}">${a.emoji}</span><div class="trophy-name">${unlocked?a.name:a.desc}</div></div>`;
     }).join('')}</div>
   </div>`;
+}
+
+// ══════════════════════════════════════════
+// FAMILY EVENT MODAL WITH AVATAR PORTRAIT
+// ══════════════════════════════════════════
+function showFamilyEventModal(member, icon, title, speechText, choices, sfx, type){
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card '+(type||'positive');
+  const sfxEl=document.getElementById('m-sfx');
+  if(sfx){sfxEl.textContent=sfx;sfxEl.style.display='block';}else sfxEl.style.display='none';
+  document.getElementById('m-icon').textContent=icon;
+  document.getElementById('m-title').textContent=title;
+  const bodyEl=document.getElementById('m-body');
+  bodyEl.style.display='none';
+  // Build scene: portrait + speech bubble
+  const avatarUrl = member && member.avatarRoll ? buildFamilyMemberAvatarUrl(member) : null;
+  const fallbackEmoji = !member?'👨‍👩‍👧':member.type==='spouse'?(G.gender==='male'?'👩':'👨'):member.age<5?'👶':member.age<13?'🧒':member.age<18?'🧑':'👤';
+  const portraitId='fam-portrait-'+Date.now();
+  document.getElementById('m-extra').innerHTML=`
+    <div class="fam-event-scene">
+      <div class="fam-event-portrait" id="${portraitId}">
+        <span style="font-size:2em">${fallbackEmoji}</span>
+      </div>
+      <div class="fam-event-bubble">${speechText}</div>
+    </div>`;
+  // Load portrait asynchronously
+  if(avatarUrl){
+    const ring=document.getElementById(portraitId);
+    if(ring){
+      ring.innerHTML='<div style="width:18px;height:18px;border:3px solid #DDD;border-top-color:var(--coral);border-radius:50%;animation:rot .8s linear infinite"></div>';
+      const img=new Image();
+      img.onload=()=>{ if(ring){ring.innerHTML='';img.style.cssText='width:100%;height:100%;object-fit:cover';ring.appendChild(img);} };
+      img.onerror=()=>{ if(ring) ring.innerHTML=`<span style="font-size:2em">${fallbackEmoji}</span>`; };
+      img.src=avatarUrl;
+    }
+  }
+  // Buttons
+  const btns=document.getElementById('m-btns');btns.innerHTML='';
+  choices.forEach((c,i)=>{
+    const btn=document.createElement('button');btn.type='button';
+    btn.className='mbtn '+(c.style||(i===0?'pri':'sec'));
+    btn.textContent=c.l||c.label||'OK';
+    const cost=c.m?.money?Math.abs(Math.min(c.m.money,0)):0;
+    const canAfford=cost===0||G.money>=cost;
+    if(!canAfford){btn.disabled=true;btn.style.opacity='0.4';btn.style.cursor='not-allowed';btn.textContent+=` (Need $${cost.toLocaleString()})`;}
+    btn.onclick=()=>{
+      if(btn.disabled)return;
+      closeModal();
+      if(c.fn)evFn(c.fn);
+      if(c.m)applyMod(c.m);
+      if(c.m&&(c.m.health<0||c.m.money<0))SoundManager.fail();else if(c.m)SoundManager.success();
+      checkAchievements();save();updateUI();refreshActiveTab();
+    };
+    btns.appendChild(btn);
+  });
+  document.getElementById('modal').style.display='flex';
 }
 
 // ══════════════════════════════════════════
@@ -4830,7 +5062,174 @@ function continueAgeUp(){
     });
   }
 
-  // New baby
+  // ── RICH FAMILY EVENTS ──
+  // These fire once per life at key moments and have real stat consequences.
+  // Each event shows the family member's avatar portrait in the modal.
+  if((G.family||[]).length>0 && !G.eventFiredThisYear){
+    const spouse=(G.family||[]).find(m=>m.type==='spouse');
+    const kids=(G.family||[]).filter(m=>m.type==='child');
+
+    // ── SPOUSE EVENTS ──
+    if(spouse){
+      const yearsMarried=G.marriageAge?G.age-G.marriageAge:0;
+
+      // 1st anniversary special moment (fires once)
+      if(yearsMarried===1&&!G._anniv1Done){
+        G._anniv1Done=true;
+        fireEvent(()=>showFamilyEventModal(spouse,'💍','First Anniversary!',
+          `"${G.name}, I can\'t believe it\'s already been a year. I\'m the luckiest person alive."`,
+          [{l:'🥂 Celebrate (−$300)',m:{money:-300,happiness:25},style:'pri'},{l:'😊 Sweet moment',m:{happiness:12},style:'sec'}],
+          'LOVE!','positive'));
+        return;
+      }
+
+      // Spouse wants to go back to work / study
+      if(yearsMarried>=3&&!G._spouseCareerEvent&&G.age>=28&&G.age<=45&&Math.random()<0.25){
+        G._spouseCareerEvent=true;
+        const extraIncome=Math.round(3000*(G.inflationMult||1));
+        fireEvent(()=>showFamilyEventModal(spouse,'💼','Partner\'s Career',
+          `"I\'ve been thinking... I want to go back to studying. It would mean less time at home for a year, but better income after. What do you think?"`,
+          [{l:'📚 Support them (+income)',m:{happiness:8},style:'pri',fn:'_spouse_study_yes'},{l:'🏠 Ask them to stay',m:{happiness:-10,money:0},style:'sec'}],
+          'CHOICE!','positive'));
+        return;
+      }
+
+      // Spouse illness (age 45+)
+      if(G.age>=45&&!G._spouseIllnessEvent&&Math.random()<0.18){
+        G._spouseIllnessEvent=true;
+        const treatCost=Math.round(4000*(G.inflationMult||1));
+        fireEvent(()=>showFamilyEventModal(spouse,'🏥','Partner\'s Health',
+          `"The doctor says I need treatment. I\'m scared, ${G.name}. I need you right now."`,
+          [{l:`💊 Pay for treatment (−$${treatCost.toLocaleString()})`,m:{money:-treatCost,happiness:10,health:-5},style:'grn'},{l:'😔 Can\'t afford it',m:{happiness:-20,health:-5},style:'dan'}],
+          'OH NO!','negative'));
+        return;
+      }
+
+      // Spouse promotion — they got a raise, boost household
+      if(yearsMarried>=5&&!G._spousePromoEvent&&Math.random()<0.20){
+        G._spousePromoEvent=true;
+        const raise=Math.round(2000*(G.inflationMult||1));
+        G.spouseIncome=(G.spouseIncome||0)+raise;
+        fireEvent(()=>showFamilyEventModal(spouse,'🎉','Partner\'s Promotion!',
+          `"${G.name}! I got promoted! More money, more responsibility — I couldn\'t have done this without your support."`,
+          [{l:'🥂 Celebrate together!',m:{happiness:20,money:-200},style:'pri'},{l:'😊 Fantastic news!',m:{happiness:12},style:'sec'}],
+          'YAY!','positive'));
+        return;
+      }
+
+      // Spouse mood crisis — relationship needs attention
+      if((G.spouseMood||80)<40&&!G._spouseMoodCrisis&&G.age>=30){
+        G._spouseMoodCrisis=true;
+        fireEvent(()=>showFamilyEventModal(spouse,'💔','Relationship Strain',
+          `"${G.name}, I feel like we\'re drifting apart. We never talk anymore. I need us to actually try."`,
+          [{l:'💑 Date night (−$200)',m:{money:-200,happiness:15},style:'pri',fn:'_spouse_reconnect'},{l:'💪 Plan a trip (−$1,000)',m:{money:-1000,happiness:25},style:'grn'},{l:'😔 Not now',m:{happiness:-15},style:'dan'}],
+          'UH-OH!','negative'));
+        return;
+      }
+
+      // Happy milestone — 10 years married
+      if(yearsMarried===10&&!G._anniv10Done){
+        G._anniv10Done=true;
+        fireEvent(()=>showFamilyEventModal(spouse,'💍','10 Years Together!',
+          `"A decade, ${G.name}. Through everything — the hard times, the laughter, the kids, the stress. I\'d choose you a thousand times over."`,
+          [{l:'🎊 Renew vows (−$500)',m:{money:-500,happiness:30},style:'pri'},{l:'💛 Cherish the moment',m:{happiness:18},style:'sec'}],
+          'LOVE!','positive'));
+        return;
+      }
+    }
+
+    // ── CHILD EVENTS ──
+    kids.forEach(kid=>{
+      if(G.eventFiredThisYear)return;
+
+      // Child asks for help with homework (age 7-11)
+      if(kid.age>=7&&kid.age<=11&&!kid._homeworkEvent&&Math.random()<0.30){
+        kid._homeworkEvent=true;
+        fireEvent(()=>showFamilyEventModal(kid,'📚','Homework Struggle',
+          `"${kid.name} holds up a worksheet with a worried face. "I don\'t get it, can you help me?""`,
+          [{l:'📖 Help them (+Smarts)',m:{smarts:3,happiness:10},style:'pri'},{l:'😌 Encourage independence',m:{smarts:5,happiness:5},style:'sec'},{l:'😔 Too tired tonight',m:{happiness:-5},style:'dan'}],
+          'PARENTING!','positive'));
+        return;
+      }
+
+      // Child gets bullied (age 9-14)
+      if(kid.age>=9&&kid.age<=14&&!kid._bullyEvent&&Math.random()<0.22){
+        kid._bullyEvent=true;
+        fireEvent(()=>showFamilyEventModal(kid,'😢','Bullying at School',
+          `"${kid.name} comes home quiet, eyes red. "Some kids were being really mean to me today, ${G.name.split(' ')[0]}...""`,
+          [{l:'🤝 Talk it through',m:{happiness:15,smarts:3},style:'pri'},{l:'🏫 Speak to the school (−$0)',m:{happiness:10,health:3},style:'sec'},{l:'💪 Tell them to fight back',m:{happiness:5,health:-2},style:'dan'}],
+          'UH-OH!','negative'));
+        return;
+      }
+
+      // Child wins a prize / competition (age 8-16, based on trait)
+      const prizeAge = kid.trait==='athletic'?rand(10,14):kid.trait==='studious'?rand(10,15):kid.trait==='creative'?rand(9,14):rand(12,16);
+      if(kid.age===prizeAge&&!kid._prizeEvent){
+        kid._prizeEvent=true;
+        const prizeMap={studious:'won the school science competition 🏆',athletic:'won the regional sports tournament ⚽',creative:'had their artwork featured in a gallery 🎨',rebellious:'started a band that won battle of the bands 🎸'};
+        const prize=prizeMap[kid.trait]||'won a community award 🌟';
+        fireEvent(()=>showFamilyEventModal(kid,'🏆',`${kid.name}\'s Big Win!`,
+          `"${kid.name} ${prize}! They can\'t stop grinning."`,
+          [{l:'🥳 Take them out to celebrate',m:{happiness:20,money:-150},style:'pri'},{l:'📸 So proud!',m:{happiness:12},style:'sec'}],
+          'AMAZING!','positive'));
+        return;
+      }
+
+      // Teen wants a phone / expensive item (age 13-15)
+      if(kid.age===13&&!kid._phoneEvent){
+        kid._phoneEvent=true;
+        const phoneCost=Math.round(500*(G.inflationMult||1));
+        fireEvent(()=>showFamilyEventModal(kid,'📱','Teenager\'s Request',
+          `"${kid.name} slumps onto the sofa. "Everyone at school has the new phone. I\'ll literally die if I don\'t get one.""`,
+          [{l:`📱 Buy it (−$${phoneCost.toLocaleString()})`,m:{money:-phoneCost,happiness:8},style:'pri'},{l:'💡 Offer to split cost',m:{money:-Math.round(phoneCost/2),happiness:5,smarts:3},style:'sec'},{l:'🙅 Not right now',m:{happiness:-8},style:'dan'}],
+          'TEENS!',''));
+        return;
+      }
+
+      // Teen sneaks out (age 15-17, rebellious or random)
+      if(kid.age>=15&&kid.age<=17&&(kid.trait==='rebellious'||Math.random()<0.15)&&!kid._sneakOutEvent){
+        kid._sneakOutEvent=true;
+        fireEvent(()=>showFamilyEventModal(kid,'😤','Out All Night',
+          `"It\'s 2am and ${kid.name}\'s bed is empty. Your phone rings — it\'s them. They\'re fine, but they snuck out to a party."`,
+          [{l:'😤 Ground them (2 weeks)',m:{happiness:-5,smarts:5},style:'pri'},{l:'💬 Calm talk about it',m:{happiness:5,smarts:8},style:'sec'},{l:'😅 Laugh it off',m:{happiness:8,smarts:-3},style:'dan'}],
+          'DRAMA!','negative'));
+        return;
+      }
+
+      // Child leaves for uni / moves out milestone
+      if(kid.age===18&&!kid._leaveHomeEvent){
+        kid._leaveHomeEvent=true;
+        fireEvent(()=>showFamilyEventModal(kid,'🎓',`${kid.name} Flies the Nest`,
+          `"${kid.name} stands at the door with bags packed. "I\'m going to miss you so much. Thank you for everything, ${G.name.split(' ')[0]}.""`,
+          [{l:'🥲 Proud and tearful',m:{happiness:5,health:-3},style:'pri'},{l:'🎉 Celebrate their journey',m:{happiness:12,money:-300},style:'sec'}],
+          'BIG DAY!','positive'));
+        return;
+      }
+
+      // Adult child gets married (age 27-32)
+      if(kid.age>=27&&kid.age<=32&&!kid._kidsWeddingEvent&&Math.random()<0.35){
+        kid._kidsWeddingEvent=true;
+        const giftCost=Math.round(rand(1000,3000)*(G.inflationMult||1));
+        kid.status='Married 💍';
+        fireEvent(()=>showFamilyEventModal(kid,'💍',`${kid.name}\'s Wedding!`,
+          `"${kid.name} is getting married! You\'ve been asked to give a speech. The room is packed and all eyes are on you."`,
+          [{l:`🥂 Give speech + gift (−$${giftCost.toLocaleString()})`,m:{money:-giftCost,happiness:30},style:'pri'},{l:'😊 Attend and celebrate',m:{happiness:20,money:-300},style:'sec'}],
+          'LOVE!','positive'));
+        return;
+      }
+
+      // Adult child in trouble — needs financial help (age 25-35)
+      if(kid.age>=25&&kid.age<=35&&!kid._helpEvent&&Math.random()<0.18){
+        kid._helpEvent=true;
+        const helpCost=Math.round(rand(2000,6000)*(G.inflationMult||1));
+        fireEvent(()=>showFamilyEventModal(kid,'😰',`${kid.name} Needs Help`,
+          `"${kid.name} calls, voice tight. "I got into some financial trouble. I\'m embarrassed to ask... but could you help me out?""`,
+          [{l:`💰 Help them (−$${helpCost.toLocaleString()})`,m:{money:-helpCost,happiness:15},style:'pri'},{l:'🤝 Offer advice instead',m:{happiness:5,smarts:5},style:'sec'},{l:'😔 Can\'t right now',m:{happiness:-10},style:'dan'}],
+          'FAMILY!',''));
+        return;
+      }
+    });
+  }
   if(G.marriageAge&&G.age>=24&&G.age<=42&&Math.random()<0.10){
     const kids=(G.family||[]).filter(m=>m.type==='child');
     if(kids.length<3){
@@ -4845,14 +5244,15 @@ function continueAgeUp(){
     if(spouse){
       const deathChance=0.03+(G.age-70)*0.008;
       if(Math.random()<deathChance){
+        const spouseSnapshot={...spouse}; // keep for portrait after removal
         G.family=G.family.filter(m=>m!==spouse);
         G.spouseIncome=0; G.spouseMood=0;
         applyMod({happiness:-35,health:-10});
-        addLog(`💔 ${spouse.name} passed away at age ${G.age}. A piece of your heart went with them. 🕊️`,'bad');
+        addLog(`💔 ${spouseSnapshot.name} passed away at age ${G.age}. A piece of your heart went with them. 🕊️`,'bad');
         SoundManager.gameOver(); shakeScreen();
-        fireEvent(()=>showModal('💔','A Great Loss...',
-          `${spouse.name} has passed away. You shared ${G.age-G.marriageAge} wonderful years together.`,
-          [{l:'💙 Cherish the memories',m:{happiness:5},style:'pri'}],'',  'negative'));
+        fireEvent(()=>showFamilyEventModal(spouseSnapshot,'💔','A Great Loss...',
+          `${spouseSnapshot.name} has passed away. You shared ${G.age-G.marriageAge} wonderful years together. The house feels so quiet now.`,
+          [{l:'💙 Cherish the memories',m:{happiness:5},style:'pri'}],'','negative'));
         return;
       }
     }
