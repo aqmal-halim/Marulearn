@@ -5105,10 +5105,25 @@ function svgToDataUrl(svgStr){
 }
 
 function buildDiceBearUrl(roll, name='Player', age=0, happy=75, health=80, sz=100){
-  // Replaced DiceBear (external API, blocked on file://) with local SVG
+  const seed = encodeURIComponent((name||'x')+'_roll_'+roll.skinKey+'_'+roll.hcKey+'_'+roll.hairStyle);
   const skinHex = CHAR_SKIN_HEX[roll.skinKey] || 'ffdbb4';
   const hairHex = CHAR_HAIR_HEX[roll.hcKey]   || '724133';
-  return svgToDataUrl(buildLocalAvatarSVG({skinHex, hairHex, gender: roll.gender, age, happy, health, sz}));
+  let fh='',fp=0;
+  if(roll.gender==='male'&&age>=20){fh='beardLight';fp=45;}
+  const clothing = age<=12?'graphicShirt':age<=17?'hoodie':age<=30?'blazerAndShirt':'blazerAndSweater';
+  const clothesColor = age<=12?'5199e4':age<=17?'262e33':age<=30?'25557c':'3c4f5c';
+  const mouth = happy>=75?'smile':happy<35?'sad':'default';
+  const eyes  = health<25?'squint':happy>=80?'happy':'default';
+  const eyebrows = happy<35?'sadConcernedNatural':happy>=75?'raisedExcitedNatural':'defaultNatural';
+  const p = new URLSearchParams({
+    seed, size:sz, skinColor:skinHex, top:roll.hairStyle, hairColor:hairHex,
+    facialHairProbability:fp, clothing, clothesColor:clothesColor,
+    eyes, eyebrows, mouth,
+    backgroundColor:'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf',
+    backgroundType:'gradientLinear'
+  });
+  if(fh) p.set('facialHair', fh);
+  return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
 }
 
 function rerollCharacter(){
