@@ -4641,6 +4641,7 @@ function ageUp(){
     } else {
       G._debtSpiralYears=0; // reset counter when debt is cleared
     }
+  } // end if(G.money<0)
 
   // ── Mid-life job instability (40-55) ──
   if(G.job&&!G.retired&&G.age>=40&&G.age<=55){
@@ -4999,26 +5000,115 @@ function rollRandomCharacter(){
   return _charRoll;
 }
 
+// ── LOCAL INLINE SVG AVATAR (no external API needed) ──
+function buildLocalAvatarSVG(opts){
+  // opts: { skinHex, hairHex, gender, age, happy, health, sz }
+  const sz = opts.sz || 100;
+  const skin = '#' + (opts.skinHex || 'ffdbb4');
+  const hair = '#' + (opts.hairHex || '724133');
+  const isFemale = opts.gender === 'female';
+  const age = opts.age || 18;
+  const happy = opts.happy != null ? opts.happy : 75;
+  const health = opts.health != null ? opts.health : 80;
+
+  // Background colours cycle by hair colour hash
+  const bgPalette = ['#b6e3f4','#c0aede','#d1d4f9','#ffd5dc','#ffdfbf','#d4f1c0','#fef3c7'];
+  const bgIdx = (opts.hairHex||'').charCodeAt(0) % bgPalette.length;
+  const bg1 = bgPalette[bgIdx];
+  const bg2 = bgPalette[(bgIdx+2) % bgPalette.length];
+
+  // Face expression
+  const mouthPath = happy >= 75
+    ? 'M 44 64 Q 50 70 56 64'        // smile
+    : happy < 35
+      ? 'M 44 68 Q 50 62 56 68'      // frown
+      : 'M 44 66 L 56 66';           // neutral
+
+  // Eyes
+  const eyeH = health < 25 ? 2 : 5;  // squint vs normal
+  const eyeLY = happy >= 80 ? 53 : 51;
+
+  // Eyebrows
+  const lbrow = happy < 35 ? 'M 38 43 Q 43 46 45 44' : happy >= 75 ? 'M 38 41 Q 43 38 45 40' : 'M 38 42 Q 43 40 45 42';
+  const rbrow = happy < 35 ? 'M 62 43 Q 57 46 55 44' : happy >= 75 ? 'M 62 41 Q 57 38 55 40' : 'M 62 42 Q 57 40 55 42';
+
+  // Shirt colour by age
+  const shirtColor = age<=12 ? '#5199e4' : age<=17 ? '#3a4a5c' : age<=30 ? '#25557c' : '#3c4f5c';
+
+  // Hair shape — simple blobs by gender
+  const hairShape = isFemale
+    ? `<ellipse cx="50" cy="34" rx="20" ry="22" fill="${hair}"/>
+       <ellipse cx="34" cy="48" rx="7" ry="16" fill="${hair}"/>
+       <ellipse cx="66" cy="48" rx="7" ry="16" fill="${hair}"/>`
+    : `<ellipse cx="50" cy="33" rx="19" ry="14" fill="${hair}"/>`;
+
+  // Optional beard for older males
+  const beard = (!isFemale && age >= 30)
+    ? `<path d="M 38 68 Q 50 76 62 68 Q 60 74 50 77 Q 40 74 38 68 Z" fill="${hair}" opacity="0.6"/>`
+    : '';
+
+  // Glasses for older characters
+  const glasses = age >= 40
+    ? `<circle cx="43" cy="${eyeLY}" r="7" fill="none" stroke="#555" stroke-width="1.5"/>
+       <circle cx="57" cy="${eyeLY}" r="7" fill="none" stroke="#555" stroke-width="1.5"/>
+       <line x1="36" y1="${eyeLY}" x2="30" y2="${eyeLY-1}" stroke="#555" stroke-width="1.5"/>
+       <line x1="50" y1="${eyeLY}" x2="50" y2="${eyeLY}" stroke="#555" stroke-width="1.5"/>
+       <line x1="64" y1="${eyeLY}" x2="70" y2="${eyeLY-1}" stroke="#555" stroke-width="1.5"/>`
+    : '';
+
+  const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${sz}" height="${sz}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${bg1}"/>
+      <stop offset="100%" stop-color="${bg2}"/>
+    </linearGradient>
+    <clipPath id="circ"><circle cx="50" cy="50" r="50"/></clipPath>
+  </defs>
+  <circle cx="50" cy="50" r="50" fill="url(#bg)"/>
+  <g clip-path="url(#circ)">
+    <!-- shirt/body -->
+    <ellipse cx="50" cy="95" rx="28" ry="20" fill="${shirtColor}"/>
+    <rect x="28" y="80" width="44" height="24" rx="6" fill="${shirtColor}"/>
+    <!-- neck -->
+    <rect x="44" y="70" width="12" height="12" rx="3" fill="${skin}"/>
+    <!-- head -->
+    <ellipse cx="50" cy="50" rx="19" ry="21" fill="${skin}"/>
+    <!-- hair back layer -->
+    ${hairShape}
+    <!-- ears -->
+    <ellipse cx="31" cy="51" rx="4" ry="5" fill="${skin}"/>
+    <ellipse cx="69" cy="51" rx="4" ry="5" fill="${skin}"/>
+    <!-- eyebrows -->
+    <path d="${lbrow}" fill="none" stroke="${hair}" stroke-width="2" stroke-linecap="round"/>
+    <path d="${rbrow}" fill="none" stroke="${hair}" stroke-width="2" stroke-linecap="round"/>
+    <!-- eyes -->
+    <ellipse cx="43" cy="${eyeLY}" rx="4" ry="${eyeH}" fill="white"/>
+    <ellipse cx="57" cy="${eyeLY}" rx="4" ry="${eyeH}" fill="white"/>
+    <ellipse cx="43" cy="${eyeLY}" rx="2.2" ry="${Math.max(1,eyeH-1)}" fill="#2c1b18"/>
+    <ellipse cx="57" cy="${eyeLY}" rx="2.2" ry="${Math.max(1,eyeH-1)}" fill="#2c1b18"/>
+    <!-- rosy cheeks -->
+    <ellipse cx="37" cy="59" rx="5" ry="3" fill="rgba(255,100,100,0.22)"/>
+    <ellipse cx="63" cy="59" rx="5" ry="3" fill="rgba(255,100,100,0.22)"/>
+    <!-- nose -->
+    <circle cx="50" cy="60" r="1.8" fill="rgba(0,0,0,0.12)"/>
+    <!-- mouth -->
+    <path d="${mouthPath}" fill="none" stroke="#c0625a" stroke-width="2" stroke-linecap="round"/>
+    ${beard}
+    ${glasses}
+  </g>
+</svg>`;
+  return svgStr;
+}
+
+function svgToDataUrl(svgStr){
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+}
+
 function buildDiceBearUrl(roll, name='Player', age=0, happy=75, health=80, sz=100){
-  const seed = encodeURIComponent((name||'x')+'_roll_'+roll.skinKey+'_'+roll.hcKey+'_'+roll.hairStyle);
+  // Replaced DiceBear (external API, blocked on file://) with local SVG
   const skinHex = CHAR_SKIN_HEX[roll.skinKey] || 'ffdbb4';
   const hairHex = CHAR_HAIR_HEX[roll.hcKey]   || '724133';
-  let fh='',fp=0;
-  if(roll.gender==='male'&&age>=20){fh='beardLight';fp=45;}
-  const clothing = age<=12?'graphicShirt':age<=17?'hoodie':age<=30?'blazerAndShirt':'blazerAndSweater';
-  const clothesColor = age<=12?'5199e4':age<=17?'262e33':age<=30?'25557c':'3c4f5c';
-  const mouth = happy>=75?'smile':happy<35?'sad':'default';
-  const eyes  = health<25?'squint':happy>=80?'happy':'default';
-  const eyebrows = happy<35?'sadConcernedNatural':happy>=75?'raisedExcitedNatural':'defaultNatural';
-  const p = new URLSearchParams({
-    seed, size:sz, skinColor:skinHex, top:roll.hairStyle, hairColor:hairHex,
-    facialHairProbability:fp, clothing, clothesColor:clothesColor,
-    eyes, eyebrows, mouth,
-    backgroundColor:'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf',
-    backgroundType:'gradientLinear'
-  });
-  if(fh) p.set('facialHair', fh);
-  return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
+  return svgToDataUrl(buildLocalAvatarSVG({skinHex, hairHex, gender: roll.gender, age, happy, health, sz}));
 }
 
 function rerollCharacter(){
@@ -6079,7 +6169,6 @@ function renderCups(){
 }
 
 
-} // end ageUp()
 
 // ══════════════════════════════════════════
 // GAME STATE
