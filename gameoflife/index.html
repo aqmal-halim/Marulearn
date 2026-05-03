@@ -3345,23 +3345,11 @@ function renderWork(){
     const sh=G.sideHustle;
     const shCard=document.createElement('div');
     shCard.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;border:2px solid var(--grass-dark)';
-    shCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">💡 ${sh.label} — Level ${sh.level}</div><div style="font-weight:900">+$${(G.sideHustleIncome||0).toLocaleString()}/yr</div><div style="font-size:.75em;color:var(--ink2)">${sh.yearsActive} years active · ${sh.level<3?'Grows with time':'Max level reached!'}</div>`;
+    const hustleActive=!G.retired;
+    const hustleStatusNote=hustleActive?'Modest side income — enjoy the extra cash!':'Winding down in retirement';
+    shCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">💡 ${sh.label}</div><div style="font-weight:900">${hustleActive?`+$${(G.sideHustleIncome||0).toLocaleString()}/yr`:'Inactive in retirement'}</div><div style="font-size:.75em;color:var(--ink2)">${sh.yearsActive} years active · ${hustleStatusNote}</div>`;
     el.appendChild(shCard);
-    if(sh.level<3){
-      const growBtn=document.createElement('div');
-      growBtn.className='act-item';
-      growBtn.innerHTML=`<div class="act-icon">📈</div><div><div class="act-title">Grow the hustle</div><div class="act-sub">−$${Math.round(2000*(G.inflationMult||1)).toLocaleString()} invest · Increase income by 50%</div></div>`;
-      growBtn.onclick=()=>{
-        const cost=Math.round(2000*(G.inflationMult||1));
-        if(G.money<cost){addLog('Need $2,000 to grow your side hustle!','bad');SoundManager.fail();return;}
-        applyMod({money:-cost});
-        sh.level++;G.sideHustleIncome=Math.round(G.sideHustleIncome*1.5);
-        addLog(`📈 Side hustle grew to Level ${sh.level}! Income: +$${G.sideHustleIncome.toLocaleString()}/yr`,'good');
-        SoundManager.levelUp();save();renderWork();
-      };
-      el.appendChild(growBtn);
-    }
-    if(sh.level===3){
+    if(!G.retired&&sh.level===3){
       const sellBtn=document.createElement('div');
       sellBtn.className='act-item';
       const salePrice=Math.round(G.sideHustleIncome*4);
@@ -3603,7 +3591,7 @@ function renderBank(){
       ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Pension</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.pension.toLocaleString()}/yr</span></div>`:''}
       ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">👨‍👩‍👧 Family (${dependentKids.length} kids${hasSpouse?'+spouse':''})</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
       ${(()=>{const mortgages=(G.properties||[]).filter(p=>(p.mortgageBalance||0)>0&&(p.mortgageYearsLeft||0)>0);if(!mortgages.length)return'';const totalPmt=mortgages.reduce((s,p)=>s+(p.mortgagePayment||0),0);const rows=mortgages.map(p=>`<div style="display:flex;justify-content:space-between;margin-bottom:2px;font-size:.85em"><span style="color:var(--ink2);font-weight:800">🏠 ${p.label||'Property'}</span><span style="font-weight:900;color:var(--coral)">−$${(p.mortgagePayment||0).toLocaleString()}/yr (${p.mortgageYearsLeft}yr left)</span></div>`).join('');return`<div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-weight:800;color:var(--ink2)">🏠 Mortgages (${mortgages.length})</span><span style="font-weight:900;color:var(--coral)">−$${totalPmt.toLocaleString()}/yr total</span></div>${rows}`;})()}
-      ${G.sideHustleIncome>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">💡 Side Hustle</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.sideHustleIncome.toLocaleString()}/yr</span></div>`:''}
+      ${(G.sideHustleIncome>0&&!G.retired)?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">💡 Side Hustle</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.sideHustleIncome.toLocaleString()}/yr</span></div>`:''}
       ${G.totalTaxPaid>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`:''}
       ${loanLine}
     </div>`;
@@ -4270,15 +4258,18 @@ function ageUp(){
   syncCompatAliases();
 
   // ── Side hustle income ──
-  if(G.sideHustle&&G.sideHustleIncome>0){
+  // Side hustles stop paying after retirement — they are a modest supplement, not a career
+  if(G.sideHustle&&G.sideHustleIncome>0&&!G.retired){
     applyMod({money:G.sideHustleIncome});
     G.sideHustle.yearsActive=(G.sideHustle.yearsActive||0)+1;
-    // Natural growth over time (max level 3)
-    if(G.sideHustle.level<3&&G.sideHustle.yearsActive%4===0){
-      G.sideHustleIncome=Math.round(G.sideHustleIncome*1.15);
-      addLog(`📈 Side hustle growing! New income: $${G.sideHustleIncome.toLocaleString()}/yr`,'good');
-    }
+    // No automatic growth — side hustle income stays modest and stable
     if(G.age%3===0) addLog(`💡 ${G.sideHustle.label} income: +$${G.sideHustleIncome.toLocaleString()}`,'good');
+  } else if(G.sideHustle&&G.retired&&G.sideHustleIncome>0){
+    // Log once when hustle winds down in retirement
+    if(!G._hustleRetiredLogged){
+      G._hustleRetiredLogged=true;
+      addLog(`🌅 Side hustle winding down in retirement — enjoying the rest!`,'info');
+    }
   }
 
   // ── Spouse income ──
