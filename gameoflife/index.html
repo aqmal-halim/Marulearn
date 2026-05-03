@@ -705,8 +705,8 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   <div style="font-family:'Fredoka One',cursive;color:white;font-size:.9em;margin-bottom:8px;opacity:.85">✨ Best Moments</div>
   <div class="end-moments" id="end-moments"></div>
   <div class="end-trophies-row" id="end-trophies-row"></div>
-  <div class="end-btns"><button type="button" class="btn-start" style="font-size:1em;padding:14px" onclick="confirmNew()">🔄 Play Again</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px" onclick="toggleEndStory()">📖 Read My Story</button></div>
-  <div id="end-biography" style="background:rgba(255,255,255,.1);border-radius:14px;padding:12px 16px;margin:8px 0;color:white;font-size:.78em;font-weight:700;line-height:1.6;max-width:420px;text-align:left"></div>
+  <div class="end-btns"><button type="button" class="btn-start" style="font-size:1em;padding:14px" onclick="confirmNew()">🔄 Play Again</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px" onclick="toggleEndStory()">📖 Read My Story</button><button type="button" id="legacy-btn" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px;background:rgba(255,215,0,.25);border-color:rgba(255,215,0,.7);display:none" onclick="startLegacyContinue()">👶 Continue as My Child</button></div>
+  <div id="end-biography" style="background:rgba(255,255,255,.12);border-radius:16px;padding:16px 20px;margin:8px 0;color:white;font-size:.82em;font-weight:700;line-height:1.7;max-width:420px;text-align:left;border:2px solid rgba(255,255,255,.25)"></div>
   <div id="end-missed" style="width:100%;max-width:420px;margin-bottom:8px"></div>
   <div class="end-story-log" id="end-story-log"></div>
 </div>
@@ -1543,23 +1543,61 @@ function evFn(name) {
     renderBank&&renderBank();
   }
   if(name==='_baby_yes'){
-    if(!G.family) G.family=[];
-    const babyName = BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
+    // Show naming modal before adding child
+    showBabyNamingModal();
+  }
+}
+
+// ══════════════════════════════════════════
+// BABY NAMING MODAL
+// ══════════════════════════════════════════
+function showBabyNamingModal(){
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='block';
+  document.getElementById('m-sfx').textContent='BABY TIME!';
+  document.getElementById('m-icon').textContent='👶';
+  document.getElementById('m-title').textContent='A Baby is Born!';
+  const bodyEl=document.getElementById('m-body');
+  bodyEl.style.display='block';
+  bodyEl.textContent=`Your little one has arrived! What will you name them?`;
+  const suggestedName=BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
+  document.getElementById('m-extra').innerHTML=`
+    <div style="text-align:center;margin:10px 0">
+      <input id="baby-name-input" type="text" placeholder="Enter a name..." maxlength="18"
+        style="width:100%;padding:12px 16px;font-family:'Nunito',sans-serif;font-size:1.1em;font-weight:800;
+               border:3px solid var(--ink);border-radius:14px;outline:none;background:var(--offwhite);
+               box-shadow:3px 3px 0 rgba(0,0,0,.12);color:var(--ink);box-sizing:border-box"
+        value="${suggestedName}" />
+      <div style="font-size:.72em;font-weight:800;color:var(--ink2);margin-top:6px">Or tap below to pick a random name</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px" id="baby-name-suggestions">
+        ${[...BABY_NAMES].sort(()=>Math.random()-.5).slice(0,6).map(n=>`<button type="button" onclick="document.getElementById('baby-name-input').value='${n}'" style="padding:5px 12px;background:white;border:2px solid var(--ink);border-radius:10px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.8em;cursor:pointer;color:var(--ink)">${n}</button>`).join('')}
+      </div>
+    </div>`;
+  const btns=document.getElementById('m-btns');btns.innerHTML='';
+  const confirmBtn=document.createElement('button');confirmBtn.type='button';confirmBtn.className='mbtn pri';
+  confirmBtn.textContent='💛 Name My Baby!';
+  confirmBtn.onclick=()=>{
+    const input=document.getElementById('baby-name-input');
+    const babyName=(input&&input.value.trim())||BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
+    closeModal();
+    if(!G.family)G.family=[];
     const _traits=['studious','athletic','creative','rebellious'];
     const _trait=_traits[Math.floor(Math.random()*_traits.length)];
-    // Roll a random avatar for the child — inherit parent skin tone roughly
-    const childRoll = rollRandomCharacter();
-    // 50% chance child inherits player skin key
-    const playerSkinKey = _skinKeyFromColor(G.skinTone);
-    if(Math.random()<0.5) childRoll.skinKey = playerSkinKey;
-    G.family.push({type:'child', name:babyName, age:0, status:'Newborn 👶', trait:_trait, avatarRoll:childRoll});
+    const childRoll=rollRandomCharacter();
+    const playerSkinKey=_skinKeyFromColor(G.skinTone);
+    if(Math.random()<0.5)childRoll.skinKey=playerSkinKey;
+    G.family.push({type:'child',name:babyName,age:0,status:'Newborn 👶',trait:_trait,avatarRoll:childRoll});
     applyMod({happiness:20,money:-5000,health:-5});
-    addLog(`👶 ${babyName} was born!`,'legend');
-    SoundManager.levelUp(); burstBabyConfetti(); updateUI();
-    showNewspaper(`NEW BABY ALERT: ${babyName.toUpperCase()} HAS ARRIVED! 👶`);
-    showMascotBubble(`🦉 Aww, little ${babyName} is here! Welcome to the world! 👶`, 5000);
-    mascotDance();
-  }
+    addLog(`👶 ${babyName} was born! A new chapter begins.`,'legend');
+    SoundManager.levelUp();burstBabyConfetti();updateUI();
+    showNewspaper(`NEW BABY: ${babyName.toUpperCase()} HAS ARRIVED! 👶`);
+    showMascotBubble(`🦉 Welcome to the world, little ${babyName}! What a beautiful name! 👶`,5000);
+    mascotDance();checkAchievements();save();updateUI();refreshActiveTab();
+  };
+  btns.appendChild(confirmBtn);
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>{const inp=document.getElementById('baby-name-input');if(inp)inp.focus();},300);
 }
 
 // ══════════════════════════════════════════
@@ -2145,21 +2183,132 @@ function showEndScreen(){
     return a?`<div class="end-trophy-dot">${a.emoji}</div>`:'';
   }).join('');
 
-  // Auto-biography paragraph
+  // Legacy Continue button — show if player has at least one child
+  const legacyBtn = document.getElementById('legacy-btn');
+  const kidsForLegacy = (G.family||[]).filter(m=>m.type==='child');
+  if(legacyBtn) {
+    if(kidsForLegacy.length>0){
+      legacyBtn.style.display='block';
+      const legacyKid = kidsForLegacy[0];
+      legacyBtn.textContent=`👶 Continue as ${legacyKid.name} (age ${legacyKid.age})`;
+    } else {
+      legacyBtn.style.display='none';
+    }
+  }
+
+  // Rich auto-biography
   const bioEl=document.getElementById('end-biography');
   if(bioEl){
     const spouse=(G.family||[]).find(m=>m.type==='spouse');
     const kids=(G.family||[]).filter(m=>m.type==='child');
     const trackName=G.peakCareerTrack&&CAREER_TRACKS[G.peakCareerTrack]?CAREER_TRACKS[G.peakCareerTrack].name:'';
-    const eduStr={none:'no formal education',highschool:'high school',university:'university',graduate:'graduate school'}[G.education]||'no education';
-    let bio=`${G.name} was born and grew up to live a remarkable life. `;
-    if(G.education!=='none')bio+=`They pursued ${eduStr}${G.educationDebt>0?`, investing $${G.educationDebt.toLocaleString()} in their future`:''}. `;
-    if(G.peakCareerTier>0)bio+=`Their career peak was as a ${G.jobTitle||'professional'} in the ${trackName} field (Tier ${G.peakCareerTier}). `;
-    if(spouse||G.marriageAge)bio+=`They ${G.marriageAge?`married at age ${G.marriageAge}`:'found love'} and ${kids.length>0?`raised ${kids.length} child${kids.length>1?'ren':''}`:G.marriageAge?'shared their life with their partner':''}. `;
-    const _ph=getPrimaryHouse();
-    if(_ph)bio+=`They owned ${(G.properties||[]).length} propert${(G.properties||[]).length>1?'ies':'y'} (primary: ${_ph.label}, $${_ph.value.toLocaleString()}). `;
-    bio+=`They lived to ${G.age}, leaving a net worth of $${(G.money+(G.investments||0)+(G.houseValue||0)+(G.carValue||0)).toLocaleString()}.`;
-    bioEl.textContent=bio;
+    const eduStr={none:'no formal education',highschool:'a high school diploma',university:'a university degree',graduate:'a graduate degree'}[G.education]||'no formal qualifications';
+    const pronoun = G.gender==='female' ? 'She' : 'He';
+    const pronounObj = G.gender==='female' ? 'her' : 'his';
+
+    const bioLines = [];
+
+    // Opening — background and early life
+    const bgPhrase = G.birthBackground
+      ? `born into a ${G.birthBackground.replace(/[🏚️🏠🏡🏰]/g,'').trim().toLowerCase()}`
+      : 'born into humble beginnings';
+    bioLines.push(`${G.name} was ${bgPhrase}, and went on to live a life worth remembering.`);
+
+    // Education chapter
+    if(G.education==='none'){
+      bioLines.push(`${pronoun} chose to forge ${pronounObj} own path without formal schooling — a road less taken that shaped ${pronounObj} resilience.`);
+    } else {
+      const eduCost = G.educationDebt>0 ? `, investing $${G.educationDebt.toLocaleString()} in ${pronounObj} future` : '';
+      bioLines.push(`${pronoun} pursued ${eduStr}${eduCost} — a decision that opened doors ${pronoun} hadn't even imagined yet.`);
+    }
+
+    // Career chapter
+    if(G.peakCareerTier>=4){
+      bioLines.push(`${pronoun} climbed to the upper echelons of the ${trackName} world, reaching ${G.jobTitle||'an elite position'} — a career that few ever achieve.`);
+    } else if(G.peakCareerTier>=2){
+      bioLines.push(`${pronoun} built a steady career in ${trackName||'the workforce'}, rising to the role of ${G.jobTitle||'a respected professional'}.`);
+    } else if(G.peakCareerTier===1){
+      bioLines.push(`${pronoun} worked hard in ${pronounObj} first career steps, learning the value of persistence from day one.`);
+    }
+
+    // Side hustle chapter
+    if(G.sideHustle){
+      bioLines.push(`Beyond ${pronounObj} day job, ${G.name} ran a ${G.sideHustle.label} side hustle — a passion project that earned extra income and kept ${pronounObj} spirit alive.`);
+    }
+
+    // Love and family chapter
+    if(spouse||G.marriageAge){
+      const yearsMarried = G.marriageAge ? G.age - G.marriageAge : 0;
+      const partnerLine = spouse ? `${pronounObj} beloved partner, ${spouse.name}` : `the love of ${pronounObj} life`;
+      if(yearsMarried>=20){
+        bioLines.push(`One of the greatest chapters was ${pronounObj} marriage at age ${G.marriageAge} to ${partnerLine}. They shared ${yearsMarried} years of life together — through joy, hardship, and everything in between.`);
+      } else if(G.marriageAge){
+        bioLines.push(`${pronoun} found love and married at age ${G.marriageAge}. It was a turning point that brought warmth to every chapter that followed.`);
+      }
+    } else {
+      bioLines.push(`${pronoun} walked ${pronounObj} path alone — independent, self-reliant, and finding meaning in ${pronounObj} own company and achievements.`);
+    }
+
+    // Children chapter
+    if(kids.length>0){
+      const childNames = kids.map(k=>k.name).join(' and ');
+      const kidWord = kids.length===1 ? childNames : `children — ${childNames}`;
+      // Trait line: pick the first interesting trait across all kids
+      const studs = kids.find(k=>k.trait==='studious');
+      const ath   = kids.find(k=>k.trait==='athletic');
+      const cre   = kids.find(k=>k.trait==='creative');
+      const reb   = kids.find(k=>k.trait==='rebellious');
+      const traitLine = studs
+        ? (kids.length===1 ? `${studs.name} had a gift for learning that filled ${pronounObj} heart with pride.` : `One of them had a gift for learning that filled ${pronounObj} heart with pride.`)
+        : ath ? (kids.length===1 ? `${ath.name} proved to be a natural athlete — competitions won, cheered on from the sidelines.` : `One proved to be a natural athlete, winning competitions ${G.name} cheered for from the sidelines.`)
+        : cre ? (kids.length===1 ? `${cre.name} had a creative soul that never stopped inspiring ${pronounObj}.` : `One had a creative soul that never stopped inspiring ${pronounObj}.`)
+        : reb ? (kids.length===1 ? `${reb.name} was a free spirit who kept ${G.name} on ${pronounObj} toes — and secretly made ${pronounObj} smile.` : `One was a rebel who kept ${G.name} on ${pronounObj} toes — and secretly made ${pronounObj} smile.`)
+        : '';
+      bioLines.push(`${G.name} became a parent to ${kidWord}. ${traitLine} Raising them was the proudest achievement of ${pronounObj} life.`);
+    }
+
+    // Home and wealth chapter
+    const ph=getPrimaryHouse();
+    const netWorthFinal = G.money+(G.investments||0)+(G.houseValue||0)+(G.carValue||0);
+    if((G.properties||[]).length>=2){
+      bioLines.push(`Through smart choices and hard work, ${pronoun} built a property portfolio of ${G.properties.length} homes — a legacy of financial acumen that few match.`);
+    } else if(ph){
+      bioLines.push(`${pronoun} owned ${pronounObj} own home — ${ph.label} worth $${ph.value.toLocaleString()} — a symbol of the stability ${pronoun} worked so hard to build.`);
+    } else {
+      bioLines.push(`${pronoun} rented through life, keeping things flexible — freedom always mattered more to ${G.name} than a mortgage.`);
+    }
+
+    // Wealth milestone
+    if(netWorthFinal>=1000000){
+      bioLines.push(`By the end, ${G.name} had amassed a net worth of $${netWorthFinal.toLocaleString()} — a millionaire whose journey started from nothing.`);
+    } else if(netWorthFinal>=100000){
+      bioLines.push(`${pronoun} left behind a net worth of $${netWorthFinal.toLocaleString()}, a testament to years of careful decisions and steady effort.`);
+    } else if(netWorthFinal>0){
+      bioLines.push(`${pronoun} didn't amass a fortune, but $${netWorthFinal.toLocaleString()} was honest money, earned through real graft and real living.`);
+    }
+
+    // Achievements chapter
+    if(G.achievements.length>=8){
+      bioLines.push(`A life of remarkable achievements: trophies earned, milestones hit, and a legacy that few can match.`);
+    } else if(G.achievements.length>=4){
+      bioLines.push(`${G.name} collected ${G.achievements.length} life achievements — each one a small victory that made the journey worthwhile.`);
+    }
+
+    // Retirement
+    if(G.retired){
+      bioLines.push(`${pronoun} retired at 65, stepping back from work to finally breathe — and finding that the best years were still ahead.`);
+    }
+
+    // Closing line
+    if(G.age>=85){
+      bioLines.push(`${G.name} lived to ${G.age} — a long, full life. ${pronoun} wasn't perfect, but ${pronoun} was genuinely, completely alive.`);
+    } else if(G.age>=65){
+      bioLines.push(`${G.name} lived to ${G.age}. A full life, honestly lived — with few regrets and a story worth telling.`);
+    } else {
+      bioLines.push(`${G.name}'s story ended at ${G.age}. Short, perhaps, but never small. Every year counted.`);
+    }
+
+    bioEl.innerHTML = bioLines.map(l=>`<p style="margin-bottom:8px">${l}</p>`).join('');
   }
 
   // What you missed
@@ -2199,6 +2348,126 @@ window.toggleEndStory=function(){
     }).join('');
   }
 };
+
+window.startLegacyContinue = function(){
+  const kids = (G.family||[]).filter(m=>m.type==='child');
+  if(!kids.length){ confirmNew(); return; }
+
+  // Pick first child (oldest)
+  const legacyKid = kids.reduce((a,b)=>b.age>a.age?b:a, kids[0]);
+
+  // Calculate inheritance
+  const estate = G.money + (G.investments||0) + (G.houseValue||0) + (G.carValue||0) + (G.pensionPot||0);
+  const funeralCost = Math.round(8000*(G.inflationMult||1));
+  const afterFuneral = Math.max(0, estate - funeralCost);
+  const taxRate = G.willWritten ? 0.10 : 0.30;
+  const afterTax = Math.round(afterFuneral * (1 - taxRate));
+  const inheritance = kids.length > 0 ? Math.round(afterTax / kids.length) : 0;
+
+  // Save the parent's legacy info for reference
+  const parentName = G.name;
+  const parentAge = G.age;
+  const parentGrade = document.getElementById('end-grade').textContent;
+  const parentLegacy = getLegacy();
+
+  // Snapshot inherited assets
+  const inheritedProperties = [...(G.properties||[])].slice(0,1); // child inherits primary home
+  const inheritedCars = [...(G.cars||[])].slice(0,1);
+
+  // Build new game state for the child
+  const newG = {...DEFAULT};
+
+  // Child stats and identity
+  newG.name = legacyKid.name;
+  newG.gender = legacyKid.avatarRoll ? (legacyKid.avatarRoll.gender || 'male') : (Math.random()>0.5?'male':'female');
+  newG.age = legacyKid.age;
+
+  // Child inherits some of parent's traits scaled by age
+  const smartsInherited = Math.min(70, Math.round((G.smarts * 0.3) + (legacyKid.trait==='studious'?15:5)));
+  const healthInherited = Math.min(100, Math.round(60 + (G.health * 0.2)));
+  const happyInherited  = Math.min(90, Math.round(50 + (G.happiness * 0.2)));
+  const looksInherited  = Math.min(80, Math.round((G.looks * 0.25) + 30));
+
+  newG.smarts    = smartsInherited;
+  newG.health    = healthInherited;
+  newG.happiness = happyInherited;
+  newG.looks     = looksInherited;
+
+  // Financial inheritance
+  newG.money       = inheritance;
+  newG.investments = Math.round((G.investments||0) * 0.2); // small share of investments
+  newG.inflationMult = G.inflationMult; // same economic era
+
+  // Avatar — use child's rolled avatar
+  newG._hairStyle  = legacyKid.avatarRoll ? legacyKid.avatarRoll.hairStyle : null;
+  newG._hairColor  = legacyKid.avatarRoll ? legacyKid.avatarRoll.hairColor : 'brown';
+  newG.skinTone    = legacyKid.avatarRoll && legacyKid.avatarRoll.skinKey
+    ? (legacyKid.avatarRoll.skinKey==='light'?'#FFDBB4':legacyKid.avatarRoll.skinKey==='tan'?'#EDB98A':legacyKid.avatarRoll.skinKey==='brown'?'#D08B5B':'#FFDBB4')
+    : G.skinTone;
+
+  // Inherit properties + cars
+  if(inheritedProperties.length > 0){
+    newG.properties = inheritedProperties.map(p=>({...p}));
+    newG.houseType  = newG.properties[0].type;
+    newG.houseValue = newG.properties[0].value;
+    newG.housePurchasePrice = newG.properties[0].purchasePrice;
+    newG.mortgageBalance    = newG.properties[0].mortgageBalance;
+    newG.mortgagePayment    = newG.properties[0].mortgagePayment;
+    newG.mortgageYearsLeft  = newG.properties[0].mortgageYearsLeft;
+  }
+  if(inheritedCars.length > 0){
+    newG.cars     = inheritedCars.map(c=>({...c}));
+    newG.carType  = newG.cars[0].type;
+    newG.carValue = newG.cars[0].value;
+  }
+
+  // Child's birth background — parent's legacy becomes their birthright
+  newG.birthBackground = estate>=500000 ? '🏰 Wealthy Family (Inherited)' :
+                         estate>=100000 ? '🏡 Middle Class Family (Inherited)' : '🏠 Working Class Family (Inherited)';
+
+  // Education based on age
+  if(legacyKid.age>=18)      newG.education='highschool';
+  else if(legacyKid.age>=13) newG.education='none';
+  else                       newG.education='none';
+
+  // School/path milestones — mark as done if child is old enough
+  if(legacyKid.age>=6)  newG.schoolChosen=true;
+  if(legacyKid.age>=18) newG.age18PathChosen=true;
+  if(legacyKid.age>=22) newG.age22SpecChosen=true;
+
+  // Energy and max energy by age
+  if(legacyKid.age<13)      newG.maxEnergy=3;
+  else if(legacyKid.age<18) newG.maxEnergy=4;
+  else                       newG.maxEnergy=6;
+  newG.energy = newG.maxEnergy;
+
+  // Parent's legacy as first log entry
+  newG.log = [
+    {age:legacyKid.age, msg:`🌟 LEGACY: ${legacyKid.name}'s story begins at age ${legacyKid.age}. ${pronoun_(newG.gender)} inherited $${inheritance.toLocaleString()} from ${parentName} (age ${parentAge} · ${parentLegacy}).`, type:'legend'},
+    {age:legacyKid.age, msg:`💛 Your parent ${parentName} left you with love, memories, and a foundation. Honour their legacy.`, type:'event'},
+  ];
+  if(inheritance>0) newG.log.unshift({age:legacyKid.age, msg:`💰 Inherited $${inheritance.toLocaleString()} from ${parentName}'s estate.`, type:'good'});
+  if(inheritedProperties.length>0) newG.log.unshift({age:legacyKid.age, msg:`🏠 Inherited ${inheritedProperties[0].label} — now yours to keep or sell.`, type:'good'});
+
+  newG.achievements = [];
+  newG.family = [];
+
+  // Transfer the game state
+  G = newG;
+
+  // Save and launch
+  save();
+
+  // Hide end screen, show game
+  document.getElementById('end-screen').classList.remove('active');
+  document.getElementById('game-screen').classList.add('active');
+  launchGame();
+
+  setTimeout(()=>showMascotBubble(`🦉 Welcome, ${G.name}! Your parent ${parentName} left you quite the head start. Make them proud! 🌟`, 6000), 800);
+  setTimeout(()=>showNewspaper(`${G.name.toUpperCase()} BEGINS A NEW CHAPTER! THE LEGACY CONTINUES!`), 1200);
+};
+
+function pronoun_(gender){ return gender==='female'?'She':'He'; }
 window.confirmNew=function(){ showModal('⚠️','Start Over?','This will erase your current life. Are you sure?',[{l:'🌱 Yes, new life!',fn:'_restart',style:'dan'},{l:'❌ Cancel',m:{},style:'sec'}],'WAIT!','negative'); };
 function showLegacyScreen() {
   const legacy = getLegacy();
