@@ -1071,6 +1071,16 @@ const DEFAULT = {
   // Smarts decay tracking
   noStudyYears:0,
   // Child traits
+  // ── Consequence system (new) ──
+  financialTrauma:0,        // 0-100, set when going broke; debuffs savings rate
+  chronicCondition:false,   // permanent health debuff from prolonged neglect
+  careerCap:null,           // max tier permanently locked by dropout or choices
+  divorceDebuffYears:0,     // years of post-divorce debuff remaining
+  healthNeglectYears:0,     // consecutive years with health<50 (no doctor)
+  happyNeglectYears:0,      // consecutive years with happiness<40
+  jobLossRiskYears:0,       // years of mid-life job instability
+  medicalCostsRetired:0,    // annual healthcare costs post-65
+  lastJobLossAge:0,         // age of last involuntary job loss
 };
 let G = {...DEFAULT};
 let chosenGender = 'male';
@@ -1470,6 +1480,8 @@ function generateJobOffers() {
 
   // Helper: check all hard requirements are truly met (no tolerance gap)
   function meetsAllReqs(rung){
+    // Career cap: sustained job loss in mid-life locks upper tiers
+    if(G.careerCap && rung.tier > G.careerCap) return false;
     if(G.age < rung.minAge) return false;
     if(G.smarts < rung.minSmarts) return false;
     if((rung.minLooks||0) > 0 && G.looks < rung.minLooks) return false;
@@ -3365,6 +3377,20 @@ function renderWork(){
     }
   }
 
+  // ── Active debuffs panel ──
+  const debuffs=[];
+  if(G.chronicCondition) debuffs.push('😷 Chronic condition: −3 Health/yr');
+  if((G.financialTrauma||0)>20) debuffs.push(`💸 Financial trauma: investment returns reduced (${G.financialTrauma}% severity)`);
+  if(G.careerCap) debuffs.push(`⚠️ Career ceiling: max Tier ${G.careerCap} (mid-life redundancy impact)`);
+  if((G.divorceDebuffYears||0)>0) debuffs.push(`💔 Divorce recovery: ${G.divorceDebuffYears} yr${G.divorceDebuffYears!==1?'s':''} remaining`);
+  if(debuffs.length>0){
+    const debuffEl=document.createElement('div');
+    debuffEl.style.cssText='background:#FFF3E0;border:2px solid #FF9800;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px';
+    debuffEl.innerHTML=`<div style="font-size:.72em;font-weight:900;color:#E65100;margin-bottom:4px">⚠️ Life Consequences</div>`+
+      debuffs.map(d=>`<div style="font-size:.78em;font-weight:800;color:var(--ink);margin-bottom:3px">${d}</div>`).join('');
+    el.appendChild(debuffEl);
+  }
+
   // Browse all jobs
   const browseLbl=document.createElement('div');
   browseLbl.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:8px;margin-top:10px;cursor:pointer;display:flex;align-items:center;gap:6px';
@@ -4130,22 +4156,32 @@ function ageUp(){
   applyInflation();
 
   if((G.investments||0)>0){
-    const growth=G.investments*0.04;
-    const crash=Math.random()<0.07;
+    // Base return 2.5% (was 4%) — reflects realistic long-run after inflation
+    // Financial trauma from past bankruptcy reduces returns (risk aversion)
+    const traumaPenalty = Math.min((G.financialTrauma||0)*0.005, 0.015);
+    const growthRate = Math.max(0.01, 0.025 - traumaPenalty);
+    const growth=G.investments*growthRate;
+    // Crash: 10% chance (was 7%), larger loss 8-18% (was 5-13%)
+    const crash=Math.random()<0.10;
     if(crash){
-      const loss=Math.floor(G.investments*(0.05+Math.random()*0.08));
+      const loss=Math.floor(G.investments*(0.08+Math.random()*0.10));
       G.investments=Math.max(0,G.investments-loss);
       addLog(`📉 Market crash! Portfolio lost $${loss.toLocaleString()}!`,'bad');
       SoundManager.fail();
+      applyMod({happiness:-5});
     }else{
       G.investments=Math.floor(G.investments+growth);
-      addLog(`📈 Investments grew by $${Math.floor(growth).toLocaleString()}! (4%)`,'good');
+      if(G.age%3===0) addLog(`📈 Investments: +$${Math.floor(growth).toLocaleString()} (${(growthRate*100).toFixed(1)}%)`,'good');
     }
   }
 
   if(G.job&&!G.retired){
     const worldSalMult=(G.worldModifiers||[]).reduce((m,mod)=>m*(mod.salaryMult||1),1);
-    const preTaxSalary=Math.round(G.salary*worldSalMult);
+    // Education multiplier: lacking required degree = reduced effective pay
+    const jDef2=getJobDef(G.job);
+    const needsDeg=jDef2&&jDef2.needsDegree;
+    const eduMult=(needsDeg&&G.education==='none')?0.70:(needsDeg&&G.education==='highschool')?0.85:1.0;
+    const preTaxSalary=Math.round(G.salary*worldSalMult*eduMult);
     // Progressive income tax
     let taxRate=0;
     if(preTaxSalary>=30000)taxRate=0.45;
@@ -4226,7 +4262,9 @@ function ageUp(){
                          G.job    ? G.salary :
                                     Math.round(800*(G.inflationMult||1)); // welfare
     const rawRent = Math.round(annualIncome * 0.30);
-    const rent = Math.min(Math.max(rawRent, 600), Math.round(8000*(G.inflationMult||1)));
+    // Post-50 renters face landlord premium — harder to find affordable housing
+    const rentCap = G.age>=50 ? Math.round(12000*(G.inflationMult||1)) : Math.round(8000*(G.inflationMult||1));
+    const rent = Math.min(Math.max(rawRent, 600), rentCap);
     G.rentPerYear = rent;
     applyMod({money:-rent});
     if(G.age%3===0) addLog(`🏠 Rent: −$${rent.toLocaleString()}/yr (30% of income)`, 'info');
@@ -4241,12 +4279,16 @@ function ageUp(){
     syncCompatAliases();
   }
 
-  // Annual child costs (per child, age-dependent)
+  // Annual child costs — age-scaled and more realistic
   if(G.family){
     const kids = G.family.filter(m=>m.type==='child'&&m.age<18);
     if(kids.length>0){
-      const costPerKid = Math.round(2500*(G.inflationMult||1));
-      const totalKidCost = costPerKid * kids.length;
+      let totalKidCost = 0;
+      kids.forEach(kid=>{
+        // Teen years (13-17) cost more: activities, food, clothes
+        const base = kid.age>=13 ? 5500 : 4000;
+        totalKidCost += Math.round(base*(G.inflationMult||1));
+      });
       applyMod({money:-totalKidCost});
       if(G.age%2===0) addLog(`👶 Child expenses: −$${totalKidCost.toLocaleString()} (${kids.length} kid${kids.length>1?'s':''})`, 'info');
     }
@@ -4330,6 +4372,16 @@ function ageUp(){
     G.pensionPot += potGrowth;
   }
 
+  // ── Post-retirement healthcare costs (age 65+) ──
+  if(G.age>=65){
+    // Base healthcare cost rises sharply each decade
+    const baseHealthCare = G.age>=85 ? 4500 : G.age>=75 ? 3000 : 1500;
+    const adjHealthCare = Math.round(baseHealthCare*(G.inflationMult||1));
+    G.medicalCostsRetired = adjHealthCare;
+    applyMod({money:-adjHealthCare});
+    if(G.age%3===0) addLog(`🏥 Healthcare costs: −$${adjHealthCare.toLocaleString()}/yr`,'info');
+  }
+
   // ── Health conditions drain ──
   if((G.conditions||[]).length>0){
     G.conditions.forEach(cond=>{
@@ -4341,6 +4393,41 @@ function ageUp(){
         if(G.age%2===0) addLog(`🤒 ${cond.label} affecting your health. −${cond.drain} Health.`, 'bad');
       }
     });
+  }
+
+  // ── Health neglect tracking → chronic condition ──
+  if(G.age>=25){
+    if(G.health<50){
+      G.healthNeglectYears = (G.healthNeglectYears||0)+1;
+      if(G.healthNeglectYears===5&&!G.chronicCondition){
+        G.chronicCondition = true;
+        addLog(`😷 Years of poor health caught up — you developed a chronic condition. Health will decay faster permanently.`,'bad');
+        SoundManager.fail(); shakeScreen();
+        showMascotBubble('🦉 5 years of low health — you now have a chronic condition. Take care of yourself! 🏥',5000);
+      }
+      if(G.chronicCondition){
+        // Extra permanent health drain on top of existing decay
+        applyMod({health:-3});
+        if(G.age%3===0) addLog(`😷 Chronic condition: −3 Health this year`,'bad');
+      }
+    } else {
+      // Recovery: only clears neglect counter, NOT the chronic condition (permanent)
+      G.healthNeglectYears = Math.max(0,(G.healthNeglectYears||0)-1);
+    }
+  }
+
+  // ── Happiness neglect → mental health spiral ──
+  if(G.age>=18){
+    if(G.happiness<40){
+      G.happyNeglectYears = (G.happyNeglectYears||0)+1;
+      if(G.happyNeglectYears>=4){
+        // Sustained unhappiness bleeds into health and smarts
+        applyMod({health:-2,smarts:-1});
+        if(G.age%2===0) addLog(`😔 Prolonged unhappiness is affecting your health and focus.`,'bad');
+      }
+    } else {
+      G.happyNeglectYears = Math.max(0,(G.happyNeglectYears||0)-1);
+    }
   }
 
   // ── Smarts decay (age 70+, no studying) ──
@@ -4391,6 +4478,20 @@ function ageUp(){
     }
   });
 
+  // ── Divorce debuff decay ──
+  if((G.divorceDebuffYears||0)>0){
+    G.divorceDebuffYears--;
+    // Suppressed happiness recovery during debuff years
+    applyMod({happiness:-5});
+    if(G.divorceDebuffYears===0) addLog('💙 Slowly healing from the divorce. Things are looking up.','good');
+    else if(G.age%2===0) addLog(`💔 Still recovering from divorce (${G.divorceDebuffYears} yr${G.divorceDebuffYears!==1?'s':''} of healing left).`,'info');
+  }
+
+  // ── Financial trauma decay ──
+  if((G.financialTrauma||0)>0){
+    G.financialTrauma = Math.max(0, G.financialTrauma - 2); // slow recovery
+  }
+
   // ── Overdraft spiral ──
   if(G.money<0){
     const interest=Math.floor(Math.abs(G.money)*0.05);
@@ -4404,14 +4505,41 @@ function ageUp(){
         syncCompatAliases();
         addLog(`😰 Forced to sell ${forceCar.label} to cover debts. +$${forceCar.value.toLocaleString()}`,'bad');
         applyMod({happiness:-15});
+        G.financialTrauma = Math.min(100,(G.financialTrauma||0)+20);
       } else if((G.properties||[]).length>0){
         const forceHouse=G.properties.pop();
         G.money+=forceHouse.value;
         syncCompatAliases();
         addLog(`😱 Forced to sell ${forceHouse.label} to clear debts!`,'bad');
         applyMod({happiness:-30});
+        G.financialTrauma = Math.min(100,(G.financialTrauma||0)+40); // lasting financial scar
         SoundManager.fail(); shakeScreen();
       }
+    }
+  }
+
+  // ── Mid-life job instability (40-55) ──
+  if(G.job&&!G.retired&&G.age>=40&&G.age<=55){
+    // Chance of redundancy increases per year in same role after 40
+    const staleRisk = Math.min(0.06, (G.yearsInRole||0)*0.008);
+    const recessionPenalty = (G.worldModifiers||[]).some(m=>m.salaryMult<1) ? 0.05 : 0;
+    if(Math.random()<staleRisk+recessionPenalty){
+      const jDef=getJobDef(G.job);
+      const sev = G.age>=50?'senior':G.age>=45?'mid':'junior'; // harder at older age
+      G.jobLossRiskYears=(G.jobLossRiskYears||0)+1;
+      G.lastJobLossAge=G.age;
+      const pkg=Math.round(G.salary*(G.age>=50?1.5:0.8)); // redundancy payout
+      addLog(`📋 Restructuring: your ${G.jobTitle} role was eliminated. Redundancy: +$${pkg.toLocaleString()}`,'bad');
+      applyMod({money:pkg,happiness:-20,smarts:-2});
+      G.job=null; G.jobTitle='Unemployed'; G.salary=0; G.promotionChance=0; G.yearsInRole=0;
+      G.misfortune=Math.min((G.misfortune||0)+25,100);
+      SoundManager.fail(); shakeScreen();
+      // Career cap: repeated job losses cap tier access
+      if(G.jobLossRiskYears>=2&&!G.careerCap){
+        G.careerCap=3; // can't reach tier 4-5 anymore without reskilling
+        addLog(`⚠️ Two redundancies in middle age — your career ceiling has dropped.`,'bad');
+      }
+      showMascotBubble('🦉 Mid-life redundancy is tough. You may need to reskill or pivot careers! 💪',5000);
     }
   }
 
@@ -4905,6 +5033,15 @@ function continueLife(){
     if(G.burnoutActive===undefined)G.burnoutActive=false;
     if(G.sideHustle===undefined)G.sideHustle=null;
     if(G.sideHustleIncome===undefined)G.sideHustleIncome=0;
+    if(G.financialTrauma===undefined)G.financialTrauma=0;
+    if(G.chronicCondition===undefined)G.chronicCondition=false;
+    if(G.careerCap===undefined)G.careerCap=null;
+    if(G.divorceDebuffYears===undefined)G.divorceDebuffYears=0;
+    if(G.healthNeglectYears===undefined)G.healthNeglectYears=0;
+    if(G.happyNeglectYears===undefined)G.happyNeglectYears=0;
+    if(G.jobLossRiskYears===undefined)G.jobLossRiskYears=0;
+    if(G.medicalCostsRetired===undefined)G.medicalCostsRetired=0;
+    if(G.lastJobLossAge===undefined)G.lastJobLossAge=0;
     if(G.willWritten===undefined)G.willWritten=false;
     if(G.mortgageBalance===undefined)G.mortgageBalance=0;
     if(G.mortgagePayment===undefined)G.mortgagePayment=0;
@@ -5488,6 +5625,27 @@ window.rhythmTap=function(){
 // ══════════════════════════════════════════
 // RELATIONSHIP DEPTH SYSTEM
 // ══════════════════════════════════════════
+function applyDivorce(){
+  const spouse=(G.family||[]).find(m=>m.type==='spouse');
+  const spouseName=spouse?spouse.name:(G.partnerName||'your spouse');
+  // Asset split: 50% of money and investments
+  const moneyLost=Math.floor(G.money*0.5);
+  const invLost=Math.floor((G.investments||0)*0.5);
+  G.money=Math.max(0,G.money-moneyLost);
+  G.investments=Math.max(0,(G.investments||0)-invLost);
+  // Remove spouse from family
+  G.family=(G.family||[]).filter(m=>m.type!=='spouse');
+  G.spouseIncome=0; G.spouseMood=0; G.marriageAge=null; G.partnerName=null;
+  // Multi-year debuff: 4 years of reduced happiness recovery
+  G.divorceDebuffYears=4;
+  const lost=moneyLost+invLost;
+  addLog(`💔 Divorce from ${spouseName} — lost 50% of assets ($${lost.toLocaleString()}). 4-year emotional recovery.`,'bad');
+  applyMod({happiness:-35,health:-10});
+  G.misfortune=Math.min((G.misfortune||0)+30,100);
+  SoundManager.gameOver(); shakeScreen();
+  showMascotBubble('🦉 Divorce is one of life's hardest events. Take time to recover. 💙',5000);
+}
+
 function updateRelationshipSystem(){
   // Called during ageUp — relationship events
   if(!G.partnerName||G.marriageAge)return;
@@ -5513,17 +5671,12 @@ function updateRelationshipSystem(){
     checkAchievements();save();updateUI();return true;
   }
 
-  // Divorce check — now also driven by spouseMood
+  // Divorce check — driven by both relationship score and spouse mood
   if(G.marriageAge&&((G.relationshipScore||50)<30||(G.spouseMood||80)<25)&&G.age>(G.marriageAge+5)){
-    if(Math.random()<0.25){
-      const spouseName=(G.family||[]).find(m=>m.type==='spouse')?.name||'spouse';
-      const split=Math.floor(G.money*0.5);
-      G.family=(G.family||[]).filter(m=>m.type!=='spouse');
-      G.marriageAge=null;G.partnerName=null;G.datingCooldown=G.age+5;G.relationshipScore=0;
-      applyMod({happiness:-30,money:-split});
-      addLog(`💔 Divorced ${spouseName} at age ${G.age}. Split $${split.toLocaleString()}.`,'bad');
-      SoundManager.fail();shakeScreen();
-      showMascotBubble('🦉 Divorce is tough. Take care of yourself. 💙',5000);
+    const divorceProb = (G.spouseMood||80)<15 ? 0.45 : 0.25; // worse mood = higher chance
+    if(Math.random()<divorceProb){
+      G.datingCooldown=G.age+5;G.relationshipScore=0;G.spouseIncome=0;
+      applyDivorce(); // full 50/50 split + multi-year debuff
       return true;
     }
   }
@@ -5554,6 +5707,8 @@ function triggerReflection(age){
   if(!(G.family||[]).find(m=>m.type==='spouse')) regrets.push({icon:'💕',text:'The quiet house feels lonely sometimes.'});
   if(G.smarts<50) regrets.push({icon:'📚',text:'You wonder what you could have achieved with more education.'});
   if(G.health<50) regrets.push({icon:'❤️',text:'You wish you\'d looked after yourself better.'});
+  if(G.chronicCondition) regrets.push({icon:'😷',text:'Years of neglecting your health left a permanent mark.'});
+  if((G.divorceAge||0)>0||(G.jobLossRiskYears||0)>=2) regrets.push({icon:'💔',text:'Some of life\'s harder knocks still sting.'});
 
   // Limit to 3 each
   const showPositives=positives.slice(0,2);
