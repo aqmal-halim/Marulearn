@@ -1073,6 +1073,9 @@ const DEFAULT = {
   // Estate
   willWritten:false,
   funeralCost:0,
+  // Student loans — FIX #30: included in DEFAULT to prevent NaN on new games
+  loanRepayment:0,
+  loanYearsLeft:0,
   // Mortgage
   mortgageBalance:0,
   mortgagePayment:0,
@@ -1241,14 +1244,14 @@ const CAREER_TRACKS = {
   medical: {name:'Medical',  emoji:'🏥', prestige:5, rungs:[
     {id:'orderly',      emoji:'🏥', title:'Hospital Orderly',     salary:1800,  minAge:18, minSmarts:35, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'nurse',        emoji:'💉', title:'Nurse',                salary:3800,  minAge:22, minSmarts:50, minLooks:0,  minEdu:'highschool', needsDegree:false,  tier:2, yearsRequired:2},
-    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
+    {id:'doctor',       emoji:'👨‍⚕️', title:'Doctor',             salary:11000, minAge:28, minSmarts:75, minLooks:0,  minEdu:'university', needsDegree:true,  tier:3, yearsRequired:2},
     {id:'surgeon',      emoji:'🔬', title:'Surgeon',              salary:18000, minAge:33, minSmarts:88, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
     {id:'chief_medicine',emoji:'🏆',title:'Chief of Medicine',    salary:25000, minAge:40, minSmarts:92, minLooks:0,  minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
   legal:   {name:'Legal',    emoji:'⚖️', prestige:4, rungs:[
     {id:'paralegal',    emoji:'📋', title:'Paralegal',            salary:2200,  minAge:18, minSmarts:50, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
-    {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:22, minSmarts:60, minLooks:20, minEdu:'university', needsDegree:false, tier:2, yearsRequired:2},
-    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:72, minLooks:35, minEdu:'university', needsDegree:false, tier:3, yearsRequired:2},
+    {id:'jr_lawyer',    emoji:'⚖️', title:'Junior Lawyer',        salary:5500,  minAge:22, minSmarts:60, minLooks:20, minEdu:'university', needsDegree:true,  tier:2, yearsRequired:2},
+    {id:'lawyer',       emoji:'⚖️', title:'Lawyer',               salary:9000,  minAge:28, minSmarts:72, minLooks:35, minEdu:'university', needsDegree:true,  tier:3, yearsRequired:2},
     {id:'sr_partner',   emoji:'🏛️', title:'Senior Partner',       salary:16000, minAge:34, minSmarts:85, minLooks:50, minEdu:'graduate',   needsDegree:true,  tier:4, yearsRequired:3},
     {id:'judge',        emoji:'🔨', title:'Judge',                salary:22000, minAge:40, minSmarts:90, minLooks:55, minEdu:'graduate',   needsDegree:true,  tier:5, yearsRequired:3},
   ]},
@@ -2008,8 +2011,10 @@ function getLegacy() {
   const netWorth = G.money + (G.investments||0);
   if(netWorth>=1000000) return '💎 Millionaire';
   if(G.smarts>=90)      return '🎓 Scholar';
-  if(G.job==='doctor'||G.jobTitle==='Doctor') return '👨‍⚕️ Doctor';
-  if(G.job==='ceo'||G.jobTitle==='CEO')       return '🏢 CEO';
+  // FIX #20: check career track so surgeons, chiefs etc. also qualify
+  if(G.careerTrack==='medical'||(G.careerHistory||[]).includes('medical')) return '👨‍⚕️ Doctor';
+  if(G.careerTrack==='tech'&&(G.peakCareerTier||0)>=4)                     return '💻 Tech Leader';
+  if(G.job==='ceo'||G.jobTitle==='CEO'||(G.careerTrack==='business'&&(G.peakCareerTier||0)>=5)) return '🏢 CEO';
   if(G.education==='graduate') return '🔬 Graduate';
   if(G.looks>=85)       return '✨ Icon';
   if(G.age>=90)         return '🌟 Legend';
@@ -2820,30 +2825,7 @@ function startScrambleMiniGame(onWin,onFail){
   };
 
   doWord();
-  // Prevent old-style startScrambleMiniGame from running
-  return;
-  // (original code below kept for safety but unreachable)
-  // ORIGINAL_FALLBACK_START
-  const w=WORDS[Math.floor(Math.random()*WORDS.length)];
-  const scrambled=w.word.split('').sort(()=>Math.random()-.5);
-  mgState={scrambled,chosen:[],word:w.word,onWin,onFail};
-  function render(){
-    const extra=document.getElementById('m-extra');
-    if(!extra)return;
-    extra.innerHTML=`<div class="minigame-box"><div style="font-size:.85em;font-weight:800;color:var(--ink2);margin-bottom:6px">${w.hint}</div><div class="answer-row" id="ans-row">${Array(w.word.length).fill(0).map((_,i)=>`<div class="answer-slot ${i<mgState.chosen.length?'filled':''}" onclick="removeScrambleLetter(${i})">${mgState.chosen[i]||''}</div>`).join('')}</div><div class="scramble-letters" id="scr-letters">${scrambled.map((l,i)=>`<div class="letter-tile" onclick="addScrambleLetter('${l}',${i})">${l}</div>`).join('')}</div><div class="mg-feedback" id="mg-fb"></div><div style="margin-top:10px;display:flex;gap:8px"><button type="button" class="mbtn sec" style="flex:1" onclick="clearScramble()">🔄 Clear</button><button type="button" class="mbtn pri" style="flex:1" onclick="submitScramble()">✅ Submit</button></div></div>`;
-  }
-  window._renderScramble=render;
-  const mc=document.getElementById('modal-card');
-  mc.className='modal-card positive';
-  document.getElementById('m-sfx').style.display='block';
-  document.getElementById('m-sfx').textContent='SPELL IT!';
-  document.getElementById('m-icon').textContent='🔤';
-  document.getElementById('m-title').textContent='Word Scramble!';
-  document.getElementById('m-body').style.display='block';
-  document.getElementById('m-body').textContent='Unscramble the letters to earn Smarts!';
-  document.getElementById('m-btns').innerHTML='';
-  document.getElementById('modal').style.display='flex';
-  render();
+  // FIX #27: removed dead fallback code that was unreachable after return
 }
 
 window.addScrambleLetter=function(letter,idx){
@@ -2852,8 +2834,11 @@ window.addScrambleLetter=function(letter,idx){
   if(window._renderScramble)window._renderScramble();
 };
 window.removeScrambleLetter=function(i){
-  if(i<mgState.chosen.length){
-    mgState.chosen.splice(i,1);
+  // FIX #17: always remove the last placed letter (pop), not a middle index.
+  // Tapping any filled slot removes the most-recently placed letter, which is
+  // the natural undo behaviour kids expect — no confusing mid-array shifts.
+  if(mgState.chosen && mgState.chosen.length>0 && i<mgState.chosen.length){
+    mgState.chosen.pop();
     if(window._renderScramble)window._renderScramble();
   }
 };
@@ -3427,6 +3412,7 @@ function renderActivities(){
     if(a<minAge)return;
     const item=actItem(emoji,title,energySub(subBase,key),()=>{
       if(!useEnergy(energyCost))return;
+      incActCount(key); // FIX #22: was missing — school activities now have proper diminishing returns
       fn();
       renderActivities();
     });
@@ -3462,7 +3448,8 @@ function renderActivities(){
     const s=scaledBonus('read',8),h=scaledBonus('read',3);
     incActCount('read');
     const changes=[{label:'Smarts',val:s},{label:'Happiness',val:h},{label:'Health',val:-3},{label:'Looks',val:-2}];
-    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3,looks:-2});addLog(`Read a book 📖 +${s} Smarts, +${h} Happy`,'good');}
+    // FIX #16: guard against printing "+negative" in log messages
+    if(s>0||h>0){applyMod({smarts:s,happiness:h,health:-3,looks:-2});addLog(`Read a book 📖 ${s>0?'+'+s:''}${s>0?' Smarts':''}${h>0?' +'+h+' Happy':''}`.trim(),'good');}
     else{applyMod({health:-3});addLog('Read a book — nothing new to learn 📖','info');}
     showStatCard('📖 Read a Book',changes);triggerCharReaction(s>0?'jump':'slump');SoundManager.success();
   });
@@ -3526,8 +3513,10 @@ function renderActivities(){
       addLog(`Meditated 🧘 +${h} Happy, +${hp} Health`,'good');
       // Burnout recovery
       if(G.burnoutActive&&G.happiness>=60){
-        G.burnoutActive=false;G.grindStreak=0;G.maxEnergy=5;
-        addLog('💚 Recovered from burnout! Energy back to 5/yr.','good');
+        G.burnoutActive=false;G.grindStreak=0;
+        // FIX #4: restore correct maxEnergy for age bracket, not hardcoded 5
+        G.maxEnergy = G.age < 13 ? 3 : G.age < 18 ? 4 : G.age < 60 ? 6 : 4;
+        addLog('💚 Recovered from burnout! Energy back to full capacity.','good');
         showMascotBubble('🦉 Burnout cleared! You\'re refreshed and ready. 💪',4000);
       }
     }
@@ -4531,14 +4520,25 @@ function renderBank(){
 function renderTrophies(){
   const el=document.getElementById('panel-cups');
   if(!el)return;
-  el.innerHTML=`<div class="trophy-counter">🏆 ${G.achievements.length} / ${ALL_ACHIEVEMENTS.length} trophies collected</div>
-  <div class="trophy-shelf">
-    <div class="trophy-shelf-top"></div>
-    <div class="trophy-grid">${ALL_ACHIEVEMENTS.map(a=>{
-      const unlocked=G.achievements.includes(a.id);
-      return`<div class="trophy-item${unlocked?' unlocked':''}" onclick="${unlocked?`showMascotBubble('🦉 ${a.name}: ${a.desc}',4000)`:''}"><span class="trophy-emoji${unlocked?'':' trophy-locked'}">${a.emoji}</span><div class="trophy-name">${unlocked?a.name:a.desc}</div></div>`;
-    }).join('')}</div>
-  </div>`;
+  el.innerHTML='';
+  // FIX #12: renderTrophies is the canonical renderer — include progress bar (was only in renderCups)
+  const progWrap=document.createElement('div');progWrap.id='trophy-progress-wrap';
+  el.appendChild(progWrap);
+  renderTrophyProgress();
+  const shelf=document.createElement('div');shelf.className='trophy-shelf';
+  const top=document.createElement('div');top.className='trophy-shelf-top';shelf.appendChild(top);
+  const grid=document.createElement('div');grid.className='trophy-grid';
+  ALL_ACHIEVEMENTS.forEach(a=>{
+    const unlocked=G.achievements.includes(a.id);
+    const rc=a.rarity==='legendary'?'trophy-legendary-item':a.rarity==='rare'?'trophy-rare':'trophy-common';
+    const div=document.createElement('div');
+    div.className='trophy-item '+(unlocked?'unlocked '+rc:'trophy-locked');
+    div.innerHTML=`<span class="trophy-emoji">${a.emoji}</span><div class="trophy-name">${a.name}</div><div style="font-size:.62em;color:var(--ink2);margin-top:3px">${unlocked?a.desc:'???'}</div>`;
+    if(unlocked) div.onclick=()=>showMascotBubble(`🦉 ${a.name}: ${a.desc}`,4000);
+    grid.appendChild(div);
+  });
+  shelf.appendChild(grid);
+  el.appendChild(shelf);
 }
 
 // ══════════════════════════════════════════
@@ -4602,7 +4602,11 @@ function showFamilyEventModal(member, icon, title, speechText, choices, sfx, typ
 // ══════════════════════════════════════════
 function triggerRandomEvent(){
   const r=Math.random()*100;
-  // Bad rare events (10% up from 7%)
+  // FIX #7: restructured probability bands — all contiguous, no gaps
+  // 0–10: bad events (10%)
+  // 10–20: health condition events for age 30+ (10%), otherwise fall through to good
+  // 20–45: good events (25%)
+  // 45–100: nothing (quiet year — 55%)
   if(r<10){
     const badEvents=[
       ()=>{if(G.money<1000)return false;const loss=rand(5000,20000);applyMod({money:-loss,happiness:-10});addLog(`⚖️ LAWSUIT! Lost $${loss.toLocaleString()}.`,'bad');SoundManager.fail();shakeScreen();flashRed();G.misfortune=Math.min((G.misfortune||0)+15,100);return true;},
@@ -4612,10 +4616,11 @@ function triggerRandomEvent(){
       ()=>{if(G.money<200)return false;const cost=rand(800,3500);applyMod({money:-cost,happiness:-8,health:-5});addLog(`🔧 Car breakdown! Repair cost $${cost.toLocaleString()}.`,'bad');SoundManager.fail();return true;},
       ()=>{applyMod({health:-15,happiness:-10});addLog('🤒 Bad illness — off sick for weeks. −15 Health, −10 Happy.','bad');SoundManager.fail();return true;},
     ];
-    for(let i=0;i<4;i++){const fn=badEvents[Math.floor(Math.random()*badEvents.length)];if(fn())return;}
-  // Good rare events (15% up from 5%)
-  }else if(r>=10&&r<16&&G.age>=30){
-    // Health condition events
+    // FIX #18: retry with different events (not same random pick) to avoid always skipping broke players
+    const shuffled=[...badEvents].sort(()=>Math.random()-.5);
+    for(let i=0;i<shuffled.length;i++){if(shuffled[i]())return;}
+  } else if(r<20&&G.age>=30){
+    // Health condition events (age 30+)
     const condPool=[
       {id:'diabetes',  label:'Type 2 Diabetes', drain:3, managedCost:Math.round(800*(G.inflationMult||1))},
       {id:'backpain',  label:'Chronic Back Pain',drain:2, managedCost:Math.round(500*(G.inflationMult||1))},
@@ -4638,7 +4643,13 @@ function triggerRandomEvent(){
         'OH NO!','negative');
       checkAchievements();save();updateUI();return;
     }
-  }else if(r<25){
+    // If no eligible conditions (all 4 already diagnosed), fall through to good events
+    const goodFallback=[
+      ()=>{const amt=rand(2000,8000);applyMod({money:amt,happiness:10});addLog(`🍀 LUCKY BREAK! +$${amt.toLocaleString()}`,'good');SoundManager.money();burst(30);},
+      ()=>{applyMod({smarts:8,happiness:12});addLog('📰 Featured in local news! +8 Smarts, +12 Happy','good');SoundManager.levelUp();burst(25);},
+    ];
+    goodFallback[Math.floor(Math.random()*goodFallback.length)]();
+  } else if(r<45){
     const goodEvents=[
       ()=>{const amt=rand(5000,30000);applyMod({money:amt,happiness:15});addLog(`🏛️ INHERITANCE! +$${amt.toLocaleString()}!`,'good');SoundManager.legend();burst(50);},
       ()=>{applyMod({looks:10,happiness:20,money:rand(1000,5000)});addLog('🔥 VIRAL POST! Fame boost! +Looks +Happy','good');SoundManager.levelUp();burst(40);},
@@ -4649,6 +4660,7 @@ function triggerRandomEvent(){
     ];
     const fn=goodEvents[Math.floor(Math.random()*goodEvents.length)]; fn();
   }
+  // r >= 45: quiet year, no random event
 }
 
 // ══════════════════════════════════════════
@@ -4702,6 +4714,11 @@ function closeModal(){
   document.getElementById('m-extra').innerHTML='';
   document.getElementById('m-sfx').style.display='none';
   document.getElementById('m-body').style.display='block';
+  // FIX #1: clear stale mini-game state so leftover handlers don't fire on next modal
+  window._renderScramble = null;
+  window.submitScramble = null;
+  window.submitEasyScramble = null;
+  mgState = {};
 }
 
 // ══════════════════════════════════════════
@@ -4855,7 +4872,6 @@ function ageUp(){
   G._promotionPending=false;
   G._ollieHealthWarned=false;
   G._ollieHappyWarned=false;
-  SoundManager.birthday();
   triggerConfetti();
   // Life scrapbook sticker log entries
   const _stickers={6:'🎒 ─── Starting School! ───',13:'🧑 ─── Hello Teenage Years! ───',18:'🎓 ─── Grown Up! ───',22:'💼 ─── Adult Life Begins! ───',40:'🌟 ─── Life Reflection ───',60:'🌟 ─── Life Reflection ───',80:'🌟 ─── Life Reflection ───'};
@@ -4866,16 +4882,19 @@ function ageUp(){
     G.log.unshift({age:G.age,msg:_stickers[G.age],type:'sticker'});
   }
 
+  // FIX #4: Set base maxEnergy by age bracket, but preserve burnout cap if active
   if(G.age < 13)       G.maxEnergy = 3;
   else if(G.age < 18)  G.maxEnergy = 4;
   else if(G.age < 60)  G.maxEnergy = 6;
   else                  G.maxEnergy = 4;
+  if(G.burnoutActive) G.maxEnergy = Math.min(G.maxEnergy, 3); // FIX #4: burnout cap survives age-up
 
+  // FIX #3: energy refill is exactly maxEnergy (restBonus not used to overfill)
   const bonus=(G.restBonus||0);
-  G.energy=Math.min(G.maxEnergy, G.maxEnergy + bonus);
+  G.energy = Math.min(G.maxEnergy, G.maxEnergy + bonus); // bonus can't exceed cap
   G.restBonus=0;
 
-  // Birthday celebrations
+  // Birthday celebrations — FIX #2: SoundManager.birthday() only here (removed duplicate above)
   shootBalloons();
   if([10,16,18,21,30,50,65,80,100].includes(G.age)){
     SoundManager.birthday();
@@ -4934,7 +4953,8 @@ function ageUp(){
         : 'A long life, well lived.';
     G.health=Math.max(G.health,0);G.happiness=Math.max(G.happiness,0);
     // Estate settlement
-    const estate=G.money+(G.houseValue||0)+(G.carValue||0)+(G.investments||0)+(G.pensionPot||0);
+    // FIX #8: use live array totals for estate (not legacy compat aliases which may be stale)
+    const estate=G.money+getAllHousesValue()+(G.investments||0)+(G.pensionPot||0)+getAllCarsValue();
     const funeralCost=Math.round(8000*(G.inflationMult||1));
     const afterFuneral=Math.max(0,estate-funeralCost);
     const kids=(G.family||[]).filter(m=>m.type==='child');
@@ -5204,8 +5224,15 @@ function ageUp(){
       if(managed){
         applyMod({money:-cond.managedCost});
       } else {
-        applyMod({health:-cond.drain});
-        if(G.age%2===0) addLog(`🤒 ${cond.label} affecting your health. −${cond.drain} Health.`, 'bad');
+        // FIX #10: apply health drain AND happyDrain (e.g. anxiety has drain:0 but happyDrain:3)
+        if(cond.drain>0) applyMod({health:-cond.drain});
+        if(cond.happyDrain>0) applyMod({happiness:-cond.happyDrain});
+        if(G.age%2===0){
+          const drainParts=[];
+          if(cond.drain>0) drainParts.push(`−${cond.drain} Health`);
+          if(cond.happyDrain>0) drainParts.push(`−${cond.happyDrain} Happy`);
+          addLog(`🤒 ${cond.label} affecting you. ${drainParts.join(', ')}.`, 'bad');
+        }
       }
     });
   }
@@ -6158,7 +6185,7 @@ function continueLife(){
         mortgageBalance:G.mortgageBalance||0,mortgagePayment:G.mortgagePayment||0,
         mortgageYearsLeft:G.mortgageYearsLeft||0,
         label:G.houseType==='luxury'?'🏰 Luxury Mansion':G.houseType==='family'?'🏡 Family Home':'🏠 Starter Home'});
-      G.houseType=G.houseType; // keep compat
+      G.houseType=G.houseType==='luxury'?'luxury':G.houseType==='family'?'family':'starter'; // normalize compat value
     }
     if(G.carType&&G.cars.length===0){
       G.cars.push({type:G.carType,value:G.carValue||0,
@@ -6258,10 +6285,10 @@ function getWealthTier(){
 // Maps #hex skin color back to a key (set at character creation)
 function _skinKeyFromColor(hex){
   if(!hex) return 'light';
+  // FIX #24: removed duplicate hex entries (second set overwrote first silently)
   const map = {
     '#FFDBB4':'light','#ECDCBF':'pale','#EDB98A':'tan',
-    '#D08B5B':'brown','#AE5D29':'darkBrown','#614335':'dark',
-    '#D4956A':'tan','#A0522D':'brown','#5C3317':'dark'
+    '#D08B5B':'brown','#AE5D29':'darkBrown','#614335':'dark'
   };
   return map[hex] || 'light';
 }
@@ -6269,7 +6296,7 @@ function _skinKeyFromColor(hex){
 // Full HAIR_HEX table matching the reference (includes brownDark, platinum)
 const GAME_HAIR_HEX = {
   black:'2c1b18', brown:'724133', brownDark:'4a312c',
-  auburn:'c93305', blonde:'ecdcbf', blondeGolden:'d6b370',
+  auburn:'9c3a00', blonde:'ecdcbf', blondeGolden:'d6b370',
   red:'c93305', pastelPink:'f59797', platinum:'e8e1e1', silverGray:'e8e1e1'
 };
 
@@ -6420,13 +6447,11 @@ function renderCSSCharacter(){
     // URL unchanged — just refresh overlays
     const wrap = root.querySelector('#char-head-el');
     if(wrap){
+      // FIX #25: use querySelectorAll instead of fragile split('</div>') which breaks with nested divs
       wrap.querySelectorAll('.av-overlay').forEach(n=>n.remove());
-      overlays.split('</div>').forEach(html=>{
-        if(!html.trim()) return;
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html + '</div>';
-        if(tmp.firstChild) wrap.appendChild(tmp.firstChild);
-      });
+      const tmp = document.createElement('div');
+      tmp.innerHTML = overlays;
+      Array.from(tmp.children).forEach(child=>wrap.appendChild(child));
       const ring = wrap.querySelector('.av-ring');
       if(ring) ring.style.cssText = ring.style.cssText.replace(/filter:[^;]*;?/g,'') + (isLowHealth ? ';filter:grayscale(.45) brightness(.88)' : '');
     }
@@ -7052,6 +7077,9 @@ function triggerEndOfYearExam(){
 // ══════════════════════════════════════════
 // RANDOM SCHOOL TEST TRIGGER (ages 6-17)
 // ══════════════════════════════════════════
+// FIX #9: _schoolTestThisYear is reset each age-up in ageUp(), so we only need to set it
+// here when a test fires. We no longer reset it to false outside the age range (was a double-reset
+// that could allow a second test in the same year if the function was called again after a miss).
 function maybeSchoolTest(){
   if(G.age>=6&&G.age<=17&&Math.random()<0.35){
     if(!G._schoolTestThisYear){
@@ -7060,7 +7088,6 @@ function maybeSchoolTest(){
       return true;
     }
   }
-  G._schoolTestThisYear=false;
   return false;
 }
 
@@ -7092,26 +7119,10 @@ window.addEventListener('DOMContentLoaded',()=>{
   showCharPreview(roll);
 });
 
+// FIX #12: renderCups was a duplicate of renderTrophies (without rarity classes / onclick).
+// Now it simply delegates to the canonical renderTrophies so both call sites behave identically.
 function renderCups(){
-  const el=document.getElementById('panel-cups');
-  if(!el)return;
-  el.innerHTML='';
-  const progWrap=document.createElement('div');progWrap.id='trophy-progress-wrap';
-  el.appendChild(progWrap);
-  renderTrophyProgress();
-  const shelf=document.createElement('div');shelf.className='trophy-shelf';
-  const top=document.createElement('div');top.className='trophy-shelf-top';shelf.appendChild(top);
-  const grid=document.createElement('div');grid.className='trophy-grid';
-  ALL_ACHIEVEMENTS.forEach(a=>{
-    const unlocked=G.achievements.includes(a.id);
-    const rc=a.rarity==='legendary'?'trophy-legendary-item':a.rarity==='rare'?'trophy-rare':'trophy-common';
-    const div=document.createElement('div');
-    div.className='trophy-item '+(unlocked?'unlocked '+rc:'trophy-locked');
-    div.innerHTML=`<span class="trophy-emoji">${a.emoji}</span><div class="trophy-name">${a.name}</div><div style="font-size:.62em;color:var(--ink2);margin-top:3px">${unlocked?a.desc:'???'}</div>`;
-    grid.appendChild(div);
-  });
-  shelf.appendChild(grid);
-  el.appendChild(shelf);
+  renderTrophies();
 }
 
 
