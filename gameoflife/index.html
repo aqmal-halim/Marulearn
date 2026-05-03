@@ -380,14 +380,18 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 @media(prefers-reduced-motion:reduce){.ticker-content{animation:none;padding-left:4px;color:var(--sun)}}
 
 /* ══ CSS CHARACTER PANEL ══ */
-.char-panel{position:relative;width:82px;height:100px;flex-shrink:0}
+.char-panel{position:relative;width:92px;height:92px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 /* Life stage backgrounds */
 .char-panel-bg-poor{background:linear-gradient(180deg,#B0BEC5 0%,#CFD8DC 100%)}
 .char-panel-bg-mid{background:linear-gradient(180deg,#FFE0B2 0%,#FFF9C4 100%)}
 .char-panel-bg-rich{background:linear-gradient(180deg,#E1BEE7 0%,#FFF8E1 100%)}
 
-/* Character base elements */
-.cchar{position:relative;width:82px;height:100px;cursor:default}
+/* DiceBear avatar overlay badges */
+.av-overlay{position:absolute;font-size:.85em;pointer-events:none;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.2))}
+@keyframes av-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes av-jump{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}}
+@keyframes av-slump{0%,100%{transform:translateY(0)}50%{transform:translateY(5px) rotate(3deg)}}
+@keyframes av-spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 .cchar-head{position:absolute;border:3px solid var(--ink);border-radius:50%;background:#FFDAB9;left:50%;transform:translateX(-50%);animation:char-idle 3s ease-in-out infinite}
 @keyframes char-idle{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-3px)}}
 .cchar-neck{position:absolute;background:#FFDAB9;border-left:2px solid var(--ink);border-right:2px solid var(--ink);left:50%;transform:translateX(-50%)}
@@ -4722,14 +4726,15 @@ const CHAR_SKIN_COLOR = {
   brown:'#D08B5B', darkBrown:'#AE5D29', dark:'#614335'
 };
 const CHAR_HAIR_HEX = {
-  black:'2c1b18', brown:'724133', auburn:'c93305',
-  blonde:'ecdcbf', blondeGolden:'d6b370', red:'c93305',
-  pastelPink:'f59797', silverGray:'e8e1e1'
+  black:'2c1b18', brown:'724133', brownDark:'4a312c',
+  auburn:'c93305', blonde:'ecdcbf', blondeGolden:'d6b370',
+  red:'c93305', pastelPink:'f59797', platinum:'e8e1e1', silverGray:'e8e1e1'
 };
 const CHAR_MALE_HAIR   = ['shortFlat','shortRound','shortCurly','frizzle','theCaesar','shaggyMullet','sides','dreads01'];
 const CHAR_FEMALE_HAIR = ['straight01','straight02','longButNotTooLong','bob','curly','curvy','bigHair','bun'];
 const CHAR_SKIN_KEYS   = Object.keys(CHAR_SKIN_HEX);
-const CHAR_HAIR_KEYS   = Object.keys(CHAR_HAIR_HEX);
+// Hair keys for random pick (exclude brownDark/platinum/silverGray — those are automatic with age)
+const CHAR_HAIR_KEYS   = ['black','brown','auburn','blonde','blondeGolden','red','pastelPink'];
 
 let _charRoll = {};
 
@@ -4955,91 +4960,133 @@ function getWealthTier(){
   return'poor';
 }
 
-// ── DiceBear in-game avatar URL builder ──
-function buildInGameAvatarUrl(sz){
-  sz = sz || 120;
-  const age   = G.age;
-  const hp    = G.health;
-  const hpy   = G.happiness;
-  const roll  = {
-    gender    : G.gender || 'male',
-    skinKey   : _skinKeyFromColor(G.skinTone),
-    hcKey     : G._hairColor || 'brown',
-    hairStyle : G._hairStyle || (G.gender==='female'?'straight01':'shortFlat')
+// ══════════════════════════════════════════
+// DICEBEAR AVATAR — exact port of Dicebear.html reference
+// ══════════════════════════════════════════
+
+// Maps #hex skin color back to a key (set at character creation)
+function _skinKeyFromColor(hex){
+  if(!hex) return 'light';
+  const map = {
+    '#FFDBB4':'light','#ECDCBF':'pale','#EDB98A':'tan',
+    '#D08B5B':'brown','#AE5D29':'darkBrown','#614335':'dark',
+    '#D4956A':'tan','#A0522D':'brown','#5C3317':'dark'
   };
+  return map[hex] || 'light';
+}
 
-  const skinHex = CHAR_SKIN_HEX[roll.skinKey] || 'ffdbb4';
+// Full HAIR_HEX table matching the reference (includes brownDark, platinum)
+const GAME_HAIR_HEX = {
+  black:'2c1b18', brown:'724133', brownDark:'4a312c',
+  auburn:'c93305', blonde:'ecdcbf', blondeGolden:'d6b370',
+  red:'c93305', pastelPink:'f59797', platinum:'e8e1e1', silverGray:'e8e1e1'
+};
 
-  // Hair colour — silver for seniors
-  let hcKey = roll.hcKey;
+// Builds a DiceBear URL exactly matching the reference url() function
+function buildInGameAvatarUrl(sz){
+  sz = sz || 200;
+  const age = G.age;
+  const hp  = G.health;
+  const hpy = G.happiness;
+
+  const gender    = G.gender || 'male';
+  const skinKey   = _skinKeyFromColor(G.skinTone);
+  const hairStyle = G._hairStyle || (gender==='female' ? 'straight01' : 'shortFlat');
+  const hcBase    = G._hairColor || 'brown';
+
+  // Seed: name + age snapped to 6-year brackets (ages gradually, matches reference)
+  const seed = encodeURIComponent((G.name||'x') + '_' + Math.floor(age/6)*6);
+
+  // Skin hex (no #)
+  const skinHex = CHAR_SKIN_HEX[skinKey] || 'ffdbb4';
+
+  // Hair colour — grey/silver at 65+, brownDark at 50+ for dark hair (matches reference)
+  let hcKey = hcBase;
   if(age >= 65) hcKey = 'silverGray';
-  else if(age >= 50 && ['black','brown'].includes(hcKey)) hcKey = 'auburn';
-  const hairHex = CHAR_HAIR_HEX[hcKey] || '724133';
+  else if(age >= 50 && ['black','brown'].includes(hcBase)) hcKey = 'brownDark';
+  const hairHex = GAME_HAIR_HEX[hcKey] || '724133';
 
-  // Accessories by age
+  // Accessories — exact thresholds from reference
   let acc = '', ap = 0;
   if(age >= 65){ acc = 'prescription02'; ap = 75; }
   else if(age >= 40){ acc = 'prescription01'; ap = 35; }
   else if(age >= 14){ acc = 'round'; ap = 18; }
 
-  // Facial hair (males only)
+  // Facial hair — exact thresholds from reference (30+, not 25+)
   let fh = '', fp = 0;
-  if(roll.gender === 'male'){
+  if(gender === 'male'){
     if(age >= 65){ fh = 'beardMajestic'; fp = 65; }
-    else if(age >= 25){ fh = 'beardLight'; fp = 55; }
+    else if(age >= 30){ fh = 'beardLight'; fp = 55; }
   }
 
-  // Clothing by age
-  let cl, cc;
-  if(age <= 4) { cl='graphicShirt'; cc='FFB3BA'; }
-  else if(age <= 12){ cl='graphicShirt'; cc='5199e4'; }
-  else if(age <= 17){ cl='hoodie'; cc='262e33'; }
-  else if(age <= 30){ cl='blazerAndShirt'; cc='25557c'; }
-  else if(age <= 60){ cl='blazerAndSweater'; cc='3c4f5c'; }
-  else { cl='shirtCrewNeck'; cc='929598'; }
+  // Clothing — exact from reference, collarAndSweater default (not blazerAndSweater)
+  let cl = 'collarAndSweater', cc = '3c4f5c';
+  if(age <= 12){ cl = 'graphicShirt';    cc = '5199e4'; }
+  else if(age <= 17){ cl = 'hoodie';     cc = '262e33'; }
+  else if(age <= 30){ cl = 'blazerAndShirt'; cc = '25557c'; }
+  else if(age <= 60){ cl = 'blazerAndSweater'; cc = '3c4f5c'; }
+  else { cl = 'shirtCrewNeck'; cc = '929598'; }
 
-  // Mouth / eyes react to stats
-  const mouth = hpy>=75 ? 'smile' : hpy<35 ? 'sad' : 'default';
-  const eyes  = hp<25   ? 'squint' : hpy>=80 ? 'happy' : 'default';
-  const eyebrows = hpy<35 ? 'sadConcernedNatural' : hpy>=75 ? 'raisedExcitedNatural' : 'defaultNatural';
+  // Mouth — exact from reference
+  let m = 'default';
+  if(hpy >= 75) m = 'smile';
+  else if(hpy < 35) m = 'sad';
 
-  // Seed: name + roll traits + age-bracket (changes avatar at life-stage transitions)
-  const ageBracket = age<=4?'baby':age<=12?'kid':age<=17?'teen':age<=30?'young':age<=60?'adult':age<=75?'senior':'elder';
-  const seed = encodeURIComponent(G.name+'_'+roll.skinKey+'_'+roll.hcKey+'_'+roll.hairStyle+'_'+ageBracket);
+  // Eyes — exact from reference
+  let e = 'default';
+  if(hp < 25) e = 'squint';
+  else if(hpy >= 80) e = 'happy';
+
+  // Eyebrows — exact from reference
+  let b = 'defaultNatural';
+  if(hpy < 35) b = 'sadConcernedNatural';
+  else if(hpy >= 75) b = 'raisedExcitedNatural';
 
   const p = new URLSearchParams({
     seed, size: sz,
     skinColor: skinHex,
-    top: roll.hairStyle,
+    top: hairStyle,
     hairColor: hairHex,
     accessoriesProbability: ap,
     facialHairProbability: fp,
     clothing: cl,
     clothesColor: cc,
-    eyes, eyebrows, mouth,
+    eyes: e,
+    eyebrows: b,
+    mouth: m,
     backgroundColor: 'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf',
     backgroundType: 'gradientLinear'
   });
   if(acc) p.set('accessories', acc);
   if(fh)  p.set('facialHair', fh);
+
+  // SVG for best quality (no size limit), matches reference
   return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
 }
 
-function _skinKeyFromColor(hex){
-  if(!hex) return 'light';
-  const map = {'#FFDBB4':'light','#ECDCBF':'pale','#EDB98A':'tan','#D08B5B':'brown','#AE5D29':'darkBrown','#614335':'dark',
-                '#D4956A':'tan','#A0522D':'brown','#5C3317':'dark'};
-  return map[hex] || 'light';
+// Loads a DiceBear image into a ring element (matches reference loadInto)
+function loadAvatarInto(ring, src, onDone){
+  ring.innerHTML = '<div style="width:20px;height:20px;border:3px solid #DDD;border-top-color:var(--coral);border-radius:50%;animation:rot .8s linear infinite;margin:auto"></div>';
+  const img = new Image();
+  img.onload = () => {
+    ring.innerHTML = '';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover';
+    ring.appendChild(img);
+    if(onDone) onDone();
+  };
+  img.onerror = () => {
+    ring.innerHTML = `<span style="font-size:2em;line-height:1">${(G.gender||'male')==='female'?'👧':'👦'}</span>`;
+  };
+  img.src = src;
 }
 
-// Tracks the last URL we loaded — avoids re-fetching on trivial re-renders
+// Track last loaded URL to avoid redundant fetches
 let _lastAvatarUrl = '';
 
 function renderCSSCharacter(){
   const root = document.getElementById('cchar-root');
   if(!root) return;
 
-  const age = G.age;
   const hp  = G.health;
   const hpy = G.happiness;
   const sm  = G.smarts;
@@ -5048,62 +5095,63 @@ function renderCSSCharacter(){
   const isLowHealth = hp  < 30;
   const isSmart     = sm  >= 80;
   const isGlowing   = lk  >= 80;
-  const isHappy     = hpy >= 75;
   const isSadFace   = hpy < 40;
+  const isHappy     = hpy >= 75;
 
-  // Stat overlays (keep these — they are instant CSS, no network needed)
-  const smartBulb = isSmart    ? '<div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:1.1em;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.2))">💡</div>' : '';
-  const bandage   = isLowHealth? '<div style="position:absolute;top:2px;right:2px;font-size:.85em">🩹</div>' : '';
-  const sparkle   = isGlowing  ? '<div style="position:absolute;top:-14px;right:-4px;font-size:.85em;animation:char-idle 2s ease-in-out infinite">✨</div>' : '';
-  const tear      = (isSadFace && !isHappy) ? '<div style="position:absolute;bottom:4px;right:6px;font-size:.7em">😢</div>' : '';
-  const healthTint= isLowHealth? 'filter:grayscale(.5) brightness(.9)':'';
+  const avatarUrl = buildInGameAvatarUrl(200);
 
-  // Build avatar URL
-  const avatarUrl = buildInGameAvatarUrl(120);
+  // Stat overlays rendered as floating emoji badges
+  const overlays = [
+    isSmart    ? '<div class="av-overlay" style="top:-16px;left:50%;transform:translateX(-50%)">💡</div>' : '',
+    isGlowing  ? '<div class="av-overlay" style="top:-12px;right:-2px">✨</div>' : '',
+    isLowHealth? '<div class="av-overlay" style="top:2px;right:0">🩹</div>' : '',
+    (isSadFace&&!isHappy) ? '<div class="av-overlay" style="bottom:2px;right:0">😢</div>' : '',
+  ].join('');
 
-  // Only re-inject if the URL changed (stat-driven avatar refreshes) OR first render
-  if(avatarUrl !== _lastAvatarUrl || !root.querySelector('#dicebear-avatar-wrap')){
+  const healthFilter = isLowHealth ? 'filter:grayscale(.45) brightness(.88)' : '';
+
+  if(avatarUrl !== _lastAvatarUrl || !root.querySelector('.av-ring')){
     _lastAvatarUrl = avatarUrl;
+
+    // The DiceBear SVG is a full square image with background. We display it
+    // square (not cropped to circle) to show the full character correctly,
+    // matching how the reference preview shows it. A subtle border-radius
+    // softens the corners.
     root.innerHTML = `
-      <div id="dicebear-avatar-wrap" style="position:relative;width:82px;height:96px;animation:char-idle 3s ease-in-out infinite" id="char-head-el">
-        ${smartBulb}${sparkle}${bandage}${tear}
-        <div id="dicebear-avatar-ring" style="width:82px;height:82px;border-radius:50%;border:3px solid var(--ink);overflow:hidden;box-shadow:3px 3px 0 rgba(0,0,0,.12);background:#F0F4FF;display:flex;align-items:center;justify-content:center;${healthTint}">
-          <div id="dicebear-spinner" style="width:24px;height:24px;border:3px solid #DDD;border-top-color:var(--coral);border-radius:50%;animation:rot .8s linear infinite"></div>
+      <div id="char-head-el" style="position:relative;width:88px;height:88px;animation:av-float 3s ease-in-out infinite;flex-shrink:0">
+        ${overlays}
+        <div class="av-ring" style="width:88px;height:88px;border-radius:50%;border:3px solid var(--ink);overflow:hidden;background:#F0F4FF;box-shadow:3px 3px 0 rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;${healthFilter}">
         </div>
       </div>`;
 
-    const img = new Image();
-    img.onload = () => {
-      const ring = document.getElementById('dicebear-avatar-ring');
-      if(ring){ ring.innerHTML=''; img.style.cssText='width:100%;height:100%;object-fit:cover'; ring.appendChild(img); }
-    };
-    img.onerror = () => {
-      const ring = document.getElementById('dicebear-avatar-ring');
-      if(ring) ring.innerHTML = `<span style="font-size:2em">${G.gender==='female'?'👧':'👦'}</span>`;
-    };
-    img.src = avatarUrl;
+    loadAvatarInto(root.querySelector('.av-ring'), avatarUrl);
   } else {
-    // URL unchanged — just refresh overlays without re-fetching
-    const wrap = root.querySelector('#dicebear-avatar-wrap');
+    // URL unchanged — just refresh overlays
+    const wrap = root.querySelector('#char-head-el');
     if(wrap){
-      // Remove old overlay nodes, re-inject fresh ones
-      wrap.querySelectorAll('.char-overlay').forEach(n=>n.remove());
-      const ring = wrap.querySelector('#dicebear-avatar-ring');
-      if(ring) ring.style.cssText = ring.style.cssText.replace(/filter:[^;]+;?/g,'') + (isLowHealth?';filter:grayscale(.5) brightness(.9)':'');
+      wrap.querySelectorAll('.av-overlay').forEach(n=>n.remove());
+      overlays.split('</div>').forEach(html=>{
+        if(!html.trim()) return;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html + '</div>';
+        if(tmp.firstChild) wrap.appendChild(tmp.firstChild);
+      });
+      const ring = wrap.querySelector('.av-ring');
+      if(ring) ring.style.cssText = ring.style.cssText.replace(/filter:[^;]*;?/g,'') + (isLowHealth ? ';filter:grayscale(.45) brightness(.88)' : '');
     }
   }
 }
 
 function triggerCharReaction(type){
-  const el = document.getElementById('dicebear-avatar-wrap') || document.getElementById('char-head-el');
+  const el = document.getElementById('char-head-el');
   if(!el) return;
   if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
   el.style.animation = 'none';
   void el.offsetWidth;
-  if(type==='jump')  el.style.animation = 'char-jump .5s ease forwards';
-  else if(type==='slump') el.style.animation = 'char-slump .5s ease forwards';
-  else if(type==='spin')  el.style.animation = 'char-spin .6s ease forwards';
-  setTimeout(()=>{ if(el) el.style.animation='char-idle 3s ease-in-out infinite'; }, 700);
+  if(type==='jump')  el.style.animation = 'av-jump .5s ease forwards';
+  else if(type==='slump') el.style.animation = 'av-slump .5s ease forwards';
+  else if(type==='spin')  el.style.animation = 'av-spin .6s ease forwards';
+  setTimeout(()=>{ if(el) el.style.animation='av-float 3s ease-in-out infinite'; }, 700);
 }
 
 function updateWealthBackground(){
