@@ -1553,6 +1553,10 @@ function evFn(name) {
 // BABY NAMING MODAL
 // ══════════════════════════════════════════
 function showBabyNamingModal(){
+  // Determine baby gender first so we can show it
+  const babyGender = Math.random() < 0.5 ? 'boy' : 'girl';
+  const babyGenderEmoji = babyGender === 'boy' ? '💙 It\'s a Boy!' : '💗 It\'s a Girl!';
+  const babyGenderIcon = babyGender === 'boy' ? '👦' : '👧';
   const mc=document.getElementById('modal-card');
   mc.className='modal-card positive';
   document.getElementById('m-sfx').style.display='block';
@@ -1561,9 +1565,13 @@ function showBabyNamingModal(){
   document.getElementById('m-title').textContent='A Baby is Born!';
   const bodyEl=document.getElementById('m-body');
   bodyEl.style.display='block';
-  bodyEl.textContent=`Your little one has arrived! What will you name them?`;
+  bodyEl.textContent=`${babyGenderEmoji} What will you name them?`;
   const suggestedName=BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
   document.getElementById('m-extra').innerHTML=`
+    <div style="text-align:center;margin:8px 0 6px">
+      <div style="font-size:3em;margin-bottom:4px">${babyGenderIcon}</div>
+      <div style="font-family:'Fredoka One',cursive;font-size:1.2em;color:${babyGender==='boy'?'#1565C0':'#AD1457'};margin-bottom:10px">${babyGenderEmoji}</div>
+    </div>
     <div style="text-align:center;margin:10px 0">
       <input id="baby-name-input" type="text" placeholder="Enter a name..." maxlength="18"
         style="width:100%;padding:12px 16px;font-family:'Nunito',sans-serif;font-size:1.1em;font-weight:800;
@@ -1586,14 +1594,17 @@ function showBabyNamingModal(){
     const _traits=['studious','athletic','creative','rebellious'];
     const _trait=_traits[Math.floor(Math.random()*_traits.length)];
     const childRoll=rollRandomCharacter();
+    // Apply the pre-determined gender to the child's avatar roll
+    childRoll.gender = babyGender === 'boy' ? 'male' : 'female';
     const playerSkinKey=_skinKeyFromColor(G.skinTone);
     if(Math.random()<0.5)childRoll.skinKey=playerSkinKey;
-    G.family.push({type:'child',name:babyName,age:0,status:'Newborn 👶',trait:_trait,avatarRoll:childRoll});
+    G.family.push({type:'child',name:babyName,age:0,status:'Newborn 👶',trait:_trait,avatarRoll:childRoll,gender:babyGender});
     applyMod({happiness:20,money:-5000,health:-5});
-    addLog(`👶 ${babyName} was born! A new chapter begins.`,'legend');
+    const genderStr = babyGender === 'boy' ? 'baby boy' : 'baby girl';
+    addLog(`👶 ${babyName} was born — a beautiful ${genderStr}! A new chapter begins.`,'legend');
     SoundManager.levelUp();burstBabyConfetti();updateUI();
-    showNewspaper(`NEW BABY: ${babyName.toUpperCase()} HAS ARRIVED! 👶`);
-    showMascotBubble(`🦉 Welcome to the world, little ${babyName}! What a beautiful name! 👶`,5000);
+    showNewspaper(`NEW BABY: ${babyName.toUpperCase()} HAS ARRIVED! ${babyGenderIcon}`);
+    showMascotBubble(`🦉 Welcome to the world, little ${babyName}! ${babyGenderEmoji} 👶`,5000);
     mascotDance();checkAchievements();save();updateUI();refreshActiveTab();
   };
   btns.appendChild(confirmBtn);
@@ -2537,6 +2548,100 @@ const MATH_QS=[
   {q:'🌊 120 ÷ 8 = ?',a:15,opts:[13,14,15,16]},{q:'🎃 45 + 56 = ?',a:101,opts:[99,100,101,102]},
   {q:'🦅 7 × 12 = ?',a:84,opts:[74,82,84,86]},{q:'🎪 150 − 88 = ?',a:62,opts:[52,62,72,82]},
 ];
+const EASY_WORD_CATEGORIES=[
+  {name:'Animals',emoji:'🐾',words:['CAT','DOG','COW','PIG','HEN','BEE','ANT','OWL','FOX','RAM','EWE','APE']},
+  {name:'Food',emoji:'🍎',words:['MILK','CAKE','RICE','CORN','FISH','BEAN','PEAR','PLUM','EGG','JAM','PIE','NUT']},
+  {name:'Colors',emoji:'🎨',words:['RED','BLUE','GREEN','PINK','GOLD','GREY','TEAL','ROSE','LIME','NAVY','AQUA','JADE']},
+  {name:'School',emoji:'📚',words:['PEN','BOOK','DESK','RULE','PLAY','READ','DRAW','SING','MATH','POEM','TEST','NOTE']},
+  {name:'Nature',emoji:'🌿',words:['TREE','LEAF','RAIN','SNOW','WIND','STAR','MOON','CLOUD','RIVER','GRASS','STONE','BIRD']},
+];
+function getEasyWordPool(){
+  const cat=EASY_WORD_CATEGORIES[Math.floor(Math.random()*EASY_WORD_CATEGORIES.length)];
+  return{cat,pool:cat.words};
+}
+function startEasyScrambleMiniGame(onWin,onFail){
+  const {cat,pool}=getEasyWordPool();
+  const sessionWords=pool.sort(()=>Math.random()-.5).slice(0,5);
+  let wordIdx=0,score=0,hintUsed=false;
+  function doWord(){
+    if(wordIdx>=sessionWords.length){
+      const stars=score<=2?'⭐':score<=4?'⭐⭐':'⭐⭐⭐';
+      const mc2=document.getElementById('modal-card');mc2.className='modal-card positive';
+      document.getElementById('m-sfx').style.display='block';
+      document.getElementById('m-sfx').textContent=score===5?'PERFECT!':'DONE!';
+      document.getElementById('m-icon').textContent='🔤';
+      document.getElementById('m-title').textContent='Word Quiz Complete!';
+      document.getElementById('m-body').style.display='block';
+      document.getElementById('m-body').textContent=`${Math.floor(score)}/5 words correct!`;
+      document.getElementById('m-extra').innerHTML=`<div class="word-star-rating">${stars}</div>`;
+      document.getElementById('m-btns').innerHTML='';
+      const doneBtn=document.createElement('button');doneBtn.type='button';doneBtn.className='mbtn pri';
+      doneBtn.textContent='🎉 Finish!';
+      doneBtn.onclick=()=>{closeModal();if(Math.floor(score)>=3)onWin();else onFail();};
+      document.getElementById('m-btns').appendChild(doneBtn);
+      document.getElementById('modal').style.display='flex';
+      return;
+    }
+    const wordStr=sessionWords[wordIdx];
+    let scrambled=wordStr.split('').sort(()=>Math.random()-.5);
+    let scrambleAttempts=0;
+    while(scrambled.join('')===wordStr&&scrambleAttempts<20){scrambled=scrambled.sort(()=>Math.random()-.5);scrambleAttempts++;}
+    hintUsed=false;
+    mgState={scrambled:[...scrambled],chosen:[],word:wordStr,onWin,onFail};
+    function render(){
+      const extra=document.getElementById('m-extra');if(!extra)return;
+      extra.innerHTML=`
+        <div class="word-category-header">Category: ${cat.emoji} ${cat.name}</div>
+        <div style="font-size:.72em;font-weight:800;color:var(--ink2);text-align:center;margin-bottom:6px">Word ${wordIdx+1} of 5 · Score: ${Math.floor(score)}</div>
+        <div class="minigame-box">
+          <div class="answer-row" id="ans-row">${Array(wordStr.length).fill(0).map((_,i)=>`<div class="answer-slot ${i<mgState.chosen.length?'filled':''}" onclick="removeScrambleLetter(${i})">${mgState.chosen[i]||''}</div>`).join('')}</div>
+          <div class="scramble-letters" id="scr-letters">${mgState.scrambled.map((l,i)=>`<div class="letter-tile" onclick="addScrambleLetter('${l}',${i})">${l}</div>`).join('')}</div>
+          <div class="mg-feedback" id="mg-fb"></div>
+          <div style="margin-top:10px;display:flex;gap:6px">
+            <button type="button" class="hint-btn" id="hint-btn" onclick="useEasyWordHint()" ${hintUsed?'disabled':''}>💡 Hint</button>
+            <button type="button" class="mbtn sec" style="flex:1" onclick="clearScramble()">🔄 Clear</button>
+            <button type="button" class="mbtn pri" style="flex:1" onclick="submitEasyScramble()">✅ Submit</button>
+          </div>
+        </div>`;
+    }
+    window._renderScramble=render;
+    const mc=document.getElementById('modal-card');mc.className='modal-card positive';
+    document.getElementById('m-sfx').style.display='block';
+    document.getElementById('m-sfx').textContent='SPELL IT!';
+    document.getElementById('m-icon').textContent='🔤';
+    document.getElementById('m-title').textContent='Easy Word Quiz!';
+    document.getElementById('m-body').style.display='block';
+    document.getElementById('m-body').textContent='Unscramble the easy words!';
+    document.getElementById('m-btns').innerHTML='';
+    document.getElementById('modal').style.display='flex';
+    render();
+  }
+  window.useEasyWordHint=function(){
+    if(hintUsed)return;hintUsed=true;
+    const nextPos=mgState.chosen.length;
+    if(nextPos<mgState.word.length){
+      const correctLetter=mgState.word[nextPos];
+      const fb=document.getElementById('mg-fb');
+      if(fb){fb.textContent=`💡 Hint: Position ${nextPos+1} is "${correctLetter}"`;fb.style.color='var(--sun-dark)';}
+    }
+    const hb=document.getElementById('hint-btn');if(hb)hb.disabled=true;
+  };
+  window.submitEasyScramble=function(){
+    const guess=mgState.chosen.join('');
+    const fb=document.getElementById('mg-fb');
+    if(guess===mgState.word){
+      if(fb){fb.textContent='🌟 Correct!';fb.style.color='var(--grass-dark)';}
+      SoundManager.minigameWin();burst(20);
+      if(!hintUsed)score++;else score+=0.5;
+      wordIdx++;setTimeout(doWord,700);
+    }else{
+      if(fb){fb.textContent='❌ The word was '+mgState.word;fb.style.color='var(--coral)';}
+      SoundManager.minigameFail();wordIdx++;setTimeout(doWord,1000);
+    }
+  };
+  doWord();
+}
+
 const WORD_CATEGORIES=[
   {name:'Animals',emoji:'🐾',words:['ELEPHANT','DOLPHIN','PENGUIN','GIRAFFE','HAMSTER','PARROT','OCTOPUS','CHEETAH','LOBSTER','PANTHER','GORILLA','FLAMINGO']},
   {name:'Food',emoji:'🍕',words:['PANCAKE','NOODLES','AVOCADO','BURRITO','WAFFLES','POPCORN','MUFFINS','BROWNIE','PRETZEL','LASAGNA','SMOOTHIE','CUPCAKE']},
@@ -2634,7 +2739,7 @@ function startScrambleMiniGame(onWin,onFail){
       document.getElementById('m-btns').innerHTML='';
       const doneBtn=document.createElement('button');doneBtn.type='button';doneBtn.className='mbtn pri';
       doneBtn.textContent='🎉 Finish!';
-      doneBtn.onclick=()=>{closeModal();if(score>=3)onWin();else onFail();};
+      doneBtn.onclick=()=>{closeModal();if(Math.floor(score)>=3)onWin();else onFail();};
       document.getElementById('m-btns').appendChild(doneBtn);
       document.getElementById('modal').style.display='flex';
       return;
@@ -4735,7 +4840,10 @@ function showCollegeTuitionModal(childName, onDone) {
 // ══════════════════════════════════════════
 // AGE UP — MAIN FUNCTION
 // ══════════════════════════════════════════
+let _ageUpRunning = false;
 function ageUp(){
+  if(_ageUpRunning){ return; } // prevent double-fire
+  _ageUpRunning = true;
   SoundManager.unlock();SoundManager.ageUp();
 
   G.age++;
@@ -4794,11 +4902,11 @@ function ageUp(){
     // Frailty death check: 90+ with low health = increasing mortality risk
     if(G.age>=90&&G.health<50&&Math.random()<0.15+(G.age-90)*0.04){
       addLog(`💔 Passed away peacefully at age ${G.age}. The body can only do so much.`,'bad');
-      SoundManager.gameOver();flashRed();save();updateUI();setTimeout(showEndScreen,800);return;
+      SoundManager.gameOver();flashRed();save();updateUI();_ageUpRunning=false;setTimeout(showEndScreen,800);return;
     }
     if(G.age>=95&&G.health<70&&Math.random()<0.25){
       addLog(`💔 Passed away at age ${G.age}. A remarkable life.`,'bad');
-      SoundManager.gameOver();flashRed();save();updateUI();setTimeout(showEndScreen,800);return;
+      SoundManager.gameOver();flashRed();save();updateUI();_ageUpRunning=false;setTimeout(showEndScreen,800);return;
     }
   }
 
@@ -4842,7 +4950,7 @@ function ageUp(){
     addLog(`Life ended at age ${G.age}. ${cause} 🕊️`,'bad');
     SoundManager.gameOver();flashRed();
     save();updateUI();
-    setTimeout(showEndScreen,800);return;
+    _ageUpRunning=false;setTimeout(showEndScreen,800);return;
   }
 
   if(G.salary>G.peakSalary)G.peakSalary=G.salary;
@@ -4928,7 +5036,7 @@ function ageUp(){
     if(turningEighteen.length>0){
       const child=turningEighteen[0];
       save();updateUI();renderWork();
-      showCollegeTuitionModal(child.name, ()=>continueAgeUp());
+      showCollegeTuitionModal(child.name, ()=>{ _ageUpRunning=false; continueAgeUp(); });
       return;
     }
   }
@@ -5296,12 +5404,13 @@ function ageUp(){
     G.worldModifiers=G.worldModifiers.filter(m=>m.expires>G.age);
   }
 
-  if(handleRetirement()){checkAchievements();save();updateUI();refreshActiveTab();renderWork();return;}
+  if(handleRetirement()){checkAchievements();save();updateUI();refreshActiveTab();renderWork();_ageUpRunning=false;return;}
 
   continueAgeUp();
 }
 
 function continueAgeUp(){
+  _ageUpRunning = false; // release lock — continueAgeUp handles its own flow
   // ── Generate job offers silently (stored, NOT auto-popped) ──
   if(!G.retired&&G.age>=12){
     generateJobOffers();
@@ -6888,6 +6997,9 @@ function showReportSummary(gradeHtml, summaryText, logMsg, logType){
 function triggerEndOfYearExam(){
   if(!G._examDone)G._examDone=[];
   G._examDone.push(G.age);
+  // Also mark in reportCardDone so continueAgeUp won't re-fire this age
+  if(!G.reportCardDone)G.reportCardDone=[];
+  if(!G.reportCardDone.includes(G.age))G.reportCardDone.push(G.age);
   const isFinal=(G.age===17);
   const mc=document.getElementById('modal-card');
   mc.className='modal-card positive';
@@ -6903,7 +7015,7 @@ function triggerEndOfYearExam(){
     <div class="school-scene">
       <div class="school-blackboard">${isFinal?'📝 FINAL EXAMS (Age 17)':'📝 MID-SCHOOL EXAMS (Age 12)'}</div>
       <div style="font-size:.72em;color:#546E7A;font-weight:800;margin-top:4px">
-        ${isFinal?'Pass well → Scholarship at 18! Big Smarts & Looks boost':'Easy paper — Pass → Smarts boost · Fail → small penalty'}
+        ${isFinal?'Pass well → Scholarship at 18! Big Smarts & Looks boost':'Easy word quiz — Pass → Smarts boost · Fail → small penalty'}
       </div>
       <div class="school-desk"></div>
     </div>`;
@@ -6929,9 +7041,9 @@ function triggerEndOfYearExam(){
       showMascotBubble('🦉 Don\'t give up — study harder next time! 📚',4000);
       checkAchievements();save();updateUI();refreshActiveTab();
     };
-    // Age 12 = easier math mini-game; Age 17 = harder word scramble
+    // Age 12 = easier word quiz; Age 17 = harder word scramble
     if(isFinal)startScrambleMiniGame(onWin,onFail);
-    else startMathMiniGame(onWin,onFail);
+    else startEasyScrambleMiniGame(onWin,onFail);
   };
   document.getElementById('m-btns').appendChild(startBtn);
   document.getElementById('modal').style.display='flex';
