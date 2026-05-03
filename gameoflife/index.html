@@ -133,47 +133,72 @@ const HC=[
 const STAGES=[
   {age:2,n:'Baby',d:'0–2'},{age:9,n:'Child',d:'3–12'},
   {age:15,n:'Teen',d:'13–17'},{age:24,n:'Young Adult',d:'18–30'},
-  {age:42,n:'Adult',d:'31–55'},{id:58,age:58,n:'Mid-Life',d:'55–65'},
+  {age:42,n:'Adult',d:'31–55'},{age:58,n:'Mid-Life',d:'55–65'},
   {age:70,n:'Senior',d:'65–75'},{age:82,n:'Elder',d:'76+'}
 ];
 
 function url(name,age,happy,health,sz){
   sz=sz||200;
   const seed=encodeURIComponent((name||'x')+'_'+Math.floor(age/6)*6);
+
+  // Hair colour — silver for seniors, darkens slightly mid-life
   let hc=ST.hc;
-  if(age>=65)hc='silverGray';
-  else if(age>=50&&['black','brown'].includes(ST.hc))hc='brownDark';
+  if(age>=65) hc='silverGray';
+  else if(age>=50&&['black','brown'].includes(ST.hc)) hc='brownDark';
+
+  // Accessories (glasses increase with age)
   let acc='blank',ap=0;
   if(age>=65){acc='prescription02';ap=75;}
   else if(age>=40){acc='prescription01';ap=35;}
   else if(age>=14){acc='round';ap=18;}
+
+  // Facial hair (males only) — single values only
   let fh='blank',fp=0;
   if(ST.gender==='male'){
-    if(age>=30&&age<65){fh='beardLight,moustacheMagnum';fp=60;}
-    else if(age>=65){fh='beardMagestic';fp=65;}
+    if(age>=65){fh='beardMajestic';fp=65;}
+    else if(age>=30){fh='beardLight';fp=55;}
   }
+
+  // Clothing by age
   let cl='collarSweater',cc='3C4F5C';
   if(age<=12){cl='graphicShirt';cc='5DADE2';}
   else if(age<=17){cl='hoodie';cc='2C3E50';}
   else if(age<=30){cl='blazerShirt';cc='1A5276';}
   else if(age<=60){cl='blazerSweater';cc='2E4057';}
   else{cl='sweater';cc='717D7E';}
+
+  // Mouth — single value only
   let m='default';
-  if(happy>=75)m='smile,twinkle';
-  else if(happy<35)m='sad,serious';
+  if(happy>=75) m='smile';
+  else if(happy<35) m='sad';
+
+  // Eyes — single value only
   let e='default';
-  if(health<25)e='squint,cry';
-  else if(happy>=80)e='happy,wink';
+  if(health<25) e='squint';
+  else if(happy>=80) e='happy';
+
+  // Eyebrows — single value only
   let b='defaultNatural';
-  if(happy<35)b='sadConcernedNatural,frownNatural';
-  else if(happy>=75)b='raisedExcitedNatural';
+  if(happy<35) b='sadConcernedNatural';
+  else if(happy>=75) b='raisedExcitedNatural';
+
   const bg='b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf';
   const p=new URLSearchParams({
-    seed,size:sz,skinColor:ST.skin,top:ST.hair,hairColor:hc,
-    accessories:acc,accessoriesProbability:ap,
-    facialHair:fh,facialHairProbability:fp,
-    clothesColor:cc,eyes:e,eyebrows:b,mouth:m,
-    backgroundColor:bg,backgroundType:'gradientLinear'
+    seed,size:sz,
+    skinColor:ST.skin,
+    top:ST.hair,
+    hairColor:hc,
+    accessories:acc,
+    accessoriesProbability:ap,
+    facialHair:fh,
+    facialHairProbability:fp,
+    clothing:cl,
+    clothesColor:cc,
+    eyes:e,
+    eyebrows:b,
+    mouth:m,
+    backgroundColor:bg,
+    backgroundType:'gradientLinear'
   });
   return `https://api.dicebear.com/9.x/avataaars/png?${p}`;
 }
@@ -181,8 +206,15 @@ function url(name,age,happy,health,sz){
 function loadInto(ring,src,big){
   ring.innerHTML=`<div class="${big?'spin':'spin-sm'}"></div>`;
   const i=new Image();
-  i.onload=()=>{ring.innerHTML='';i.style='width:100%;height:100%;object-fit:cover';if(big)i.classList.add('popped');ring.appendChild(i);};
-  i.onerror=()=>{ring.innerHTML=`<span style="font-size:${big?'2em':'1.2em'}">👤</span>`;};
+  i.onload=()=>{
+    ring.innerHTML='';
+    i.style='width:100%;height:100%;object-fit:cover';
+    if(big) i.classList.add('popped');
+    ring.appendChild(i);
+  };
+  i.onerror=()=>{
+    ring.innerHTML=`<span style="font-size:${big?'2em':'1.2em'}">👤</span>`;
+  };
   i.src=src;
 }
 
