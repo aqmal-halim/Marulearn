@@ -3675,7 +3675,8 @@ function renderBank(){
         const kidCostDisplay = (()=>{ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); if(!kids.length)return 0; return kids.reduce((s,k)=>s+Math.round((k.age>=13?5500:4000)*(G.inflationMult||1)),0); })();
         const spouseHouse = hasSpouse ? Math.round(2000*(G.inflationMult||1)) : 0;
         const loan = (G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0 ? G.loanRepayment : 0;
-        const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan;
+        const propTaxTotal = (G.properties||[]).reduce((s,p)=>s+Math.round(p.value*0.005),0);
+        const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan + propTaxTotal;
         // ── TAX on employment income ──
         const preTaxIncome = salary + sideInc;
         let taxRate=0;
@@ -3702,6 +3703,7 @@ function renderBank(){
         if(kidCostDisplay>0){ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); html+=row(`👶 Children (${kids.length})`,kidCostDisplay,true); }
         if(spouseHouse>0) html+=row('💑 Shared household',spouseHouse,true);
         if(loan>0) html+=`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🎓 Student loan</span><span style="font-weight:900;color:var(--coral)">−$${loan.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`;
+        if(propTaxTotal>0){ const props=G.properties||[]; html+=row(`🏠 Property Tax (${props.length} prop${props.length!==1?'s':''}, 0.5%/yr)`,propTaxTotal,true); }
         if(taxAmount>0) html+=row(`💸 Income Tax (${Math.round(taxRate*100)}%)`,taxAmount,true);
         html+=`<div style="border-top:2px dashed var(--sun-dark);margin:6px 0 4px"></div>`;
         html+=`<div style="display:flex;justify-content:space-between"><span style="font-weight:900;color:var(--ink)">📊 Net P&amp;L / year</span><span style="font-weight:900;color:${netColor}">${netSign}$${Math.abs(netPL).toLocaleString()}/yr</span></div>`;
