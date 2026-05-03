@@ -1059,6 +1059,7 @@ const DEFAULT = {
   childCostPerYear:0,  // auto-calculated each year
   peakCareerTier:0,    // snapshot for scoring
   peakCareerTrack:null,
+  peakJobTitle:null,    // job title at career peak (before retirement)
   // Longevity difficulty
   _agingAcceleration:0,
   // Income tax
@@ -1434,7 +1435,7 @@ const EVENTS = [
   {minAge:50,maxAge:65,r:'c',emoji:'✍️',sfx:'HMMMM',title:'Write a Memoir?',body:"People keep telling you your life story should be a book.",choices:[{l:'📖 Start writing',m:{smarts:8,happiness:15}},{l:'Another time',m:{}}]},
   {minAge:50,maxAge:65,r:'c',emoji:'🏢',sfx:'UH-OH!',title:'Redundancy at 55',body:"Restructuring hits your department. You might lose your job.",choices:[{l:'💪 Fight to stay',m:{happiness:-10,smarts:5}},{l:'💰 Take the package',fn:'_fired'}]},
   {minAge:50,maxAge:70,r:'c',emoji:'🧓',sfx:'HMMMM',title:'Retirement Plan',body:'Are you thinking about retirement?',choices:[{l:'📋 Plan carefully',m:{smarts:5,money:5000,happiness:5}},{l:'Live for today!',m:{happiness:10,money:-2000}}]},
-  {minAge:55,maxAge:80,r:'c',emoji:'🏡',sfx:'YAY!',title:'Grandchildren Visit!',body:'Your grandchildren are here for the week!',choices:[{l:'🥰 Wonderful!',m:{happiness:30,health:5}}]},
+  {minAge:55,maxAge:80,r:'c',emoji:'🏡',sfx:'YAY!',title:'Grandchildren Visit!',body:'Your grandchildren are here for the week!',guard:()=>(G.family||[]).some(m=>m.type==='child'&&m._hadGrandkid),choices:[{l:'🥰 Wonderful!',m:{happiness:30,health:5}}]},
   {minAge:60,maxAge:90,r:'r',emoji:'🌟',sfx:'WOW!',title:'Lifetime Award',body:'Your community gives you a lifetime achievement award!',choices:[{l:'🌟 Honoured!',m:{happiness:35,smarts:5}}]},
   // SENIOR (60+)
   // MORAL / SOCIAL CHOICES
@@ -1443,7 +1444,7 @@ const EVENTS = [
   {minAge:22,maxAge:70,r:'c',emoji:'🏘️',sfx:'HMMMM',title:'Neighbour Needs Help',body:'Your elderly neighbour needs help with repairs.',choices:[{l:'🔨 Help out',m:{happiness:12,health:-3}},{l:'📞 Call services',m:{money:-200,happiness:8}},{l:'😔 Too busy',m:{happiness:-5}}]},
   {minAge:25,maxAge:60,r:'r',emoji:'⚖️',sfx:'HMMMM',title:'Jury Duty',body:"You've been called for jury duty. A week away from work.",choices:[{l:'✅ Serve dutifully',m:{smarts:8,happiness:5}},{l:'😤 Try to get out of it',m:{smarts:-3,happiness:3}}]},
   {minAge:25,maxAge:65,r:'r',emoji:'🏢',sfx:'UH-OH!',title:'Ethical Dilemma',body:"Your boss asks you to falsify some reports. What do you do?",choices:[{l:'✅ Stay ethical',m:{happiness:10,smarts:5}},{l:'💰 Do it for the bonus',m:{money:5000,happiness:-15,misfortune:15}}]},
-  {minAge:62,maxAge:85,r:'c',emoji:'👶',sfx:'YAY!',title:'Grandparent!',body:'Your child just had a baby! You are officially a grandparent!',choices:[{l:'🥰 So wonderful!',m:{happiness:30,health:5}}]},
+  {minAge:62,maxAge:85,r:'c',emoji:'👶',sfx:'YAY!',title:'Grandparent!',body:'Your child just had a baby! You are officially a grandparent!',guard:()=>{const _gc=(G.family||[]).find(m=>m.type==='child'&&m.age>=25&&!m._hadGrandkid);if(_gc){_gc._hadGrandkid=true;return true;}return false;},choices:[{l:'🥰 So wonderful!',m:{happiness:30,health:5}}]},
   {minAge:65,maxAge:90,r:'c',emoji:'📞',sfx:'PING!',title:'Old Friend Calls',body:"An old friend from decades ago tracked you down. Lovely surprise!",choices:[{l:'📞 Catch up!',m:{happiness:20,smarts:5}},{l:'Busy right now',m:{happiness:-3}}]},
   {minAge:68,maxAge:90,r:'r',emoji:'🎤',sfx:'WOW!',title:'Wisdom Podcast',body:'A popular podcast wants you as a guest! Share your story.',choices:[{l:'🎙️ Share your wisdom',m:{happiness:20,smarts:5,money:2000}},{l:'Too private',m:{}}]},
   {minAge:70,maxAge:90,r:'c',emoji:'🏡',sfx:'HMMMM',title:'Downsize Home?',body:'The big house feels too large now. Move to something cosier?',choices:[
@@ -2224,9 +2225,9 @@ function showEndScreen(){
 
     // Career chapter
     if(G.peakCareerTier>=4){
-      bioLines.push(`${pronoun} climbed to the upper echelons of the ${trackName} world, reaching ${G.jobTitle||'an elite position'} — a career that few ever achieve.`);
+      bioLines.push(`${pronoun} climbed to the upper echelons of the ${trackName} world, reaching ${G.peakJobTitle||G.jobTitle||'an elite position'} — a career that few ever achieve.`);
     } else if(G.peakCareerTier>=2){
-      bioLines.push(`${pronoun} built a steady career in ${trackName||'the workforce'}, rising to the role of ${G.jobTitle||'a respected professional'}.`);
+      bioLines.push(`${pronoun} built a steady career in ${trackName||'the workforce'}, rising to the role of ${G.peakJobTitle||G.jobTitle||'a respected professional'}.`);
     } else if(G.peakCareerTier===1){
       bioLines.push(`${pronoun} worked hard in ${pronounObj} first career steps, learning the value of persistence from day one.`);
     }
@@ -2381,6 +2382,15 @@ window.startLegacyContinue = function(){
   newG.name = legacyKid.name;
   newG.gender = legacyKid.avatarRoll ? (legacyKid.avatarRoll.gender || 'male') : (Math.random()>0.5?'male':'female');
   newG.age = legacyKid.age;
+
+  // If the child already had a job assigned in the family tab, carry it over
+  if(legacyKid.job && legacyKid.jobIncome && legacyKid.age>=18){
+    newG.job = legacyKid.job.toLowerCase().replace(/\s+/g,'_');
+    newG.jobTitle = legacyKid.job;
+    newG.salary = legacyKid.jobIncome;
+    newG.yearsInRole = Math.max(0, legacyKid.age - 22);
+    newG.careerTrack = null; // will be picked up via job matching
+  }
 
   // Child inherits some of parent's traits scaled by age
   const smartsInherited = Math.min(70, Math.round((G.smarts * 0.3) + (legacyKid.trait==='studious'?15:5)));
@@ -3201,6 +3211,28 @@ function renderFamilyTab(){
       detail.innerHTML=`Child · ${stageLabel}`;
     }
     info.appendChild(detail);
+
+    // Adult children: show job and income (informational, NOT added to player income)
+    if(m.type==='child' && m.age>=18){
+      // Assign a job if they don't have one yet (based on trait + age)
+      if(!m.job){
+        const kidJobs={
+          studious: m.age>=25?{title:'Research Analyst',income:55000}:m.age>=22?{title:'Graduate Intern',income:28000}:{title:'Student',income:0},
+          athletic:  m.age>=22?{title:'Sports Coach',income:38000}:{title:'Fitness Trainer',income:25000},
+          creative:  m.age>=22?{title:'Graphic Designer',income:40000}:{title:'Freelance Artist',income:20000},
+          rebellious:m.age>=25?{title:'Entrepreneur',income:45000}:{title:'Barista',income:22000},
+        };
+        const base=kidJobs[m.trait]||{title:'Office Worker',income:35000};
+        m.job=base.title;
+        m.jobIncome=Math.round(base.income*(G.inflationMult||1));
+      }
+      if(m.job && m.job!=='Student'){
+        const kidJobDiv=document.createElement('div');
+        kidJobDiv.style.cssText='font-size:.7em;font-weight:900;color:var(--sky-dark);margin-top:3px';
+        kidJobDiv.innerHTML=`💼 ${m.job} · <span style="color:var(--grass-dark)">$${(m.jobIncome||0).toLocaleString()}/yr</span> <span style="color:#999;font-weight:700">(their income)</span>`;
+        info.appendChild(kidJobDiv);
+      }
+    }
 
     // Trait tags for children
     if(m.trait){
@@ -4612,20 +4644,42 @@ function triggerPrimarySchoolModal(){
 
 function triggerAge18Modal(){
   G.age18PathChosen=true;
-  showMilestoneModal('🎓','What\'s Next?','Finished school! What path will you take?',[
-    {label:'🏛️ University (3-4 yrs, −$12k)',effect:{smarts:20,money:-12000},education:'university',hasDegree:true,path:'uni'},
-    {label:'🔧 Trade School (1-2 yrs, −$3k)',effect:{smarts:10,money:-3000},path:'trade'},
+  const passedFinals=G._finalExamPassed===true;
+  const inf=G.inflationMult||1;
+  const uniFullCost=Math.round(25000*inf);
+  const uniDepositCost=Math.round(uniFullCost*0.2);
+  const uniLoanAmt=uniFullCost-uniDepositCost;
+  const uniLoanPmt=Math.round(uniLoanAmt/10);
+  const scholarshipGrant=Math.round(15000*inf);
+
+  const options=[
+    ...(passedFinals?[{label:`🏆 University — Scholarship! (Free + $${scholarshipGrant.toLocaleString()} grant)`,effect:{smarts:25,money:scholarshipGrant,happiness:15},education:'university',hasDegree:true,path:'uni_scholarship',alwaysEnabled:true}]:[]),
+    {label:`🏛️ University — Pay Full ($${uniFullCost.toLocaleString()})`,effect:{smarts:20,money:-uniFullCost,happiness:-5},education:'university',hasDegree:true,path:'uni',alwaysEnabled:false},
+    {label:`🏛️ University — Student Loan ($${uniDepositCost.toLocaleString()} deposit + $${uniLoanPmt.toLocaleString()}/yr × 10yrs)`,effect:{smarts:20,money:-uniDepositCost,happiness:-5},education:'university',hasDegree:true,path:'uni_loan',_isLoan:true,_loanPmt:uniLoanPmt,_loanDebt:uniLoanAmt,alwaysEnabled:uniDepositCost<=G.money},
+    {label:'🔧 Trade School (−$3k)',effect:{smarts:10,money:-3000},path:'trade'},
     {label:'💼 Entry Level Job',effect:{happiness:5},path:'work',alwaysEnabled:true},
-  ],choice=>{
+  ];
+
+  const modalBody=passedFinals
+    ?'🏆 Your exam results earned a scholarship offer! Choose your path:'
+    :'Finished school! What path will you take?';
+
+  showMilestoneModal('🎓','What\'s Next?',modalBody,options,choice=>{
     if(choice.education){
       G.education=choice.education;
       G.hasDegree=choice.hasDegree||false;
       G.studyingAt='University 🏛️';
-      // Mark as enrolled via milestone so the edu tab doesn't double-charge
       G._age18UniEnrolled=true;
     }
+    if(choice._isLoan){
+      G.loanRepayment=(G.loanRepayment||0)+choice._loanPmt;
+      G.loanYearsLeft=Math.max(G.loanYearsLeft||0,10);
+      G.educationDebt=(G.educationDebt||0)+(choice._loanDebt||0);
+      addLog(`🏦 Student loan: $${choice._loanPmt.toLocaleString()}/yr × 10yrs`,'info');
+    }
     applyMod(choice.effect);
-    if(choice.path==='uni'){addLog('Enrolled in University! 🏛️','event');SoundManager.levelUp();burst(50);showMascotBubble('🦉 Great choice! University opens doors! 🏛️', 4000);}
+    if(choice.path==='uni_scholarship'){addLog(`🏆 Scholarship awarded! +$${scholarshipGrant.toLocaleString()} grant — University here we come! 🎓`,'legend');SoundManager.legend();burst(60);showMascotBubble('🦉 Scholarship! Your hard work at 17 paid off! 🏆',5000);}
+    else if(choice.path==='uni'||choice.path==='uni_loan'){addLog('Enrolled in University! 🏛️','event');SoundManager.levelUp();burst(50);showMascotBubble('🦉 Great choice! University opens doors! 🏛️',4000);}
     else if(choice.path==='trade'){addLog('Started Trade School! 🔧','event');SoundManager.success();}
     else{addLog('Hit the job market! 💼','event');}
     checkAchievements();save();updateUI();
@@ -4800,6 +4854,7 @@ function ageUp(){
     if(_tier>(G.peakCareerTier||0)){
       G.peakCareerTier=_tier;
       G.peakCareerTrack=G.careerTrack||getJobTrack(G.job)?.[0]||null;
+      G.peakJobTitle=G.jobTitle; // snapshot actual job title at career peak (not "Retired")
     }
   }
 
@@ -4980,14 +5035,16 @@ function ageUp(){
       G.spouseIncome=Math.round(G.spouseIncome*1.03);
       applyMod({money:G.spouseIncome});
       if(G.age%3===0) addLog(`💑 Partner income: +$${G.spouseIncome.toLocaleString()}/yr`, 'good');
-    } else if(spouseRetired && G.spouseIncome>0){
-      // Spouse retired — convert to small pension, log once
-      if(G.spouseIncome>0){
-        const spousePension=Math.round(G.spouseIncome*0.35);
+    } else if(spouseRetired){
+      // Spouse retired — convert to fixed pension ONCE at age 65, then pay fixed amount
+      if(!G._spousePensionConverted){
+        const spousePension=Math.round((G.spouseIncome||0)*0.35);
         G.spouseIncome=spousePension>0?spousePension:0;
-        if(spouseAge===65) addLog(`👴 Your partner retired! Their income now $${spousePension.toLocaleString()}/yr pension.`,'info');
-        if(spousePension>0) applyMod({money:spousePension});
+        G._spousePensionConverted=true;
+        addLog(`👴 Your partner retired! Their pension: $${(G.spouseIncome||0).toLocaleString()}/yr.`,'info');
       }
+      // Pay fixed pension every year (no further reduction)
+      if((G.spouseIncome||0)>0) applyMod({money:G.spouseIncome});
     }
     // Spouse mood drifts based on player happiness
     const moodDrift = G.happiness>60 ? rand(2,5) : -rand(3,8);
@@ -5655,10 +5712,20 @@ ${dev.desc}`,
     {minAge:25,maxAge:65,r:'c',emoji:'🤒',sfx:'OH NO!',title:'Illness',body:'You came down with a nasty illness that knocked you out for weeks.',choices:[{l:'🏥 See a doctor',m:{health:10,money:-800,happiness:-5},style:'grn'},{l:'😴 Tough it out',m:{health:-12,happiness:-8},style:'sec'}]},
     {minAge:30,maxAge:80,r:'c',emoji:'😰',sfx:'STRESS!',title:'Midlife Stress',body:'The pressure of life is getting to you. Everything feels overwhelming.',choices:[{l:'🧘 Take a break',m:{happiness:15,money:-500,health:5},style:'grn'},{l:'💪 Power through',m:{happiness:-20,health:-8},style:'sec'}]},
     {minAge:16,maxAge:30,r:'c',emoji:'💔',sfx:'OUCH!',title:'Heartbreak',body:'A relationship ended badly. It hurts more than you expected.',choices:[{l:'🍦 Treat yourself',m:{happiness:-5,money:-200},style:'grn'},{l:'😢 Wallow in it',m:{happiness:-18,health:-5},style:'sec'}]},
+    // Additional negative events post-40
+    {minAge:40,maxAge:70,r:'c',emoji:'🏥',sfx:'OH NO!',title:'Health Check Alarm',body:'Your doctor says your numbers are concerning. Lifestyle changes needed.',choices:[{l:'🥗 Make changes (−$500)',m:{health:8,money:-500,happiness:-5},style:'grn'},{l:'😤 Ignore the advice',m:{health:-15,happiness:5},style:'dan'}]},
+    {minAge:40,maxAge:65,r:'c',emoji:'📉',sfx:'OOPS!',title:'Investment Dip',body:'Your portfolio took a hit this quarter. Stressful times.',guard:()=>(G.investments||0)>5000,choices:[{l:'😤 Hold steady',m:{happiness:-10}},{l:'💸 Sell some holdings',m:{money:2000,happiness:-5,investments:-3000}}]},
+    {minAge:42,maxAge:60,r:'c',emoji:'🧠',sfx:'HMMMM',title:'Identity Crisis',body:"You're wondering: is this really the life you wanted? Mid-life is hitting hard.",choices:[{l:'🧘 Therapy session (−$800)',m:{happiness:18,smarts:5,money:-800},style:'grn'},{l:'💪 Push on regardless',m:{happiness:-12},style:'sec'}]},
+    {minAge:45,maxAge:75,r:'c',emoji:'🦴',sfx:'OUCH!',title:'Back Injury',body:"A bad back has been slowing you down for weeks. Getting older is tough.",choices:[{l:'🏥 Physio (−$1,200)',m:{health:10,money:-1200,happiness:-3},style:'grn'},{l:'😴 Rest at home',m:{health:-5,happiness:-8},style:'sec'}]},
+    {minAge:50,maxAge:75,r:'c',emoji:'😔',sfx:'UH-OH!',title:'Empty Nest',body:'The house is quiet now. The kids have all moved on with their lives.',guard:()=>(G.family||[]).some(m=>m.type==='child'&&m.age>=22),choices:[{l:'🌿 Rediscover yourself',m:{happiness:10,smarts:5},style:'pri'},{l:'😢 Really feeling it',m:{happiness:-10,health:-3},style:'sec'}]},
+    {minAge:55,maxAge:80,r:'c',emoji:'📞',sfx:'OH NO!',title:'Parent Needs Care',body:'An ageing parent needs significant support. A tough responsibility.',choices:[{l:'❤️ Step up to help (−$3k)',m:{money:-3000,happiness:5,health:-5},style:'pri'},{l:'😔 Do what you can',m:{happiness:-15},style:'sec'}]},
+    {minAge:60,maxAge:85,r:'c',emoji:'🏥',sfx:'UH-OH!',title:'Serious Diagnosis',body:"The doctor delivers news you weren't prepared for. Life feels fragile.",choices:[{l:'💊 Treat aggressively (−$5k)',m:{health:15,money:-5000,happiness:-10},style:'grn'},{l:'🌿 Focus on quality of life',m:{happiness:10,health:-5},style:'sec'}]},
   ];
 
   // Quiet years counter: if 3+ quiet years, force an event this turn
   const isQuiet=G.quietYears>=3;
+  // After age 40, negative events should be more frequent — lower the quiet threshold
+  const negEventBoost = G.age>=40 ? 0.25 : 0; // extra 25% neg event chance after 40
 
   const roll=Math.random()*100;
   const rarity=roll<1?'l':roll<12?'r':'c';
@@ -5668,6 +5735,11 @@ ${dev.desc}`,
   if(misfortunePull&&Math.random()<MISFORTUNE_PULL_CHANCE&&G.age>=16){
     const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
     if(eligible.length>0){ev=eligible[Math.floor(Math.random()*eligible.length)];G.misfortune=Math.max(0,(G.misfortune||0)-15);}
+  }
+  // After 40: directly pull a negative event with increased probability (regardless of misfortune)
+  if(!ev && G.age>=40 && Math.random()<negEventBoost){
+    const eligible=negEvents.filter(e=>G.age>=e.minAge&&G.age<=e.maxAge&&(!e.guard||e.guard()));
+    if(eligible.length>0){ev=eligible[Math.floor(Math.random()*eligible.length)];}
   }
   // Raise common event chance from 40% to 65%, and force if quiet
   if(!ev&&pool.length&&(isQuiet||rarity!=='c'||Math.random()<COMMON_EVENT_CHANCE)){
@@ -5990,6 +6062,9 @@ function continueLife(){
     if(G.weddingValue===undefined)G.weddingValue=0;
     if(G.peakCareerTier===undefined)G.peakCareerTier=0;
     if(G.peakCareerTrack===undefined)G.peakCareerTrack=null;
+    if(G.peakJobTitle===undefined)G.peakJobTitle=null;
+    if(G._spousePensionConverted===undefined)G._spousePensionConverted=false;
+    if(G._finalExamPassed===undefined)G._finalExamPassed=null;
     if(G._agingAcceleration===undefined)G._agingAcceleration=0;
     if(G.friends===undefined)G.friends=[];
     if(G.friendsIgnoredYears===undefined)G.friendsIgnoredYears=0;
@@ -6822,13 +6897,13 @@ function triggerEndOfYearExam(){
   document.getElementById('m-title').textContent=isFinal?'Final Year Exams!':'End-of-Year Exams!';
   document.getElementById('m-body').style.display='block';
   document.getElementById('m-body').textContent=isFinal
-    ?'Your final school exams! Performance here shapes your future!'
-    :`Big exams this year, ${G.name}. Give it everything!`;
+    ?'Your final school exams! A strong pass could earn you a university scholarship!'
+    :`Mid-school exams, ${G.name}. These are easier — just show what you know!`;
   document.getElementById('m-extra').innerHTML=`
     <div class="school-scene">
-      <div class="school-blackboard">${isFinal?'📝 FINAL EXAMS':'📝 END OF YEAR EXAMS'}</div>
+      <div class="school-blackboard">${isFinal?'📝 FINAL EXAMS (Age 17)':'📝 MID-SCHOOL EXAMS (Age 12)'}</div>
       <div style="font-size:.72em;color:#546E7A;font-weight:800;margin-top:4px">
-        ${isFinal?'Pass well → big Smarts & Looks boost':'Pass → Smarts boost · Fail → Smarts penalty'}
+        ${isFinal?'Pass well → Scholarship at 18! Big Smarts & Looks boost':'Easy paper — Pass → Smarts boost · Fail → small penalty'}
       </div>
       <div class="school-desk"></div>
     </div>`;
@@ -6836,24 +6911,26 @@ function triggerEndOfYearExam(){
   const startBtn=document.createElement('button');startBtn.type='button';startBtn.className='mbtn pri';
   startBtn.textContent='✏️ Sit the Exam!';
   startBtn.onclick=()=>{
-    const useScramble=Math.random()>.5;
     const onWin=()=>{
-      const smartsGain=isFinal?12:8, looksGain=isFinal?5:2, happyGain=isFinal?10:8;
+      const smartsGain=isFinal?15:6, looksGain=isFinal?5:1, happyGain=isFinal?12:6;
       applyMod({smarts:smartsGain,looks:looksGain,happiness:happyGain});
-      addLog(`🎓 ${isFinal?'Final exams':'End-of-year exams'} PASSED! +${smartsGain} Smarts, +${looksGain} Looks, +${happyGain} Happy`,'good');
+      addLog(`🎓 ${isFinal?'Final exams':'Mid-school exams'} PASSED! +${smartsGain} Smarts, +${looksGain} Looks, +${happyGain} Happy`,'good');
       SoundManager.levelUp();burst(30);triggerCharReaction('spin');
-      showMascotBubble(`🦉 ${isFinal?'You smashed your finals! 🎓':'Excellent results! ⭐'}`,4000);
+      if(isFinal){G._finalExamPassed=true;showMascotBubble('🦉 Brilliant result! A scholarship offer awaits you at 18! 🏆',5000);}
+      else{showMascotBubble('🦉 Great job on your mid-school exams! ⭐',4000);}
       checkAchievements();save();updateUI();refreshActiveTab();
     };
     const onFail=()=>{
-      const smartsPen=isFinal?-8:-5;
-      applyMod({smarts:smartsPen,happiness:-10});
-      addLog(`😞 ${isFinal?'Final exams':'End-of-year exams'} failed. ${smartsPen} Smarts, −10 Happy`,'bad');
+      const smartsPen=isFinal?-10:-3;const happyPen=isFinal?-12:-5;
+      applyMod({smarts:smartsPen,happiness:happyPen});
+      addLog(`😞 ${isFinal?'Final exams':'Mid-school exams'} failed. ${smartsPen} Smarts, ${happyPen} Happy`,'bad');
       SoundManager.fail();triggerCharReaction('slump');
+      if(isFinal)G._finalExamPassed=false;
       showMascotBubble('🦉 Don\'t give up — study harder next time! 📚',4000);
       checkAchievements();save();updateUI();refreshActiveTab();
     };
-    if(useScramble)startScrambleMiniGame(onWin,onFail);
+    // Age 12 = easier math mini-game; Age 17 = harder word scramble
+    if(isFinal)startScrambleMiniGame(onWin,onFail);
     else startMathMiniGame(onWin,onFail);
   };
   document.getElementById('m-btns').appendChild(startBtn);
