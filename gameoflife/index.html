@@ -3676,7 +3676,14 @@ function renderBank(){
         const spouseHouse = hasSpouse ? Math.round(2000*(G.inflationMult||1)) : 0;
         const loan = (G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0 ? G.loanRepayment : 0;
         const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan;
-        const netPL = totalIncome - totalExp;
+        // ── TAX on employment income ──
+        const preTaxIncome = salary + sideInc;
+        let taxRate=0;
+        if(preTaxIncome>=30000) taxRate=0.45;
+        else if(preTaxIncome>=15000) taxRate=0.35;
+        else if(preTaxIncome>=5000) taxRate=0.20;
+        const taxAmount = Math.round(preTaxIncome * taxRate);
+        const netPL = totalIncome - totalExp - taxAmount;
         const netColor = netPL>=0 ? 'var(--grass-dark)' : 'var(--coral-dark)';
         const netSign = netPL>=0 ? '+' : '';
         // ── ROW BUILDER ──
@@ -3695,6 +3702,7 @@ function renderBank(){
         if(kidCostDisplay>0){ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); html+=row(`👶 Children (${kids.length})`,kidCostDisplay,true); }
         if(spouseHouse>0) html+=row('💑 Shared household',spouseHouse,true);
         if(loan>0) html+=`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🎓 Student loan</span><span style="font-weight:900;color:var(--coral)">−$${loan.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`;
+        if(taxAmount>0) html+=row(`💸 Income Tax (${Math.round(taxRate*100)}%)`,taxAmount,true);
         html+=`<div style="border-top:2px dashed var(--sun-dark);margin:6px 0 4px"></div>`;
         html+=`<div style="display:flex;justify-content:space-between"><span style="font-weight:900;color:var(--ink)">📊 Net P&amp;L / year</span><span style="font-weight:900;color:${netColor}">${netSign}$${Math.abs(netPL).toLocaleString()}/yr</span></div>`;
         if(G.totalTaxPaid>0) html+=`<div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`;
