@@ -832,6 +832,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 
 
+
 // ══════════════════════════════════════════
 // CLOUD DECO
 // ══════════════════════════════════════════
@@ -1002,11 +1003,14 @@ const DEFAULT = {
   activityBonusYearsLeft:0,
   musicCount:0,
   // Assets
-  houseValue:0,        // current market value of house
-  housePurchasePrice:0,// what was paid
-  houseType:null,      // 'starter'|'family'|'luxury'
-  carValue:0,
-  carType:null,        // 'economy'|'mid'|'luxury'
+  houseValue:0,        // compat alias → primaryHouse value
+  housePurchasePrice:0,// compat alias
+  houseType:null,      // compat alias → primaryHouse type
+  carValue:0,          // compat alias → primary car value
+  carType:null,        // compat alias → primary car type
+  // Multi-property system
+  properties:[],       // [{type,value,purchasePrice,mortgageBalance,mortgagePayment,mortgageYearsLeft,label}]
+  cars:[],             // [{type,value,label}]
   rentPerYear:0,       // annual rent drain if no house
   educationDebt:0,     // total spent on education (tracks investment)
   weddingValue:0,      // spent on wedding
@@ -1273,9 +1277,10 @@ const ALL_ACHIEVEMENTS = [
   {id:'globetrotter', emoji:'🌍',name:'Globetrotter',  rarity:'rare',    desc:'Visit 5+ countries',            check:()=>(G.countriesVisited||0)>=5},
   {id:'side_hustler', emoji:'💡',name:'Side Hustler',  rarity:'common',  desc:'Start a side hustle',           check:()=>!!G.sideHustle},
   {id:'empire',       emoji:'🏢',name:'Business Empire',rarity:'legendary',desc:'Sell a max-level side hustle',  check:()=>(G.sideHustle===null&&(G.achievements||[]).includes('side_hustler'))},
+  {id:'landlord',     emoji:'🏘️',name:'Property Mogul',rarity:'rare',    desc:'Own 2+ properties',             check:()=>(G.properties||[]).length>=2},
   {id:'will_power',   emoji:'📜',name:'Estate Planner',rarity:'common',  desc:'Write your will',               check:()=>!!G.willWritten},
-  {id:'homeowner',    emoji:'🏠',name:'Homeowner',     rarity:'common',  desc:'Buy your first home',           check:()=>!!G.houseType},
-  {id:'mortgage_free',emoji:'🎉',name:'Mortgage Free!',rarity:'rare',    desc:'Pay off your mortgage',         check:()=>G.houseType&&G.mortgageBalance===0},
+  {id:'homeowner',    emoji:'🏠',name:'Homeowner',     rarity:'common',  desc:'Buy your first home',           check:()=>(G.properties||[]).length>0},
+  {id:'mortgage_free',emoji:'🎉',name:'Mortgage Free!',rarity:'rare',    desc:'Pay off your mortgage',         check:()=>(G.properties||[]).some(p=>p.mortgageBalance===0&&p.purchasePrice>0)},
   {id:'tax_payer',    emoji:'📊',name:'Good Citizen',  rarity:'common',  desc:'Pay $50,000+ in lifetime tax',  check:()=>(G.totalTaxPaid||0)>=50000},
   {id:'globetrotter5',emoji:'🗺️',name:'World Explorer',rarity:'legendary',desc:'Visit 10+ countries',          check:()=>(G.countriesVisited||0)>=10},
   {id:'burnout_beat', emoji:'💚',name:'Burnout Survivor',rarity:'rare',  desc:'Recover from burnout',          check:()=>!G.burnoutActive&&G.grindStreak===0&&(G.achievements||[]).some(a=>a==='workhorse')},
@@ -1844,6 +1849,23 @@ function calcLegacyScore() {
   return calcScoreBreakdown().total;
 }
 
+// ── Property / Car helpers ──
+function getPrimaryHouse(){ return (G.properties||[])[0]||null; }
+function getAllHousesValue(){ return (G.properties||[]).reduce((s,p)=>s+p.value,0); }
+function getAllCarsValue(){ return (G.cars||[]).reduce((s,c)=>s+c.value,0); }
+function syncCompatAliases(){
+  const ph=getPrimaryHouse();
+  G.houseType=ph?ph.type:null;
+  G.houseValue=ph?ph.value:0;
+  G.housePurchasePrice=ph?ph.purchasePrice:0;
+  G.mortgageBalance=ph?ph.mortgageBalance:0;
+  G.mortgagePayment=ph?ph.mortgagePayment:0;
+  G.mortgageYearsLeft=ph?ph.mortgageYearsLeft:0;
+  const pc=(G.cars||[])[0]||null;
+  G.carType=pc?pc.type:null;
+  G.carValue=pc?pc.value:0;
+}
+
 function calcScoreBreakdown() {
   const netWorth = G.money + (G.investments||0);
   const trophyCount = (G.achievements||[]).length;
@@ -1919,12 +1941,13 @@ function calcScoreBreakdown() {
       label: '🏠 Assets',
       desc: (() => {
         const parts = [];
-        if(G.houseValue>0) parts.push(`🏠 $${G.houseValue.toLocaleString()}`);
-        if(G.carValue>0)   parts.push(`🚗 $${G.carValue.toLocaleString()}`);
+        const hv=getAllHousesValue();const cv=getAllCarsValue();
+        if(hv>0) parts.push(`🏠 $${hv.toLocaleString()} (${(G.properties||[]).length} prop.)`);
+        if(cv>0) parts.push(`🚗 $${cv.toLocaleString()} (${(G.cars||[]).length} car${(G.cars||[]).length!==1?'s':''})`);
         if(G.educationDebt>0) parts.push(`📚 $${G.educationDebt.toLocaleString()}`);
         return parts.length ? parts.join(' · ') : 'No major assets';
       })(),
-      score: Math.min(Math.floor((G.houseValue + G.carValue + G.educationDebt * 1.5 + G.weddingValue * 0.5) / 5), 10000),
+      score: Math.min(Math.floor((getAllHousesValue() + getAllCarsValue() + (G.educationDebt||0) * 1.5 + (G.weddingValue||0) * 0.5) / 5), 10000),
       max: 10000
     },
   ];
@@ -2009,7 +2032,8 @@ function showEndScreen(){
     if(G.education!=='none')bio+=`They pursued ${eduStr}${G.educationDebt>0?`, investing $${G.educationDebt.toLocaleString()} in their future`:''}. `;
     if(G.peakCareerTier>0)bio+=`Their career peak was as a ${G.jobTitle||'professional'} in the ${trackName} field (Tier ${G.peakCareerTier}). `;
     if(spouse||G.marriageAge)bio+=`They ${G.marriageAge?`married at age ${G.marriageAge}`:'found love'} and ${kids.length>0?`raised ${kids.length} child${kids.length>1?'ren':''}`:G.marriageAge?'shared their life with their partner':''}. `;
-    if(G.houseType)bio+=`They owned a ${G.houseType} home worth $${(G.houseValue||0).toLocaleString()}. `;
+    const _ph=getPrimaryHouse();
+    if(_ph)bio+=`They owned ${(G.properties||[]).length} propert${(G.properties||[]).length>1?'ies':'y'} (primary: ${_ph.label}, $${_ph.value.toLocaleString()}). `;
     bio+=`They lived to ${G.age}, leaving a net worth of $${(G.money+(G.investments||0)+(G.houseValue||0)+(G.carValue||0)).toLocaleString()}.`;
     bioEl.textContent=bio;
   }
@@ -2020,8 +2044,8 @@ function showEndScreen(){
     const missed=[];
     if(!G.marriageAge) missed.push('💍 Never married');
     if(!(G.family||[]).find(m=>m.type==='child')) missed.push('👶 Never had children');
-    if(!G.houseType) missed.push('🏠 Never bought a home');
-    if(!G.carType) missed.push('🚗 Never owned a car');
+    if((G.properties||[]).length===0) missed.push('🏠 Never bought a home');
+    if((G.cars||[]).length===0) missed.push('🚗 Never owned a car');
     if(G.education==='none') missed.push('📚 Never pursued education');
     if(G.achievements.length<3) missed.push('🏆 Few trophies unlocked');
     // Near misses
@@ -2922,12 +2946,12 @@ function renderActivities(){
       SoundManager.success();
     });
   }
-  if(a>=30&&a<=55&&G.houseType){
+  if(a>=30&&a<=55&&getPrimaryHouse()){
     addActDual(30,'🔨','Home Improvement','+house value +5 ✨ / −$2000','homeimprove',1,()=>{
       const cost=Math.round(2000*(G.inflationMult||1));
       if(G.money<cost){addLog('Need $2,000 for home improvements!','bad');SoundManager.fail();return;}
       incActCount('homeimprove');
-      G.houseValue=Math.floor(G.houseValue*1.05);
+      const _ph=getPrimaryHouse();if(_ph)_ph.value=Math.floor(_ph.value*1.05);syncCompatAliases();G.houseValue=G.houseValue;
       applyMod({money:-cost,looks:5,happiness:8});
       addLog(`🔨 Home improvements done! House value +5% → $${G.houseValue.toLocaleString()}`,'good');
       SoundManager.success();
@@ -3295,7 +3319,7 @@ function renderWork(){
   if(!G.sideHustle&&G.age>=18&&!G.retired){
     const hustles=[
       {type:'freelance', emoji:'🎨', label:'Freelancer',    needs:'Smarts 55+', req:()=>G.smarts>=55,  income:()=>Math.round(rand(800,1800)*(G.inflationMult||1)), desc:'Design, write, code for clients.'},
-      {type:'gig',       emoji:'🚗', label:'Gig Driver',    needs:'Need a car', req:()=>!!G.carType,   income:()=>Math.round(rand(500,1200)*(G.inflationMult||1)), desc:'Drive people around for cash.'},
+      {type:'gig',       emoji:'🚗', label:'Gig Driver',    needs:'Need a car', req:()=>(G.cars||[]).length>0,   income:()=>Math.round(rand(500,1200)*(G.inflationMult||1)), desc:'Drive people around for cash.'},
       {type:'creator',   emoji:'📱', label:'Content Creator',needs:'Looks 60+', req:()=>G.looks>=60,  income:()=>Math.round(rand(600,2500)*(G.inflationMult||1)), desc:'Build an audience online.'},
       {type:'store',     emoji:'🛒', label:'Online Store',  needs:'$3,000 start',req:()=>G.money>=3000,income:()=>Math.round(rand(400,1500)*(G.inflationMult||1)), desc:'Sell products online.'},
     ];
@@ -3366,13 +3390,18 @@ function renderWork(){
     const salaryI=Math.round(j.salary*(G.inflationMult||1));
     const div=document.createElement('div');div.className='act-item';
     if(!qualified){div.style.opacity='.5';div.style.cursor='not-allowed';}
-    div.innerHTML=`<div class="act-icon">${j.emoji}</div><div><div class="act-title">${j.title}</div><div class="act-sub">$${salaryI.toLocaleString()}/yr${qualified?' · Tap to apply (−15% chance)':'  · 🔒 Requirements not met'}</div></div>`;
+    div.innerHTML=`<div class="act-icon">${j.emoji}</div><div><div class="act-title">${j.title}</div><div class="act-sub">$${salaryI.toLocaleString()}/yr${qualified?' · Tap to apply · ⚡−3':'  · 🔒 Requirements not met'}</div></div>`;
     if(qualified) div.onclick=()=>startBrowseInterview(j);
     el.appendChild(div);
   });
 }
 
 function startBrowseInterview(j){
+  // Job applications cost 3 energy — prevents spamming
+  if(!useEnergy(3)){
+    addLog('⚡ Need 3 energy to apply for a job! Age Up to recharge.','bad');
+    return;
+  }
   const inflatedSalary=Math.round(j.salary*(G.inflationMult||1));
   const companyNames=['Apex Corp','NextGen Ltd','Innovate Inc','Summit Group','Stellar Co','Pinnacle Inc','Horizon Tech','Catalyst Corp'];
   const company=companyNames[Math.floor(Math.random()*companyNames.length)];
@@ -3452,28 +3481,69 @@ function renderEdu(){
   el.appendChild(readItem);
 
   if(G.age>=18&&eduRank[G.education]<2&&G.smarts>=50){
-    el.appendChild(actItem('🏛️','Enrol University','Smarts 50+ needed. Unlocks great jobs!',()=>{
-      const uniCost=Math.round(25000*(G.inflationMult||1));
-      if(G.money<uniCost){addLog(`Need $${uniCost.toLocaleString()} for university tuition!`,'bad');SoundManager.fail();return;}
+    const uniCost=Math.round(25000*(G.inflationMult||1));
+    const uniDeposit=Math.round(uniCost*0.20); // 20% upfront, rest as loan
+    const uniLoan=uniCost-uniDeposit;
+    const uniLoanPmt=Math.round(uniLoan/10); // 10-year repayment
+    const canPayFull=G.money>=uniCost;
+    const canPayDeposit=G.money>=uniDeposit;
+    function enrolUni(payFull){
       G.education='university';G.studyingAt='University 🏛️';G.hasDegree=true;
       G.educationDebt=(G.educationDebt||0)+uniCost;
-      applyMod({smarts:15,money:-uniCost,happiness:-5});
-      addLog(`Enrolled in University! 🏛️ Cost: $${uniCost.toLocaleString()}`,'event');
+      if(payFull){
+        applyMod({smarts:15,money:-uniCost,happiness:-5});
+        addLog(`🏛️ Enrolled in University! Paid in full: $${uniCost.toLocaleString()}`,'event');
+      } else {
+        applyMod({smarts:15,money:-uniDeposit,happiness:-5});
+        G.loanRepayment=(G.loanRepayment||0)+uniLoanPmt;
+        G.loanYearsLeft=Math.max(G.loanYearsLeft||0,10);
+        addLog(`🏛️ Enrolled in University! Deposit $${uniDeposit.toLocaleString()}, loan $${uniLoanPmt.toLocaleString()}/yr × 10yrs`,'event');
+      }
       SoundManager.levelUp();burst(50);checkAchievements();renderEdu();
-      showMascotBubble('🦉 University opens up amazing career paths! 🎓', 4000);
-    }));
+      showMascotBubble('🦉 University opens up amazing career paths! 🎓',4000);
+    }
+    if(canPayFull){
+      el.appendChild(actItem('🏛️','Enrol University (Pay in Full)',`$${uniCost.toLocaleString()} · Smarts 50+ · No debt`,()=>enrolUni(true)));
+    }
+    if(canPayDeposit){
+      el.appendChild(actItem('🏛️','Enrol University (Student Loan)',`$${uniDeposit.toLocaleString()} deposit + $${uniLoanPmt.toLocaleString()}/yr for 10yrs · Smarts 50+`,()=>enrolUni(false)));
+    } else {
+      const it=actItem('🏛️','Enrol University',`Need $${uniDeposit.toLocaleString()} deposit (20%) or $${uniCost.toLocaleString()} full · Smarts 50+`,()=>{
+        addLog(`Need at least $${uniDeposit.toLocaleString()} for university deposit!`,'bad');SoundManager.fail();
+      });
+      it.style.opacity='0.5';el.appendChild(it);
+    }
   }
 
   if(G.age>=24&&G.education==='university'&&G.smarts>=75){
-    el.appendChild(actItem('🎓','Graduate School','Smarts 75+ needed. Top jobs await!',()=>{
-      const gradCost=Math.round(40000*(G.inflationMult||1));
-      if(G.money<gradCost){addLog(`Need $${gradCost.toLocaleString()} for grad school!`,'bad');SoundManager.fail();return;}
+    const gradCost=Math.round(40000*(G.inflationMult||1));
+    const gradDeposit=Math.round(gradCost*0.20);
+    const gradLoan=gradCost-gradDeposit;
+    const gradLoanPmt=Math.round(gradLoan/10);
+    const canPayFullGrad=G.money>=gradCost;
+    const canPayDepGrad=G.money>=gradDeposit;
+    function enrolGrad(payFull){
       G.education='graduate';G.studyingAt='Grad School 🎓';
       G.educationDebt=(G.educationDebt||0)+gradCost;
-      applyMod({smarts:20,money:-gradCost,happiness:-8});
-      addLog(`Enrolled in Graduate School! 🎓 Cost: $${gradCost.toLocaleString()}`,'event');
+      if(payFull){
+          addLog(`🎓 Enrolled in Grad School! Paid in full: $${gradCost.toLocaleString()}`,'event');
+      } else {
+        applyMod({smarts:20,money:-gradDeposit,happiness:-8});
+        G.loanRepayment=(G.loanRepayment||0)+gradLoanPmt;
+        G.loanYearsLeft=Math.max(G.loanYearsLeft||0,10);
+        addLog(`🎓 Enrolled in Grad School! Deposit $${gradDeposit.toLocaleString()}, loan $${gradLoanPmt.toLocaleString()}/yr × 10yrs`,'event');
+      }
       SoundManager.levelUp();burst(60);checkAchievements();renderEdu();
-    }));
+    }
+    if(canPayFullGrad){
+      el.appendChild(actItem('🎓','Graduate School (Pay in Full)',`$${gradCost.toLocaleString()} · Smarts 75+`,()=>enrolGrad(true)));
+    }
+    if(canPayDepGrad){
+      el.appendChild(actItem('🎓','Graduate School (Student Loan)',`$${gradDeposit.toLocaleString()} deposit + $${gradLoanPmt.toLocaleString()}/yr × 10yrs · Smarts 75+`,()=>enrolGrad(false)));
+    } else {
+      const gIt=actItem('🎓','Graduate School',`Need $${gradDeposit.toLocaleString()} deposit · Smarts 75+`,()=>{addLog('Need deposit for grad school!','bad');SoundManager.fail();});
+      gIt.style.opacity='0.5';el.appendChild(gIt);
+    }
   }
 }
 
@@ -3481,7 +3551,7 @@ function renderBank(){
   const el=document.getElementById('panel-bank');
   if(!el)return;
   const inv=G.investments||0;
-  const netWorth=G.money+inv+(G.houseValue||0)+(G.carValue||0);
+  const netWorth=G.money+inv+getAllHousesValue()+getAllCarsValue();
   const tier=netWorth>=1000000?'🤑 Millionaire!':netWorth>=100000?'💎 Wealthy':netWorth>=10000?'💰 Comfortable':netWorth>=1000?'👍 Getting by':'😟 Struggling';
   // Family dependents: under-18 children still living at home + spouse
   const dependentKids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18);
@@ -3565,93 +3635,117 @@ function renderBank(){
   bigPurchasesHeader.textContent='🏠 Big Life Purchases';
   el.appendChild(bigPurchasesHeader);
 
-  // HOUSE
-  if(G.age>=22&&!G.houseType){
-    const inf=G.inflationMult||1;
-    const houses=[
-      {id:'starter', label:'🏠 Starter Home',   price:Math.round(80000*inf),  bonus:{happiness:8,looks:3},  desc:'Small but yours. No more rent!'},
-      {id:'family',  label:'🏡 Family Home',     price:Math.round(180000*inf), bonus:{happiness:15,looks:8}, desc:'Spacious, great for a family.'},
-      {id:'luxury',  label:'🏰 Luxury Mansion',  price:Math.round(500000*inf), bonus:{happiness:25,looks:20},desc:'The ultimate status symbol.'},
+  // ── PROPERTY PORTFOLIO ──
+  const propHdr=document.createElement('div');
+  propHdr.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:6px';
+  propHdr.textContent=`🏠 Properties (${(G.properties||[]).length})`;
+  el.appendChild(propHdr);
+  // Show owned properties
+  (G.properties||[]).forEach((prop,pidx)=>{
+    const isPrimary=pidx===0;
+    const mortInfo=prop.mortgageBalance>0?`Mortgage: $${prop.mortgageBalance.toLocaleString()} (${prop.mortgageYearsLeft}yr)`:'Fully Owned ✅';
+    const propCard=document.createElement('div');
+    propCard.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:10px 14px;margin-bottom:6px;border:2px solid var(--grass-dark)';
+    propCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">${isPrimary?'🏠 Primary Home':'🏘️ Investment Property'}</div><div style="font-weight:900">${prop.label}</div><div style="font-size:.78em;color:var(--grass-dark)">$${prop.value.toLocaleString()} · ${mortInfo}</div>`;
+    el.appendChild(propCard);
+    const saleNet=Math.max(0,prop.value-(prop.mortgageBalance||0));
+    const canSell=prop.mortgageBalance===0||(pidx>0); // investment or fully paid primary
+    const sellDiv=document.createElement('div');sellDiv.className='act-item';
+    sellDiv.innerHTML=`<div class="act-icon">💰</div><div><div class="act-title">Sell ${prop.label}</div><div class="act-sub">${canSell?`Net: $${saleNet.toLocaleString()} · tap to sell`:'🔒 Pay off mortgage first'}</div></div>`;
+    if(canSell){
+      sellDiv.onclick=()=>{
+        G.money+=saleNet; G.properties.splice(pidx,1); syncCompatAliases();
+        addLog(`💰 Sold ${prop.label}! Net proceeds: $${saleNet.toLocaleString()}`,'good');
+        SoundManager.money();burst(20);checkAchievements();save();updateUI();renderBank();
+      };
+    } else { sellDiv.style.opacity='0.5';sellDiv.style.cursor='default'; }
+    el.appendChild(sellDiv);
+  });
+  // Buy property
+  if(G.age>=22){
+    const inf_p=G.inflationMult||1;
+    const hOpts=[
+      {id:'starter',label:'🏠 Starter Home',   price:Math.round(80000*inf_p), bonus:{happiness:8,looks:3}},
+      {id:'family', label:'🏡 Family Home',     price:Math.round(180000*inf_p),bonus:{happiness:15,looks:8}},
+      {id:'luxury', label:'🏰 Luxury Mansion',  price:Math.round(500000*inf_p),bonus:{happiness:25,looks:20}},
     ];
-    houses.forEach(h=>{
-      const deposit20=Math.round(h.price*0.20);
-      const affordable=G.money>=deposit20; // only need 20% deposit upfront
-      const it=actItem(h.id==='luxury'?'🏰':h.id==='family'?'🏡':'🏠', h.label,
-        `$${h.price.toLocaleString()} · Deposit: $${deposit20.toLocaleString()} (20%) · ${h.desc} · +${h.bonus.happiness} 😊`, ()=>{
-        const deposit=Math.round(h.price*0.20);
-        const mortgageAmt=h.price-deposit;
-        const annualPayment=Math.round(mortgageAmt*0.06); // ~6% interest
-        const mortgageYrs=25;
-        if(G.money<deposit){addLog(`Need $${deposit.toLocaleString()} deposit (20%) for this home!`,'bad');SoundManager.fail();return;}
-        G.houseType=h.id; G.houseValue=h.price; G.housePurchasePrice=h.price;
-        G.mortgageBalance=mortgageAmt;
-        G.mortgagePayment=annualPayment;
-        G.mortgageYearsLeft=mortgageYrs;
-        applyMod({money:-deposit,...h.bonus});
-        addLog(`🏠 Bought ${h.label}! Deposit: $${deposit.toLocaleString()}. Mortgage: $${annualPayment.toLocaleString()}/yr for ${mortgageYrs}yrs.`,'legend');
-        SoundManager.levelUp();burst(40);triggerConfetti();
-        showMascotBubble('🦉 You\'re a homeowner! Property appreciates over time! 🏠',5000);
+    const isFirst=(G.properties||[]).length===0;
+    const buyHdrD=document.createElement('div');
+    buyHdrD.style.cssText='font-size:.72em;font-weight:800;color:var(--ink2);margin:8px 0 4px';
+    buyHdrD.textContent=isFirst?'Buy your first home:':'Buy investment property:';
+    el.appendChild(buyHdrD);
+    hOpts.forEach(h=>{
+      const dep=Math.round(h.price*0.20);
+      const can=G.money>=dep;
+      const it=actItem(h.id==='luxury'?'🏰':h.id==='family'?'🏡':'🏠',h.label,
+        `$${h.price.toLocaleString()} · Deposit $${dep.toLocaleString()} (20%)${isFirst?' · No more rent!':' · Earns appreciation'}`,()=>{
+        if(!can){addLog(`Need $${dep.toLocaleString()} deposit!`,'bad');SoundManager.fail();return;}
+        const mort=h.price-dep;
+        const pmt=Math.round(mort*0.06);
+        if(!G.properties)G.properties=[];
+        G.properties.push({type:h.id,value:h.price,purchasePrice:h.price,label:h.label,
+          mortgageBalance:mort,mortgagePayment:pmt,mortgageYearsLeft:25});
+        syncCompatAliases();
+        applyMod({money:-dep,...(isFirst?h.bonus:{})});
+        addLog(`${isFirst?'🏠':'🏘️'} Bought ${h.label}! Deposit $${dep.toLocaleString()}, mortgage $${pmt.toLocaleString()}/yr x25yr.`,isFirst?'legend':'good');
+        SoundManager.levelUp();burst(40);if(isFirst)triggerConfetti();
+        showMascotBubble(isFirst?'🦉 Homeowner! Property grows over time! 🏠':'🦉 Investment property added! Builds wealth! 📈',5000);
         checkAchievements();save();updateUI();renderBank();
       });
-      if(!affordable)it.style.opacity='0.5';
+      if(!can)it.style.opacity='0.5';
       el.appendChild(it);
     });
-  } else if(G.houseType){
-    const houseEl=document.createElement('div');
-    houseEl.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;border:2px solid var(--grass-dark)';
-    houseEl.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">🏠 You own a home!</div><div style="font-weight:900">${G.houseType==='luxury'?'🏰 Luxury Mansion':G.houseType==='family'?'🏡 Family Home':'🏠 Starter Home'}</div><div style="font-size:.78em;color:var(--grass-dark)">Current value: $${(G.houseValue||0).toLocaleString()}</div>`;
-    el.appendChild(houseEl);
-    // Upgrade option
-    if(G.houseType==='starter'&&G.money>=Math.round(100000*(G.inflationMult||1))){
-      const upgPrice=Math.round(100000*(G.inflationMult||1));
-      el.appendChild(actItem('🏡','Upgrade to Family Home',`$${upgPrice.toLocaleString()} top-up · +10 😊`,()=>{
-        G.houseType='family';
-        applyMod({money:-upgPrice,happiness:10,looks:5});
-        G.houseValue=Math.round(180000*(G.inflationMult||1));
-        addLog(`🏡 Upgraded to Family Home! Total value: $${G.houseValue.toLocaleString()}`,'good');
-        SoundManager.levelUp();checkAchievements();save();renderBank();
-      }));
-    }
   }
-
-  // CAR
-  if(G.age>=18&&!G.carType){
-    const inf=G.inflationMult||1;
-    const cars=[
-      {id:'economy', label:'🚗 Economy Car',    price:Math.round(8000*inf),   bonus:{happiness:5,looks:2},  desc:'Gets you where you need to go.'},
-      {id:'mid',     label:'🚙 Mid-Range Car',  price:Math.round(25000*inf),  bonus:{happiness:10,looks:8}, desc:'Comfortable and stylish.'},
-      {id:'luxury',  label:'🏎️ Luxury Car',     price:Math.round(80000*inf),  bonus:{happiness:18,looks:18},desc:'Head-turner. Status symbol.'},
+    // ── CARS ──
+  const carHdr=document.createElement('div');
+  carHdr.style.cssText='font-size:.72em;font-weight:900;text-transform:uppercase;color:var(--ink2);margin-bottom:6px';
+  carHdr.textContent=`🚗 Cars (${(G.cars||[]).length})`;
+  el.appendChild(carHdr);
+  // Show owned cars
+  (G.cars||[]).forEach((car,cidx)=>{
+    const carCard=document.createElement('div');
+    carCard.style.cssText='background:#E3F2FD;border-radius:var(--radius);padding:10px 14px;margin-bottom:6px;border:2px solid var(--sky-dark)';
+    carCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--sky-dark)">🚗 Your Car ${cidx>0?'#'+(cidx+1):''}</div><div style="font-weight:900">${car.label}</div><div style="font-size:.78em;color:var(--sky-dark)">Value: $${car.value.toLocaleString()} (depreciates 5%/yr)</div>`;
+    el.appendChild(carCard);
+    const sellCarDiv=document.createElement('div');sellCarDiv.className='act-item';
+    sellCarDiv.innerHTML=`<div class="act-icon">💰</div><div><div class="act-title">Sell ${car.label}</div><div class="act-sub">Sell for $${car.value.toLocaleString()}</div></div>`;
+    sellCarDiv.onclick=()=>{
+      G.money+=car.value; G.cars.splice(cidx,1); syncCompatAliases();
+      addLog(`💰 Sold ${car.label} for $${car.value.toLocaleString()}`,'good');
+      SoundManager.money();checkAchievements();save();updateUI();renderBank();
+    };
+    el.appendChild(sellCarDiv);
+  });
+  // Buy car
+  if(G.age>=18){
+    const inf_c=G.inflationMult||1;
+    const cOpts=[
+      {id:'economy',label:'🚗 Economy Car',   price:Math.round(8000*inf_c),  bonus:{happiness:5,looks:2}},
+      {id:'mid',    label:'🚙 Mid-Range Car', price:Math.round(25000*inf_c), bonus:{happiness:10,looks:8}},
+      {id:'luxury', label:'🏎️ Luxury Car',    price:Math.round(80000*inf_c), bonus:{happiness:18,looks:18}},
     ];
-    cars.forEach(c=>{
-      const affordable=G.money>=c.price;
-      const it=actItem(c.id==='luxury'?'🏎️':c.id==='mid'?'🚙':'🚗', c.label,
-        `$${c.price.toLocaleString()} · ${c.desc} · +${c.bonus.happiness} 😊 +${c.bonus.looks} ✨`, ()=>{
-        if(!affordable){addLog(`Need $${c.price.toLocaleString()} for this car!`,'bad');SoundManager.fail();return;}
-        G.carType=c.id; G.carValue=c.price;
-        applyMod({money:-c.price,...c.bonus});
-        addLog(`🚗 Bought a ${c.label}! $${c.price.toLocaleString()}`,'good');
-        SoundManager.money();burst(20);checkAchievements();save();updateUI();renderBank();
+    const hasCar=(G.cars||[]).length>0;
+    const buyCarHdr=document.createElement('div');
+    buyCarHdr.style.cssText='font-size:.72em;font-weight:800;color:var(--ink2);margin:8px 0 4px';
+    buyCarHdr.textContent=hasCar?'Buy another car:':'Buy your first car:';
+    el.appendChild(buyCarHdr);
+    cOpts.forEach(c=>{
+      const can=G.money>=c.price;
+      const it=actItem(c.id==='luxury'?'🏎️':c.id==='mid'?'🚙':'🚗',c.label,
+        `$${c.price.toLocaleString()} · ${!hasCar?'+'+c.bonus.happiness+' 😊 +'+c.bonus.looks+' ✨':'Additional car'}`,()=>{
+        if(!can){addLog(`Need $${c.price.toLocaleString()} for ${c.label}!`,'bad');SoundManager.fail();return;}
+        if(!G.cars)G.cars=[];
+        G.cars.push({type:c.id,value:c.price,label:c.label});
+        syncCompatAliases();
+        applyMod({money:-c.price,...(!hasCar?c.bonus:{})});
+        addLog(`🚗 Bought ${c.label} for $${c.price.toLocaleString()}!`,'good');
+        SoundManager.money();burst(15);checkAchievements();save();updateUI();renderBank();
       });
-      if(!affordable)it.style.opacity='0.5';
+      if(!can)it.style.opacity='0.5';
       el.appendChild(it);
     });
-  } else if(G.carType){
-    const carEl=document.createElement('div');
-    carEl.style.cssText='background:#E3F2FD;border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;border:2px solid var(--sky-dark)';
-    carEl.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--sky-dark)">🚗 Your car</div><div style="font-weight:900">${G.carType==='luxury'?'🏎️ Luxury Car':G.carType==='mid'?'🚙 Mid-Range Car':'🚗 Economy Car'}</div><div style="font-size:.78em;color:var(--sky-dark)">Value: $${(G.carValue||0).toLocaleString()} (depreciates 5%/yr)</div>`;
-    el.appendChild(carEl);
-    if(G.carType!=='luxury'&&G.money>=Math.round(55000*(G.inflationMult||1))){
-      const upgPrice=Math.round(55000*(G.inflationMult||1));
-      el.appendChild(actItem('🏎️','Upgrade to Luxury Car',`$${upgPrice.toLocaleString()} · +10 😊 +12 ✨`,()=>{
-        G.carType='luxury';G.carValue=Math.round(80000*(G.inflationMult||1));
-        applyMod({money:-upgPrice,happiness:10,looks:12});
-        addLog('🏎️ Upgraded to Luxury Car!','good');
-        SoundManager.levelUp();checkAchievements();save();renderBank();
-      }));
-    }
   }
-
-  // WEDDING (only if in a relationship + no wedding yet)
+    // WEDDING (only if in a relationship + no wedding yet)
   if(G.marriageAge&&!G.weddingValue&&G.age<G.marriageAge+3){
     const inf=G.inflationMult||1;
     const weddings=[
@@ -4088,25 +4182,28 @@ function ageUp(){
   G.money=Math.max(0,G.money-cashErosion);
   if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} cash.`,'info');
 
-  // Mortgage repayment
-  if((G.mortgageBalance||0)>0&&(G.mortgageYearsLeft||0)>0){
-    applyMod({money:-G.mortgagePayment});
-    G.mortgageBalance=Math.max(0,G.mortgageBalance-G.mortgagePayment);
-    G.mortgageYearsLeft--;
-    if(G.age%5===0) addLog(`🏠 Mortgage payment: −$${G.mortgagePayment.toLocaleString()} · Balance: $${G.mortgageBalance.toLocaleString()}`,'info');
-    if(G.mortgageYearsLeft===0){
-      G.mortgageBalance=0;G.mortgagePayment=0;
-      addLog('🎉 Mortgage fully paid off! Your home is truly yours! 🏠','legend');
-      applyMod({happiness:15}); SoundManager.levelUp(); burst(30);
+  // Mortgage repayment — iterate all properties
+  (G.properties||[]).forEach(prop=>{
+    if((prop.mortgageBalance||0)>0&&(prop.mortgageYearsLeft||0)>0){
+      applyMod({money:-prop.mortgagePayment});
+      prop.mortgageBalance=Math.max(0,prop.mortgageBalance-prop.mortgagePayment);
+      prop.mortgageYearsLeft--;
+      if(G.age%5===0) addLog(`🏠 ${prop.label} mortgage: −$${prop.mortgagePayment.toLocaleString()} · Balance: $${prop.mortgageBalance.toLocaleString()}`,'info');
+      if(prop.mortgageYearsLeft===0){
+        prop.mortgageBalance=0; prop.mortgagePayment=0;
+        addLog(`🎉 Mortgage on ${prop.label} fully paid off! 🏠`,'legend');
+        applyMod({happiness:15}); SoundManager.levelUp(); burst(30);
+      }
     }
-  }
+  });
+  syncCompatAliases();
 
-  // Property tax (0.5%/yr of house value)
-  if(G.houseValue>0){
-    const propTax=Math.round(G.houseValue*0.005);
+  // Property tax (0.5%/yr per property)
+  (G.properties||[]).forEach(prop=>{
+    const propTax=Math.round(prop.value*0.005);
     applyMod({money:-propTax});
-    if(G.age%5===0) addLog(`🏠 Property tax: −$${propTax.toLocaleString()}`,'info');
-  }
+    if(G.age%5===0) addLog(`🏠 Property tax (${prop.label}): −$${propTax.toLocaleString()}`,'info');
+  });
 
   // Rent drain: every year age 22+ if no house
   if(G.age>=22&&!G.houseType){
@@ -4121,12 +4218,13 @@ function ageUp(){
     if(G.age%3===0) addLog(`🏠 Rent: −$${rent.toLocaleString()}/yr (30% of income)`, 'info');
   } else {
     G.rentPerYear = 0;
-    // House appreciation: 2-3% per year
-    if(G.houseValue>0){
-      const appreciation = Math.floor(G.houseValue * (0.02 + Math.random()*0.01));
-      G.houseValue += appreciation;
-      if(G.age%5===0) addLog(`🏠 Home appreciated +$${appreciation.toLocaleString()} → $${G.houseValue.toLocaleString()}`, 'good');
-    }
+    // House appreciation: 2-3% per year per property
+    (G.properties||[]).forEach(prop=>{
+      const appreciation=Math.floor(prop.value*(0.02+Math.random()*0.01));
+      prop.value+=appreciation;
+      if(G.age%5===0) addLog(`🏠 ${prop.label} appreciated +$${appreciation.toLocaleString()} → $${prop.value.toLocaleString()}`,'good');
+    });
+    syncCompatAliases();
   }
 
   // Annual child costs (per child, age-dependent)
@@ -4147,8 +4245,9 @@ function ageUp(){
     }
   }
 
-  // Car depreciates 5%/yr
-  if(G.carValue>0) G.carValue=Math.max(500,Math.floor(G.carValue*0.95));
+  // Car depreciation 5%/yr per car
+  (G.cars||[]).forEach(c=>{ c.value=Math.max(500,Math.floor(c.value*0.95)); });
+  syncCompatAliases();
 
   // ── Side hustle income ──
   if(G.sideHustle&&G.sideHustleIncome>0){
@@ -4282,15 +4381,17 @@ function ageUp(){
     addLog(`💳 Overdraft interest: −$${interest.toLocaleString()}`, 'bad');
     if(G.money<-20000){
       // Force sell car first, then house
-      if(G.carType){
-        const carSale=G.carValue;
-        G.money+=carSale; G.carType=null; G.carValue=0;
-        addLog(`😰 Forced to sell your car to cover debts. +$${carSale.toLocaleString()}`, 'bad');
+      if((G.cars||[]).length>0){
+        const forceCar=G.cars.pop();
+        G.money+=forceCar.value;
+        syncCompatAliases();
+        addLog(`😰 Forced to sell ${forceCar.label} to cover debts. +$${forceCar.value.toLocaleString()}`,'bad');
         applyMod({happiness:-15});
-      } else if(G.houseType){
-        const houseSale=G.houseValue;
-        G.money+=houseSale; G.houseType=null; G.houseValue=0;
-        addLog(`😱 Forced to sell your home to clear debts!`, 'bad');
+      } else if((G.properties||[]).length>0){
+        const forceHouse=G.properties.pop();
+        G.money+=forceHouse.value;
+        syncCompatAliases();
+        addLog(`😱 Forced to sell ${forceHouse.label} to clear debts!`,'bad');
         applyMod({happiness:-30});
         SoundManager.fail(); shakeScreen();
       }
@@ -4667,6 +4768,20 @@ function continueLife(){
     if(G.houseValue===undefined)G.houseValue=0;
     if(G.housePurchasePrice===undefined)G.housePurchasePrice=0;
     if(G.houseType===undefined)G.houseType=null;
+    if(G.properties===undefined)G.properties=[];
+    if(G.cars===undefined)G.cars=[];
+    // Migrate legacy single house/car into arrays (runs once on old saves)
+    if(G.houseType&&G.properties.length===0){
+      G.properties.push({type:G.houseType,value:G.houseValue||0,purchasePrice:G.housePurchasePrice||0,
+        mortgageBalance:G.mortgageBalance||0,mortgagePayment:G.mortgagePayment||0,
+        mortgageYearsLeft:G.mortgageYearsLeft||0,
+        label:G.houseType==='luxury'?'🏰 Luxury Mansion':G.houseType==='family'?'🏡 Family Home':'🏠 Starter Home'});
+      G.houseType=G.houseType; // keep compat
+    }
+    if(G.carType&&G.cars.length===0){
+      G.cars.push({type:G.carType,value:G.carValue||0,
+        label:G.carType==='luxury'?'🏎️ Luxury Car':G.carType==='mid'?'🚙 Mid-Range Car':'🚗 Economy Car'});
+    }
     if(G.carValue===undefined)G.carValue=0;
     if(G.carType===undefined)G.carType=null;
     if(G.rentPerYear===undefined)G.rentPerYear=0;
@@ -5504,6 +5619,7 @@ function renderCups(){
 // ══════════════════════════════════════════
 // GAME STATE
 // ══════════════════════════════════════════
+
 
 
 
