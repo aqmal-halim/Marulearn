@@ -1109,7 +1109,7 @@ function applyMod(m) {
   if(m.happiness !== undefined) G.happiness = Math.min(100,Math.max(0, G.happiness + m.happiness));
   if(m.smarts    !== undefined) G.smarts    = Math.min(100,Math.max(0, G.smarts    + m.smarts));
   if(m.looks     !== undefined) G.looks     = Math.min(100,Math.max(0, G.looks     + m.looks));
-  if(m.money     !== undefined) G.money     = Math.max(0, G.money + Math.round(m.money));
+  if(m.money     !== undefined) G.money     = G.money + Math.round(m.money);
   if(m.energy    !== undefined) G.energy    = Math.min(G.maxEnergy, Math.max(0, G.energy + m.energy));
   if(m.investments!==undefined) G.investments=Math.max(0,(G.investments||0)+Math.round(m.investments));
   ['health','happiness','smarts','looks'].forEach(s=>{
@@ -1412,7 +1412,10 @@ const EVENTS = [
   {minAge:62,maxAge:85,r:'c',emoji:'👶',sfx:'YAY!',title:'Grandparent!',body:'Your child just had a baby! You are officially a grandparent!',choices:[{l:'🥰 So wonderful!',m:{happiness:30,health:5}}]},
   {minAge:65,maxAge:90,r:'c',emoji:'📞',sfx:'PING!',title:'Old Friend Calls',body:"An old friend from decades ago tracked you down. Lovely surprise!",choices:[{l:'📞 Catch up!',m:{happiness:20,smarts:5}},{l:'Busy right now',m:{happiness:-3}}]},
   {minAge:68,maxAge:90,r:'r',emoji:'🎤',sfx:'WOW!',title:'Wisdom Podcast',body:'A popular podcast wants you as a guest! Share your story.',choices:[{l:'🎙️ Share your wisdom',m:{happiness:20,smarts:5,money:2000}},{l:'Too private',m:{}}]},
-  {minAge:70,maxAge:90,r:'c',emoji:'🏡',sfx:'HMMMM',title:'Downsize Home?',body:'The big house feels too large now. Move to something cosier?',choices:[{l:'🏠 Downsize',m:{happiness:10,money:20000}},{l:'🏡 Stay put',m:{happiness:5}}]},
+  {minAge:70,maxAge:90,r:'c',emoji:'🏡',sfx:'HMMMM',title:'Downsize Home?',body:'The big house feels too large now. Move to something cosier?',choices:[
+    {l:'🏠 Downsize',fn:'_downsize_home',style:'pri'},
+    {l:'🏡 Stay put',m:{happiness:5},style:'sec'}
+  ]},
   {minAge:72,maxAge:90,r:'r',emoji:'🌍',sfx:'WOW!',title:'Bucket List Trip',body:"There's one place you've always wanted to visit. Now or never.",choices:[{l:'✈️ Do it!',m:{happiness:35,smarts:8,money:-8000,health:-5}},{l:'Next year perhaps',m:{happiness:-5}}]},
 ];
 
@@ -1451,6 +1454,43 @@ function evFn(name) {
     mascotDance();
   }
   if(name==='_marry_no'){ G.datingAge=null; G._pendingPartner=null; G.datingCooldown=G.age+5; addLog('💔 Said no to marriage.','bad'); applyMod({happiness:-10}); }
+  if(name==='_downsize_home'){
+    const ph=getPrimaryHouse();
+    if(ph){
+      const oldValue=ph.value;
+      const oldMortgage=ph.mortgageBalance||0;
+      // New smaller home is worth ~55% of old home value
+      const newValue=Math.round(oldValue*0.55);
+      // Equity released = old value - old mortgage - new value (net cash after buying smaller)
+      const equity=Math.max(0, oldValue - oldMortgage - newValue);
+      // Update property in place: smaller value, wipe old mortgage (paid off via proceeds), small new mortgage if needed
+      ph.value=newValue;
+      ph.purchasePrice=newValue;
+      ph.label='🏠 Cosy Home';
+      ph.type='starter';
+      if(equity>0){
+        // Enough proceeds to buy outright — no mortgage
+        ph.mortgageBalance=0;ph.mortgagePayment=0;ph.mortgageYearsLeft=0;
+        applyMod({money:equity,happiness:10});
+        addLog(`🏠 Downsized! Moved to a cosy home worth $${newValue.toLocaleString()}. Released $${equity.toLocaleString()} equity. +10 Happy`,'good');
+      } else {
+        // Underwater or break-even — small remaining mortgage
+        const remaining=Math.max(0,newValue-Math.max(0,oldValue-oldMortgage));
+        ph.mortgageBalance=remaining;
+        ph.mortgagePayment=remaining>0?Math.round(remaining*0.06):0;
+        ph.mortgageYearsLeft=remaining>0?15:0;
+        applyMod({happiness:8});
+        addLog(`🏠 Downsized to a cosy home worth $${newValue.toLocaleString()}. Remaining mortgage: $${remaining.toLocaleString()}. +8 Happy`,'good');
+      }
+      syncCompatAliases();
+      SoundManager.success();burst(15);
+      showMascotBubble('🦉 Nice move! A smaller home means lower costs and more freedom! 🏠',4000);
+    } else {
+      applyMod({happiness:10});
+      addLog('🏠 Downsized to a simpler lifestyle. +10 Happy','good');
+    }
+    renderBank&&renderBank();
+  }
   if(name==='_baby_yes'){
     if(!G.family) G.family=[];
     const babyName = BABY_NAMES[Math.floor(Math.random()*BABY_NAMES.length)];
@@ -1825,8 +1865,8 @@ function applyInflation() {
   if(G.age > 0 && G.age % 10 === 0 && G.age !== G.lastInflationAge) {
     G.inflationMult = (G.inflationMult || 1.0) * 1.05;
     G.lastInflationAge = G.age;
-    const cashHit = Math.floor(G.money * 0.01);
-    G.money = Math.max(0, G.money - cashHit);
+    const cashHit = G.money>0 ? Math.floor(G.money * 0.01) : 0;
+    G.money = G.money - cashHit;
     addLog(`📈 Inflation tick! Prices up 5%. −$${cashHit.toLocaleString()} eroded.`, 'event');
     spawnFloat('📈 Inflation!', false, false);
   }
@@ -2551,6 +2591,8 @@ function updateUI(){
   document.getElementById('hdr-name').textContent=G.name;
   const netWorth=G.money+(G.investments||0);
   document.getElementById('hdr-money').textContent=netWorth.toLocaleString();
+  const moneyEl=document.getElementById('hdr-money').parentElement;
+  if(moneyEl) moneyEl.style.background=G.money<0?'var(--coral)':'';
   document.getElementById('hdr-edu').textContent={none:'No education yet',highschool:'🎓 High School',university:'🏛️ University',graduate:'🎓 Graduate School'}[G.education]||'No education yet';
   renderCSSCharacter();
   document.getElementById('ava-age').textContent=G.age;
@@ -3613,13 +3655,47 @@ function renderBank(){
     </div>
     <div style="background:#FFF9C4;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sun-dark)">
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:8px">💼 Income & Expenses</div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Salary</span><span style="font-weight:900;color:var(--grass-dark)">+$${(G.retired?0:G.salary).toLocaleString()}/yr</span></div>
-      ${G.retired&&G.pension?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Pension</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.pension.toLocaleString()}/yr</span></div>`:''}
-      ${familyDrain>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">👨‍👩‍👧 Family (${dependentKids.length} kids${hasSpouse?'+spouse':''})</span><span style="font-weight:900;color:var(--coral)">−$${familyDrain.toLocaleString()}/yr</span></div>`:''}
-      ${(()=>{const mortgages=(G.properties||[]).filter(p=>(p.mortgageBalance||0)>0&&(p.mortgageYearsLeft||0)>0);if(!mortgages.length)return'';const totalPmt=mortgages.reduce((s,p)=>s+(p.mortgagePayment||0),0);const rows=mortgages.map(p=>`<div style="display:flex;justify-content:space-between;margin-bottom:2px;font-size:.85em"><span style="color:var(--ink2);font-weight:800">🏠 ${p.label||'Property'}</span><span style="font-weight:900;color:var(--coral)">−$${(p.mortgagePayment||0).toLocaleString()}/yr (${p.mortgageYearsLeft}yr left)</span></div>`).join('');return`<div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-weight:800;color:var(--ink2)">🏠 Mortgages (${mortgages.length})</span><span style="font-weight:900;color:var(--coral)">−$${totalPmt.toLocaleString()}/yr total</span></div>${rows}`;})()}
-      ${(G.sideHustleIncome>0&&!G.retired)?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">💡 Side Hustle</span><span style="font-weight:900;color:var(--grass-dark)">+$${G.sideHustleIncome.toLocaleString()}/yr</span></div>`:''}
-      ${G.totalTaxPaid>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`:''}
-      ${loanLine}
+      ${(()=>{
+        // ── INCOME ──
+        const salary = G.retired ? 0 : (G.salary||0);
+        const pension = (G.retired && G.pension) ? G.pension : 0;
+        const spouseInc = (G.spouseIncome||0);
+        const spouseRetired = (()=>{ const sp=(G.family||[]).find(m=>m.type==='spouse'); return sp&&sp.age>=65; })();
+        const sideInc = (G.sideHustleIncome>0&&!G.retired) ? G.sideHustleIncome : 0;
+        const welfare = (!G.job&&!G.retired&&G.age>=18) ? Math.round(800*(G.inflationMult||1)) : 0;
+        const totalIncome = salary + pension + spouseInc + sideInc + welfare;
+        // ── EXPENSES ──
+        const mortgages=(G.properties||[]).filter(p=>(p.mortgageBalance||0)>0&&(p.mortgageYearsLeft||0)>0);
+        const totalMort=mortgages.reduce((s,p)=>s+(p.mortgagePayment||0),0);
+        const rent = G.rentPerYear||0;
+        const kidCostDisplay = (()=>{ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); if(!kids.length)return 0; return kids.reduce((s,k)=>s+Math.round((k.age>=13?5500:4000)*(G.inflationMult||1)),0); })();
+        const spouseHouse = hasSpouse ? Math.round(2000*(G.inflationMult||1)) : 0;
+        const loan = (G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0 ? G.loanRepayment : 0;
+        const totalExp = totalMort + rent + kidCostDisplay + spouseHouse + loan;
+        const netPL = totalIncome - totalExp;
+        const netColor = netPL>=0 ? 'var(--grass-dark)' : 'var(--coral-dark)';
+        const netSign = netPL>=0 ? '+' : '';
+        // ── ROW BUILDER ──
+        const row=(label,val,isExpense)=>`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">${label}</span><span style="font-weight:900;color:${isExpense?'var(--coral)':'var(--grass-dark)'}">${isExpense?'−':'+'}$${Math.abs(val).toLocaleString()}/yr</span></div>`;
+        let html='';
+        if(salary>0) html+=row('Salary',salary,false);
+        if(pension>0) html+=row('Pension',pension,false);
+        if(spouseInc>0) html+=row(`💑 Partner income${spouseRetired?' (pension)':''}`,spouseInc,false);
+        if(sideInc>0) html+=row('💡 Side Hustle',sideInc,false);
+        if(welfare>0) html+=row('🏦 Welfare',welfare,false);
+        if(mortgages.length>0){
+          html+=`<div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-weight:800;color:var(--ink2)">🏠 Mortgages (${mortgages.length})</span><span style="font-weight:900;color:var(--coral)">−$${totalMort.toLocaleString()}/yr total</span></div>`;
+          mortgages.forEach(p=>{ html+=`<div style="display:flex;justify-content:space-between;margin-bottom:2px;font-size:.85em"><span style="color:var(--ink2);font-weight:800">↳ ${p.label||'Property'}</span><span style="font-weight:900;color:var(--coral)">−$${(p.mortgagePayment||0).toLocaleString()}/yr (${p.mortgageYearsLeft}yr)</span></div>`; });
+        }
+        if(rent>0) html+=row('🏘️ Rent',rent,true);
+        if(kidCostDisplay>0){ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); html+=row(`👶 Children (${kids.length})`,kidCostDisplay,true); }
+        if(spouseHouse>0) html+=row('💑 Shared household',spouseHouse,true);
+        if(loan>0) html+=`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🎓 Student loan</span><span style="font-weight:900;color:var(--coral)">−$${loan.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`;
+        html+=`<div style="border-top:2px dashed var(--sun-dark);margin:6px 0 4px"></div>`;
+        html+=`<div style="display:flex;justify-content:space-between"><span style="font-weight:900;color:var(--ink)">📊 Net P&amp;L / year</span><span style="font-weight:900;color:${netColor}">${netSign}$${Math.abs(netPL).toLocaleString()}/yr</span></div>`;
+        if(G.totalTaxPaid>0) html+=`<div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-weight:800;color:var(--ink2)">📊 Total Tax Paid</span><span style="font-weight:900;color:var(--ink2)">$${(G.totalTaxPaid||0).toLocaleString()}</span></div>`;
+        return html;
+      })()}
     </div>`;
 
   if(G.money>=1000){
@@ -4228,8 +4304,8 @@ function ageUp(){
     }
   }
 
-  const cashErosion=Math.floor(G.money*0.01);
-  G.money=Math.max(0,G.money-cashErosion);
+  const cashErosion=G.money>0?Math.floor(G.money*0.01):0;
+  G.money=G.money-cashErosion;
   if(cashErosion>0&&G.age%5===0) addLog(`💸 Inflation erodes $${cashErosion.toLocaleString()} cash.`,'info');
 
   // Mortgage repayment — iterate all properties
