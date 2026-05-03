@@ -571,7 +571,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 .skin-swatches{display:flex;gap:10px;justify-content:center;margin:10px 0 4px}
 .skin-swatch{width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm)}
 .skin-swatch.selected{border-color:var(--ink);transform:scale(1.18)}
-.outfit-badge{position:absolute;bottom:-4px;right:-4px;font-size:1.1em;pointer-events:none;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.3))}
+/* outfit-badge removed */
 .report-card{background:#FFFDE7;border:3px solid var(--ink);border-radius:16px;overflow:hidden}
 .report-card-header{background:#263238;color:#B2DFDB;font-family:'Fredoka One',cursive;font-size:1em;padding:10px 14px;text-align:center}
 .report-card-body{padding:12px 14px}
@@ -2577,18 +2577,7 @@ function updateUI(){
   if(G.happiness<25&&!G._ollieHappyWarned){G._ollieHappyWarned=true;showMascotBubble('😟 Ollie says: You seem really sad... try doing something fun! 🎮',6000);}
 }
 
-function updateOutfitBadge(){
-  const panel=document.getElementById('char-panel');
-  if(!panel)return;
-  let badge='';
-  if((G.money+(G.investments||0))>=500000)badge='👑';
-  else if(G.job)badge='💼';
-  else if(G.age>=18)badge='🎓';
-  else if(G.age>=6)badge='🎒';
-  let bEl=panel.querySelector('.outfit-badge');
-  if(!bEl){bEl=document.createElement('div');bEl.className='outfit-badge';panel.style.position='relative';panel.appendChild(bEl);}
-  bEl.textContent=badge;
-}
+function updateOutfitBadge(){ /* removed — badge overlapped DiceBear avatar */ }
 
 function updateOllieMascot(){
   const btn=document.getElementById('mascot-btn');
