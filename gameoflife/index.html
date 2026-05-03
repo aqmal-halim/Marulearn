@@ -108,27 +108,39 @@
 </div>
 
 <script>
+// DiceBear requires hex values (no #) for color params
+const SKIN_HEX = {
+  light:'ffdbb4', pale:'ecdcbf', tan:'edb98a',
+  brown:'d08b5b', darkBrown:'ae5d29', dark:'614335'
+};
+const HAIR_HEX = {
+  black:'2c1b18', brown:'724133', brownDark:'4a312c',
+  auburn:'c93305', blonde:'ecdcbf', blondeGolden:'d6b370',
+  red:'c93305', pastelPink:'f59797', platinum:'e8e1e1', silverGray:'e8e1e1'
+};
+
 const ST = {name:'Alex',gender:'male',skin:'light',hair:'shortFlat',hc:'brown'};
 
 const SKINS=[
-  {id:'light',c:'#FFDBB4'},{id:'pale',c:'#F8D9C4'},{id:'tan',c:'#EDB98A'},
+  {id:'light',c:'#FFDBB4'},{id:'pale',c:'#ECDCBF'},{id:'tan',c:'#EDB98A'},
   {id:'brown',c:'#D08B5B'},{id:'darkBrown',c:'#AE5D29'},{id:'dark',c:'#614335'}
 ];
+// top values from official docs
 const MH=[
-  {id:'shortFlat',n:'Flat'},{id:'short',n:'Short'},{id:'shortCurly',n:'Curly'},
-  {id:'dreads01',n:'Dreads'},{id:'frizzle',n:'Frizzy'},{id:'caesar01',n:'Caesar'},
+  {id:'shortFlat',n:'Flat'},{id:'shortRound',n:'Short'},{id:'shortCurly',n:'Curly'},
+  {id:'dreads01',n:'Dreads'},{id:'frizzle',n:'Frizzy'},{id:'theCaesar',n:'Caesar'},
   {id:'shaggyMullet',n:'Shaggy'},{id:'sides',n:'Sides'}
 ];
 const FH=[
-  {id:'long01',n:'Long'},{id:'long02',n:'Long 2'},{id:'longCurvy',n:'Wavy'},
-  {id:'bob',n:'Bob'},{id:'curly',n:'Curly'},{id:'straight01',n:'Straight'},
-  {id:'bigHair',n:'Big'},{id:'straight02',n:'Straight 2'}
+  {id:'straight01',n:'Straight'},{id:'straight02',n:'Straight 2'},{id:'longButNotTooLong',n:'Long'},
+  {id:'bob',n:'Bob'},{id:'curly',n:'Curly'},{id:'curvy',n:'Wavy'},
+  {id:'bigHair',n:'Big'},{id:'bun',n:'Bun'}
 ];
 const HC=[
-  {id:'black',c:'#090806'},{id:'brown',c:'#6F4E37'},{id:'brownDark',c:'#3B1F0A'},
-  {id:'auburn',c:'#8B2500'},{id:'blonde',c:'#F5DEB3'},{id:'blondeGolden',c:'#DAA520'},
-  {id:'red',c:'#DC143C'},{id:'pastelPink',c:'#FFB6C1'},
-  {id:'platinum',c:'#E2DEDE'},{id:'silverGray',c:'#A8A9AD'}
+  {id:'black',c:'#2C1B18'},{id:'brown',c:'#724133'},{id:'brownDark',c:'#4A312C'},
+  {id:'auburn',c:'#C93305'},{id:'blonde',c:'#ECDCBF'},{id:'blondeGolden',c:'#D6B370'},
+  {id:'red',c:'#C93305'},{id:'pastelPink',c:'#F59797'},
+  {id:'platinum',c:'#E8E1E1'},{id:'silverGray',c:'#E8E1E1'}
 ];
 const STAGES=[
   {age:2,n:'Baby',d:'0–2'},{age:9,n:'Child',d:'3–12'},
@@ -141,66 +153,73 @@ function url(name,age,happy,health,sz){
   sz=sz||200;
   const seed=encodeURIComponent((name||'x')+'_'+Math.floor(age/6)*6);
 
-  // Hair colour — silver for seniors, darkens slightly mid-life
-  let hc=ST.hc;
-  if(age>=65) hc='silverGray';
-  else if(age>=50&&['black','brown'].includes(ST.hc)) hc='brownDark';
+  // Skin — must be hex
+  const skinHex = SKIN_HEX[ST.skin] || 'ffdbb4';
 
-  // Accessories (glasses increase with age)
-  let acc='blank',ap=0;
+  // Hair colour — must be hex; silver for seniors
+  let hcKey = ST.hc;
+  if(age>=65) hcKey='silverGray';
+  else if(age>=50&&['black','brown'].includes(ST.hc)) hcKey='brownDark';
+  const hairHex = HAIR_HEX[hcKey] || '724133';
+
+  // Accessories — valid: eyepatch, kurt, prescription01, prescription02, round, sunglasses, wayfarers
+  let acc='',ap=0;
   if(age>=65){acc='prescription02';ap=75;}
   else if(age>=40){acc='prescription01';ap=35;}
   else if(age>=14){acc='round';ap=18;}
 
-  // Facial hair (males only) — single values only
-  let fh='blank',fp=0;
+  // Facial hair — valid: beardLight, beardMajestic, beardMedium, moustacheFancy, moustacheMagnum
+  let fh='',fp=0;
   if(ST.gender==='male'){
     if(age>=65){fh='beardMajestic';fp=65;}
     else if(age>=30){fh='beardLight';fp=55;}
   }
 
-  // Clothing by age
-  let cl='collarSweater',cc='3C4F5C';
-  if(age<=12){cl='graphicShirt';cc='5DADE2';}
-  else if(age<=17){cl='hoodie';cc='2C3E50';}
-  else if(age<=30){cl='blazerShirt';cc='1A5276';}
-  else if(age<=60){cl='blazerSweater';cc='2E4057';}
-  else{cl='sweater';cc='717D7E';}
+  // Clothing — valid: blazerAndShirt, blazerAndSweater, collarAndSweater, graphicShirt,
+  //            hoodie, overall, shirtCrewNeck, shirtScoopNeck, shirtVNeck
+  let cl='collarAndSweater',cc='3c4f5c';
+  if(age<=12){cl='graphicShirt';cc='5199e4';}
+  else if(age<=17){cl='hoodie';cc='262e33';}
+  else if(age<=30){cl='blazerAndShirt';cc='25557c';}
+  else if(age<=60){cl='blazerAndSweater';cc='3c4f5c';}
+  else{cl='shirtCrewNeck';cc='929598';}
 
-  // Mouth — single value only
+  // Mouth — valid: concerned, default, disbelief, eating, grimace, sad, screamOpen, serious, smile, tongue, twinkle, vomit
   let m='default';
   if(happy>=75) m='smile';
   else if(happy<35) m='sad';
 
-  // Eyes — single value only
+  // Eyes — valid: closed, cry, default, eyeRoll, happy, hearts, side, squint, surprised, wink, winkWacky, xDizzy
   let e='default';
   if(health<25) e='squint';
   else if(happy>=80) e='happy';
 
-  // Eyebrows — single value only
+  // Eyebrows — valid: angry, angryNatural, default, defaultNatural, flatNatural, frownNatural,
+  //            raisedExcited, raisedExcitedNatural, sadConcerned, sadConcernedNatural, unibrowNatural, upDown, upDownNatural
   let b='defaultNatural';
   if(happy<35) b='sadConcernedNatural';
   else if(happy>=75) b='raisedExcitedNatural';
 
-  const bg='b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf';
-  const p=new URLSearchParams({
-    seed,size:sz,
-    skinColor:ST.skin,
-    top:ST.hair,
-    hairColor:hc,
-    accessories:acc,
-    accessoriesProbability:ap,
-    facialHair:fh,
-    facialHairProbability:fp,
-    clothing:cl,
-    clothesColor:cc,
-    eyes:e,
-    eyebrows:b,
-    mouth:m,
-    backgroundColor:bg,
-    backgroundType:'gradientLinear'
+  const p = new URLSearchParams({
+    seed, size: sz,
+    skinColor: skinHex,
+    top: ST.hair,
+    hairColor: hairHex,
+    accessoriesProbability: ap,
+    facialHairProbability: fp,
+    clothing: cl,
+    clothesColor: cc,
+    eyes: e,
+    eyebrows: b,
+    mouth: m,
+    backgroundColor: 'b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf',
+    backgroundType: 'gradientLinear'
   });
-  return `https://api.dicebear.com/9.x/avataaars/png?${p}`;
+  if(acc) p.set('accessories', acc);
+  if(fh)  p.set('facialHair', fh);
+
+  // Use SVG (no size limit, better quality)
+  return `https://api.dicebear.com/9.x/avataaars/svg?${p}`;
 }
 
 function loadInto(ring,src,big){
@@ -214,6 +233,7 @@ function loadInto(ring,src,big){
   };
   i.onerror=()=>{
     ring.innerHTML=`<span style="font-size:${big?'2em':'1.2em'}">👤</span>`;
+    console.error('Avatar failed:', src);
   };
   i.src=src;
 }
