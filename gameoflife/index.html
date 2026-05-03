@@ -2148,7 +2148,11 @@ window.confirmNew=function(){if(confirm('Start a new life? Your current game wil
 function showLegacyScreen() {
   const legacy = getLegacy();
   const score = calcLegacyScore();
-  const cause = G.health<=0 ? 'Health reached zero' : G.happiness<=0 ? 'Happiness hit zero' : 'Natural causes';
+  const cause = G.health<=0
+    ? (G._debtSpiralYears>=2 ? `Broken by ${G._debtSpiralYears} years of crushing debt` : 'Health reached zero')
+    : G.happiness<=0
+      ? (G._debtSpiralYears>=2 ? `Debt spiral crushed their spirit (${G._debtSpiralYears} yrs)` : 'Happiness hit zero')
+      : 'Natural causes';
   const emoji = G.age>=85?'🏆':G.age>=65?'🌟':G.age>=40?'⭐':'😢';
   const netWorth = G.money + (G.investments||0);
   const famCount = (G.family||[]).length;
@@ -4195,7 +4199,11 @@ function ageUp(){
   checkAchievements();
 
   if(G.health<=0||G.happiness<=0||G.age>100){
-    const cause=G.health<=0?'Your health reached zero.':G.happiness<=0?'Your happiness hit zero.':'A long life, well lived.';
+    const cause=G.health<=0
+      ? (G._debtSpiralYears>=2 ? `Broken by ${G._debtSpiralYears} years of crushing debt.` : 'Your health reached zero.')
+      : G.happiness<=0
+        ? (G._debtSpiralYears>=2 ? `The debt spiral crushed your spirit after ${G._debtSpiralYears} years.` : 'Your happiness hit zero.')
+        : 'A long life, well lived.';
     G.health=Math.max(G.health,0);G.happiness=Math.max(G.happiness,0);
     // Estate settlement
     const estate=G.money+(G.houseValue||0)+(G.carValue||0)+(G.investments||0)+(G.pensionPot||0);
@@ -4568,31 +4576,71 @@ function ageUp(){
     G.financialTrauma = Math.max(0, G.financialTrauma - 2); // slow recovery
   }
 
-  // ── Overdraft spiral ──
+  // ── Negative cash auto-recovery ──
+  // Priority 1: withdraw from investments to zero debt
+  // Priority 2: sell cheapest car
+  // Priority 3: sell primary home (last resort)
   if(G.money<0){
-    const interest=Math.floor(Math.abs(G.money)*0.05);
-    G.money=Math.min(0,G.money-interest);
-    addLog(`💳 Overdraft interest: −$${interest.toLocaleString()}`, 'bad');
-    if(G.money<-20000){
-      // Force sell car first, then house
-      if((G.cars||[]).length>0){
-        const forceCar=G.cars.pop();
-        G.money+=forceCar.value;
-        syncCompatAliases();
-        addLog(`😰 Forced to sell ${forceCar.label} to cover debts. +$${forceCar.value.toLocaleString()}`,'bad');
-        applyMod({happiness:-15});
-        G.financialTrauma = Math.min(100,(G.financialTrauma||0)+20);
-      } else if((G.properties||[]).length>0){
-        const forceHouse=G.properties.pop();
-        G.money+=forceHouse.value;
-        syncCompatAliases();
-        addLog(`😱 Forced to sell ${forceHouse.label} to clear debts!`,'bad');
-        applyMod({happiness:-30});
-        G.financialTrauma = Math.min(100,(G.financialTrauma||0)+40); // lasting financial scar
-        SoundManager.fail(); shakeScreen();
-      }
+    const inv=G.investments||0;
+    if(inv>0){
+      const needed=Math.abs(G.money);
+      const withdraw=Math.min(inv,needed);
+      G.investments=inv-withdraw;
+      G.money=G.money+withdraw;
+      addLog(`📉 Auto-withdrew $${withdraw.toLocaleString()} from portfolio to cover negative balance.`,'bad');
+      applyMod({happiness:-5});
+      G.financialTrauma=Math.min(100,(G.financialTrauma||0)+5);
+      SoundManager.fail();
     }
-  }
+    if(G.money<0&&(G.cars||[]).length>0){
+      G.cars.sort((a,b)=>a.value-b.value);
+      const forceCar=G.cars.shift();
+      G.money+=forceCar.value;
+      syncCompatAliases();
+      addLog(`🚗 Auto-sold ${forceCar.label} ($${forceCar.value.toLocaleString()}) to cover debt.`,'bad');
+      applyMod({happiness:-12});
+      G.financialTrauma=Math.min(100,(G.financialTrauma||0)+15);
+      SoundManager.fail();shakeScreen();
+      showMascotBubble('🦉 Had to sell your car to cover the debt! Time to turn things around 💪',4000);
+    }
+    if(G.money<0&&(G.properties||[]).length>0){
+      const forceHouse=G.properties.shift();
+      const saleNet=Math.max(0,forceHouse.value-(forceHouse.mortgageBalance||0));
+      G.money+=saleNet;
+      syncCompatAliases();
+      addLog(`🏠 EMERGENCY: Sold ${forceHouse.label} (net $${saleNet.toLocaleString()}) to clear debt!`,'bad');
+      applyMod({happiness:-30});
+      G.financialTrauma=Math.min(100,(G.financialTrauma||0)+40);
+      SoundManager.fail();shakeScreen();flashRed();
+      showMascotBubble('🦉 Your home was sold to pay debts. Rebuild from here. 🏚️',6000);
+    }
+    if(G.money<0){
+      const interest=Math.floor(Math.abs(G.money)*0.05);
+      G.money=G.money-interest;
+      G.financialTrauma=Math.min(100,(G.financialTrauma||0)+5);
+
+      // Track consecutive years of unresolvable debt
+      G._debtSpiralYears=(G._debtSpiralYears||0)+1;
+      const spiral=G._debtSpiralYears;
+
+      // Escalating consequences: stress destroys health and happiness
+      const healthHit  = Math.min(25, 5  + spiral*3);
+      const happyHit   = Math.min(30, 8  + spiral*4);
+      applyMod({health:-healthHit, happiness:-happyHit});
+
+      const msgs=[
+        'Crushing debt is destroying your mental and physical health.',
+        'Debt collectors won\'t stop calling. You can\'t sleep. Your health is failing.',
+        'Years of financial ruin are taking a devastating toll on your body and mind.',
+        'You\'ve lost all hope. The debt spiral is killing you.',
+      ];
+      const msg=msgs[Math.min(spiral-1, msgs.length-1)];
+      addLog(`💀 Debt spiral (yr ${spiral}): −$${interest.toLocaleString()} interest · −${healthHit} Health · −${happyHit} Happy — ${msg}`,'bad');
+      SoundManager.fail();shakeScreen();flashRed();
+      showMascotBubble(`🦉 Year ${spiral} of unresolvable debt! Health −${healthHit}, Happiness −${happyHit}. This is critical! 🚨`,5000);
+    } else {
+      G._debtSpiralYears=0; // reset counter when debt is cleared
+    }
 
   // ── Mid-life job instability (40-55) ──
   if(G.job&&!G.retired&&G.age>=40&&G.age<=55){
@@ -6030,6 +6078,8 @@ function renderCups(){
   el.appendChild(shelf);
 }
 
+
+} // end ageUp()
 
 // ══════════════════════════════════════════
 // GAME STATE
