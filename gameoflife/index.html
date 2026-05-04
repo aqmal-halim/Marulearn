@@ -682,10 +682,10 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 .content-filter-badge.active{display:block}
 
 /* ══ FTUE TUTORIAL OVERLAY ══ */
-.ftue-overlay{position:fixed;inset:0;z-index:200;pointer-events:none}
-.ftue-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0);pointer-events:none}
-.ftue-spotlight{position:absolute;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,0.62);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1)}
-.ftue-bubble{position:absolute;background:white;border:3px solid var(--ink);border-radius:20px;padding:14px 18px;max-width:280px;font-size:.88em;font-weight:800;color:var(--ink);box-shadow:4px 4px 0 var(--ink);line-height:1.5;pointer-events:all}
+.ftue-overlay{position:fixed;inset:0;z-index:200;pointer-events:all;touch-action:none}
+.ftue-scroll-lock{overflow:hidden!important;touch-action:none!important;position:fixed!important;width:100%!important}
+.ftue-spotlight{position:fixed;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,0.65);pointer-events:none;transition:left .3s ease,top .3s ease,width .3s ease,height .3s ease}
+.ftue-bubble{position:fixed;background:white;border:3px solid var(--ink);border-radius:20px;padding:14px 18px;width:calc(100vw - 48px);max-width:320px;font-size:.88em;font-weight:800;color:var(--ink);box-shadow:4px 4px 0 var(--ink);line-height:1.5;pointer-events:all;left:50%;transform:translateX(-50%);z-index:201}
 .ftue-bubble::after{content:'';position:absolute;border:8px solid transparent}
 .ftue-bubble.arrow-down::after{bottom:-20px;left:50%;transform:translateX(-50%);border-top-color:var(--ink)}
 .ftue-bubble.arrow-up::after{top:-20px;left:50%;transform:translateX(-50%);border-bottom-color:var(--ink)}
@@ -7776,50 +7776,97 @@ let _ftueStep=0, _ftueActive=false;
 
 function startFTUE(){
   _ftueStep=0; _ftueActive=true;
+  // Lock body scroll so user can't scroll behind the overlay
+  _ftueSavedScrollY=window.scrollY;
+  document.body.classList.add('ftue-scroll-lock');
+  document.body.style.top=`-${_ftueSavedScrollY}px`;
   document.getElementById('ftue-overlay').style.display='block';
   renderFTUEStep();
 }
+
 function renderFTUEStep(){
   const step=FTUE_STEPS[_ftueStep];
   if(!step){ endFTUE(); return; }
+
+  // Dots
   const dots=FTUE_STEPS.map((_,i)=>`<div class="ftue-dot ${i<_ftueStep?'done':i===_ftueStep?'active':''}"></div>`).join('');
   document.getElementById('ftue-dots').innerHTML=dots;
   document.getElementById('ftue-text').innerHTML=step.text;
   document.getElementById('ftue-next-btn').textContent=step.btn||'Next →';
+
   const spotlight=document.getElementById('ftue-spotlight');
   const bubble=document.getElementById('ftue-bubble');
+  const vw=window.innerWidth;
+  const vh=window.innerHeight;
+  const BUBBLE_H=200; // estimated bubble height
+  const BUBBLE_W=Math.min(320,vw-48);
+  const PAD=8;
+
   if(step.targetId){
     const target=document.getElementById(step.targetId);
     if(target){
+      // getBoundingClientRect gives viewport-relative coords — correct for position:fixed, NO scrollY needed
       const r=target.getBoundingClientRect();
-      const pad=8;
-      spotlight.style.cssText=`left:${r.left-pad}px;top:${r.top-pad+window.scrollY}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;display:block`;
-      const spaceBelow=window.innerHeight-r.bottom;
-      if(spaceBelow>180){
-        bubble.style.cssText=`top:${r.bottom+24+window.scrollY}px;left:50%;transform:translateX(-50%);position:absolute`;
-        bubble.className='ftue-bubble arrow-up';
+      spotlight.style.cssText=`left:${r.left-PAD}px;top:${r.top-PAD}px;width:${r.width+PAD*2}px;height:${r.height+PAD*2}px;display:block`;
+
+      // Position bubble: prefer below target, fall back to above if not enough room
+      const spaceBelow=vh-r.bottom;
+      const spaceAbove=r.top;
+      let bubbleTop;
+      let arrowClass;
+
+      if(spaceBelow>=BUBBLE_H+24){
+        // Below spotlight
+        bubbleTop=r.bottom+PAD+16;
+        arrowClass='ftue-bubble arrow-up';
+      } else if(spaceAbove>=BUBBLE_H+24){
+        // Above spotlight
+        bubbleTop=r.top-PAD-BUBBLE_H-16;
+        arrowClass='ftue-bubble arrow-down';
       } else {
-        bubble.style.cssText=`top:${r.top-160+window.scrollY}px;left:50%;transform:translateX(-50%);position:absolute`;
-        bubble.className='ftue-bubble arrow-down';
+        // Not enough room above or below — centre vertically in viewport
+        bubbleTop=Math.max(16,(vh-BUBBLE_H)/2);
+        arrowClass='ftue-bubble';
       }
+
+      // Clamp to viewport edges with 16px margin
+      bubbleTop=Math.max(16,Math.min(bubbleTop,vh-BUBBLE_H-16));
+
+      // Horizontal: always centred but clamped
+      const bubbleLeft=Math.max(16,Math.min((vw-BUBBLE_W)/2,vw-BUBBLE_W-16));
+
+      bubble.style.cssText=`top:${bubbleTop}px;left:${bubbleLeft}px;transform:none;width:${BUBBLE_W}px`;
+      bubble.className=arrowClass;
     }
   } else {
+    // No target — full centre of screen
     spotlight.style.cssText='display:none';
-    bubble.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)';
+    const bubbleLeft=Math.max(16,(vw-BUBBLE_W)/2);
+    const bubbleTop=Math.max(16,(vh-BUBBLE_H)/2);
+    bubble.style.cssText=`top:${bubbleTop}px;left:${bubbleLeft}px;transform:none;width:${BUBBLE_W}px`;
     bubble.className='ftue-bubble';
   }
+
   setTimeout(()=>{ const b=document.getElementById('ftue-next-btn'); if(b)b.focus(); },50);
 }
+
 function ftueNext(){
   _ftueStep++;
   if(_ftueStep>=FTUE_STEPS.length){ endFTUE(); return; }
   renderFTUEStep();
 }
+
 function endFTUE(){
   _ftueActive=false;
+  // Restore body scroll
+  document.body.classList.remove('ftue-scroll-lock');
+  document.body.style.top='';
+  window.scrollTo(0,_ftueSavedScrollY||0);
   document.getElementById('ftue-overlay').style.display='none';
   try{ localStorage.setItem('lifestory_ftue_done','1'); }catch(e){}
 }
+
+let _ftueSavedScrollY=0;
 function shouldShowFTUE(){
   try{ return !localStorage.getItem('lifestory_ftue_done'); }catch(e){ return false; }
 }
