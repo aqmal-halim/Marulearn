@@ -2255,7 +2255,8 @@ function showEndScreen(){
         gender: G.gender,
       }];
       const dynastyFounder = fullChain[0].name;
-      bioLines.push(`<div style="background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:2px solid #F9A825;border-radius:14px;padding:12px 14px;margin-bottom:12px"><div style="font-family:'Fredoka One',cursive;font-size:1em;color:#E65100;margin-bottom:8px">👑 The ${dynastyFounder} Dynasty — ${fullChain.length} Generation${fullChain.length!==1?'s':''}</div>${
+      const totalGenCount = G._legacyGeneration||fullChain.length; // use stored counter as authoritative total
+      bioLines.push(`<div style="background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:2px solid #F9A825;border-radius:14px;padding:12px 14px;margin-bottom:12px"><div style="font-family:'Fredoka One',cursive;font-size:1em;color:#E65100;margin-bottom:8px">👑 The ${dynastyFounder} Dynasty — ${totalGenCount} Generation${totalGenCount!==1?'s':''}</div>${
         fullChain.map((gen, idx)=>{
           const isCurrentGen = idx === fullChain.length - 1;
           // Always use index+1 for generation number — reliable regardless of stored counter
@@ -6550,6 +6551,18 @@ function continueLife(){
     if(G.musicCount===undefined)G.musicCount=0;
     if(G._legacyGeneration===undefined)G._legacyGeneration=1;
     if(G._legacyChain===undefined)G._legacyChain=[];
+    // Migration: if this is a legacy character (gen>1) but chain is empty,
+    // reconstruct placeholder entries for the missing generations
+    if(G._legacyGeneration>1 && G._legacyChain.length===0){
+      for(let i=1;i<G._legacyGeneration;i++){
+        G._legacyChain.push({
+          name: i===1 ? (G.log&&G.log.length>0 ? (G.log[G.log.length-1].msg.match(/from ([A-Z][a-z]+)/)||[])[1]||'Ancestor' : 'Ancestor') : `Generation ${i}`,
+          age:'?', grade:'?', education:'none', jobTitle:null,
+          netWorth:0, married:false, spouseName:null, childCount:0,
+          achievements:0, gender:'male',
+        });
+      }
+    }
     // migrate careerTrack from existing job
     if(!G.careerTrack&&G.job){
       const entry=getJobTrack(G.job);
