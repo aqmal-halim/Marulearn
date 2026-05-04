@@ -181,10 +181,12 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 
 /* ══ LOG (SCRAPBOOK STYLE) ══ */
 .log-box{max-height:220px;overflow-y:auto;scrollbar-width:thin}
-.log-entry{border-radius:12px;margin-bottom:6px;font-size:.8em;font-weight:800;line-height:1.5;animation:log-in .3s ease-out;border:2px solid;padding:7px 12px;transform:rotate(0deg)}
-.log-entry:nth-child(odd){transform:rotate(-0.5deg)}
-.log-entry:nth-child(even){transform:rotate(0.5deg)}
-@keyframes log-in{from{transform:translateX(-14px) rotate(-1deg);opacity:0}to{transform:translateX(0) rotate(0deg);opacity:1}}
+.log-entry{border-radius:12px;margin-bottom:6px;font-size:.8em;font-weight:800;line-height:1.5;border:2px solid;padding:7px 12px}
+.log-entry:nth-child(odd){transform:rotate(-0.5deg);animation:log-in-odd .3s ease-out}
+.log-entry:nth-child(even){transform:rotate(0.5deg);animation:log-in-even .3s ease-out}
+/* FIX #14: keyframes end at the SAME rotation used by nth-child — no snap at animation end */
+@keyframes log-in-odd{from{transform:translateX(-14px) rotate(-1deg);opacity:0}to{transform:translateX(0) rotate(-0.5deg);opacity:1}}
+@keyframes log-in-even{from{transform:translateX(-14px) rotate(-1deg);opacity:0}to{transform:translateX(0) rotate(0.5deg);opacity:1}}
 .log-good{background:#E8F5E9;border-color:var(--grass-dark);color:#1B5E20}
 .log-bad{background:#FFEBEE;border-color:var(--coral-dark);color:#B71C1C}
 .log-info{background:#E3F2FD;border-color:var(--sky-dark);color:#0D47A1}
@@ -662,20 +664,137 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   .tabs-row{gap:0}
   .tab-btn{padding:8px 10px;font-size:.72em}
 }
+
+/* ══ SAFE AREA — notch / home-indicator devices ══ */
+#game-screen{padding-bottom:calc(100px + env(safe-area-inset-bottom, 0px));padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.mascot-wrap{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+.music-btn{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+#start-screen{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+
+/* ══ ACCESSIBILITY — focus rings & skip link ══ */
+*:focus-visible{outline:3px solid var(--sky-dark);outline-offset:2px;border-radius:4px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip-link{position:fixed;top:-100%;left:8px;z-index:9999;background:var(--sky-dark);color:white;padding:8px 16px;border-radius:0 0 8px 8px;font-weight:900;font-size:.9em;text-decoration:none;transition:top .2s}
+.skip-link:focus{top:0}
+
+/* ══ CONTENT FILTER BADGE ══ */
+.content-filter-badge{position:fixed;top:8px;right:8px;z-index:50;background:rgba(255,255,255,.9);border:2px solid var(--grass-dark);border-radius:12px;padding:4px 10px;font-size:.7em;font-weight:900;color:var(--grass-dark);backdrop-filter:blur(4px);display:none}
+.content-filter-badge.active{display:block}
+
+/* ══ FTUE TUTORIAL OVERLAY ══ */
+.ftue-overlay{position:fixed;inset:0;z-index:200;pointer-events:none}
+.ftue-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0);pointer-events:none}
+.ftue-spotlight{position:absolute;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,0.62);pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1)}
+.ftue-bubble{position:absolute;background:white;border:3px solid var(--ink);border-radius:20px;padding:14px 18px;max-width:280px;font-size:.88em;font-weight:800;color:var(--ink);box-shadow:4px 4px 0 var(--ink);line-height:1.5;pointer-events:all}
+.ftue-bubble::after{content:'';position:absolute;border:8px solid transparent}
+.ftue-bubble.arrow-down::after{bottom:-20px;left:50%;transform:translateX(-50%);border-top-color:var(--ink)}
+.ftue-bubble.arrow-up::after{top:-20px;left:50%;transform:translateX(-50%);border-bottom-color:var(--ink)}
+.ftue-btn{margin-top:10px;width:100%;padding:9px;background:var(--grass);color:white;border:2px solid var(--grass-dark);border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.88em;cursor:pointer;box-shadow:0 3px 0 var(--grass-dark)}
+.ftue-step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:8px}
+.ftue-dot{width:8px;height:8px;border-radius:50%;background:#DDD;border:2px solid var(--ink)}
+.ftue-dot.active{background:var(--sun)}
+.ftue-dot.done{background:var(--grass)}
+
+/* ══ SHARE CARD ══ */
+.share-card-wrap{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:16px;display:none}
+.share-card-wrap.open{display:flex}
+.share-card{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border:3px solid rgba(255,255,255,.2);border-radius:24px;padding:24px 20px;width:100%;max-width:360px;text-align:center;color:white;position:relative}
+.share-card-title{font-family:'Fredoka One',cursive;font-size:2em;margin-bottom:4px;text-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.share-card-sub{font-size:.8em;opacity:.75;margin-bottom:16px}
+.share-card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.share-stat{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 6px;border:1px solid rgba(255,255,255,.15)}
+.share-stat-val{font-family:'Fredoka One',cursive;font-size:1.4em}
+.share-stat-lbl{font-size:.65em;opacity:.7;margin-top:2px}
+.share-card-grade{font-family:'Fredoka One',cursive;font-size:3em;margin-bottom:12px;filter:drop-shadow(0 0 12px rgba(255,215,0,.5))}
+.share-btns{display:flex;gap:8px}
+.share-btn{flex:1;padding:11px;border:2px solid rgba(255,255,255,.3);border-radius:14px;background:rgba(255,255,255,.12);color:white;font-family:'Nunito',sans-serif;font-weight:900;font-size:.85em;cursor:pointer;backdrop-filter:blur(4px)}
+.share-btn:active{transform:scale(.97)}
+.share-close-btn{position:absolute;top:12px;right:14px;background:none;border:none;color:white;font-size:1.3em;cursor:pointer;opacity:.6;padding:4px}
+
+/* ══ PARENTAL CONTROLS PANEL ══ */
+.parent-panel{position:fixed;inset:0;z-index:250;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:16px;display:none}
+.parent-panel.open{display:flex}
+.parent-card{background:white;border:3px solid var(--ink);border-radius:24px;padding:24px 20px;width:100%;max-width:360px;box-shadow:6px 6px 0 var(--ink)}
+.parent-title{font-family:'Fredoka One',cursive;font-size:1.4em;color:var(--ink);margin-bottom:4px}
+.parent-sub{font-size:.78em;color:var(--ink2);margin-bottom:16px;font-weight:700}
+.parent-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid #EEE}
+.parent-toggle:last-of-type{border-bottom:none}
+.parent-toggle-label{font-weight:900;font-size:.88em;color:var(--ink)}
+.parent-toggle-desc{font-size:.72em;color:var(--ink2);margin-top:2px}
+.toggle-switch{width:44px;height:24px;background:#DDD;border-radius:99px;border:2px solid var(--ink);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-switch.on{background:var(--grass)}
+.toggle-switch::after{content:'';position:absolute;width:16px;height:16px;background:white;border-radius:50%;top:2px;left:2px;transition:left .2s;border:1px solid rgba(0,0,0,.15)}
+.toggle-switch.on::after{left:22px}
 </style>
 </head>
 <body>
+<!-- Skip link for keyboard / screen-reader users -->
+<a href="#game-screen" class="skip-link">Skip to game</a>
+<!-- Content filter indicator -->
+<div class="content-filter-badge" id="content-filter-badge" aria-live="polite">🛡️ Safe Mode</div>
+
+<!-- ══ SHARE CARD OVERLAY ══ -->
+<div class="share-card-wrap" id="share-card-wrap" role="dialog" aria-modal="true" aria-label="Share your life score">
+  <div class="share-card" id="share-card-inner">
+    <button class="share-close-btn" onclick="closeShareCard()" aria-label="Close share card">✕</button>
+    <div class="share-card-title" id="sc-name">Life Story!</div>
+    <div class="share-card-sub" id="sc-sub">A life well lived</div>
+    <div class="share-card-grade" id="sc-grade">A+</div>
+    <div class="share-card-stats" id="sc-stats"></div>
+    <div class="share-btns">
+      <button class="share-btn" onclick="copyShareText()" aria-label="Copy score to clipboard">📋 Copy Score</button>
+      <button class="share-btn" onclick="closeShareCard()" aria-label="Close">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PARENTAL CONTROLS PANEL ══ -->
+<div class="parent-panel" id="parent-panel" role="dialog" aria-modal="true" aria-label="Parental controls">
+  <div class="parent-card">
+    <div class="parent-title">🔒 Parent Controls</div>
+    <div class="parent-sub">Customise what content appears in the game</div>
+    <div class="parent-toggle">
+      <div><div class="parent-toggle-label">💰 Money &amp; Debt events</div><div class="parent-toggle-desc">Loans, bankruptcy, debt spirals</div></div>
+      <div class="toggle-switch on" id="tog-money" onclick="toggleFilter('money')" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+    <div class="parent-toggle">
+      <div><div class="parent-toggle-label">💍 Relationship events</div><div class="parent-toggle-desc">Dating, marriage, divorce</div></div>
+      <div class="toggle-switch on" id="tog-relationship" onclick="toggleFilter('relationship')" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+    <div class="parent-toggle">
+      <div><div class="parent-toggle-label">⚖️ Legal &amp; lawsuit events</div><div class="parent-toggle-desc">Lawsuits, redundancy drama</div></div>
+      <div class="toggle-switch on" id="tog-legal" onclick="toggleFilter('legal')" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+    <div class="parent-toggle">
+      <div><div class="parent-toggle-label">🏥 Medical crisis events</div><div class="parent-toggle-desc">Emergency health events</div></div>
+      <div class="toggle-switch on" id="tog-medical" onclick="toggleFilter('medical')" role="switch" aria-checked="true" tabindex="0"></div>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="mbtn pri" style="flex:1" onclick="closeParentPanel()" aria-label="Save parental settings">✅ Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FTUE TUTORIAL OVERLAY ══ -->
+<div class="ftue-overlay" id="ftue-overlay" style="display:none" role="region" aria-label="Tutorial">
+  <div class="ftue-spotlight" id="ftue-spotlight"></div>
+  <div class="ftue-bubble" id="ftue-bubble">
+    <div class="ftue-step-dots" id="ftue-dots"></div>
+    <div id="ftue-text"></div>
+    <button class="ftue-btn" id="ftue-next-btn" onclick="ftueNext()" aria-label="Next tutorial step">Got it! →</button>
+  </div>
+</div>
 
 <!-- ══ START SCREEN ══ -->
-<div id="start-screen" class="screen active">
+<div id="start-screen" class="screen active" role="main" aria-label="Life Story — Create your character">
   <div class="start-clouds" id="start-clouds"></div>
   <div class="start-content">
     <div class="start-logo">🌱</div>
     <div class="start-title">Life Story!</div>
     <div class="start-sub">Every choice shapes who you become.<br>What kind of life will you live?</div>
     <div class="start-card">
-      <span class="form-label">Your Name</span>
-      <input id="char-name" class="form-input" type="text" placeholder="Enter your name..." maxlength="20"/>
+      <span class="form-label" id="name-label">Your Name</span>
+      <input id="char-name" class="form-input" type="text" placeholder="Enter your name..." maxlength="20" aria-labelledby="name-label" autocomplete="given-name"/>
 
       <!-- Randomized character preview -->
       <div style="text-align:center;margin:12px 0 8px">
@@ -687,10 +806,11 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
         <button type="button" onclick="rerollCharacter()" style="margin-top:8px;padding:6px 16px;background:var(--sky);border:2px solid var(--sky-dark);border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:.82em;cursor:pointer;color:var(--ink);box-shadow:2px 2px 0 var(--sky-dark)">🎲 Reroll Character</button>
       </div>
 
-      <button type="button" class="btn-start" onclick="startLife()">🚀 Begin My Life!</button>
+      <button type="button" class="btn-start" onclick="startLife()" aria-label="Begin your life story">🚀 Begin My Life!</button>
     </div>
     <div id="personal-best-banner" style="display:none;background:rgba(0,0,0,.25);color:white;font-size:.78em;font-weight:800;border-radius:14px;padding:9px 16px;margin-top:10px;text-align:center;line-height:1.5;backdrop-filter:blur(4px)"></div>
-    <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()">▶️ Continue My Story</button>
+    <button type="button" class="btn-continue" id="continue-btn" style="display:none" onclick="continueLife()" aria-label="Continue your saved story">▶️ Continue My Story</button>
+    <button type="button" class="btn-continue" style="margin-top:6px;font-size:.78em;padding:9px" onclick="openParentPanel()" aria-label="Open parental controls">🔒 Parent Controls</button>
   </div>
 </div>
 
@@ -705,14 +825,14 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   <div style="font-family:'Fredoka One',cursive;color:white;font-size:.9em;margin-bottom:8px;opacity:.85">✨ Best Moments</div>
   <div class="end-moments" id="end-moments"></div>
   <div class="end-trophies-row" id="end-trophies-row"></div>
-  <div class="end-btns"><button type="button" class="btn-start" style="font-size:1em;padding:14px" onclick="confirmNew()">🔄 Play Again</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px" onclick="toggleEndStory()">📖 Read My Story</button><button type="button" id="legacy-btn" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px;background:rgba(255,215,0,.25);border-color:rgba(255,215,0,.7);display:none" onclick="startLegacyContinue()">👶 Continue as My Child</button></div>
+  <div class="end-btns"><button type="button" class="btn-start" style="font-size:1em;padding:14px" onclick="confirmNew()" aria-label="Play again with a new character">🔄 Play Again</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px" onclick="toggleEndStory()" aria-label="Read your full life story">📖 Read My Story</button><button type="button" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px;background:rgba(255,215,0,.25);border-color:rgba(255,215,0,.7)" onclick="openShareCard()" aria-label="Share your life score">📤 Share Score</button><button type="button" id="legacy-btn" class="btn-continue" style="font-size:.9em;padding:12px;border-radius:20px;background:rgba(255,215,0,.25);border-color:rgba(255,215,0,.7);display:none" onclick="startLegacyContinue()" aria-label="Continue as your child">👶 Continue as My Child</button></div>
   <div id="end-biography" style="background:rgba(255,255,255,.12);border-radius:16px;padding:16px 20px;margin:8px 0;color:white;font-size:.82em;font-weight:700;line-height:1.7;max-width:420px;text-align:left;border:2px solid rgba(255,255,255,.25)"></div>
   <div id="end-missed" style="width:100%;max-width:420px;margin-bottom:8px"></div>
   <div class="end-story-log" id="end-story-log"></div>
 </div>
 
 <!-- ══ GAME SCREEN ══ -->
-<div id="game-screen" class="screen">
+<div id="game-screen" class="screen" role="main" aria-label="Your life story game">
 <div id="gs-inner">
 
   <div class="top-bar">
@@ -761,7 +881,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   </div>
 
   <!-- Stats -->
-  <div class="stats-card">
+  <div class="stats-card" id="stats-card" aria-label="Your character stats">
     <div class="stats-title">📊 Your Stats</div>
     <div class="stats-grid">
       <div class="stat-item" style="border-color:#E53935">
@@ -788,7 +908,7 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
   </div>
 
   <!-- Age Up -->
-  <button type="button" class="age-up-btn" id="age-up-btn-main" onclick="ageUp()">
+  <button type="button" class="age-up-btn" id="age-up-btn-main" onclick="ageUp()" aria-label="Age up — advance one year in your life">
     <span>🎂</span><span>Age Up — Turn <span id="next-age">1</span></span>
   </button>
 
@@ -828,12 +948,12 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 </div>
 
 <!-- ══ MODAL ══ -->
-<div class="modal-bg" id="modal" style="display:none">
+<div class="modal-bg" id="modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="m-title" aria-describedby="m-body">
   <div class="modal-card" id="modal-card">
     <div class="comic-sfx" id="m-sfx" style="display:none"></div>
     <div class="modal-icon" id="m-icon">🎉</div>
     <div class="modal-title" id="m-title">Something happened!</div>
-    <div class="speech-bubble" id="m-body">Description.</div>
+    <div class="speech-bubble" id="m-body" style="display:none">Description.</div>
     <div id="m-extra"></div>
     <div class="modal-btns" id="m-btns"></div>
   </div>
@@ -845,11 +965,11 @@ body{font-family:'Nunito',sans-serif;background:#87CEEB;min-height:100vh;overflo
 <!-- Mascot -->
 <div class="mascot-wrap" id="mascot-wrap">
   <div class="mascot-bubble" id="mascot-bubble" style="display:none"></div>
-  <button type="button" class="mascot-btn" id="mascot-btn" onclick="mascotTap()" title="Tap Ollie for a tip!">🦉</button>
+  <button type="button" class="mascot-btn" id="mascot-btn" onclick="mascotTap()" aria-label="Ollie the Owl — tap for a life tip">🦉</button>
 </div>
 
 <!-- Music -->
-<button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" title="Toggle music">🎵</button>
+<button type="button" class="music-btn" id="music-btn" onclick="SoundManager.toggleMusic()" aria-label="Toggle background music" aria-pressed="false">🎵</button>
 
 <script>
 
@@ -1136,10 +1256,44 @@ const saveBest = (score, name, age, grade) => {
   }catch(e){return false;}
 };
 
-const save  = () => { try{ localStorage.setItem('lifestory_v6', JSON.stringify(G)); const ind=document.getElementById('save-ind'); if(ind){ ind.classList.add('show'); setTimeout(()=>ind.classList.remove('show'),1800); } }catch(e){} };
-const load  = () => { try{ const s=localStorage.getItem('lifestory_v6'); return s?JSON.parse(s):null; }catch(e){return null;} };
-const clear = () => { try{ localStorage.removeItem('lifestory_v6'); }catch(e){} };
+// ══════════════════════════════════════════
+// SAVE SLOT SYSTEM — 3 named profiles (Commercial Feature)
+// ══════════════════════════════════════════
+let _activeSlot = 0; // 0, 1, or 2
+function slotKey(s){ return 'lifestory_v6_slot'+(s||_activeSlot); }
+
+const save  = () => { try{ localStorage.setItem(slotKey(), JSON.stringify(G)); const ind=document.getElementById('save-ind'); if(ind){ ind.classList.add('show'); setTimeout(()=>ind.classList.remove('show'),1800); } }catch(e){} };
+const load  = (slot) => { try{ const k=slotKey(slot!=null?slot:_activeSlot); const s=localStorage.getItem(k); return s?JSON.parse(s):null; }catch(e){return null;} };
+const clear = (slot) => { try{ localStorage.removeItem(slotKey(slot!=null?slot:_activeSlot)); }catch(e){} };
 const rand  = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+
+function loadAllSlots(){ return [0,1,2].map(i=>load(i)); }
+function saveSlotSummary(g){ if(!g)return null; return {name:g.name||'?',age:g.age||0,grade:calcLegacyScore?null:null,ts:Date.now()}; }
+
+function renderSaveSlots(onSelect){
+  const slots=loadAllSlots();
+  const modal=document.getElementById('modal');
+  const mc=document.getElementById('modal-card');
+  mc.className='modal-card positive';
+  document.getElementById('m-sfx').style.display='none';
+  document.getElementById('m-icon').textContent='👤';
+  document.getElementById('m-title').textContent='Choose Your Profile';
+  document.getElementById('m-body').style.display='none';
+  document.getElementById('m-extra').innerHTML='';
+  const btns=document.getElementById('m-btns'); btns.innerHTML='';
+  [0,1,2].forEach(i=>{
+    const g=slots[i];
+    const btn=document.createElement('button');
+    btn.type='button'; btn.className='mbtn '+(g?'sec':'pri');
+    btn.setAttribute('aria-label', g?`Profile ${i+1}: ${g.name}, age ${g.age}`:`Profile ${i+1}: Empty slot`);
+    btn.innerHTML=g
+      ? `<span style="font-size:1.1em">${g.gender==='female'?'👩':'👨'}</span> <b>${g.name}</b> · Age ${g.age} <span style="font-size:.78em;opacity:.7">Profile ${i+1}</span>`
+      : `➕ New Life — Profile ${i+1}`;
+    btn.onclick=()=>{ _activeSlot=i; closeModal(); onSelect(i,g); };
+    btns.appendChild(btn);
+  });
+  modal.style.display='flex';
+}
 
 function applyMod(m) {
   const prev = {health:G.health, happiness:G.happiness, smarts:G.smarts, looks:G.looks};
@@ -1909,8 +2063,9 @@ function startPromoMathGame(prospectiveSalary, halfPromoSalary, promoBonus){
       choiceGrid.appendChild(btn);
     });
 
-    // Timer
+    // Timer — guard with answered flag to prevent race condition with click handler
     _timerInterval=setInterval(()=>{
+      if(answered) return; // FIX #2: prevent double finishPromo() from timer+click race
       timeLeft--;
       const fill=document.getElementById('promo-timer-fill');
       if(fill)fill.style.width=(timeLeft/10*100)+'%';
@@ -2777,24 +2932,53 @@ function showLegacyScreen() {
 // ══════════════════════════════════════════
 // MINI-GAMES
 // ══════════════════════════════════════════
+// EXPANDED QUESTION BANKS (60 math, 10 word categories × 16 words = commercial depth)
+// ══════════════════════════════════════════
 const MATH_QS=[
-  {q:'🍎 7 + 8 = ?',a:15,opts:[12,15,14,16]},{q:'🐑 9 × 6 = ?',a:54,opts:[54,48,56,52]},
-  {q:'🌟 81 ÷ 9 = ?',a:9,opts:[7,8,9,10]},{q:'🚀 15 − 7 = ?',a:8,opts:[6,7,8,9]},
-  {q:'🎈 12 × 8 = ?',a:96,opts:[84,90,96,100]},{q:'🍕 144 ÷ 12 = ?',a:12,opts:[10,11,12,13]},
+  // Addition & subtraction — easy
+  {q:'🍎 7 + 8 = ?',a:15,opts:[12,15,14,16]},{q:'🚀 15 − 7 = ?',a:8,opts:[6,7,8,9]},
+  {q:'🐧 13 + 19 = ?',a:32,opts:[30,31,32,33]},{q:'🎃 45 + 56 = ?',a:101,opts:[99,100,101,102]},
   {q:'🌈 25 + 37 = ?',a:62,opts:[61,62,63,64]},{q:'🦁 100 − 36 = ?',a:64,opts:[54,64,74,84]},
-  {q:'🎯 6 × 7 = ?',a:42,opts:[36,40,42,48]},{q:'⭐ 56 ÷ 8 = ?',a:7,opts:[6,7,8,9]},
-  {q:'🐧 13 + 19 = ?',a:32,opts:[30,31,32,33]},{q:'🦊 11 × 4 = ?',a:44,opts:[40,44,48,52]},
-  {q:'🌻 90 ÷ 6 = ?',a:15,opts:[12,14,15,18]},{q:'🎸 200 − 73 = ?',a:127,opts:[117,127,137,147]},
-  {q:'🚂 17 + 28 = ?',a:45,opts:[43,44,45,46]},{q:'🦋 9 × 9 = ?',a:81,opts:[72,80,81,90]},
-  {q:'🌊 120 ÷ 8 = ?',a:15,opts:[13,14,15,16]},{q:'🎃 45 + 56 = ?',a:101,opts:[99,100,101,102]},
-  {q:'🦅 7 × 12 = ?',a:84,opts:[74,82,84,86]},{q:'🎪 150 − 88 = ?',a:62,opts:[52,62,72,82]},
+  {q:'🎸 200 − 73 = ?',a:127,opts:[117,127,137,147]},{q:'🚂 17 + 28 = ?',a:45,opts:[43,44,45,46]},
+  {q:'🌟 50 + 49 = ?',a:99,opts:[97,98,99,100]},{q:'🐠 83 − 47 = ?',a:36,opts:[26,36,46,56]},
+  {q:'🦜 34 + 58 = ?',a:92,opts:[90,91,92,93]},{q:'🦊 120 − 55 = ?',a:65,opts:[55,60,65,70]},
+  {q:'🌺 67 + 88 = ?',a:155,opts:[145,150,155,160]},{q:'🎠 300 − 144 = ?',a:156,opts:[146,156,166,176]},
+  {q:'🍦 99 + 99 = ?',a:198,opts:[188,196,198,200]},{q:'🐢 500 − 237 = ?',a:263,opts:[253,263,273,283]},
+  // Multiplication
+  {q:'🐑 9 × 6 = ?',a:54,opts:[54,48,56,52]},{q:'🎈 12 × 8 = ?',a:96,opts:[84,90,96,100]},
+  {q:'🎯 6 × 7 = ?',a:42,opts:[36,40,42,48]},{q:'🦊 11 × 4 = ?',a:44,opts:[40,44,48,52]},
+  {q:'🦋 9 × 9 = ?',a:81,opts:[72,80,81,90]},{q:'🦅 7 × 12 = ?',a:84,opts:[74,82,84,86]},
+  {q:'🎪 8 × 8 = ?',a:64,opts:[56,62,64,72]},{q:'🦁 6 × 11 = ?',a:66,opts:[60,64,66,72]},
+  {q:'🌊 5 × 13 = ?',a:65,opts:[55,60,65,70]},{q:'🐙 7 × 9 = ?',a:63,opts:[54,60,63,72]},
+  {q:'🦩 8 × 12 = ?',a:96,opts:[86,92,96,100]},{q:'🐬 11 × 11 = ?',a:121,opts:[111,120,121,131]},
+  {q:'🦒 13 × 4 = ?',a:52,opts:[44,48,52,56]},{q:'🐘 15 × 5 = ?',a:75,opts:[65,70,75,80]},
+  // Division
+  {q:'🌟 81 ÷ 9 = ?',a:9,opts:[7,8,9,10]},{q:'🍕 144 ÷ 12 = ?',a:12,opts:[10,11,12,13]},
+  {q:'⭐ 56 ÷ 8 = ?',a:7,opts:[6,7,8,9]},{q:'🌻 90 ÷ 6 = ?',a:15,opts:[12,14,15,18]},
+  {q:'🌊 120 ÷ 8 = ?',a:15,opts:[13,14,15,16]},{q:'🐧 72 ÷ 9 = ?',a:8,opts:[7,8,9,10]},
+  {q:'🎯 132 ÷ 11 = ?',a:12,opts:[10,11,12,13]},{q:'🦋 168 ÷ 7 = ?',a:24,opts:[20,22,24,28]},
+  {q:'🐠 225 ÷ 9 = ?',a:25,opts:[20,23,25,30]},{q:'🦜 196 ÷ 14 = ?',a:14,opts:[12,13,14,16]},
+  // Mixed & order of operations
+  {q:'🎠 (3 + 4) × 5 = ?',a:35,opts:[27,32,35,40]},{q:'🌺 (10 − 3) × 8 = ?',a:56,opts:[48,52,56,64]},
+  {q:'🦩 4 × 6 + 9 = ?',a:33,opts:[29,30,33,36]},{q:'🐢 50 − 3 × 7 = ?',a:29,opts:[23,26,29,34]},
+  {q:'🎈 (15 + 5) ÷ 4 = ?',a:5,opts:[4,5,6,7]},{q:'🌟 8 × 8 − 14 = ?',a:50,opts:[42,46,50,54]},
+  {q:'🍦 (9 + 3) × 6 = ?',a:72,opts:[60,66,72,78]},{q:'🐬 100 ÷ 4 + 12 = ?',a:37,opts:[29,33,37,41]},
+  {q:'🦒 (20 − 8) × 4 = ?',a:48,opts:[36,40,48,56]},{q:'🐘 3 × (7 + 8) = ?',a:45,opts:[35,40,45,50]},
+  // Fractions & percentages (harder)
+  {q:'🎯 50% of 80 = ?',a:40,opts:[30,35,40,45]},{q:'🌈 25% of 200 = ?',a:50,opts:[40,50,60,70]},
+  {q:'🦁 ½ of 144 = ?',a:72,opts:[62,68,72,78]},{q:'🚀 10% of 350 = ?',a:35,opts:[25,30,35,40]},
+  {q:'🌻 ¾ of 48 = ?',a:36,opts:[24,32,36,40]},{q:'🦋 20% of 65 = ?',a:13,opts:[10,11,13,15]},
+  {q:'🐙 ⅓ of 99 = ?',a:33,opts:[27,30,33,36]},{q:'🎠 15% of 60 = ?',a:9,opts:[6,8,9,12]},
+  {q:'🐠 ⅔ of 90 = ?',a:60,opts:[45,55,60,65]},{q:'🦜 40% of 75 = ?',a:30,opts:[25,28,30,35]},
 ];
 const EASY_WORD_CATEGORIES=[
-  {name:'Animals',emoji:'🐾',words:['CAT','DOG','COW','PIG','HEN','BEE','ANT','OWL','FOX','RAM','EWE','APE']},
-  {name:'Food',emoji:'🍎',words:['MILK','CAKE','RICE','CORN','FISH','BEAN','PEAR','PLUM','EGG','JAM','PIE','NUT']},
-  {name:'Colors',emoji:'🎨',words:['RED','BLUE','GREEN','PINK','GOLD','GREY','TEAL','ROSE','LIME','NAVY','AQUA','JADE']},
-  {name:'School',emoji:'📚',words:['PEN','BOOK','DESK','RULE','PLAY','READ','DRAW','SING','MATH','POEM','TEST','NOTE']},
-  {name:'Nature',emoji:'🌿',words:['TREE','LEAF','RAIN','SNOW','WIND','STAR','MOON','CLOUD','RIVER','GRASS','STONE','BIRD']},
+  {name:'Animals',emoji:'🐾',words:['CAT','DOG','COW','PIG','HEN','BEE','ANT','OWL','FOX','RAM','EWE','APE','YAK','EMU','GNU','COD']},
+  {name:'Food',emoji:'🍎',words:['MILK','CAKE','RICE','CORN','FISH','BEAN','PEAR','PLUM','EGG','JAM','PIE','NUT','OAT','FIG','YAM','RYE']},
+  {name:'Colors',emoji:'🎨',words:['RED','BLUE','GREEN','PINK','GOLD','GREY','TEAL','ROSE','LIME','NAVY','AQUA','JADE','TAN','RUST','PLUM','MINT']},
+  {name:'School',emoji:'📚',words:['PEN','BOOK','DESK','RULE','PLAY','READ','DRAW','SING','MATH','POEM','TEST','NOTE','GLUE','TAPE','LAMP','BELL']},
+  {name:'Nature',emoji:'🌿',words:['TREE','LEAF','RAIN','SNOW','WIND','STAR','MOON','CLOUD','RIVER','GRASS','STONE','BIRD','LAKE','HILL','FERN','WAVE']},
+  {name:'Sports',emoji:'⚽',words:['RUN','JUMP','SWIM','KICK','TOSS','DIVE','SPIN','PASS','GOAL','TEAM','RACE','BALL','HOOP','LANE','BOUT','BOUT']},
+  {name:'Feelings',emoji:'😊',words:['GLAD','CALM','BOLD','KIND','WISE','WARM','FAIR','KEEN','ZEAL','HOPE','GLEE','FOND','AWED','SAFE','FREE','PURE']},
 ];
 function getEasyWordPool(){
   const cat=EASY_WORD_CATEGORIES[Math.floor(Math.random()*EASY_WORD_CATEGORIES.length)];
@@ -2915,6 +3099,7 @@ function startMathMiniGame(onWin,onFail){
   const q=MATH_QS[Math.floor(Math.random()*MATH_QS.length)];
   const opts=[...q.opts].sort(()=>Math.random()-.5);
   let timeLeft=100, timerInterval;
+  // FIX #12: decrement by 1 every 50ms (was 2 every 100ms) — eliminates visible jitter in bar animation
   const mc=document.getElementById('modal-card');
   mc.className='modal-card positive';
   document.getElementById('m-sfx').style.display='block';
@@ -2927,11 +3112,11 @@ function startMathMiniGame(onWin,onFail){
   document.getElementById('m-extra').innerHTML=`<div class="minigame-box"><div class="mg-question">${q.q}</div><div class="mg-opts" id="mg-opts"></div><div class="mg-feedback" id="mg-fb"></div><div class="mg-timer-wrap"><div class="mg-timer-fill" id="mg-timer" style="width:100%"></div></div></div>`;
   document.getElementById('modal').style.display='flex';
   timerInterval=setInterval(()=>{
-    timeLeft-=2;
+    timeLeft-=1; // FIX #12: 1 per 50ms = same 5s duration but smooth animation
     const bar=document.getElementById('mg-timer');
     if(bar){bar.style.width=timeLeft+'%';if(timeLeft<40)bar.style.background=getComputedStyle(document.documentElement).getPropertyValue('--coral');else if(timeLeft<70)bar.style.background=getComputedStyle(document.documentElement).getPropertyValue('--sun');}
     if(timeLeft<=0){clearInterval(timerInterval);mgDone(false,onFail);}
-  },100);
+  },50);
   const grid=document.getElementById('mg-opts');
   opts.forEach(o=>{
     const btn=document.createElement('button');
@@ -3692,6 +3877,7 @@ function renderActivities(){
     setTimeout(()=>{if(card.parentNode)card.remove();},1200);
   }
 
+  // addActDual: wrapper does NOT call incActCount — the callback fn() is responsible for it (avoids double-count, Bug #9)
   function addActDual(minAge,emoji,title,subFull,key,energyCost,fn){
     if(a<minAge)return;
     const used=actCount(key);
@@ -4666,20 +4852,23 @@ function renderBank(){
   propHdr.textContent=`🏠 Properties (${(G.properties||[]).length})`;
   el.appendChild(propHdr);
   // Show owned properties
-  (G.properties||[]).forEach((prop,pidx)=>{
-    const isPrimary=pidx===0;
+  (G.properties||[]).forEach((prop)=>{
+    const isPrimary=(G.properties||[]).indexOf(prop)===0;
     const mortInfo=prop.mortgageBalance>0?`Mortgage: $${prop.mortgageBalance.toLocaleString()} (${prop.mortgageYearsLeft}yr)`:'Fully Owned ✅';
     const propCard=document.createElement('div');
     propCard.style.cssText='background:#E8F5E9;border-radius:var(--radius);padding:10px 14px;margin-bottom:6px;border:2px solid var(--grass-dark)';
     propCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--grass-dark)">${isPrimary?'🏠 Primary Home':'🏘️ Investment Property'}</div><div style="font-weight:900">${prop.label}</div><div style="font-size:.78em;color:var(--grass-dark)">$${prop.value.toLocaleString()} · ${mortInfo}</div>`;
     el.appendChild(propCard);
     const saleNet=Math.max(0,prop.value-(prop.mortgageBalance||0));
-    const canSell=prop.mortgageBalance===0||(pidx>0); // investment or fully paid primary
+    const canSell=prop.mortgageBalance===0||!isPrimary; // investment or fully paid primary
     const sellDiv=document.createElement('div');sellDiv.className='act-item';
     sellDiv.innerHTML=`<div class="act-icon">💰</div><div><div class="act-title">Sell ${prop.label}</div><div class="act-sub">${canSell?`Net: $${saleNet.toLocaleString()} · tap to sell`:'🔒 Pay off mortgage first'}</div></div>`;
     if(canSell){
       sellDiv.onclick=()=>{
-        G.money+=saleNet; G.properties.splice(pidx,1); syncCompatAliases();
+        // FIX #5b: find by object reference, not stale pidx
+        const idx=G.properties.indexOf(prop);
+        if(idx===-1)return;
+        G.money+=saleNet; G.properties.splice(idx,1); syncCompatAliases();
         addLog(`💰 Sold ${prop.label}! Net proceeds: $${saleNet.toLocaleString()}`,'good');
         SoundManager.money();burst(20);checkAchievements();save();updateUI();renderBank();
       };
@@ -4727,15 +4916,18 @@ function renderBank(){
   carHdr.textContent=`🚗 Cars (${(G.cars||[]).length})`;
   el.appendChild(carHdr);
   // Show owned cars
-  (G.cars||[]).forEach((car,cidx)=>{
+  (G.cars||[]).forEach((car)=>{
     const carCard=document.createElement('div');
     carCard.style.cssText='background:#E3F2FD;border-radius:var(--radius);padding:10px 14px;margin-bottom:6px;border:2px solid var(--sky-dark)';
-    carCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--sky-dark)">🚗 Your Car ${cidx>0?'#'+(cidx+1):''}</div><div style="font-weight:900">${car.label}</div><div style="font-size:.78em;color:var(--sky-dark)">Value: $${car.value.toLocaleString()} (depreciates 5%/yr)</div>`;
+    carCard.innerHTML=`<div style="font-size:.72em;font-weight:900;color:var(--sky-dark)">🚗 Your Car</div><div style="font-weight:900">${car.label}</div><div style="font-size:.78em;color:var(--sky-dark)">Value: $${car.value.toLocaleString()} (depreciates 5%/yr)</div>`;
     el.appendChild(carCard);
     const sellCarDiv=document.createElement('div');sellCarDiv.className='act-item';
     sellCarDiv.innerHTML=`<div class="act-icon">💰</div><div><div class="act-title">Sell ${car.label}</div><div class="act-sub">Sell for $${car.value.toLocaleString()}</div></div>`;
     sellCarDiv.onclick=()=>{
-      G.money+=car.value; G.cars.splice(cidx,1); syncCompatAliases();
+      // FIX #5: find by object reference (not stale closure index) to avoid wrong car deletion
+      const idx=G.cars.indexOf(car);
+      if(idx===-1)return;
+      G.money+=car.value; G.cars.splice(idx,1); syncCompatAliases();
       addLog(`💰 Sold ${car.label} for $${car.value.toLocaleString()}`,'good');
       SoundManager.money();checkAchievements();save();updateUI();renderBank();
     };
@@ -4901,6 +5093,11 @@ function triggerRandomEvent(){
     // FIX #18: retry with different events (not same random pick) to avoid always skipping broke players
     const shuffled=[...badEvents].sort(()=>Math.random()-.5);
     for(let i=0;i<shuffled.length;i++){if(shuffled[i]())return;}
+    // FIX #10: guaranteed fallback — pure health/happiness hit that always fires (no money check)
+    applyMod({health:-10,happiness:-8});
+    addLog('😤 A run of bad luck — feeling drained. −10 Health, −8 Happy','bad');
+    SoundManager.fail();
+    G.misfortune=Math.min((G.misfortune||0)+5,100);
   } else if(r<20&&G.age>=30){
     // Health condition events (age 30+)
     const condPool=[
@@ -5941,9 +6138,9 @@ function continueAgeUp(){
       }
     }
 
-    // ── CHILD EVENTS ──
-    kids.forEach(kid=>{
-      if(G.eventFiredThisYear)return;
+    // ── CHILD EVENTS — use for...of so break properly exits the loop (Bug #4: forEach return only exits callback) ──
+    for(const kid of kids){
+      if(G.eventFiredThisYear)break;
 
       // Child asks for help with homework (age 7-11)
       if(kid.age>=7&&kid.age<=11&&!kid._homeworkEvent&&Math.random()<0.30){
@@ -5952,7 +6149,7 @@ function continueAgeUp(){
           `"${kid.name} holds up a worksheet with a worried face. "I don\'t get it, can you help me?""`,
           [{l:'📖 Help them (+Smarts)',m:{smarts:3,happiness:10},style:'pri'},{l:'😌 Encourage independence',m:{smarts:5,happiness:5},style:'sec'},{l:'😔 Too tired tonight',m:{happiness:-5},style:'dan'}],
           'PARENTING!','positive'));
-        return;
+        break;
       }
 
       // Child gets bullied (age 9-14)
@@ -5962,7 +6159,7 @@ function continueAgeUp(){
           `"${kid.name} comes home quiet, eyes red. "Some kids were being really mean to me today, ${G.name.split(' ')[0]}...""`,
           [{l:'🤝 Talk it through',m:{happiness:15,smarts:3},style:'pri'},{l:'🏫 Speak to the school (−$0)',m:{happiness:10,health:3},style:'sec'},{l:'💪 Tell them to fight back',m:{happiness:5,health:-2},style:'dan'}],
           'UH-OH!','negative'));
-        return;
+        break;
       }
 
       // Child wins a prize / competition (age 8-16, based on trait)
@@ -5975,7 +6172,7 @@ function continueAgeUp(){
           `"${kid.name} ${prize}! They can\'t stop grinning."`,
           [{l:'🥳 Take them out to celebrate',m:{happiness:20,money:-150},style:'pri'},{l:'📸 So proud!',m:{happiness:12},style:'sec'}],
           'AMAZING!','positive'));
-        return;
+        break;
       }
 
       // Teen wants a phone / expensive item (age 13-15)
@@ -5986,7 +6183,7 @@ function continueAgeUp(){
           `"${kid.name} slumps onto the sofa. "Everyone at school has the new phone. I\'ll literally die if I don\'t get one.""`,
           [{l:`📱 Buy it (−$${phoneCost.toLocaleString()})`,m:{money:-phoneCost,happiness:8},style:'pri'},{l:'💡 Offer to split cost',m:{money:-Math.round(phoneCost/2),happiness:5,smarts:3},style:'sec'},{l:'🙅 Not right now',m:{happiness:-8},style:'dan'}],
           'TEENS!',''));
-        return;
+        break;
       }
 
       // Teen sneaks out (age 15-17, rebellious or random)
@@ -5996,7 +6193,7 @@ function continueAgeUp(){
           `"It\'s 2am and ${kid.name}\'s bed is empty. Your phone rings — it\'s them. They\'re fine, but they snuck out to a party."`,
           [{l:'😤 Ground them (2 weeks)',m:{happiness:-5,smarts:5},style:'pri'},{l:'💬 Calm talk about it',m:{happiness:5,smarts:8},style:'sec'},{l:'😅 Laugh it off',m:{happiness:8,smarts:-3},style:'dan'}],
           'DRAMA!','negative'));
-        return;
+        break;
       }
 
       // Child leaves for uni / moves out milestone
@@ -6006,7 +6203,7 @@ function continueAgeUp(){
           `"${kid.name} stands at the door with bags packed. "I\'m going to miss you so much. Thank you for everything, ${G.name.split(' ')[0]}.""`,
           [{l:'🥲 Proud and tearful',m:{happiness:5,health:-3},style:'pri'},{l:'🎉 Celebrate their journey',m:{happiness:12,money:-300},style:'sec'}],
           'BIG DAY!','positive'));
-        return;
+        break;
       }
 
       // Adult child gets married (age 27-32)
@@ -6018,7 +6215,7 @@ function continueAgeUp(){
           `"${kid.name} is getting married! You\'ve been asked to give a speech. The room is packed and all eyes are on you."`,
           [{l:`🥂 Give speech + gift (−$${giftCost.toLocaleString()})`,m:{money:-giftCost,happiness:30},style:'pri'},{l:'😊 Attend and celebrate',m:{happiness:20,money:-300},style:'sec'}],
           'LOVE!','positive'));
-        return;
+        break;
       }
 
       // Adult child in trouble — needs financial help (age 25-35)
@@ -6029,9 +6226,9 @@ function continueAgeUp(){
           `"${kid.name} calls, voice tight. "I got into some financial trouble. I\'m embarrassed to ask... but could you help me out?""`,
           [{l:`💰 Help them (−$${helpCost.toLocaleString()})`,m:{money:-helpCost,happiness:15},style:'pri'},{l:'🤝 Offer advice instead',m:{happiness:5,smarts:5},style:'sec'},{l:'😔 Can\'t right now',m:{happiness:-10},style:'dan'}],
           'FAMILY!',''));
-        return;
+        break;
       }
-    });
+    } // end for...of kids
   }
   if(G.marriageAge&&G.age>=24&&G.age<=42&&Math.random()<0.10){
     const kids=(G.family||[]).filter(m=>m.type==='child');
@@ -6447,9 +6644,23 @@ function startLife(){
 
 function continueLife(){
   SoundManager.unlock();
-  const saved=load();
-  if(saved){
-    G=saved;
+  // Show profile picker if multiple slots exist, else load directly
+  const slots=loadAllSlots();
+  const filledSlots=slots.filter(Boolean);
+  if(filledSlots.length>1){
+    renderSaveSlots((slotIdx,savedG)=>{
+      if(savedG){ _activeSlot=slotIdx; _doLoadGame(savedG); }
+      else { _activeSlot=slotIdx; startLife(); }
+    });
+    return;
+  }
+  // Single or no save — find first filled slot
+  const firstIdx=slots.findIndex(Boolean);
+  if(firstIdx>=0){ _activeSlot=firstIdx; _doLoadGame(slots[firstIdx]); }
+}
+
+function _doLoadGame(saved){
+  G=saved;
     if(!G.pendingOffers)G.pendingOffers=[];
     if(!G.family)G.family=[];
     if(!G.achievements)G.achievements=[];
@@ -6568,9 +6779,9 @@ function continueLife(){
       const entry=getJobTrack(G.job);
       if(entry)G.careerTrack=entry[0];
     }
+    save(); // FIX #6: persist migrated state immediately so next session doesn't re-migrate
     launchGame();
     setTimeout(()=>showMascotBubble(`🦉 Welcome back, ${G.name}! You're age ${G.age}! Let's keep going! 🌟`, 4000), 600);
-  }
 }
 
 function launchGame(){
@@ -7425,8 +7636,8 @@ function applyActivityBonus(){
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
-  const saved=load();
-  if(saved) document.getElementById('continue-btn').style.display='block';
+  const anySlot=loadAllSlots().some(Boolean);
+  if(anySlot) document.getElementById('continue-btn').style.display='block';
   // Show personal best on start screen
   const best=loadBest();
   const pbEl=document.getElementById('personal-best-banner');
@@ -7444,6 +7655,214 @@ window.addEventListener('DOMContentLoaded',()=>{
 function renderCups(){
   renderTrophies();
 }
+
+// ══════════════════════════════════════════
+// PARENTAL CONTROLS / CONTENT FILTER
+// ══════════════════════════════════════════
+const DEFAULT_FILTERS = { money:true, relationship:true, legal:true, medical:true };
+let _contentFilters = DEFAULT_FILTERS;
+
+function loadFilters(){
+  try{ const f=localStorage.getItem('lifestory_filters'); if(f) _contentFilters={...DEFAULT_FILTERS,...JSON.parse(f)}; }catch(e){}
+}
+function saveFilters(){
+  try{ localStorage.setItem('lifestory_filters',JSON.stringify(_contentFilters)); }catch(e){}
+}
+function contentAllowed(category){
+  return _contentFilters[category]!==false;
+}
+function toggleFilter(key){
+  _contentFilters[key] = !_contentFilters[key];
+  const el=document.getElementById('tog-'+key);
+  if(el){
+    el.classList.toggle('on', _contentFilters[key]);
+    el.setAttribute('aria-checked', String(_contentFilters[key]));
+  }
+  const anyOff=Object.values(_contentFilters).some(v=>!v);
+  const badge=document.getElementById('content-filter-badge');
+  if(badge) badge.classList.toggle('active', anyOff);
+}
+function openParentPanel(){
+  loadFilters();
+  ['money','relationship','legal','medical'].forEach(k=>{
+    const el=document.getElementById('tog-'+k);
+    if(el){ el.classList.toggle('on',_contentFilters[k]!==false); el.setAttribute('aria-checked',String(_contentFilters[k]!==false)); }
+  });
+  const p=document.getElementById('parent-panel'); if(p)p.classList.add('open');
+}
+function closeParentPanel(){
+  saveFilters();
+  const anyOff=Object.values(_contentFilters).some(v=>!v);
+  const badge=document.getElementById('content-filter-badge');
+  if(badge) badge.classList.toggle('active', anyOff);
+  const p=document.getElementById('parent-panel'); if(p)p.classList.remove('open');
+}
+document.addEventListener('keydown', e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('toggle-switch')){
+    e.preventDefault(); e.target.click();
+  }
+  // Mini-game keyboard nav: activate focused option buttons
+  if(e.key==='Enter'||e.key===' '){
+    const focused = document.activeElement;
+    if(focused && (focused.classList.contains('mg-opt')||focused.classList.contains('math-choice')||focused.classList.contains('letter-tile')||focused.classList.contains('answer-slot'))){
+      e.preventDefault(); focused.click();
+    }
+  }
+  // Escape closes overlays
+  if(e.key==='Escape'){
+    if(_ftueActive) endFTUE();
+    closeShareCard();
+    closeParentPanel();
+  }
+});
+(function(){ loadFilters(); })();
+
+// ══════════════════════════════════════════
+// SHARE CARD SYSTEM
+// ══════════════════════════════════════════
+function openShareCard(){
+  const score=typeof calcLegacyScore==='function' ? calcLegacyScore() : 0;
+  const grade=typeof calcGrade==='function' ? calcGrade(score) : 'A';
+  const wrap=document.getElementById('share-card-wrap');
+  if(!wrap)return;
+  document.getElementById('sc-name').textContent=`${G.name}'s Life`;
+  document.getElementById('sc-sub').textContent=`Lived ${G.age} years · ${typeof getLegacy==='function'?getLegacy():'A life story'}`;
+  document.getElementById('sc-grade').textContent=grade;
+  document.getElementById('sc-stats').innerHTML=`
+    <div class="share-stat"><div class="share-stat-val">${score.toLocaleString()}</div><div class="share-stat-lbl">Life Score</div></div>
+    <div class="share-stat"><div class="share-stat-val">${G.age}</div><div class="share-stat-lbl">Years Lived</div></div>
+    <div class="share-stat"><div class="share-stat-val">${(G.achievements||[]).length}</div><div class="share-stat-lbl">Trophies</div></div>
+    <div class="share-stat"><div class="share-stat-val">$${Math.round((G.money+(G.investments||0))/1000)}k</div><div class="share-stat-lbl">Net Worth</div></div>
+    <div class="share-stat"><div class="share-stat-val">${G.smarts}</div><div class="share-stat-lbl">Smarts</div></div>
+    <div class="share-stat"><div class="share-stat-val">${(G.family||[]).length}</div><div class="share-stat-lbl">Family</div></div>`;
+  wrap.classList.add('open');
+  setTimeout(()=>{ const btn=wrap.querySelector('.share-btn'); if(btn)btn.focus(); }, 100);
+}
+function closeShareCard(){
+  const wrap=document.getElementById('share-card-wrap');
+  if(wrap) wrap.classList.remove('open');
+}
+function copyShareText(){
+  const score=typeof calcLegacyScore==='function' ? calcLegacyScore() : 0;
+  const grade=typeof calcGrade==='function' ? calcGrade(score) : 'A';
+  const text=`🌱 Life Story!\n${G.name} lived to age ${G.age} with a Life Score of ${score.toLocaleString()} (Grade ${grade})!\n🏆 ${(G.achievements||[]).length} trophies · $${Math.round((G.money+(G.investments||0))/1000)}k net worth\nCan you beat my score?`;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn=document.querySelector('.share-btn');
+      if(btn){ const orig=btn.textContent; btn.textContent='✅ Copied!'; setTimeout(()=>btn.textContent=orig,2000); }
+    }).catch(()=>_fallbackCopy(text));
+  } else { _fallbackCopy(text); }
+}
+function _fallbackCopy(text){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+document.getElementById('share-card-wrap').addEventListener('click',e=>{ if(e.target===document.getElementById('share-card-wrap')) closeShareCard(); });
+document.getElementById('parent-panel').addEventListener('click',e=>{ if(e.target===document.getElementById('parent-panel')) closeParentPanel(); });
+
+// ══════════════════════════════════════════
+// FIRST-TIME USER EXPERIENCE (FTUE) TUTORIAL
+// ══════════════════════════════════════════
+const FTUE_STEPS = [
+  { text:'🌱 <b>Welcome to Life Story!</b><br>You\'re about to live an entire life — from birth to old age. Every choice you make shapes who you become!', targetId:null, btn:'Let\'s go! 🚀' },
+  { text:'⚡ <b>This is your Energy bar.</b><br>You get a limited number of actions each year. Use them wisely — then hit Age Up to rest and refill!', targetId:'energy-fill', btn:'Got it! ✅' },
+  { text:'📊 <b>Watch your four stats!</b><br><b>Health</b> and <b>Happiness</b> are critical — if either hits zero it\'s game over. Build Smarts for better jobs and Looks for social bonuses.', targetId:'stats-card', btn:'Understood! 👍' },
+  { text:'🎯 <b>The tabs let you take actions.</b><br><b>Do</b> things to build stats. <b>Work</b> to earn money. <b>Learn</b> to get smarter. Check <b>Money</b> to invest and buy property!', targetId:'tab-act', btn:'Nice! 🎉' },
+  { text:'🎂 <b>When you\'re done — Age Up!</b><br>This advances you one year. Exams, job offers, random events and life surprises all happen here. Good luck — go live your life! 🌟', targetId:'age-up-btn-main', btn:'Start my life! 🌟' },
+];
+let _ftueStep=0, _ftueActive=false;
+
+function startFTUE(){
+  _ftueStep=0; _ftueActive=true;
+  document.getElementById('ftue-overlay').style.display='block';
+  renderFTUEStep();
+}
+function renderFTUEStep(){
+  const step=FTUE_STEPS[_ftueStep];
+  if(!step){ endFTUE(); return; }
+  const dots=FTUE_STEPS.map((_,i)=>`<div class="ftue-dot ${i<_ftueStep?'done':i===_ftueStep?'active':''}"></div>`).join('');
+  document.getElementById('ftue-dots').innerHTML=dots;
+  document.getElementById('ftue-text').innerHTML=step.text;
+  document.getElementById('ftue-next-btn').textContent=step.btn||'Next →';
+  const spotlight=document.getElementById('ftue-spotlight');
+  const bubble=document.getElementById('ftue-bubble');
+  if(step.targetId){
+    const target=document.getElementById(step.targetId);
+    if(target){
+      const r=target.getBoundingClientRect();
+      const pad=8;
+      spotlight.style.cssText=`left:${r.left-pad}px;top:${r.top-pad+window.scrollY}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;display:block`;
+      const spaceBelow=window.innerHeight-r.bottom;
+      if(spaceBelow>180){
+        bubble.style.cssText=`top:${r.bottom+24+window.scrollY}px;left:50%;transform:translateX(-50%);position:absolute`;
+        bubble.className='ftue-bubble arrow-up';
+      } else {
+        bubble.style.cssText=`top:${r.top-160+window.scrollY}px;left:50%;transform:translateX(-50%);position:absolute`;
+        bubble.className='ftue-bubble arrow-down';
+      }
+    }
+  } else {
+    spotlight.style.cssText='display:none';
+    bubble.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)';
+    bubble.className='ftue-bubble';
+  }
+  setTimeout(()=>{ const b=document.getElementById('ftue-next-btn'); if(b)b.focus(); },50);
+}
+function ftueNext(){
+  _ftueStep++;
+  if(_ftueStep>=FTUE_STEPS.length){ endFTUE(); return; }
+  renderFTUEStep();
+}
+function endFTUE(){
+  _ftueActive=false;
+  document.getElementById('ftue-overlay').style.display='none';
+  try{ localStorage.setItem('lifestory_ftue_done','1'); }catch(e){}
+}
+function shouldShowFTUE(){
+  try{ return !localStorage.getItem('lifestory_ftue_done'); }catch(e){ return false; }
+}
+
+// ══════════════════════════════════════════
+// HOOK FTUE INTO launchGame (first-time only)
+// ══════════════════════════════════════════
+const _origLaunchGame=launchGame;
+window.launchGame=function(){
+  _origLaunchGame();
+  if(shouldShowFTUE()) setTimeout(startFTUE,900);
+};
+
+// ══════════════════════════════════════════
+// MUSIC BUTTON ARIA-PRESSED SYNC
+// ══════════════════════════════════════════
+const _origToggleMusic=SoundManager.toggleMusic.bind(SoundManager);
+SoundManager.toggleMusic=function(){
+  _origToggleMusic();
+  const btn=document.getElementById('music-btn');
+  if(btn) btn.setAttribute('aria-pressed', btn.textContent==='🔊' ? 'true' : 'false');
+};
+
+// ══════════════════════════════════════════
+// FIX #3 — clear mgState at mini-game entry so stale cross-game state cannot leak
+// ══════════════════════════════════════════
+const _origStartEasyScrMG=startEasyScrambleMiniGame;
+window.startEasyScrambleMiniGame=function(onWin,onFail){ mgState={}; _origStartEasyScrMG(onWin,onFail); };
+const _origStartScrMG=startScrambleMiniGame;
+window.startScrambleMiniGame=function(onWin,onFail){ mgState={}; _origStartScrMG(onWin,onFail); };
+
+// ══════════════════════════════════════════
+// CONTENT FILTER — showModal hook
+// ══════════════════════════════════════════
+const _origShowModalFn=window.showModal;
+window.showModal=function(icon,title,body,choices,sfx,type){
+  const lc=((title||'')+(body||'')).toLowerCase();
+  if(!contentAllowed('legal')&&/lawsuit|sue|scam|fraud/.test(lc)) return;
+  if(!contentAllowed('medical')&&/medical.emergency|emergency.care|diagnosed/.test(lc)) return;
+  if(!contentAllowed('relationship')&&/divorce|proposal|getting.married/.test(lc)) return;
+  if(!contentAllowed('money')&&/debt.spiral|crushing.debt|bankruptcy/.test(lc)) return;
+  if(_origShowModalFn) _origShowModalFn(icon,title,body,choices,sfx,type);
+};
 
 
 
