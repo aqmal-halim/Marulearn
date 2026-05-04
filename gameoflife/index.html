@@ -2444,36 +2444,33 @@ window.startLegacyContinue = function(chosenKid){
 
   // If the child already had a job assigned in the family tab, carry it over with a proper job ID
   if(legacyKid.age>=18){
-    // Map trait+age to a real JOBS entry for proper game integration
+    // Map trait+age to real JOBS IDs that exist in the JOBS array
     const traitJobMap = {
-      studious: legacyKid.age>=28?'research_sci':legacyKid.age>=24?'analyst':legacyKid.age>=22?'jr_dev':'intern',
-      athletic:  legacyKid.age>=24?'personal_trainer':'cashier',
-      creative:  legacyKid.age>=24?'graphic_design':'cashier',
-      rebellious:legacyKid.age>=26?'entrepreneur':'cashier',
+      studious: legacyKid.age>=28 ? 'jr_lawyer'   : legacyKid.age>=24 ? 'teach_asst' : legacyKid.age>=22 ? 'tech_intern' : 'cashier',
+      athletic:  legacyKid.age>=26 ? 'tradesperson': legacyKid.age>=22 ? 'apprentice'  : 'cashier',
+      creative:  legacyKid.age>=26 ? 'designer'    : legacyKid.age>=22 ? 'creative_intern' : 'cashier',
+      rebellious:legacyKid.age>=28 ? 'supervisor'  : legacyKid.age>=22 ? 'cashier'     : 'cashier',
     };
-    const defaultJobByAge = legacyKid.age>=28?'office_mgr':legacyKid.age>=24?'analyst':legacyKid.age>=22?'jr_dev':'intern';
+    const defaultJobByAge = legacyKid.age>=28 ? 'supervisor' : legacyKid.age>=24 ? 'cashier' : legacyKid.age>=22 ? 'cashier' : 'cashier';
     const mappedJobId = traitJobMap[legacyKid.trait] || defaultJobByAge;
 
-    // If the family tab already assigned a job string (display name), use it as jobTitle; get ID from map
+    // If the family tab already assigned a display job title, try to match it to a real JOBS entry
     if(legacyKid.job && legacyKid.jobIncome){
-      newG.jobTitle = legacyKid.job;
-      newG.salary   = legacyKid.jobIncome;
-      // Try to find matching JOBS entry by title for proper integration
       const matchedJob = JOBS.find(j=>j.title.toLowerCase()===legacyKid.job.toLowerCase());
       newG.job = matchedJob ? matchedJob.id : mappedJobId;
-      newG.careerTrack = matchedJob ? (getJobTrack(matchedJob.id)||[null])[0] : null;
+      newG.jobTitle = matchedJob ? matchedJob.title : (getJobDef(mappedJobId)||{title:'Worker'}).title;
+      newG.salary = legacyKid.jobIncome;
+      newG.careerTrack = (getJobTrack(newG.job)||[null])[0];
     } else {
-      // Assign from map
       const jobDef = getJobDef(mappedJobId);
       if(jobDef){
         newG.job = mappedJobId;
         newG.jobTitle = jobDef.title;
-        newG.salary = Math.round((jobDef.salary||2000)*(G.inflationMult||1));
+        newG.salary = Math.round((jobDef.salary||1200)*(G.inflationMult||1));
         newG.careerTrack = (getJobTrack(mappedJobId)||[null])[0];
       }
     }
     newG.yearsInRole = Math.max(0, legacyKid.age - 22);
-    // Ensure promotionChance is set
     newG.promotionChance = 20 + Math.min(legacyKid.age - 18, 30);
   }
 
