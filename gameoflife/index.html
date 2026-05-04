@@ -1597,8 +1597,12 @@ function showBabyNamingModal(){
     const _traits=['studious','athletic','creative','rebellious'];
     const _trait=_traits[Math.floor(Math.random()*_traits.length)];
     const childRoll=rollRandomCharacter();
-    // Apply the pre-determined gender to the child's avatar roll
-    childRoll.gender = babyGender === 'boy' ? 'male' : 'female';
+    // Override gender to match the pre-determined baby gender, then fix hair to match
+    const childGenderNorm = babyGender === 'boy' ? 'male' : 'female';
+    childRoll.gender = childGenderNorm;
+    // Re-roll hair style from the correct gender pool so it always matches
+    const childHairPool = childGenderNorm === 'female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
+    childRoll.hairStyle = childHairPool[Math.floor(Math.random()*childHairPool.length)];
     const playerSkinKey=_skinKeyFromColor(G.skinTone);
     if(Math.random()<0.5)childRoll.skinKey=playerSkinKey;
     G.family.push({type:'child',name:babyName,age:0,status:'Newborn 👶',trait:_trait,avatarRoll:childRoll,gender:babyGender});
@@ -2497,7 +2501,12 @@ window.startLegacyContinue = function(chosenKid){
       if(kAge<1)continue;
       const kName=kidNames[(i+Math.floor(Math.random()*kidNames.length))%kidNames.length];
       const traits=['studious','athletic','creative','rebellious'];
-      newG.family.push({type:'child',name:kName,age:kAge,status:'Healthy',trait:traits[Math.floor(Math.random()*traits.length)],avatarRoll:rollRandomCharacter()});
+      const kGender = Math.random()<0.5 ? 'female' : 'male';
+      const kRoll = rollRandomCharacter();
+      kRoll.gender = kGender;
+      const kHairPool = kGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
+      kRoll.hairStyle = kHairPool[Math.floor(Math.random()*kHairPool.length)];
+      newG.family.push({type:'child',name:kName,age:kAge,status:'Healthy',trait:traits[Math.floor(Math.random()*traits.length)],avatarRoll:kRoll,gender:kGender==='female'?'girl':'boy'});
     }
   }
 
@@ -3324,30 +3333,52 @@ function buildFamilyMemberAvatarUrl(member){
   const roll = member.avatarRoll;
   if(!roll) return null;
   const age = member.age || 0;
-  const gender = roll.gender || 'male';
+  // Use member.gender ('boy'/'girl') as the authoritative source, normalised to male/female
+  // Fall back to roll.gender, then default male
+  const rawGender = member.gender || roll.gender || 'male';
+  const gender = (rawGender==='girl'||rawGender==='female') ? 'female' : 'male';
   const skinHex = CHAR_SKIN_HEX[roll.skinKey] || 'ffdbb4';
   // Age the hair: grey at 65+
   let hcKey = roll.hcKey || 'brown';
   if(age>=65) hcKey='silverGray';
   else if(age>=50&&['black','brown'].includes(hcKey)) hcKey='brownDark';
   const hairHex = CHAR_HAIR_HEX[hcKey] || '724133';
-  // Hair style: use stored or infer from gender + age
+  // Hair style: use stored — but validate it matches gender, swap if wrong
+  const maleHairSet = new Set(CHAR_MALE_HAIR||['shortFlat','shortCurly','shortRound','shortWaved','sides','dreads01','dreads02','frizzle','froBand','mohawk']);
+  const femaleHairSet = new Set(CHAR_FEMALE_HAIR||['straight01','straight02','curly','curvy','longButNotTooLong','bigHair','bun','shavedSides']);
   let hairStyle = roll.hairStyle || (gender==='female'?'straight01':'shortFlat');
+  // Correct mismatched hair style
+  if(gender==='female' && maleHairSet.has(hairStyle)){
+    const fPool = CHAR_FEMALE_HAIR||['straight01','straight02','curly','bun'];
+    hairStyle = fPool[Math.abs((member.name||'x').charCodeAt(0)) % fPool.length];
+  } else if(gender==='male' && femaleHairSet.has(hairStyle)){
+    const mPool = CHAR_MALE_HAIR||['shortFlat','shortCurly','sides'];
+    hairStyle = mPool[Math.abs((member.name||'x').charCodeAt(0)) % mPool.length];
+  }
   // Small kids get simpler hair styles
   if(age<5){ hairStyle = gender==='female'?'bigHair':'shortFlat'; }
-  // Accessories and clothing scaled to age
+  // Accessories and clothing scaled to age and gender
   let acc='', ap=0;
   if(age>=65){acc='prescription02';ap=75;}
   else if(age>=40){acc='prescription01';ap=30;}
   let fh='',fp=0;
   if(gender==='male'){ if(age>=30){fh='beardLight';fp=40;} if(age>=65){fh='beardMajestic';fp=55;} }
-  let cl='collarAndSweater',cc='3c4f5c';
-  if(age<5){cl='graphicShirt';cc='f59797';}
-  else if(age<=12){cl='graphicShirt';cc='5199e4';}
-  else if(age<=17){cl='hoodie';cc='262e33';}
-  else if(age<=30){cl='blazerAndShirt';cc='25557c';}
-  else if(age<=60){cl='blazerAndSweater';cc='3c4f5c';}
-  else{cl='shirtCrewNeck';cc='929598';}
+  let cl='collarAndSweater', cc='3c4f5c';
+  if(gender==='female'){
+    if(age<5){cl='graphicShirt';cc='f59797';}
+    else if(age<=12){cl='graphicShirt';cc='e91e8c';}
+    else if(age<=17){cl='hoodie';cc='9c27b0';}
+    else if(age<=30){cl='blazerAndShirt';cc='6a1b9a';}
+    else if(age<=60){cl='blazerAndSweater';cc='4a148c';}
+    else{cl='shirtCrewNeck';cc='880e4f';}
+  } else {
+    if(age<5){cl='graphicShirt';cc='f59797';}
+    else if(age<=12){cl='graphicShirt';cc='5199e4';}
+    else if(age<=17){cl='hoodie';cc='262e33';}
+    else if(age<=30){cl='blazerAndShirt';cc='25557c';}
+    else if(age<=60){cl='blazerAndSweater';cc='3c4f5c';}
+    else{cl='shirtCrewNeck';cc='929598';}
+  }
   // Happiness/health from member mood if available
   // Fix: use nullish coalescing + explicit ternary to avoid operator precedence trap
   const mood = member.mood != null ? member.mood : (member.status==='Estranged 💔' ? 20 : 70);
