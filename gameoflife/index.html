@@ -5318,22 +5318,32 @@ function ageUp(){
   // ── Spouse income ──
   if(G.marriageAge && (G.family||[]).find(m=>m.type==='spouse')){
     const spouse=(G.family||[]).find(m=>m.type==='spouse');
-    const spouseAge=spouse?spouse.age:G.age; // spouse age tracked in family array
+    const spouseAge=spouse?spouse.age:G.age;
     const spouseRetired=spouseAge>=65;
     if(G.spouseIncome>0 && !spouseRetired){
-      // Spouse income grows ~3% per year (career progression + inflation)
-      G.spouseIncome=Math.round(G.spouseIncome*1.03);
+      // Spouse income grows ~2% per year (modest career progression), capped at 60% of player salary
+      const spouseCap = Math.round((G.salary||0)*0.6 + 8000*(G.inflationMult||1));
+      G.spouseIncome=Math.min(spouseCap, Math.round(G.spouseIncome*1.02));
       applyMod({money:G.spouseIncome});
       if(G.age%3===0) addLog(`💑 Partner income: +$${G.spouseIncome.toLocaleString()}/yr`, 'good');
     } else if(spouseRetired){
-      // Spouse retired — convert to fixed pension ONCE at age 65, then pay fixed amount
+      // Spouse pension: 4% rule on simulated pot (spouse contributed ~3% of their income/yr for years worked)
+      // Years worked = years married before retirement, capped at career length
       if(!G._spousePensionConverted){
-        const spousePension=Math.round((G.spouseIncome||0)*0.35);
-        G.spouseIncome=spousePension>0?spousePension:0;
-        G._spousePensionConverted=true;
-        addLog(`👴 Your partner retired! Their pension: $${(G.spouseIncome||0).toLocaleString()}/yr.`,'info');
+        const yearsWorked = Math.min(40, Math.max(5, (spouse.age||65) - Math.max(22, G.marriageAge||22)));
+        const avgSpouseIncome = G.spouseIncome||0;
+        const spousePot = Math.round(avgSpouseIncome * 0.03 * yearsWorked * 12); // 3%/yr × months worked
+        const spousePension = Math.max(
+          Math.round(400*(G.inflationMult||1)),          // minimum state pension
+          Math.min(
+            Math.floor(spousePot * 0.04),                // 4% rule on their pot
+            Math.round((G.pension||0) * 0.75)            // cap: max 75% of player's own pension
+          )
+        );
+        G.spouseIncome = spousePension;
+        G._spousePensionConverted = true;
+        addLog(`👴 Your partner retired! Their pension: $${spousePension.toLocaleString()}/yr.`,'info');
       }
-      // Pay fixed pension every year (no further reduction)
       if((G.spouseIncome||0)>0) applyMod({money:G.spouseIncome});
     }
     // Spouse mood drifts based on player happiness
