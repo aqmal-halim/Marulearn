@@ -1499,7 +1499,7 @@ function evFn(name) {
     spouseRoll.gender = spouseGender;
     const spouseHairPool = spouseGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
     spouseRoll.hairStyle = spouseHairPool[Math.floor(Math.random()*spouseHairPool.length)];
-    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married', mood:80, avatarRoll:spouseRoll});
+    G.family.push({type:'spouse', name:partnerName, age:Math.max(18,partnerAge), status:'Married', mood:80, avatarRoll:spouseRoll, gender:spouseGender});
     G.marriageAge = G.age; G._pendingPartner = null;
     applyMod({happiness:25});  // wedding cost handled separately in Bank tab
     addLog(`💍 Married ${partnerName} at age ${G.age}!`,'legend');
@@ -2484,7 +2484,11 @@ window.startLegacyContinue = function(chosenKid){
         : ['Liam','Noah','Ethan','Oliver','James','Lucas','Mason','Logan'];
       const spouseName = spouseNames[Math.floor(Math.random()*spouseNames.length)];
       const spouseAge = legacyKid.age + Math.round(rand(-3,3));
-      newG.family.push({type:'spouse',name:spouseName,age:spouseAge,status:'Married 💍',mood:75,avatarRoll:rollRandomCharacter()});
+      const spouseRoll = rollRandomCharacter();
+      spouseRoll.gender = spouseGender;
+      const spouseHairPool = spouseGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
+      spouseRoll.hairStyle = spouseHairPool[Math.floor(Math.random()*spouseHairPool.length)];
+      newG.family.push({type:'spouse',name:spouseName,age:spouseAge,status:'Married 💍',mood:75,avatarRoll:spouseRoll,gender:spouseGender});
       newG.marriageAge = Math.max(22, legacyKid.age - Math.round(rand(2,6)));
       newG.spouseMood = 75;
       newG.spouseIncome = Math.round(rand(2000,5000)*(G.inflationMult||1));
