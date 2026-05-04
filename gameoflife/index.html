@@ -2434,7 +2434,8 @@ window.startLegacyContinue = function(chosenKid){
 
   // Child stats and identity
   newG.name = legacyKid.name;
-  newG.gender = legacyKid.avatarRoll ? (legacyKid.avatarRoll.gender || 'male') : (Math.random()>0.5?'male':'female');
+  // Fix: read gender directly from the child object first (set at birth), fall back to avatarRoll
+  newG.gender = legacyKid.gender || (legacyKid.avatarRoll ? legacyKid.avatarRoll.gender : null) || (Math.random()>0.5?'male':'female');
   newG.age = legacyKid.age;
 
   // If the child already had a job assigned in the family tab, carry it over with a proper job ID
@@ -2516,12 +2517,23 @@ window.startLegacyContinue = function(chosenKid){
   newG.investments = Math.round((G.investments||0) * 0.2); // small share of investments
   newG.inflationMult = G.inflationMult; // same economic era
 
-  // Avatar — use child's rolled avatar
-  newG._hairStyle  = legacyKid.avatarRoll ? legacyKid.avatarRoll.hairStyle : null;
-  newG._hairColor  = legacyKid.avatarRoll ? legacyKid.avatarRoll.hairColor : 'brown';
-  newG.skinTone    = legacyKid.avatarRoll && legacyKid.avatarRoll.skinKey
-    ? (legacyKid.avatarRoll.skinKey==='light'?'#FFDBB4':legacyKid.avatarRoll.skinKey==='tan'?'#EDB98A':legacyKid.avatarRoll.skinKey==='brown'?'#D08B5B':'#FFDBB4')
-    : G.skinTone;
+  // Avatar — use child's rolled avatar, ensuring gender is correct
+  // Build a corrected avatarRoll with the child's actual gender
+  const kidAvatarRoll = legacyKid.avatarRoll
+    ? {...legacyKid.avatarRoll, gender: newG.gender}
+    : {...rollRandomCharacter(), gender: newG.gender};
+  // For female characters, ensure a female hair style is used
+  if(newG.gender==='female' && kidAvatarRoll.hairStyle){
+    const maleHairStyles=['shortFlat','shortCurly','shortRound','shortWaved','sides','dreads01','dreads02','frizzle','froBand','mohawk'];
+    const femaleHairStyles=['straight01','straight02','curly','curvy','longButNotTooLong','bigHair','bun','shavedSides'];
+    if(maleHairStyles.includes(kidAvatarRoll.hairStyle)){
+      kidAvatarRoll.hairStyle = femaleHairStyles[Math.floor(Math.random()*femaleHairStyles.length)];
+    }
+  }
+  newG._hairStyle  = kidAvatarRoll.hairStyle || null;
+  newG._hairColor  = kidAvatarRoll.hairColor || kidAvatarRoll.hcKey || 'brown';
+  const skinKeyMap = {light:'#FFDBB4',pale:'#ECDCBF',tan:'#EDB98A',brown:'#D08B5B',darkBrown:'#AE5D29',dark:'#614335'};
+  newG.skinTone    = kidAvatarRoll.skinKey ? (skinKeyMap[kidAvatarRoll.skinKey]||'#FFDBB4') : G.skinTone;
 
   // Inherit properties + cars
   if(inheritedProperties.length > 0){
@@ -4370,9 +4382,17 @@ function renderBank(){
   // Family dependents: under-18 children still living at home + spouse
   const dependentKids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18);
   const hasSpouse=(G.family||[]).find(m=>m.type==='spouse');
-  // Display only — actual deduction happens in ageUp (child costs + spouse costs)
-  const actualKidCost=Math.round(2500*(G.inflationMult||1));
-  const familyDrain=(dependentKids.length*actualKidCost) + (hasSpouse?Math.round(2000*(G.inflationMult||1)):0);
+  // Helper: per-child annual cost matching the gradual scale used in ageUp
+  function kidAnnualCost(kidAge){
+    const inf=G.inflationMult||1;
+    if(kidAge<=1)       return Math.round(1200*inf);
+    if(kidAge<=3)       return Math.round(1800*inf);
+    if(kidAge<=6)       return Math.round(2400*inf);
+    if(kidAge<=9)       return Math.round(3000*inf);
+    if(kidAge<=12)      return Math.round(3800*inf);
+    if(kidAge<=15)      return Math.round(4800*inf);
+    return              Math.round(5800*inf);
+  }
   const infLabel=(G.inflationMult||1)>1?`<span class="inflation-pill">x${(G.inflationMult||1).toFixed(2)} inflation</span>`:'';
   const loanLine=(G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0?`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Student loan</span><span style="font-weight:900;color:var(--coral)">−$${G.loanRepayment.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`:'';
 
@@ -4406,7 +4426,7 @@ function renderBank(){
         const mortgages=(G.properties||[]).filter(p=>(p.mortgageBalance||0)>0&&(p.mortgageYearsLeft||0)>0);
         const totalMort=mortgages.reduce((s,p)=>s+(p.mortgagePayment||0),0);
         const rent = G.rentPerYear||0;
-        const kidCostDisplay = (()=>{ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); if(!kids.length)return 0; return kids.reduce((s,k)=>s+Math.round((k.age>=13?5500:4000)*(G.inflationMult||1)),0); })();
+        const kidCostDisplay = (()=>{ if(!dependentKids.length)return 0; return dependentKids.reduce((s,k)=>s+kidAnnualCost(k.age),0); })();
         const spouseHouse = hasSpouse ? Math.round(2000*(G.inflationMult||1)) : 0;
         const loan = (G.loanRepayment||0)>0&&(G.loanYearsLeft||0)>0 ? G.loanRepayment : 0;
         const propTaxTotal = (G.properties||[]).reduce((s,p)=>s+Math.round(p.value*0.005),0);
@@ -4434,7 +4454,10 @@ function renderBank(){
           mortgages.forEach(p=>{ html+=`<div style="display:flex;justify-content:space-between;margin-bottom:2px;font-size:.85em"><span style="color:var(--ink2);font-weight:800">↳ ${p.label||'Property'}</span><span style="font-weight:900;color:var(--coral)">−$${(p.mortgagePayment||0).toLocaleString()}/yr (${p.mortgageYearsLeft}yr)</span></div>`; });
         }
         if(rent>0) html+=row('🏘️ Rent',rent,true);
-        if(kidCostDisplay>0){ const kids=(G.family||[]).filter(m=>m.type==='child'&&m.age<18); html+=row(`👶 Children (${kids.length})`,kidCostDisplay,true); }
+        if(kidCostDisplay>0){
+          html+=row(`👶 Children (${dependentKids.length})`,kidCostDisplay,true);
+          dependentKids.forEach(k=>{ html+=`<div style="display:flex;justify-content:space-between;margin-bottom:2px;font-size:.82em"><span style="color:var(--ink2);font-weight:800">↳ ${k.name||'Child'} (age ${k.age})</span><span style="font-weight:900;color:var(--coral)">−$${kidAnnualCost(k.age).toLocaleString()}/yr</span></div>`; });
+        }
         if(spouseHouse>0) html+=row('💑 Shared household',spouseHouse,true);
         if(loan>0) html+=`<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">🎓 Student loan</span><span style="font-weight:900;color:var(--coral)">−$${loan.toLocaleString()}/yr (${G.loanYearsLeft} yrs left)</span></div>`;
         if(propTaxTotal>0){ const props=G.properties||[]; html+=row(`🏠 Property Tax (${props.length} prop${props.length!==1?'s':''}, 0.5%/yr)`,propTaxTotal,true); }
@@ -5227,14 +5250,21 @@ function ageUp(){
     syncCompatAliases();
   }
 
-  // Annual child costs — age-scaled and more realistic
+  // Annual child costs — gradual age-scaled cost
   if(G.family){
     const kids = G.family.filter(m=>m.type==='child'&&m.age<18);
     if(kids.length>0){
       let totalKidCost = 0;
       kids.forEach(kid=>{
-        // Teen years (13-17) cost more: activities, food, clothes
-        const base = kid.age>=13 ? 5500 : 4000;
+        // Gradual scale: baby→toddler→child→tween→teen
+        let base;
+        if(kid.age<=1)       base=1200;  // baby: essentials only
+        else if(kid.age<=3)  base=1800;  // toddler: childcare begins
+        else if(kid.age<=6)  base=2400;  // young child: preschool/activities
+        else if(kid.age<=9)  base=3000;  // primary school age
+        else if(kid.age<=12) base=3800;  // tween: more activities, sports
+        else if(kid.age<=15) base=4800;  // early teen: clothes, phone, outings
+        else                 base=5800;  // late teen (16-17): driving, social life
         totalKidCost += Math.round(base*(G.inflationMult||1));
       });
       applyMod({money:-totalKidCost});
