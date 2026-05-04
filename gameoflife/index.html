@@ -3464,15 +3464,18 @@ function renderFamilyTab(){
     if(m.type==='child' && m.age>=18){
       // Assign a job if they don't have one yet (based on trait + age)
       if(!m.job){
+        // Realistic entry-level salaries, NO inflation multiplier — these are young adults starting out
         const kidJobs={
-          studious: m.age>=25?{title:'Research Analyst',income:55000}:m.age>=22?{title:'Graduate Intern',income:28000}:{title:'Student',income:0},
-          athletic:  m.age>=22?{title:'Sports Coach',income:38000}:{title:'Fitness Trainer',income:25000},
-          creative:  m.age>=22?{title:'Graphic Designer',income:40000}:{title:'Freelance Artist',income:20000},
-          rebellious:m.age>=25?{title:'Entrepreneur',income:45000}:{title:'Barista',income:22000},
+          studious: m.age>=28?{title:'Research Analyst',income:38000}:m.age>=24?{title:'Junior Analyst',income:28000}:m.age>=22?{title:'Graduate Intern',income:20000}:{title:'Student',income:0},
+          athletic:  m.age>=26?{title:'Sports Coach',income:32000}:m.age>=22?{title:'Fitness Trainer',income:22000}:{title:'Gym Assistant',income:16000},
+          creative:  m.age>=26?{title:'Graphic Designer',income:30000}:m.age>=22?{title:'Junior Designer',income:22000}:{title:'Freelance Artist',income:14000},
+          rebellious:m.age>=28?{title:'Entrepreneur',income:35000}:m.age>=24?{title:'Small Business Owner',income:24000}:{title:'Barista',income:18000},
         };
-        const base=kidJobs[m.trait]||{title:'Office Worker',income:35000};
+        const base=kidJobs[m.trait]||{title:'Office Worker',income:m.age>=26?28000:m.age>=22?22000:16000};
         m.job=base.title;
-        m.jobIncome=Math.round(base.income*(G.inflationMult||1));
+        // Grow income modestly with age (2% per year after 22) — no inflationMult
+        const yearsExp = Math.max(0, m.age - 22);
+        m.jobIncome = base.income>0 ? Math.round(base.income * Math.pow(1.02, yearsExp)) : 0;
       }
       if(m.job && m.job!=='Student'){
         const kidJobDiv=document.createElement('div');
