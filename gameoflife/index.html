@@ -2236,6 +2236,44 @@ function showEndScreen(){
 
     const bioLines = [];
 
+    // ── DYNASTY SUMMARY (shown only for Gen 2+) ──
+    const chain = G._legacyChain||[];
+    if(chain.length>0){
+      const totalGens = (G._legacyGeneration||1);
+      const ordinal = n => n===1?'1st':n===2?'2nd':n===3?'3rd':`${n}th`;
+      // Include current generation in the display
+      const fullChain = [...chain, {
+        name: G.name, age: G.age, legacy: getLegacy(),
+        grade: gradeText, generation: G._legacyGeneration||1,
+        education: G.education||'none',
+        jobTitle: G.peakJobTitle||G.jobTitle||null,
+        netWorth: Math.round(G.money+(G.investments||0)+(G.houseValue||0)),
+        married: !!(G.marriageAge),
+        spouseName: (spouse||{}).name||null,
+        childCount: kids.length,
+        achievements: (G.achievements||[]).length,
+        gender: G.gender,
+      }];
+      bioLines.push(`<div style="background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:2px solid #F9A825;border-radius:14px;padding:12px 14px;margin-bottom:12px"><div style="font-family:'Fredoka One',cursive;font-size:1em;color:#E65100;margin-bottom:8px">👑 The ${fullChain[0].name} Dynasty — ${fullChain.length} Generation${fullChain.length!==1?'s':''}</div>${
+        fullChain.map((gen,idx)=>{
+          const isCurrentGen = idx===fullChain.length-1;
+          const pr = gen.gender==='female'?'She':'He';
+          const eduLabel = {none:'no schooling',highschool:'high school',university:'university',graduate:'graduate school'}[gen.education]||'';
+          const careerLine = gen.jobTitle||'';
+          const wealthLabel = gen.netWorth>=1000000?'💎 Millionaire':gen.netWorth>=100000?'💰 Wealthy':gen.netWorth>=10000?'👍 Comfortable':'🌱 Humble';
+          const familyLine = gen.married
+            ? (gen.childCount>0 ? `married${gen.spouseName?' to '+gen.spouseName:''}, ${gen.childCount} child${gen.childCount!==1?'ren':''}` : `married${gen.spouseName?' to '+gen.spouseName:''}, no children`)
+            : 'never married';
+          return `<div style="border-left:3px solid ${isCurrentGen?'#E65100':'#F9A825'};padding:4px 10px;margin-bottom:6px;font-size:.8em;font-weight:800;color:#5D4037;${isCurrentGen?'background:rgba(230,81,0,0.06);border-radius:0 8px 8px 0':''}">
+            <span style="font-family:'Fredoka One',cursive;color:#E65100">${ordinal(gen.generation||idx+1)} Gen · ${gen.name}</span>${isCurrentGen?' ⬅ you':''}
+            <span style="color:#888;font-weight:700;margin-left:6px">Grade ${gen.grade||'?'} · Lived to ${gen.age}</span><br>
+            ${careerLine?`💼 ${careerLine} · `:''}${eduLabel?`📚 ${eduLabel} · `:''}${wealthLabel}<br>
+            👨‍👩‍👧 ${familyLine} · 🏆 ${gen.achievements} trophy${gen.achievements!==1?'ies':'y'}
+          </div>`;
+        }).join('')
+      }</div>`);
+    }
+
     // Opening — background and early life
     const bgPhrase = G.birthBackground
       ? `born into a ${G.birthBackground.replace(/[🏚️🏠🏡🏰]/g,'').trim().toLowerCase()}`
@@ -2336,7 +2374,7 @@ function showEndScreen(){
       bioLines.push(`${G.name}'s story ended at ${G.age}. Short, perhaps, but never small. Every year counted.`);
     }
 
-    bioEl.innerHTML = bioLines.map(l=>`<p style="margin-bottom:8px">${l}</p>`).join('');
+    bioEl.innerHTML = bioLines.map(l=>l.startsWith('<div')?l:`<p style="margin-bottom:8px">${l}</p>`).join('');
   }
 
   // What you missed
@@ -2446,38 +2484,55 @@ window.startLegacyContinue = function(chosenKid){
   if(legacyKid.age>=18){
     // Map trait+age to real JOBS IDs that exist in the JOBS array
     const traitJobMap = {
-      studious: legacyKid.age>=28 ? 'jr_lawyer'   : legacyKid.age>=24 ? 'teach_asst' : legacyKid.age>=22 ? 'tech_intern' : 'cashier',
-      athletic:  legacyKid.age>=26 ? 'tradesperson': legacyKid.age>=22 ? 'apprentice'  : 'cashier',
-      creative:  legacyKid.age>=26 ? 'designer'    : legacyKid.age>=22 ? 'creative_intern' : 'cashier',
-      rebellious:legacyKid.age>=28 ? 'supervisor'  : legacyKid.age>=22 ? 'cashier'     : 'cashier',
+      studious:  legacyKid.age>=28 ? 'jr_lawyer'      : legacyKid.age>=24 ? 'teach_asst'      : legacyKid.age>=22 ? 'tech_intern'     : 'cashier',
+      athletic:  legacyKid.age>=26 ? 'tradesperson'   : legacyKid.age>=22 ? 'apprentice'       : 'cashier',
+      creative:  legacyKid.age>=26 ? 'designer'       : legacyKid.age>=22 ? 'creative_intern'  : 'cashier',
+      rebellious:legacyKid.age>=28 ? 'supervisor'     : legacyKid.age>=22 ? 'cashier'          : 'cashier',
     };
     const defaultJobByAge = legacyKid.age>=28 ? 'supervisor' : legacyKid.age>=24 ? 'cashier' : legacyKid.age>=22 ? 'cashier' : 'cashier';
-    const mappedJobId = traitJobMap[legacyKid.trait] || defaultJobByAge;
 
-    // If the family tab already assigned a display job title, try to match it to a real JOBS entry
-    if(legacyKid.job && legacyKid.jobIncome){
-      const matchedJob = JOBS.find(j=>j.title.toLowerCase()===legacyKid.job.toLowerCase());
-      newG.job = matchedJob ? matchedJob.id : mappedJobId;
-      newG.jobTitle = matchedJob ? matchedJob.title : (getJobDef(mappedJobId)||{title:'Worker'}).title;
-      newG.salary = legacyKid.jobIncome;
-      newG.careerTrack = (getJobTrack(newG.job)||[null])[0];
-    } else {
-      const jobDef = getJobDef(mappedJobId);
-      if(jobDef){
-        newG.job = mappedJobId;
-        newG.jobTitle = jobDef.title;
-        newG.salary = Math.round((jobDef.salary||1200)*(G.inflationMult||1));
-        newG.careerTrack = (getJobTrack(mappedJobId)||[null])[0];
-      }
+    // Try to match the display job title to a real JOBS entry first, else use trait map
+    const matchedJob = legacyKid.job ? JOBS.find(j=>j.title.toLowerCase()===legacyKid.job.toLowerCase()) : null;
+    const resolvedJobId = matchedJob ? matchedJob.id : (traitJobMap[legacyKid.trait] || defaultJobByAge);
+    const jobDef = getJobDef(resolvedJobId);
+
+    if(jobDef){
+      newG.job = resolvedJobId;
+      newG.jobTitle = jobDef.title;
+      // Always use the job definition's base salary — never the inflated display income
+      // Apply a small experience bump (1% per year over 22, capped at 30%) but no inflationMult
+      const expYears = Math.max(0, legacyKid.age - 22);
+      const expMultiplier = Math.min(1.30, Math.pow(1.01, expYears));
+      newG.salary = Math.round(jobDef.salary * expMultiplier);
+      newG.careerTrack = (getJobTrack(resolvedJobId)||[null])[0];
     }
     newG.yearsInRole = Math.max(0, legacyKid.age - 22);
     newG.promotionChance = 20 + Math.min(legacyKid.age - 18, 30);
   }
 
+  // Child inherits some of parent's traits — calculated early so spouse/kids logic can use them
+  const smartsInherited = Math.min(70, Math.round((G.smarts * 0.3) + (legacyKid.trait==='studious'?15:5)));
+  const healthInherited = Math.min(100, Math.round(60 + (G.health * 0.2)));
+  const happyInherited  = Math.min(90, Math.round(50 + (G.happiness * 0.2)));
+  const looksInherited  = Math.min(80, Math.round((G.looks * 0.25) + 30));
+
   // Assign spouse and kids for older legacy characters
-  if(legacyKid.age>=26){
-    const spouseChance = legacyKid.age>=32 ? 0.75 : legacyKid.age>=28 ? 0.55 : 0.35;
-    if(Math.random()<spouseChance){
+  // Spouse and kids: probabilistic based on age, trait and inherited stats
+  // Rebellious/low-happiness kids are less likely to settle down
+  // Dynasty can naturally end if the kid never married or had no children
+  const traitMarriageBonus = legacyKid.trait==='rebellious' ? -0.15 : legacyKid.trait==='studious' ? 0.05 : 0;
+  const statsMarriageBonus = (happyInherited>=70 ? 0.10 : happyInherited<=40 ? -0.15 : 0);
+
+  if(legacyKid.age>=24){
+    // Base marriage chance by age, adjusted by trait and stats
+    const baseMarriageChance = legacyKid.age>=40 ? 0.65
+      : legacyKid.age>=34 ? 0.55
+      : legacyKid.age>=30 ? 0.45
+      : legacyKid.age>=26 ? 0.30
+      : 0.18; // age 24-25: quite unlikely to already be married
+    const marriageChance = Math.max(0.05, Math.min(0.85, baseMarriageChance + traitMarriageBonus + statsMarriageBonus));
+
+    if(Math.random()<marriageChance){
       const spouseGender = newG.gender==='male' ? 'female' : 'male';
       const spouseNames = spouseGender==='female'
         ? ['Emma','Sophia','Olivia','Ava','Isabella','Mia','Charlotte','Amelia']
@@ -2489,33 +2544,49 @@ window.startLegacyContinue = function(chosenKid){
       const spouseHairPool = spouseGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
       spouseRoll.hairStyle = spouseHairPool[Math.floor(Math.random()*spouseHairPool.length)];
       newG.family.push({type:'spouse',name:spouseName,age:spouseAge,status:'Married 💍',mood:75,avatarRoll:spouseRoll,gender:spouseGender});
-      newG.marriageAge = Math.max(22, legacyKid.age - Math.round(rand(2,6)));
+      newG.marriageAge = Math.max(22, legacyKid.age - Math.round(rand(2,8)));
       newG.spouseMood = 75;
-      newG.spouseIncome = Math.round(rand(2000,5000)*(G.inflationMult||1));
+      newG.spouseIncome = Math.round(rand(1500,4000)*(G.inflationMult||1));
     }
-  }
-  if(legacyKid.age>=30&&newG.marriageAge){
-    const numKids = legacyKid.age>=36 ? Math.round(rand(1,3)) : legacyKid.age>=32 ? Math.round(rand(0,2)) : (Math.random()<0.4?1:0);
-    const kidNames = ['Zoe','Leo','Mia','Eli','Nora','Kai','Eva','Sam','Lia','Max','Ivy','Jay'];
-    for(let i=0;i<numKids;i++){
-      const kAge = legacyKid.age-29+i*3;
-      if(kAge<1)continue;
-      const kName=kidNames[(i+Math.floor(Math.random()*kidNames.length))%kidNames.length];
-      const traits=['studious','athletic','creative','rebellious'];
-      const kGender = Math.random()<0.5 ? 'female' : 'male';
-      const kRoll = rollRandomCharacter();
-      kRoll.gender = kGender;
-      const kHairPool = kGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
-      kRoll.hairStyle = kHairPool[Math.floor(Math.random()*kHairPool.length)];
-      newG.family.push({type:'child',name:kName,age:kAge,status:'Healthy',trait:traits[Math.floor(Math.random()*traits.length)],avatarRoll:kRoll,gender:kGender==='female'?'girl':'boy'});
+    // If not married, small chance of being in a relationship (no kids though)
+    else if(Math.random()<0.20){
+      newG.partnerName = ['Alex','Jordan','Casey','Morgan','Taylor','Riley'][Math.floor(Math.random()*6)];
+      newG.datingAge = legacyKid.age - rand(1,3);
+      newG.relationshipScore = rand(30,60);
     }
   }
 
-  // Child inherits some of parent's traits scaled by age
-  const smartsInherited = Math.min(70, Math.round((G.smarts * 0.3) + (legacyKid.trait==='studious'?15:5)));
-  const healthInherited = Math.min(100, Math.round(60 + (G.health * 0.2)));
-  const happyInherited  = Math.min(90, Math.round(50 + (G.happiness * 0.2)));
-  const looksInherited  = Math.min(80, Math.round((G.looks * 0.25) + 30));
+  // Kids only if married; chance drops sharply for rebellious trait or low health
+  if(newG.marriageAge){
+    const traitKidBonus = legacyKid.trait==='rebellious' ? -0.20 : legacyKid.trait==='athletic' ? 0.05 : 0;
+    const healthKidBonus = healthInherited<=40 ? -0.20 : 0;
+
+    // Base probability of having ANY kids at all
+    const hasKidsChance = legacyKid.age>=38 ? 0.70
+      : legacyKid.age>=34 ? 0.55
+      : legacyKid.age>=30 ? 0.40
+      : 0.20;
+    const finalKidsChance = Math.max(0, Math.min(0.85, hasKidsChance + traitKidBonus + healthKidBonus));
+
+    if(Math.random()<finalKidsChance){
+      // How many kids: weighted toward 1, rarely 3
+      const roll = Math.random();
+      const numKids = roll<0.50 ? 1 : roll<0.80 ? 2 : 3;
+      const kidNames = ['Zoe','Leo','Mia','Eli','Nora','Kai','Eva','Sam','Lia','Max','Ivy','Jay'];
+      for(let i=0;i<numKids;i++){
+        const kAge = Math.max(1, legacyKid.age - 28 - i*3);
+        if(kAge>=18) continue; // skip kids who'd already be adults (they're independent)
+        const kName = kidNames[(i + Math.floor(Math.random()*kidNames.length)) % kidNames.length];
+        const traits = ['studious','athletic','creative','rebellious'];
+        const kGender = Math.random()<0.5 ? 'female' : 'male';
+        const kRoll = rollRandomCharacter();
+        kRoll.gender = kGender;
+        const kHairPool = kGender==='female' ? CHAR_FEMALE_HAIR : CHAR_MALE_HAIR;
+        kRoll.hairStyle = kHairPool[Math.floor(Math.random()*kHairPool.length)];
+        newG.family.push({type:'child',name:kName,age:kAge,status:'Healthy',trait:traits[Math.floor(Math.random()*traits.length)],avatarRoll:kRoll,gender:kGender==='female'?'girl':'boy'});
+      }
+    }
+  }
 
   newG.smarts    = smartsInherited;
   newG.health    = healthInherited;
@@ -2599,21 +2670,42 @@ window.startLegacyContinue = function(chosenKid){
   newG.energy = newG.maxEnergy;
 
   // Parent's legacy as first log entry
-  const genNum = newG._legacyGeneration||2;
+  // (genNum and genLabel are set after the chain block below)
+
+  newG.achievements = [];
+  // NOTE: newG.family already has spouse/kids assigned above — do NOT reset here
+
+  // Legacy chain tracking — carry forward the full dynasty history
+  // Build a rich snapshot of the dying generation before passing forward
+  const currentGenSnapshot = {
+    name: G.name,
+    age: G.age,
+    legacy: parentLegacy,
+    grade: parentGrade,
+    generation: G._legacyGeneration||1,
+    education: G.education||'none',
+    jobTitle: G.peakJobTitle||G.jobTitle||null,
+    careerTrack: G.peakCareerTrack||G.careerTrack||null,
+    netWorth: Math.round(G.money+(G.investments||0)+(G.houseValue||0)),
+    married: !!(G.marriageAge),
+    spouseName: ((G.family||[]).find(m=>m.type==='spouse')||{}).name||null,
+    childCount: (G.family||[]).filter(m=>m.type==='child').length,
+    achievements: (G.achievements||[]).length,
+    gender: G.gender,
+  };
+  newG._legacyChain = [...(G._legacyChain||[]), currentGenSnapshot];
+  newG._legacyGeneration = (G._legacyGeneration||1) + 1;
+
+  // genNum/genLabel now defined after chain is built
+  const genNum = newG._legacyGeneration;
   const genLabel = genNum===2?'2nd':genNum===3?'3rd':`${genNum}th`;
+
   newG.log = [
     {age:legacyKid.age, msg:`🌟 LEGACY (Gen ${genNum}): ${legacyKid.name}'s story begins at age ${legacyKid.age}. ${pronoun_(newG.gender)} inherited $${inheritance.toLocaleString()} from ${parentName} (age ${parentAge} · ${parentLegacy}).`, type:'legend'},
     {age:legacyKid.age, msg:`💛 Your parent ${parentName} left you with love, memories, and a foundation. Honour their legacy.`, type:'event'},
   ];
   if(inheritance>0) newG.log.unshift({age:legacyKid.age, msg:`💰 Inherited $${inheritance.toLocaleString()} from ${parentName}'s estate.`, type:'good'});
   if(inheritedProperties.length>0) newG.log.unshift({age:legacyKid.age, msg:`🏠 Inherited ${inheritedProperties[0].label} — now yours to keep or sell.`, type:'good'});
-
-  newG.achievements = [];
-  // NOTE: newG.family already has spouse/kids assigned above — do NOT reset here
-
-  // Legacy chain tracking — carry forward the generation count
-  newG._legacyGeneration = (G._legacyGeneration||1) + 1;
-  newG._legacyChain = [...(G._legacyChain||[{name:G.name,age:G.age,legacy:parentLegacy,grade:parentGrade}])];
 
   // Transfer the game state
   G = newG;
