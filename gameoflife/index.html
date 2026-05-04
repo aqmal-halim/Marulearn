@@ -2240,12 +2240,11 @@ function showEndScreen(){
     // ── DYNASTY SUMMARY (shown only for Gen 2+) ──
     const chain = G._legacyChain||[];
     if(chain.length>0){
-      const totalGens = (G._legacyGeneration||1);
       const ordinal = n => n===1?'1st':n===2?'2nd':n===3?'3rd':`${n}th`;
-      // Include current generation in the display
+      // Include current generation appended to chain for display
       const fullChain = [...chain, {
         name: G.name, age: G.age, legacy: getLegacy(),
-        grade: gradeText, generation: G._legacyGeneration||1,
+        grade: gradeText,
         education: G.education||'none',
         jobTitle: G.peakJobTitle||G.jobTitle||null,
         netWorth: Math.round(G.money+(G.investments||0)+(G.houseValue||0)),
@@ -2255,21 +2254,26 @@ function showEndScreen(){
         achievements: (G.achievements||[]).length,
         gender: G.gender,
       }];
-      bioLines.push(`<div style="background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:2px solid #F9A825;border-radius:14px;padding:12px 14px;margin-bottom:12px"><div style="font-family:'Fredoka One',cursive;font-size:1em;color:#E65100;margin-bottom:8px">👑 The ${fullChain[0].name} Dynasty — ${fullChain.length} Generation${fullChain.length!==1?'s':''}</div>${
-        fullChain.map((gen,idx)=>{
-          const isCurrentGen = idx===fullChain.length-1;
-          const pr = gen.gender==='female'?'She':'He';
+      const dynastyFounder = fullChain[0].name;
+      bioLines.push(`<div style="background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border:2px solid #F9A825;border-radius:14px;padding:12px 14px;margin-bottom:12px"><div style="font-family:'Fredoka One',cursive;font-size:1em;color:#E65100;margin-bottom:8px">👑 The ${dynastyFounder} Dynasty — ${fullChain.length} Generation${fullChain.length!==1?'s':''}</div>${
+        fullChain.map((gen, idx)=>{
+          const isCurrentGen = idx === fullChain.length - 1;
+          // Always use index+1 for generation number — reliable regardless of stored counter
+          const genNumber = idx + 1;
           const eduLabel = {none:'no schooling',highschool:'high school',university:'university',graduate:'graduate school'}[gen.education]||'';
           const careerLine = gen.jobTitle||'';
-          const wealthLabel = gen.netWorth>=1000000?'💎 Millionaire':gen.netWorth>=100000?'💰 Wealthy':gen.netWorth>=10000?'👍 Comfortable':'🌱 Humble';
+          const nw = gen.netWorth||0;
+          const wealthLabel = nw>=1000000?'💎 Millionaire':nw>=100000?'💰 Wealthy':nw>=10000?'👍 Comfortable':'🌱 Humble';
+          const trophyCount = typeof gen.achievements === 'number' ? gen.achievements : 0;
+          const trophyWord = trophyCount === 1 ? 'trophy' : 'trophies';
           const familyLine = gen.married
             ? (gen.childCount>0 ? `married${gen.spouseName?' to '+gen.spouseName:''}, ${gen.childCount} child${gen.childCount!==1?'ren':''}` : `married${gen.spouseName?' to '+gen.spouseName:''}, no children`)
             : 'never married';
           return `<div style="border-left:3px solid ${isCurrentGen?'#E65100':'#F9A825'};padding:4px 10px;margin-bottom:6px;font-size:.8em;font-weight:800;color:#5D4037;${isCurrentGen?'background:rgba(230,81,0,0.06);border-radius:0 8px 8px 0':''}">
-            <span style="font-family:'Fredoka One',cursive;color:#E65100">${ordinal(gen.generation||idx+1)} Gen · ${gen.name}</span>${isCurrentGen?' ⬅ you':''}
+            <span style="font-family:'Fredoka One',cursive;color:#E65100">${ordinal(genNumber)} Gen · ${gen.name}</span>${isCurrentGen?' ⬅ you':''}
             <span style="color:#888;font-weight:700;margin-left:6px">Grade ${gen.grade||'?'} · Lived to ${gen.age}</span><br>
             ${careerLine?`💼 ${careerLine} · `:''}${eduLabel?`📚 ${eduLabel} · `:''}${wealthLabel}<br>
-            👨‍👩‍👧 ${familyLine} · 🏆 ${gen.achievements} trophy${gen.achievements!==1?'ies':'y'}
+            👨‍👩‍👧 ${familyLine} · 🏆 ${trophyCount} ${trophyWord}
           </div>`;
         }).join('')
       }</div>`);
