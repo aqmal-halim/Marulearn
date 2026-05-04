@@ -2231,8 +2231,9 @@ function showEndScreen(){
     const kids=(G.family||[]).filter(m=>m.type==='child');
     const trackName=G.peakCareerTrack&&CAREER_TRACKS[G.peakCareerTrack]?CAREER_TRACKS[G.peakCareerTrack].name:'';
     const eduStr={none:'no formal education',highschool:'a high school diploma',university:'a university degree',graduate:'a graduate degree'}[G.education]||'no formal qualifications';
-    const pronoun = G.gender==='female' ? 'She' : 'He';
-    const pronounObj = G.gender==='female' ? 'her' : 'his';
+    const isFemale = G.gender==='female' || G.gender==='girl';
+    const pronoun = isFemale ? 'She' : 'He';
+    const pronounObj = isFemale ? 'her' : 'his';
 
     const bioLines = [];
 
@@ -2477,7 +2478,8 @@ window.startLegacyContinue = function(chosenKid){
   // Child stats and identity
   newG.name = legacyKid.name;
   // Fix: read gender directly from the child object first (set at birth), fall back to avatarRoll
-  newG.gender = legacyKid.gender || (legacyKid.avatarRoll ? legacyKid.avatarRoll.gender : null) || (Math.random()>0.5?'male':'female');
+  const rawGender = legacyKid.gender || (legacyKid.avatarRoll ? legacyKid.avatarRoll.gender : null) || 'male';
+  newG.gender = (rawGender==='girl'||rawGender==='female') ? 'female' : 'male';
   newG.age = legacyKid.age;
 
   // If the child already had a job assigned in the family tab, carry it over with a proper job ID
@@ -6542,6 +6544,8 @@ function continueLife(){
     if(G.activityBonus===undefined)G.activityBonus={};
     if(G.activityBonusYearsLeft===undefined)G.activityBonusYearsLeft=0;
     if(G.musicCount===undefined)G.musicCount=0;
+    if(G._legacyGeneration===undefined)G._legacyGeneration=1;
+    if(G._legacyChain===undefined)G._legacyChain=[];
     // migrate careerTrack from existing job
     if(!G.careerTrack&&G.job){
       const entry=getJobTrack(G.job);
