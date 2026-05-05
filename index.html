@@ -133,27 +133,40 @@ font-size: 1.8rem; flex-shrink: 0;
 .card-info p  { font-size: 0.78rem; color: #aaa; font-weight: 600; line-height: 1.35; }
 
 /* Category colors */
-.cat-lang  { background: #EBF5FF; border-bottom-color: #B8DBFF; }
-.cat-read  { background: #FFF5E8; border-bottom-color: #FFD9A0; }
-.cat-math  { background: #EDFFF5; border-bottom-color: #9FE8C0; }
-.cat-life  { background: #F4EEFF; border-bottom-color: #D4B8FF; }
-.cat-quest { background: #FFFBEB; border-bottom-color: #FDE68A; }
-.cat-forest { background: #F0FFF4; border-bottom-color: #86EFAC; }
-.cat-sky   { background: #F0F9FF; border-bottom-color: #7DD3FC; }
-.cat-vault { background: #F5F3FF; border-bottom-color: #C4B5FD; }
+.cat-lang    { background: #EBF5FF; border-bottom-color: #B8DBFF; }
+.cat-read    { background: #FFF5E8; border-bottom-color: #FFD9A0; }
+.cat-math    { background: #EDFFF5; border-bottom-color: #9FE8C0; }
+.cat-life    { background: #F4EEFF; border-bottom-color: #D4B8FF; }
+.cat-quest   { background: #FFFBEB; border-bottom-color: #FDE68A; }
+.cat-forest  { background: #F0FFF4; border-bottom-color: #86EFAC; }
+.cat-sky     { background: #F0F9FF; border-bottom-color: #7DD3FC; }
+.cat-vault   { background: #F5F3FF; border-bottom-color: #C4B5FD; }
 .cat-plumber { background: #E0F2FE; border-bottom-color: #7DD3FC; }
-.cat-path { background: #FFF7ED; border-bottom-color: #FED7AA; }
+.cat-path    { background: #FFF7ED; border-bottom-color: #FED7AA; }
 
-.icon-lang   { background: #D0E9FF; }
-.icon-read   { background: #FFE5C0; }
-.icon-math   { background: #CEFAE0; }
-.icon-life   { background: #E6D8FF; }
-.icon-quest  { background: #FEF3C7; border: 2px solid #F59E0B; }
-.icon-forest { background: #DCFCE7; border: 2px solid #22C55E; }
-.icon-sky    { background: #E0F2FE; border: 2px solid #0EA5E9; }
-.icon-vault  { background: #EDE9FE; border: 2px solid #8B5CF6; }
-.icon-plumber { background: #BAE6FD; border: 2px solid #0284C7; }
-.icon-path   { background: #FFEDD5; border: 2px solid #F97316; }
+/* ── LIFE STORY — featured flagship card ── */
+.cat-lifestory {
+  background: linear-gradient(135deg, #FFF6F0 0%, #FFF0F8 100%);
+  border: 2px solid #FFCCE8;
+  border-bottom: 5px solid #FF9ED2;
+  box-shadow: 0 6px 20px rgba(255, 100, 180, 0.10);
+}
+.cat-lifestory:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+.icon-lang     { background: #D0E9FF; }
+.icon-read     { background: #FFE5C0; }
+.icon-math     { background: #CEFAE0; }
+.icon-life     { background: #E6D8FF; }
+.icon-quest    { background: #FEF3C7; border: 2px solid #F59E0B; }
+.icon-forest   { background: #DCFCE7; border: 2px solid #22C55E; }
+.icon-sky      { background: #E0F2FE; border: 2px solid #0EA5E9; }
+.icon-vault    { background: #EDE9FE; border: 2px solid #8B5CF6; }
+.icon-plumber  { background: #BAE6FD; border: 2px solid #0284C7; }
+.icon-path     { background: #FFEDD5; border: 2px solid #F97316; }
+.icon-lifestory {
+  background: linear-gradient(135deg, #FFD6EE, #FFD4B0);
+  border: 2px solid #FF9ED2;
+}
 
 /* Badge */
 .badge {
@@ -166,6 +179,7 @@ z-index: 10;
 .badge.new  { background: #2ED573; animation: badge-pop 2s ease-in-out infinite; }
 .badge.baby { background: #F472B6; animation: badge-pop 2s ease-in-out infinite; }
 .badge.pro  { background: #6366F1; animation: badge-pop 2s ease-in-out infinite; }
+.badge.life { background: linear-gradient(90deg, #FF784E, #FF4EAE); animation: badge-pop 2s ease-in-out infinite; }
 @keyframes badge-pop {
 0%, 100% { transform: scale(1); }
 50%       { transform: scale(1.08); }
@@ -183,6 +197,7 @@ font-size: 0.62rem; color: #777; font-weight: 700;
 .tag.blue   { border-color: #7DD3FC; color: #0369A1; background: #F0F9FF; }
 .tag.purple { border-color: #A78BFA; color: #5B21B6; background: #F5F3FF; }
 .tag.orange { border-color: #F97316; color: #C2410C; background: #FFF7ED; }
+.tag.pink   { border-color: #F9A8D4; color: #BE185D; background: #FDF2F8; }
 
 footer {
 text-align: center; padding: 35px 0 15px;
@@ -190,7 +205,6 @@ color: #B89080; font-weight: 700; font-size: 0.82rem;
 }
 footer strong { color: #FF784E; }
 </style>
-
 </head>
 <body>
 <div class="app-container">
@@ -210,7 +224,7 @@ footer strong { color: #FF784E; }
         <div class="hero-title">MARU<span>LEARN</span></div>
         <div class="hero-tagline">Fun learning for awesome kids! 🚀</div>
         <div class="hero-chips">
-          <span class="hero-chip">🎮 17+ Games</span>
+          <span class="hero-chip">🎮 18+ Games</span>
           <span class="hero-chip">🇯🇵 Japanese</span>
           <span class="hero-chip">🆓 Free</span>
         </div>
@@ -274,6 +288,29 @@ footer strong { color: #FF784E; }
     </div>
   </div>
 
+  <!-- ── FEATURED: LIFE STORY ── -->
+  <div class="section-title">
+    <div class="dot" style="background:#FF4EAE;"></div>
+    ⭐ FEATURED GAME
+  </div>
+  <div class="grid">
+    <a href="https://aqmal-halim.github.io/Marulearn/gameoflife/" class="card cat-lifestory">
+      <span class="badge life">🌱 LIFE SIM</span>
+      <div class="icon-box icon-lifestory">🌱</div>
+      <div class="card-info">
+        <h3>Life Story!</h3>
+        <p>Live a whole life — school, jobs, family & legacy! Make choices that shape who you become. 🎂</p>
+        <div class="jp-tags">
+          <span class="tag pink">👶 Birth to 90</span>
+          <span class="tag pink">💼 Careers</span>
+          <span class="tag pink">💍 Family</span>
+          <span class="tag pink">💰 Finance</span>
+          <span class="tag pink">🏆 Legacy</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
   <div class="section-title">
     <div class="dot" style="background:#F59E0B;"></div>
     NEW ADVENTURE!
@@ -281,46 +318,46 @@ footer strong { color: #FF784E; }
   <div class="grid">
 
     <a href="snake/index.html" class="card cat-path">
-        <span class="badge new">PUZZLE</span>
-        <div class="icon-box icon-path">🧩</div>
-        <div class="card-info">
-          <h3>MaruGames: Path Finder</h3>
-          <p>Draw a path of numbers to reach the target! 🛤️</p>
-          <div class="jp-tags">
-            <span class="tag orange">🔢 Sum Target</span>
-            <span class="tag orange">🐍 Snake Path</span>
-            <span class="tag orange">🧠 Quick Math</span>
-          </div>
+      <span class="badge new">PUZZLE</span>
+      <div class="icon-box icon-path">🧩</div>
+      <div class="card-info">
+        <h3>MaruGames: Path Finder</h3>
+        <p>Draw a path of numbers to reach the target! 🛤️</p>
+        <div class="jp-tags">
+          <span class="tag orange">🔢 Sum Target</span>
+          <span class="tag orange">🐍 Snake Path</span>
+          <span class="tag orange">🧠 Quick Math</span>
         </div>
-      </a>
+      </div>
+    </a>
 
     <a href="maruplumber/index.html" class="card cat-plumber">
-        <span class="badge hot">💧 FLOW</span>
-        <div class="icon-box icon-plumber">🚿</div>
-        <div class="card-info">
-          <h3>MaruGames: Hydro Quest</h3>
-          <p>Fix the pipes to let the water flow! 💧</p>
-          <div class="jp-tags">
-            <span class="tag blue">🔄 Rotation</span>
-            <span class="tag blue">🛠️ Problem Solving</span>
-            <span class="tag blue">🌊 Fluid Logic</span>
-          </div>
+      <span class="badge hot">💧 FLOW</span>
+      <div class="icon-box icon-plumber">🚿</div>
+      <div class="card-info">
+        <h3>MaruGames: Hydro Quest</h3>
+        <p>Fix the pipes to let the water flow! 💧</p>
+        <div class="jp-tags">
+          <span class="tag blue">🔄 Rotation</span>
+          <span class="tag blue">🛠️ Problem Solving</span>
+          <span class="tag blue">🌊 Fluid Logic</span>
         </div>
-      </a>
+      </div>
+    </a>
 
     <a href="vault/index.html" class="card cat-vault">
-        <span class="badge pro">🧠 LOGIC</span>
-        <div class="icon-box icon-vault">🔐</div>
-        <div class="card-info">
-          <h3>MaruGames: Code Breaker</h3>
-          <p>Crack the secret vault using math & logic clues! 🕵️‍♂️</p>
-          <div class="jp-tags">
-            <span class="tag purple">🟢 Green/Yellow</span>
-            <span class="tag purple">➕ Sum Hints</span>
-            <span class="tag purple">🔢 Deduction</span>
-          </div>
+      <span class="badge pro">🧠 LOGIC</span>
+      <div class="icon-box icon-vault">🔐</div>
+      <div class="card-info">
+        <h3>MaruGames: Code Breaker</h3>
+        <p>Crack the secret vault using math & logic clues! 🕵️‍♂️</p>
+        <div class="jp-tags">
+          <span class="tag purple">🟢 Green/Yellow</span>
+          <span class="tag purple">➕ Sum Hints</span>
+          <span class="tag purple">🔢 Deduction</span>
         </div>
-      </a>
+      </div>
+    </a>
 
     <a href="alphabetforest/" class="card cat-forest">
       <span class="badge baby">✨ AGE 4+</span>
@@ -338,18 +375,18 @@ footer strong { color: #FF784E; }
     </a>
 
     <a href="skyfall/" class="card cat-sky">
-        <span class="badge new">SPELLING</span>
-        <div class="icon-box icon-sky">☁️</div>
-        <div class="card-info">
-          <h3>MaruGames: Sky Fall</h3>
-          <p>Catch falling words before they hit the ground! ⚡</p>
-          <div class="jp-tags">
-            <span class="tag blue">⌨️ Quick Typing</span>
-            <span class="tag blue">🍎 Vocabulary</span>
-            <span class="tag blue">☁️ Gravity Mode</span>
-          </div>
+      <span class="badge new">SPELLING</span>
+      <div class="icon-box icon-sky">☁️</div>
+      <div class="card-info">
+        <h3>MaruGames: Sky Fall</h3>
+        <p>Catch falling words before they hit the ground! ⚡</p>
+        <div class="jp-tags">
+          <span class="tag blue">⌨️ Quick Typing</span>
+          <span class="tag blue">🍎 Vocabulary</span>
+          <span class="tag blue">☁️ Gravity Mode</span>
         </div>
-      </a>
+      </div>
+    </a>
 
     <a href="maruquest/" class="card cat-quest">
       <span class="badge new">RPG</span>
