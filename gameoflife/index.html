@@ -2646,37 +2646,60 @@ window.startLegacyContinue = function(chosenKid){
   newG.gender = (rawGender==='girl'||rawGender==='female') ? 'female' : 'male';
   newG.age = legacyKid.age;
 
-  // If the child already had a job assigned in the family tab, carry it over with a proper job ID
+  // Resolve the child's starting job using real JOBS data — same logic as family tab display
   if(legacyKid.age>=18){
-    // Map trait+age to real JOBS IDs that exist in the JOBS array
-    const traitJobMap = {
-      studious:  legacyKid.age>=28 ? 'jr_lawyer'      : legacyKid.age>=24 ? 'teach_asst'      : legacyKid.age>=22 ? 'tech_intern'     : 'cashier',
-      athletic:  legacyKid.age>=26 ? 'tradesperson'   : legacyKid.age>=22 ? 'apprentice'       : 'cashier',
-      creative:  legacyKid.age>=26 ? 'designer'       : legacyKid.age>=22 ? 'creative_intern'  : 'cashier',
-      rebellious:legacyKid.age>=28 ? 'supervisor'     : legacyKid.age>=22 ? 'cashier'          : 'cashier',
-    };
-    const defaultJobByAge = legacyKid.age>=28 ? 'supervisor' : legacyKid.age>=24 ? 'cashier' : legacyKid.age>=22 ? 'cashier' : 'cashier';
+    // If family tab already ran and stored a real jobId, use it directly
+    let resolvedJobId = legacyKid.jobId || null;
 
-    // Try to match the display job title to a real JOBS entry first, else use trait map
-    const matchedJob = legacyKid.job ? JOBS.find(j=>j.title.toLowerCase()===legacyKid.job.toLowerCase()) : null;
-    const resolvedJobId = matchedJob ? matchedJob.id : (traitJobMap[legacyKid.trait] || defaultJobByAge);
-    const jobDef = getJobDef(resolvedJobId);
-
-    if(jobDef){
-      newG.job = resolvedJobId;
-      newG.jobTitle = jobDef.title;
-      // Always use the job definition's base salary — never the inflated display income
-      // Apply a small experience bump (1% per year over 22, capped at 30%) but no inflationMult
-      const expYears = Math.max(0, legacyKid.age - 22);
-      const expMultiplier = Math.min(1.30, Math.pow(1.01, expYears));
-      newG.salary = Math.round(jobDef.salary * expMultiplier);
-      newG.careerTrack = (getJobTrack(resolvedJobId)||[null])[0];
-      // Sync the family-tab display so parent's screen showed the same income
-      legacyKid.job = jobDef.title;
-      legacyKid.jobIncome = newG.salary;
+    if(!resolvedJobId){
+      // Re-run the same qualification logic as renderFamilyTab so the result is identical
+      const traitTrackPref = {
+        studious:  ['education','legal','tech','business'],
+        athletic:  ['trades','service','misc','business'],
+        creative:  ['creative','service','business','trades'],
+        rebellious:['business','trades','creative','service'],
+      };
+      const estSmarts = legacyKid.trait==='studious' ? 65
+                      : legacyKid.trait==='creative' ? 45
+                      : legacyKid.trait==='athletic' ? 35 : 30;
+      const estEdu    = legacyKid.trait==='studious' && legacyKid.age>=22 ? 'university' : 'none';
+      const estEduRank= {none:0,highschool:1,university:2,graduate:3};
+      const prefTracks= traitTrackPref[legacyKid.trait] || ['business','service'];
+      const trackOrder= [...new Set([...prefTracks,...Object.keys(CAREER_TRACKS)])];
+      let bestJob = null;
+      for(const trackKey of trackOrder){
+        const track = CAREER_TRACKS[trackKey]; if(!track) continue;
+        const rungs = [...track.rungs].reverse();
+        for(const rung of rungs){
+          if(legacyKid.age>=rung.minAge && estSmarts>=rung.minSmarts &&
+             estEduRank[estEdu]>=estEduRank[rung.minEdu] &&
+             (!rung.needsDegree||estEdu==='university'||estEdu==='graduate')){
+            if(!bestJob||rung.salary>bestJob.salary){ bestJob=rung; }
+            break;
+          }
+        }
+        if(bestJob && prefTracks.includes(trackKey)) break;
+      }
+      if(!bestJob) bestJob = JOBS.find(j=>j.id==='cashier') || JOBS[0];
+      resolvedJobId = bestJob.id;
     }
-    newG.yearsInRole = Math.max(0, legacyKid.age - 22);
-    newG.promotionChance = 20 + Math.min(legacyKid.age - 18, 30);
+
+    const jobDef = getJobDef(resolvedJobId);
+    if(jobDef){
+      newG.job        = resolvedJobId;
+      newG.jobTitle   = jobDef.title;
+      // Experience bump: 1.5%/yr above minAge, capped 25% — matches family tab display
+      const expYears  = Math.max(0, legacyKid.age - jobDef.minAge);
+      const expMult   = Math.min(1.25, Math.pow(1.015, expYears));
+      newG.salary     = Math.round(jobDef.salary * expMult); // no inflationMult — that applies at runtime
+      newG.careerTrack= (getJobTrack(resolvedJobId)||[null])[0];
+      // Keep family tab display in sync (no inflation — matches what we showed the parent)
+      legacyKid.job      = jobDef.title;
+      legacyKid.jobId    = resolvedJobId;
+      legacyKid.jobIncome= newG.salary;
+    }
+    newG.yearsInRole    = Math.max(0, legacyKid.age - (getJobDef(resolvedJobId)||{minAge:18}).minAge);
+    newG.promotionChance= 20 + Math.min(legacyKid.age - 18, 30);
   }
 
   // Child inherits some of parent's traits — calculated early so spouse/kids logic can use them
@@ -3752,29 +3775,80 @@ function renderFamilyTab(){
     }
     info.appendChild(detail);
 
-    // Adult children: show job and income (informational, NOT added to player income)
+    // Adult children: show job and income using REAL game jobs (same JOBS array the player uses)
     if(m.type==='child' && m.age>=18){
-      // Only assign job/income if not already set (legacy continue may have set a real salary)
+      // Only assign once — guard respects a job already set by legacy continue
       if(!m.job || m.jobIncome==null){
-        // Realistic salaries by trait and age — start at 18, grow 3%/yr
-        const kidJobs={
-          studious:  m.age>=30?{title:'Research Analyst',income:42000}:m.age>=26?{title:'Junior Analyst',income:30000}:m.age>=22?{title:'Graduate Intern',income:22000}:{title:'Student',income:0},
-          athletic:  m.age>=28?{title:'Sports Coach',income:34000}:m.age>=24?{title:'Fitness Trainer',income:24000}:m.age>=20?{title:'Gym Assistant',income:18000}:{title:'Gym Assistant',income:16000},
-          creative:  m.age>=28?{title:'Graphic Designer',income:33000}:m.age>=24?{title:'Junior Designer',income:24000}:m.age>=20?{title:'Freelance Artist',income:16000}:{title:'Freelance Artist',income:12000},
-          rebellious:m.age>=30?{title:'Entrepreneur',income:38000}:m.age>=26?{title:'Small Business Owner',income:26000}:m.age>=22?{title:'Barista',income:20000}:{title:'Barista',income:17000},
+        // Map each trait to the career track(s) it prefers, in priority order
+        const traitTrackPref = {
+          studious:  ['education','legal','tech','business'],
+          athletic:  ['trades','service','misc','business'],
+          creative:  ['creative','service','business','trades'],
+          rebellious:['business','trades','creative','service'],
         };
-        const base=kidJobs[m.trait]||{title:'Office Worker',income:m.age>=28?30000:m.age>=24?24000:m.age>=20?19000:16000};
-        if(!m.job) m.job=base.title;
-        if(m.jobIncome==null){
-          // 3% annual growth from age 18 — more realistic than starting at 22
-          const yearsExp = Math.max(0, m.age - 18);
-          m.jobIncome = base.income>0 ? Math.round(base.income * Math.pow(1.03, yearsExp)) : 0;
+
+        // Build a smarts estimate for the child based on trait
+        // (they don't have a real smarts stat, so we estimate conservatively)
+        const estSmarts = m.trait==='studious' ? 65
+                        : m.trait==='creative' ? 45
+                        : m.trait==='athletic' ? 35
+                        : 30; // rebellious
+
+        // Education estimate: studious kids will have gone to uni by 22,
+        // others stay at 'none' unless they're old enough that uni is plausible
+        const estEdu = m.trait==='studious' && m.age>=22 ? 'university'
+                     : m.age>=26 && Math.random()<0.3    ? 'university'
+                     : 'none';
+        const estEduRank = {none:0,highschool:1,university:2,graduate:3};
+
+        // Find the best job the child qualifies for from their preferred tracks
+        const prefTracks = traitTrackPref[m.trait] || ['business','service'];
+        let bestJob = null;
+
+        // Try preferred tracks first, then all tracks as fallback
+        const trackOrder = [...new Set([...prefTracks, ...Object.keys(CAREER_TRACKS)])];
+        for(const trackKey of trackOrder){
+          const track = CAREER_TRACKS[trackKey];
+          if(!track) continue;
+          // Walk rungs from highest to lowest, pick the first one the child qualifies for
+          const rungs = [...track.rungs].reverse();
+          for(const rung of rungs){
+            const ageOk    = m.age >= rung.minAge;
+            const smartsOk = estSmarts >= rung.minSmarts;
+            const eduOk    = estEduRank[estEdu] >= estEduRank[rung.minEdu];
+            const degOk    = !rung.needsDegree || estEdu==='university' || estEdu==='graduate';
+            if(ageOk && smartsOk && eduOk && degOk){
+              // Only replace if this job pays more (prioritise highest salary)
+              if(!bestJob || rung.salary > bestJob.salary){
+                bestJob = rung;
+              }
+              break; // found best in this track — move on
+            }
+          }
+          // Once we have a result from a preferred track, stop searching further preferred tracks
+          // (still fall through to check others for a higher salary)
+          if(bestJob && prefTracks.includes(trackKey)) break;
         }
+
+        // Fallback: if nothing matched (very young / no qualifications), use cashier
+        if(!bestJob) bestJob = JOBS.find(j=>j.id==='cashier') || JOBS[0];
+
+        m.job      = bestJob.title;
+        m.jobId    = bestJob.id;
+        // Apply inflation + modest experience bump (1.5%/yr above minAge, capped at 25%)
+        const inf  = G.inflationMult || 1;
+        const expYrs   = Math.max(0, m.age - bestJob.minAge);
+        const expMult  = Math.min(1.25, Math.pow(1.015, expYrs));
+        m.jobIncome = Math.round(bestJob.salary * inf * expMult);
       }
-      if(m.job && m.job!=='Student'){
-        const kidJobDiv=document.createElement('div');
-        kidJobDiv.style.cssText='font-size:.7em;font-weight:900;color:var(--sky-dark);margin-top:3px';
-        kidJobDiv.innerHTML=`💼 ${m.job} · <span style="color:var(--grass-dark)">$${(m.jobIncome||0).toLocaleString()}/yr</span> <span style="color:#999;font-weight:700">(their income)</span>`;
+
+      if(m.job){
+        const kidJobDiv = document.createElement('div');
+        kidJobDiv.style.cssText = 'font-size:.7em;font-weight:900;color:var(--sky-dark);margin-top:3px';
+        // Show the real job emoji from JOBS if we have a jobId stored
+        const jobDef2 = m.jobId ? getJobDef(m.jobId) : JOBS.find(j=>j.title===m.job);
+        const jobEmoji = jobDef2 ? jobDef2.emoji : '💼';
+        kidJobDiv.innerHTML=`${jobEmoji} ${m.job} · <span style="color:var(--grass-dark)">$${(m.jobIncome||0).toLocaleString()}/yr</span> <span style="color:#999;font-weight:700">(their income)</span>`;
         info.appendChild(kidJobDiv);
       }
     }
