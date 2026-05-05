@@ -4815,7 +4815,16 @@ function renderBank(){
     <div style="background:#E3F2FD;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sky-dark)">
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:var(--sky-dark);margin-bottom:8px">📈 Investments</div>
       <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-weight:800;color:var(--ink2)">Portfolio</span><span style="font-weight:900;color:var(--sky-dark)">$${inv.toLocaleString()}</span></div>
-      <div style="font-size:.72em;color:var(--sky-dark);font-weight:800">${(()=>{ const trauma=Math.min((G.financialTrauma||0)*0.005,0.015); const rate=Math.max(0.01,0.025-trauma); return (rate*100).toFixed(1); })()}% annual return · 10% crash risk</div>
+      <div style="font-size:.72em;color:var(--sky-dark);font-weight:800">${(()=>{
+        const activeEvts = (G.worldModifiers||[]).filter(m=>m.expires>G.age);
+        const iMult  = activeEvts.reduce((m,e)=>m*(e.investMult||1), 1);
+        const cExtra = activeEvts.reduce((r,e)=>r+(e.crashRisk!=null?e.crashRisk-0.05:0), 0);
+        const trauma = Math.min((G.financialTrauma||0)*0.005, 0.020);
+        const rate   = Math.max(0.5, (5.0 * iMult) - trauma*100);
+        const crash  = Math.max(2, Math.min(40, Math.round((0.05 + cExtra)*100)));
+        const eventLabel = activeEvts.length>0 ? ` · <span style="color:${iMult<1?'var(--coral-dark)':'var(--grass-dark)'}">${iMult<1?'⬇':'⬆'} ${activeEvts[0].label.split(' ').slice(1).join(' ')}</span>` : '';
+        return `${rate.toFixed(1)}% annual return · ${crash}% crash risk${eventLabel}`;
+      })()}</div>
     </div>
     <div style="background:#FFF9C4;border-radius:var(--radius);padding:14px;margin-bottom:10px;border:var(--border-w) solid var(--sun-dark)">
       <div style="font-size:.7em;font-weight:900;text-transform:uppercase;color:#E65100;margin-bottom:8px">💼 Income & Expenses</div>
@@ -4886,7 +4895,7 @@ function renderBank(){
     </div>`;
 
   if(G.money>=1000){
-    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (2.5% return)',()=>{
+    el.appendChild(actItem('📈','Invest $1,000','Moves $1k from cash to investments (5% base return)',()=>{
       if(G.money<1000){addLog('Need $1,000!','bad');SoundManager.fail();return;}
       applyMod({money:-1000,investments:1000});
       addLog('Moved $1,000 into investments 📈','good');
@@ -4894,7 +4903,7 @@ function renderBank(){
     }));
   }
   if(G.money>=5000){
-    el.appendChild(actItem('📊','Invest $5,000','Bigger portfolio = bigger returns',()=>{
+    el.appendChild(actItem('📊','Invest $5,000','Bigger portfolio = bigger returns (5% base, varies with world events)',()=>{
       if(G.money<5000){addLog('Need $5,000!','bad');SoundManager.fail();return;}
       applyMod({money:-5000,investments:5000});
       addLog('Moved $5,000 into investments 📊','good');
@@ -5554,22 +5563,31 @@ function ageUp(){
   applyInflation();
 
   if((G.investments||0)>0){
-    // Base return 2.5% (was 4%) — reflects realistic long-run after inflation
-    // Financial trauma from past bankruptcy reduces returns (risk aversion)
-    const traumaPenalty = Math.min((G.financialTrauma||0)*0.005, 0.015);
-    const growthRate = Math.max(0.01, 0.025 - traumaPenalty);
-    const growth=G.investments*growthRate;
-    // Crash: 10% chance (was 7%), larger loss 8-18% (was 5-13%)
-    const crash=Math.random()<0.10;
+    // ── INVESTMENT RETURN ENGINE ──
+    // Base: 5% annual return, 5% crash risk — realistic long-run equity market
+    // Active world events scale both the return multiplier AND crash probability
+    const activeEvents = (G.worldModifiers||[]).filter(m=>m.expires>G.age);
+    const investMult  = activeEvents.reduce((m,e)=>m*(e.investMult||1), 1);
+    const crashRiskAdd= activeEvents.reduce((r,e)=>r+(e.crashRisk!=null ? e.crashRisk-0.05 : 0), 0);
+
+    // Financial trauma from past bankruptcy reduces return (risk aversion cap)
+    const traumaPenalty = Math.min((G.financialTrauma||0)*0.005, 0.020);
+
+    const baseReturn  = 0.05; // 5% baseline
+    const growthRate  = Math.max(0.005, baseReturn * investMult - traumaPenalty);
+    const crashChance = Math.max(0.02, Math.min(0.40, 0.05 + crashRiskAdd));
+
+    const crash = Math.random() < crashChance;
     if(crash){
-      const loss=Math.floor(G.investments*(0.08+Math.random()*0.10));
-      G.investments=Math.max(0,G.investments-loss);
+      const loss = Math.floor(G.investments*(0.08 + Math.random()*0.10));
+      G.investments = Math.max(0, G.investments - loss);
       addLog(`📉 Market crash! Portfolio lost $${loss.toLocaleString()}!`,'bad');
       SoundManager.fail();
       applyMod({happiness:-5});
-    }else{
-      G.investments=Math.floor(G.investments+growth);
-      if(G.age%3===0) addLog(`📈 Investments: +$${Math.floor(growth).toLocaleString()} (${(growthRate*100).toFixed(1)}%)`,'good');
+    } else {
+      const growth = Math.floor(G.investments * growthRate);
+      G.investments = G.investments + growth;
+      if(G.age%3===0) addLog(`📈 Investments: +$${growth.toLocaleString()} (${(growthRate*100).toFixed(1)}%)`,'good');
     }
   }
 
@@ -6410,11 +6428,11 @@ function continueAgeUp(){
   // ── Decade world events (every 10 years) ──
   if(G.age>=20&&G.age%10===0){
     const decadePool=[
-      {label:'📉 Global Recession',  desc:'Salaries down for a few years. Job market tough.',     happiness:-8, salaryMult:0.85, dur:3},
-      {label:'💻 Tech Boom',          desc:'Tech sector surging! Great time to be in tech.',        happiness:5,  salaryMult:1.20, dur:4, trackBonus:'tech'},
-      {label:'🏠 Housing Boom',       desc:'Property values spiking. Rent rises too.',             happiness:0,  houseMult:1.30, dur:3},
-      {label:'🦠 Health Crisis',      desc:'Health costs rise. Look after yourself.',              happiness:-5, healthPenalty:5, dur:2},
-      {label:'🌱 Wave of Optimism',   desc:'People feel hopeful. Opportunities abound!',           happiness:10, salaryMult:1.05, dur:2},
+      {label:'📉 Global Recession',  desc:'Salaries down for a few years. Job market tough.',     happiness:-8, salaryMult:0.85, dur:3, investMult:0.50, crashRisk:0.20},
+      {label:'💻 Tech Boom',          desc:'Tech sector surging! Great time to be in tech.',        happiness:5,  salaryMult:1.20, dur:4, trackBonus:'tech', investMult:1.40, crashRisk:0.02},
+      {label:'🏠 Housing Boom',       desc:'Property values spiking. Rent rises too.',             happiness:0,  houseMult:1.30, dur:3, investMult:1.10, crashRisk:0.03},
+      {label:'🦠 Health Crisis',      desc:'Health costs rise. Look after yourself.',              happiness:-5, healthPenalty:5, dur:2, investMult:0.70, crashRisk:0.15},
+      {label:'🌱 Wave of Optimism',   desc:'People feel hopeful. Opportunities abound!',           happiness:10, salaryMult:1.05, dur:2, investMult:1.20, crashRisk:0.02},
     ];
     const dev=decadePool[Math.floor(Math.random()*decadePool.length)];
     if(!G.worldModifiers)G.worldModifiers=[];
