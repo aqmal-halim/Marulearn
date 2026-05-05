@@ -1046,7 +1046,11 @@ const SoundManager = (() => {
       if(!unlocked) this.unlock();
       musicOn = !musicOn;
       try{ localStorage.setItem('lifestory_music', musicOn?'1':'0'); }catch(e){}
-      document.getElementById('music-btn').textContent = musicOn ? '🔊' : '🎵';
+      const btn = document.getElementById('music-btn');
+      if(btn){
+        btn.textContent = musicOn ? '🔊' : '🎵';
+        btn.setAttribute('aria-pressed', musicOn ? 'true' : 'false');
+      }
       if(!ctx) return;
       if(musicOn){
         try {
@@ -1444,7 +1448,7 @@ const CAREER_TRACKS = {
     {id:'babysitter',   emoji:'🍼', title:'Babysitter',           salary:400,   minAge:12, minSmarts:0,  minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'driver',       emoji:'🚗', title:'Delivery Driver',      salary:2200,  minAge:18, minSmarts:20, minLooks:0,  minEdu:'none',       needsDegree:false, tier:1, yearsRequired:0},
     {id:'courier_lead', emoji:'📦', title:'Courier Team Lead',    salary:3500,  minAge:22, minSmarts:30, minLooks:0,  minEdu:'none',       needsDegree:false, tier:2, yearsRequired:2},
-    {id:'logistics_mgr',emoji:'🚚', title:'Logistics Manager',    salary:6000,  minAge:27, minSmarts:45, minLooks:0,  minEdu:'highschool', needsDegree:false, tier:3, yearsRequired:3},
+    {id:'logistics_mgr',emoji:'🚚', title:'Logistics Manager',    salary:6000,  minAge:27, minSmarts:45, minLooks:0,  minEdu:'university', needsDegree:false, tier:3, yearsRequired:3},
     {id:'ops_director', emoji:'🏢', title:'Operations Director',  salary:11000, minAge:34, minSmarts:60, minLooks:0,  minEdu:'university', needsDegree:false, tier:4, yearsRequired:3},
   ]},
 };
@@ -2667,6 +2671,9 @@ window.startLegacyContinue = function(chosenKid){
       const expMultiplier = Math.min(1.30, Math.pow(1.01, expYears));
       newG.salary = Math.round(jobDef.salary * expMultiplier);
       newG.careerTrack = (getJobTrack(resolvedJobId)||[null])[0];
+      // Sync the family-tab display so parent's screen showed the same income
+      legacyKid.job = jobDef.title;
+      legacyKid.jobIncome = newG.salary;
     }
     newG.yearsInRole = Math.max(0, legacyKid.age - 22);
     newG.promotionChance = 20 + Math.min(legacyKid.age - 18, 30);
@@ -3747,20 +3754,22 @@ function renderFamilyTab(){
 
     // Adult children: show job and income (informational, NOT added to player income)
     if(m.type==='child' && m.age>=18){
-      // Assign a job if they don't have one yet (based on trait + age)
-      if(!m.job){
-        // Realistic entry-level salaries, NO inflation multiplier — these are young adults starting out
+      // Only assign job/income if not already set (legacy continue may have set a real salary)
+      if(!m.job || m.jobIncome==null){
+        // Realistic salaries by trait and age — start at 18, grow 3%/yr
         const kidJobs={
-          studious: m.age>=28?{title:'Research Analyst',income:38000}:m.age>=24?{title:'Junior Analyst',income:28000}:m.age>=22?{title:'Graduate Intern',income:20000}:{title:'Student',income:0},
-          athletic:  m.age>=26?{title:'Sports Coach',income:32000}:m.age>=22?{title:'Fitness Trainer',income:22000}:{title:'Gym Assistant',income:16000},
-          creative:  m.age>=26?{title:'Graphic Designer',income:30000}:m.age>=22?{title:'Junior Designer',income:22000}:{title:'Freelance Artist',income:14000},
-          rebellious:m.age>=28?{title:'Entrepreneur',income:35000}:m.age>=24?{title:'Small Business Owner',income:24000}:{title:'Barista',income:18000},
+          studious:  m.age>=30?{title:'Research Analyst',income:42000}:m.age>=26?{title:'Junior Analyst',income:30000}:m.age>=22?{title:'Graduate Intern',income:22000}:{title:'Student',income:0},
+          athletic:  m.age>=28?{title:'Sports Coach',income:34000}:m.age>=24?{title:'Fitness Trainer',income:24000}:m.age>=20?{title:'Gym Assistant',income:18000}:{title:'Gym Assistant',income:16000},
+          creative:  m.age>=28?{title:'Graphic Designer',income:33000}:m.age>=24?{title:'Junior Designer',income:24000}:m.age>=20?{title:'Freelance Artist',income:16000}:{title:'Freelance Artist',income:12000},
+          rebellious:m.age>=30?{title:'Entrepreneur',income:38000}:m.age>=26?{title:'Small Business Owner',income:26000}:m.age>=22?{title:'Barista',income:20000}:{title:'Barista',income:17000},
         };
-        const base=kidJobs[m.trait]||{title:'Office Worker',income:m.age>=26?28000:m.age>=22?22000:16000};
-        m.job=base.title;
-        // Grow income modestly with age (2% per year after 22) — no inflationMult
-        const yearsExp = Math.max(0, m.age - 22);
-        m.jobIncome = base.income>0 ? Math.round(base.income * Math.pow(1.02, yearsExp)) : 0;
+        const base=kidJobs[m.trait]||{title:'Office Worker',income:m.age>=28?30000:m.age>=24?24000:m.age>=20?19000:16000};
+        if(!m.job) m.job=base.title;
+        if(m.jobIncome==null){
+          // 3% annual growth from age 18 — more realistic than starting at 22
+          const yearsExp = Math.max(0, m.age - 18);
+          m.jobIncome = base.income>0 ? Math.round(base.income * Math.pow(1.03, yearsExp)) : 0;
+        }
       }
       if(m.job && m.job!=='Student'){
         const kidJobDiv=document.createElement('div');
@@ -4310,7 +4319,7 @@ function jobInterview(j){
   else if(j.minSmarts>0)reqs.push({txt:`Smarts ✓ (${G.smarts}/${j.minSmarts})`,ok:true});
   if((j.minLooks||0)>0&&G.looks<j.minLooks){reqs.push({txt:`Looks ${j.minLooks}+ required (you: ${G.looks})`,ok:false});canApply=false;}
   else if((j.minLooks||0)>0)reqs.push({txt:`Looks ✓ (${G.looks}/${j.minLooks})`,ok:true});
-  if(eduRank[G.education]<eduRank[j.minEdu]){reqs.push({txt:`${j.minEdu} degree required`,ok:false});canApply=false;}
+  if(eduRank[G.education]<eduRank[j.minEdu]){const eduLabels={none:'None',highschool:'High School',university:'University',graduate:'Graduate'};reqs.push({txt:`${eduLabels[j.minEdu]||j.minEdu} degree required`,ok:false});canApply=false;}
   else if(j.minEdu!=='none')reqs.push({txt:'Education ✓',ok:true});
   if(j.needsDegree&&!G.hasDegree){reqs.push({txt:'Degree required',ok:false});canApply=false;}
   if(j.requiresJob){
@@ -4428,7 +4437,10 @@ function renderWork(){
       if(nextUp){
         const reasons=[];
         if(G.smarts<(rung.minSmarts-15))reasons.push(`🧠 Need ${rung.minSmarts} Smarts`);
-        if(eduRank[G.education]<eduRank[rung.minEdu])reasons.push(`📚 Need ${rung.minEdu}`);
+        if(eduRank[G.education]<eduRank[rung.minEdu]){
+          const eduLabels={none:'None',highschool:'High School',university:'University',graduate:'Graduate'};
+          reasons.push(`📚 Need ${eduLabels[rung.minEdu]||rung.minEdu}`);
+        }
         if(rung.needsDegree&&!G.hasDegree)reasons.push('🎓 Need degree');
         if((G.yearsInRole||0)<rung.yearsRequired)reasons.push(`⏳ ${rung.yearsRequired-(G.yearsInRole||0)} yrs left`);
         if(reasons.length)blockerHint=`<div style="font-size:.6em;color:var(--coral-dark);font-weight:800;margin-top:2px">${reasons.join(' · ')}</div>`;
@@ -6294,20 +6306,26 @@ function continueAgeUp(){
   // ════════════════════════════════════════════
   // PRIORITY 5 — Contextual mini-game events
   // ════════════════════════════════════════════
-  // Random quiz during school years (35% chance — fires AFTER report card in same age-up)
-  // The report card fires at P1, then if there's still room this fires too
-  // But since fireEvent returns early, this only fires in years when NO P1 event fired.
-  // Ages 12/17: exam is already handled at P1, so quiz won't double-fire.
-  // Random quiz during school years (fires AFTER report card in same age-up)
-  // Ages 12/17: exam is already handled at P1, so quiz won't double-fire.
+  // Random quiz during school years
   if(G.age>=6&&G.age<=17&&Math.random()<SCHOOL_TEST_CHANCE){
     fireEvent(()=>setTimeout(triggerSchoolTest,300));
     return;
   }
-  // Ages 18+: performance review for employed adults
-  if(G.age>=18&&G.job&&!G.retired&&Math.random()<PERFORMANCE_REVIEW_CHANCE){
-    fireEvent(()=>setTimeout(triggerPerformanceReview,300));
-    return;
+  // Performance review: lower chance in prime family-building years (30-50) to avoid
+  // crowding out family events. Hard cooldown: won't fire two years in a row.
+  if(G.age>=18&&G.job&&!G.retired){
+    const lastReview = G._lastPerformanceReviewAge||0;
+    const yearsSinceLast = G.age - lastReview;
+    // In mid-life (30–50) family events have priority — cut review chance in half
+    // and enforce a minimum 2-year gap between reviews
+    const midLife = G.age>=30 && G.age<=50;
+    const reviewChance = midLife ? PERFORMANCE_REVIEW_CHANCE * 0.45 : PERFORMANCE_REVIEW_CHANCE;
+    const cooldownOk = yearsSinceLast >= 2;
+    if(cooldownOk && Math.random()<reviewChance){
+      G._lastPerformanceReviewAge = G.age;
+      fireEvent(()=>setTimeout(triggerPerformanceReview,300));
+      return;
+    }
   }
 
   // ════════════════════════════════════════════
@@ -7880,15 +7898,7 @@ window.launchGame=function(){
   if(shouldShowFTUE()) setTimeout(startFTUE,900);
 };
 
-// ══════════════════════════════════════════
-// MUSIC BUTTON ARIA-PRESSED SYNC
-// ══════════════════════════════════════════
-const _origToggleMusic=SoundManager.toggleMusic.bind(SoundManager);
-SoundManager.toggleMusic=function(){
-  _origToggleMusic();
-  const btn=document.getElementById('music-btn');
-  if(btn) btn.setAttribute('aria-pressed', btn.textContent==='🔊' ? 'true' : 'false');
-};
+// Music button aria-pressed is now handled directly inside SoundManager.toggleMusic (no wrapper needed)
 
 // ══════════════════════════════════════════
 // FIX #3 — clear mgState at mini-game entry so stale cross-game state cannot leak
