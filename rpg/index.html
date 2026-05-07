@@ -1,110 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Isometric Boss Prototype</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixel RPG Prototype</title>
     <style>
-        body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; color: white; font-family: sans-serif; }
-        canvas { border: 2px solid #444; background: #333; margin-top: 20px; image-rendering: pixelated; }
-        .controls { margin-top: 10px; text-shadow: 1px 1px 2px black; }
+        body { 
+            margin: 0; 
+            background: #1a1a1a; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            color: white; 
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
+        }
+        canvas { 
+            border: 4px solid #333; 
+            background: #252525; 
+            image-rendering: pixelated;
+            touch-action: none;
+            width: 90vw;
+            max-width: 600px;
+        }
+        .ui-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            text-shadow: 2px 2px black;
+        }
+        .controls-container {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .d-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 5px;
+        }
+        .btn {
+            background: #444;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { background: #888; }
+        .attack-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #800;
+            border: 4px solid #f00;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .attack-btn:active { background: #f00; }
     </style>
 </head>
 <body>
-    <h3>Isometric Combat State Machine</h3>
+
+    <div class="ui-overlay">
+        <div id="pHP">PLAYER HP: 100</div>
+        <div id="bHP">BOSS HP: 100</div>
+        <div id="bState">BOSS STATUS: IDLE</div>
+    </div>
+
     <canvas id="gameCanvas" width="600" height="400"></canvas>
-    <div class="controls">ARROWS to Move | SPACE to Attack</div>
+
+    <div class="controls-container">
+        <div class="d-pad">
+            <div></div><div class="btn" id="up">▲</div><div></div>
+            <div class="btn" id="left">◀</div><div></div><div class="btn" id="right">▶</div>
+            <div></div><div class="btn" id="down">▼</div><div></div>
+        </div>
+        <div class="attack-btn" id="attack">HIT</div>
+    </div>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// --- 1. Isometric Math ---
-// Projects 2D grid (x, y) to Isometric screen space
+// --- GAME STATE ---
+let player = { x: 2, y: 2, hp: 100, isAttacking: false };
+let boss = { x: 5, y: 5, hp: 100, state: 'IDLE', timer: 0, color: '#ff4444' };
+let keys = {};
+
+// --- ISOMETRIC MATH ---
 function toIso(x, y) {
     return {
-        screenX: (x - y) * 30 + (canvas.width / 2),
-        screenY: (x + y) * 15 + 100
+        screenX: (x - y) * 32 + (canvas.width / 2),
+        screenY: (x + y) * 16 + 100
     };
 }
 
-// --- 2. Game Entities ---
-let player = { x: 0, y: 0, hp: 100, isAttacking: false };
-let boss = { x: 4, y: 4, hp: 100, state: 'IDLE', timer: 0, color: 'red' };
-let keys = {};
-
-window.onkeydown = (e) => keys[e.code] = true;
-window.onkeyup = (e) => {
-    keys[e.code] = false;
-    if(e.code === 'Space') player.isAttacking = false;
+// --- INPUT HANDLING (Hybrid Mobile/Desktop) ---
+const setupInput = (id, key) => {
+    const el = document.getElementById(id);
+    const start = (e) => { e.preventDefault(); keys[key] = true; };
+    const end = (e) => { e.preventDefault(); keys[key] = false; };
+    
+    el.addEventListener('touchstart', start);
+    el.addEventListener('touchend', end);
+    el.addEventListener('mousedown', start);
+    el.addEventListener('mouseup', end);
 };
 
-// --- 3. Boss Logic (State Machine) ---
-function updateBoss() {
-    boss.timer++;
+setupInput('up', 'ArrowUp');
+setupInput('down', 'ArrowDown');
+setupInput('left', 'ArrowLeft');
+setupInput('right', 'ArrowRight');
+setupInput('attack', 'Space');
+
+window.onkeydown = (e) => keys[e.code] = true;
+window.onkeyup = (e) => keys[e.code] = false;
+
+// --- CORE LOGIC ---
+function update() {
+    // Player Movement (Normalized for diagonal speed)
+    let dx = 0, dy = 0;
+    if (keys['ArrowUp']) dy -= 0.06;
+    if (keys['ArrowDown']) dy += 0.06;
+    if (keys['ArrowLeft']) dx -= 0.06;
+    if (keys['ArrowRight']) dx += 0.06;
     
+    player.x += dx;
+    player.y += dy;
+    player.isAttacking = keys['Space'];
+
+    // Boss State Machine
     let dist = Math.sqrt(Math.pow(player.x - boss.x, 2) + Math.pow(player.y - boss.y, 2));
+    boss.timer++;
 
     if (boss.state === 'IDLE') {
-        boss.color = 'red';
-        if (dist < 3) boss.state = 'PREP'; // Player got too close
+        boss.color = '#ff4444';
+        if (dist < 2.5) { boss.state = 'PREP'; boss.timer = 0; }
     } 
     else if (boss.state === 'PREP') {
-        boss.color = 'orange'; // Telegraphing the move
-        if (boss.timer % 60 === 0) boss.state = 'ATTACK';
+        boss.color = '#ffa500'; // Orange warning
+        if (boss.timer > 40) { boss.state = 'ATTACK'; boss.timer = 0; }
     } 
     else if (boss.state === 'ATTACK') {
-        boss.color = 'white'; // The "Flash"
-        if (dist < 1.5) player.hp -= 5; // Hit logic
-        boss.state = 'IDLE';
+        boss.color = '#ffffff'; // Flash white
+        if (dist < 1.8) player.hp -= 1; 
+        if (boss.timer > 10) { boss.state = 'IDLE'; }
     }
 
-    if (player.isAttacking && dist < 1.5) {
-        boss.hp -= 0.5;
-    }
+    if (player.isAttacking && dist < 1.5) boss.hp -= 0.5;
+
+    // Update UI
+    document.getElementById('pHP').innerText = `PLAYER HP: ${Math.max(0, Math.floor(player.hp))}`;
+    document.getElementById('bHP').innerText = `BOSS HP: ${Math.max(0, Math.floor(boss.hp))}`;
+    document.getElementById('bState').innerText = `BOSS STATUS: ${boss.state}`;
 }
 
-// --- 4. Main Loop ---
-function loop() {
-    // Player Movement
-    if (keys['ArrowUp']) player.y -= 0.05;
-    if (keys['ArrowDown']) player.y += 0.05;
-    if (keys['ArrowLeft']) player.x -= 0.05;
-    if (keys['ArrowRight']) player.x += 0.05;
-    if (keys['Space']) player.isAttacking = true;
-
-    updateBoss();
-
-    // Draw
+// --- RENDERING ---
+function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Floor Grid
-    for(let i=0; i<8; i++) {
-        for(let j=0; j<8; j++) {
-            let pos = toIso(i, j);
-            ctx.strokeStyle = "#444";
-            ctx.strokeRect(pos.screenX - 30, pos.screenY, 60, 30);
+    // 1. Draw Floor
+    for(let x=0; x<10; x++) {
+        for(let y=0; y<10; y++) {
+            let pos = toIso(x, y);
+            ctx.strokeStyle = "#333";
+            ctx.strokeRect(pos.screenX - 32, pos.screenY, 64, 32);
         }
     }
 
-    // Draw Boss
-    let bPos = toIso(boss.x, boss.y);
-    ctx.fillStyle = boss.color;
-    ctx.fillRect(bPos.screenX - 20, bPos.screenY - 60, 40, 60); // Golem body
+    // 2. Depth Sorted Entities (Draw the one with smaller Y first)
+    let entities = [
+        { type: 'player', x: player.x, y: player.y },
+        { type: 'boss', x: boss.x, y: boss.y }
+    ];
+    entities.sort((a, b) => (a.x + a.y) - (b.x + b.y));
 
-    // Draw Player
-    let pPos = toIso(player.x, player.y);
-    ctx.fillStyle = player.isAttacking ? 'yellow' : 'cyan';
-    ctx.fillRect(pPos.screenX - 10, pPos.screenY - 30, 20, 30); // Knight body
-
-    // Draw UI
-    ctx.fillStyle = "white";
-    ctx.fillText(`PLAYER HP: ${Math.floor(player.hp)}`, 20, 30);
-    ctx.fillText(`BOSS HP: ${Math.floor(boss.hp)}`, 20, 50);
-    ctx.fillText(`BOSS STATE: ${boss.state}`, 20, 70);
-
-    requestAnimationFrame(loop);
+    entities.forEach(ent => {
+        let pos = toIso(ent.x, ent.y);
+        if (ent.type === 'player') {
+            ctx.fillStyle = player.isAttacking ? 'yellow' : '#00faff';
+            ctx.fillRect(pos.screenX - 10, pos.screenY - 40, 20, 40);
+        } else {
+            ctx.fillStyle = boss.color;
+            ctx.fillRect(pos.screenX - 25, pos.screenY - 80, 50, 80);
+        }
+    });
 }
 
-loop();
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
 </script>
 </body>
 </html>
