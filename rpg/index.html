@@ -3,42 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kingdom Saga - Dungeon Depth</title>
+    <title>Kingdom Saga - Core RPG</title>
     <style>
-        :root { --gold: #c5a059; --panel: rgba(20, 20, 25, 0.85); }
-        body { margin: 0; background: #050508; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Crimson Text', serif; overflow: hidden; height: 100vh; }
+        :root { --gold: #c5a059; --panel: rgba(15, 15, 20, 0.9); }
+        body { margin: 0; background: #020204; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'serif'; overflow: hidden; height: 100vh; }
         
-        #game-view { position: relative; border: 2px solid #333; border-radius: 12px; box-shadow: 0 0 50px #000; overflow: hidden; }
-        canvas { image-rendering: pixelated; touch-action: none; width: 95vw; max-width: 600px; display: block; background: #0a0a0f; }
+        #game-stage { position: relative; border: 2px solid #222; border-radius: 8px; box-shadow: 0 0 60px #000; overflow: hidden; background: #000; }
+        canvas { image-rendering: pixelated; touch-action: none; width: 95vw; max-width: 600px; display: block; }
 
-        /* RPG HUD Styling */
-        .hud { position: absolute; top: 15px; left: 15px; pointer-events: none; }
-        .hero-card { background: var(--panel); border: 1px solid #444; padding: 10px; border-radius: 6px; display: flex; align-items: center; gap: 12px; box-shadow: 4px 4px 10px rgba(0,0,0,0.5); }
-        .portrait { width: 40px; height: 40px; background: #333; border: 2px solid var(--gold); border-radius: 4px; }
-        .stats { flex-grow: 1; }
-        .name { font-size: 12px; color: var(--gold); text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
-        .hp-bg { width: 120px; height: 8px; background: #111; border: 1px solid #555; position: relative; overflow: hidden; }
-        .hp-fill { height: 100%; background: linear-gradient(90deg, #800, #f22); transition: width 0.3s; }
+        /* Professional RPG Overlay */
+        .hud-top { position: absolute; top: 15px; left: 15px; pointer-events: none; }
+        .hero-info { background: var(--panel); border-left: 4px solid var(--gold); padding: 12px; border-radius: 0 8px 8px 0; display: flex; align-items: center; gap: 15px; }
+        .hp-container { width: 150px; height: 10px; background: #111; border: 1px solid #444; margin-top: 5px; position: relative; }
+        .hp-bar { height: 100%; background: linear-gradient(90deg, #900, #f33); transition: width 0.2s; }
         
-        /* Tactical Controls */
-        .controls { display: flex; width: 100%; max-width: 600px; justify-content: space-between; padding: 25px; box-sizing: border-box; }
-        .joystick { display: grid; grid-template-columns: repeat(3, 60px); gap: 10px; }
-        .j-btn { background: #1a1a20; border: 1px solid #444; color: #666; border-radius: 50%; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px #000; }
-        .j-btn:active { transform: translateY(2px); box-shadow: 0 2px #000; color: var(--gold); border-color: var(--gold); }
-        
-        .skill-btn { width: 85px; height: 85px; border-radius: 50%; background: #400; border: 3px solid var(--gold); color: white; font-weight: bold; font-size: 12px; box-shadow: 0 0 15px rgba(197,160,89,0.3); display: flex; align-items: center; justify-content: center; text-align: center; }
-        .skill-btn:active { transform: scale(0.95); background: #600; }
+        .controls { display: flex; width: 100%; max-width: 600px; justify-content: space-between; padding: 20px; align-items: center; }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 60px); gap: 12px; }
+        .btn { background: #1a1a1a; border: 1px solid #333; color: #777; border-radius: 15px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 0 #000; }
+        .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #000; color: var(--gold); }
+        .atk-btn { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle, #600, #200); border: 4px solid var(--gold); color: white; font-weight: bold; font-size: 14px; box-shadow: 0 8px 0 #200; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="game-view">
-        <div class="hud">
-            <div class="hero-card">
-                <div class="portrait"></div>
-                <div class="stats">
-                    <div class="name">Lv. 12 Knight</div>
-                    <div class="hp-bg"><div id="pBar" class="hp-fill" style="width: 100%;"></div></div>
+    <div id="game-stage">
+        <div class="hud-top">
+            <div class="hero-info">
+                <div>
+                    <div style="font-size: 11px; color: var(--gold); letter-spacing: 1px;">KNIGHT LV.12</div>
+                    <div class="hp-container"><div id="pHP" class="hp-bar" style="width: 100%;"></div></div>
                 </div>
             </div>
         </div>
@@ -46,163 +39,139 @@
     </div>
 
     <div class="controls">
-        <div class="joystick">
-            <div></div><div class="j-btn" id="up">▲</div><div></div>
-            <div class="j-btn" id="left">◀</div><div class="j-btn" id="down">▼</div><div class="j-btn" id="right">▶</div>
+        <div class="d-pad">
+            <div></div><div class="btn" id="up">▲</div><div></div>
+            <div class="btn" id="left">◀</div><div class="btn" id="down">▼</div><div class="btn" id="right">▶</div>
         </div>
-        <div class="skill-btn" id="attack">STRIKE<br>SKILL</div>
+        <div class="atk-btn" id="attack">STRIKE</div>
     </div>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// --- GAME OBJECTS ---
-let player = { x: 4, y: 4, hp: 100, isAttacking: false, facing: 1, anim: 0 };
-let boss = { x: 10, y: 10, hp: 400, state: 'IDLE', timer: 0 };
+// --- GAME STATE ---
+let player = { x: 4, y: 4, hp: 100, isAtk: false, facing: 1, anim: 0 };
+let boss = { x: 9, y: 9, hp: 500, state: 'IDLE', timer: 0 };
+let world = { shake: 0, time: 0 };
+let damageTexts = []; // Floating numbers
 let particles = [];
 let keys = {};
 
-// --- MAP DESIGN (1 = Wall, 0 = Floor) ---
-const map = [
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,1,1,0,0,0,0,1],
-    [1,0,0,0,0,0,0,1,1,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,1,1,0,0,0,0,0,0,0,0,1],
-    [1,0,0,1,1,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-];
+const toIso = (x, y) => ({ x: (x - y) * 32 + (canvas.width / 2), y: (x + y) * 16 + 100 });
 
-// --- ISOMETRIC MATH ---
-const toIso = (x, y) => ({ 
-    x: (x - y) * 32 + (canvas.width / 2), 
-    y: (x + y) * 16 + 80 
-});
-
-// --- INPUT HANDLING ---
-const setupInput = (id, key) => {
+// --- INPUTS ---
+const setup = (id, k) => {
     const el = document.getElementById(id);
-    const start = (e) => { e.preventDefault(); keys[key] = true; };
-    const end = (e) => { e.preventDefault(); keys[key] = false; };
-    el.addEventListener('touchstart', start, {passive: false});
-    el.addEventListener('touchend', end, {passive: false});
-    el.addEventListener('mousedown', start); el.addEventListener('mouseup', end);
+    el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[k] = true; }, {passive: false});
+    el.addEventListener('touchend', (e) => { e.preventDefault(); keys[k] = false; }, {passive: false});
 };
-['up','down','left','right'].forEach(d => setupInput(d, 'Arrow' + d.charAt(0).toUpperCase() + d.slice(1)));
-setupInput('attack', 'Space');
+['up','down','left','right'].forEach(d => setup(d, 'Arrow'+d.charAt(0).toUpperCase()+d.slice(1)));
+setup('attack', 'Space');
 
-// --- DRAWING FUNCTIONS ---
-function drawTile(x, y, isWall) {
-    let pos = toIso(x, y);
-    if (!isWall) {
-        // Floor Tile
-        ctx.fillStyle = (x + y) % 2 === 0 ? "#1a1a20" : "#16161c";
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x+32, pos.y+16); ctx.lineTo(pos.x, pos.y+32); ctx.lineTo(pos.x-32, pos.y+16);
-        ctx.fill();
-        ctx.strokeStyle = "#000"; ctx.lineWidth = 0.5; ctx.stroke();
-    } else {
-        // Pillar / Wall
-        ctx.fillStyle = "#2d2d35"; // Top
-        ctx.beginPath(); ctx.moveTo(pos.x, pos.y-40); ctx.lineTo(pos.x+32, pos.y-24); ctx.lineTo(pos.x, pos.y-8); ctx.lineTo(pos.x-32, pos.y-24); ctx.fill();
-        ctx.fillStyle = "#1a1a20"; // Left Side
-        ctx.beginPath(); ctx.moveTo(pos.x-32, pos.y-24); ctx.lineTo(pos.x, pos.y-8); ctx.lineTo(pos.x, pos.y+24); ctx.lineTo(pos.x-32, pos.y+8); ctx.fill();
-        ctx.fillStyle = "#24242c"; // Right Side
-        ctx.beginPath(); ctx.moveTo(pos.x, pos.y-8); ctx.lineTo(pos.x+32, pos.y-24); ctx.lineTo(pos.x+32, pos.y+8); ctx.lineTo(pos.x, pos.y+24); ctx.fill();
-    }
+function addDamage(x, y, val, color="#fff") {
+    damageTexts.push({ x, y, val, life: 1, vy: -2 });
 }
 
-function drawHero(pos) {
+// --- RENDERING ---
+function drawKnight(pos) {
     ctx.save();
-    ctx.translate(pos.x, pos.y + 16);
+    ctx.translate(pos.x, pos.y);
     ctx.scale(player.facing, 1);
-    
-    // Shadow
-    ctx.fillStyle = "rgba(0,0,0,0.4)";
-    ctx.beginPath(); ctx.ellipse(0, 0, 14, 7, 0, 0, Math.PI*2); ctx.fill();
-
-    // Knight Character Design
-    ctx.fillStyle = "#800"; // Cape
-    ctx.fillRect(-15, -45, 10, 30);
-    ctx.fillStyle = "#ddd"; // Plate Armor
-    ctx.fillRect(-10, -50, 20, 40);
-    ctx.fillStyle = "#c5a059"; // Trim
-    ctx.fillRect(-10, -50, 20, 5);
-    
-    if (player.isAttacking) {
-        ctx.shadowBlur = 15; ctx.shadowColor = "#0ff";
-        ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(5, -35); ctx.lineTo(35, -55); ctx.stroke();
-        ctx.shadowBlur = 0;
+    // Body & Cape
+    ctx.fillStyle = "#111"; ctx.beginPath(); ctx.ellipse(0, 5, 12, 6, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "#800"; ctx.fillRect(-14, -35 + Math.sin(player.anim)*2, 10, 25);
+    ctx.fillStyle = "#aaa"; ctx.fillRect(-10, -40 + Math.sin(player.anim)*2, 20, 35);
+    // Sword Glow
+    if(player.isAtk) {
+        ctx.shadowBlur = 20; ctx.shadowColor = "cyan";
+        ctx.strokeStyle = "white"; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(5, -20); ctx.lineTo(35, -45); ctx.stroke();
     }
     ctx.restore();
-}
-
-function drawBoss(pos) {
-    ctx.save();
-    ctx.translate(pos.x, pos.y + 16);
-    ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.beginPath(); ctx.ellipse(0, 0, 35, 15, 0, 0, Math.PI*2); ctx.fill();
-    
-    // Boss Design (Golem)
-    ctx.fillStyle = boss.state === 'ATTACK' ? "#fff" : "#445";
-    ctx.fillRect(-35, -100, 70, 100);
-    ctx.fillStyle = "#c5a059"; // Decorative Gold
-    ctx.fillRect(-35, -100, 70, 8);
-    ctx.fillStyle = "#f00"; // Eyes
-    ctx.fillRect(-18, -85, 10, 10); ctx.fillRect(8, -85, 10, 10);
-    ctx.restore();
-}
-
-// --- UPDATE & LOOP ---
-function update() {
-    let nextX = player.x, nextY = player.y;
-    if (keys['ArrowUp']) { nextY -= 0.08; player.anim += 0.2; }
-    if (keys['ArrowDown']) { nextY += 0.08; player.anim += 0.2; }
-    if (keys['ArrowLeft']) { nextX -= 0.08; player.facing = -1; player.anim += 0.2; }
-    if (keys['ArrowRight']) { nextX += 0.08; player.facing = 1; player.anim += 0.2; }
-
-    // Collision Detection (Simple)
-    let gridX = Math.floor(nextX), gridY = Math.floor(nextY);
-    if (map[gridY] && map[gridY][gridX] === 0) {
-        player.x = nextX; player.y = nextY;
-    }
-
-    player.isAttacking = keys['Space'];
-    
-    let dist = Math.sqrt(Math.pow(player.x-boss.x, 2) + Math.pow(player.y-boss.y, 2));
-    boss.timer++;
-
-    if (boss.state === 'IDLE' && dist < 3.5) { boss.state = 'ATTACK'; boss.timer = 0; }
-    if (boss.state === 'ATTACK') {
-        if (dist < 2.2) player.hp -= 0.5;
-        if (boss.timer > 20) boss.state = 'IDLE';
-    }
-
-    if (player.isAttacking && dist < 2.2) boss.hp -= 1.5;
-
-    document.getElementById('pBar').style.width = Math.max(0, player.hp) + "%";
 }
 
 function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#050508";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.save();
+    if(world.shake > 0) {
+        ctx.translate((Math.random()-0.5)*world.shake, (Math.random()-0.5)*world.shake);
+        world.shake *= 0.9;
+    }
 
-    // Render Logic: Map and Entities based on Y position (Depth)
-    for(let y=0; y < map.length; y++) {
-        for(let x=0; x < map[y].length; x++) {
-            drawTile(x, y, map[y][x]);
+    // Floor & Torches
+    for(let x=0; x<15; x++) {
+        for(let y=0; y<15; y++) {
+            let pos = toIso(x, y);
+            ctx.fillStyle = (x+y)%2==0 ? "#141418" : "#0d0d0f";
+            ctx.beginPath(); ctx.moveTo(pos.x, pos.y); ctx.lineTo(pos.x+32, pos.y+16); ctx.lineTo(pos.x, pos.y+32); ctx.lineTo(pos.x-32, pos.y+16); ctx.fill();
             
-            // Draw Player/Boss when their Y position matches current row
-            if (Math.floor(player.y) === y && Math.floor(player.x) === x) {
-                drawHero(toIso(player.x, player.y));
-            }
-            if (Math.floor(boss.y) === y && Math.floor(boss.x) === x) {
-                drawBoss(toIso(boss.x, boss.y));
+            // Random Decorative Rocks
+            if((x*y)%17 === 3) {
+                ctx.fillStyle = "#222"; ctx.fillRect(pos.x-4, pos.y+8, 8, 4);
             }
         }
     }
+
+    // Entities
+    let pPos = toIso(player.x, player.y);
+    let bPos = toIso(boss.x, boss.y);
+    if(player.y + player.x < boss.y + boss.x) { drawKnight(pPos); drawBoss(bPos); }
+    else { drawBoss(bPos); drawKnight(pPos); }
+
+    // Floating Damage
+    damageTexts.forEach((t, i) => {
+        ctx.fillStyle = `rgba(255,255,255,${t.life})`;
+        ctx.font = "bold 18px Arial";
+        ctx.fillText(t.val, t.x, t.y);
+        t.y += t.vy; t.life -= 0.02;
+        if(t.life <= 0) damageTexts.splice(i, 1);
+    });
+
+    // --- DARKNESS & LIGHTING (THE "PRO" SECRET) ---
+    ctx.globalCompositeOperation = "multiply";
+    ctx.fillStyle = "#111"; // Ambient Darkness
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.globalCompositeOperation = "screen";
+    // Light around player
+    let grad = ctx.createRadialGradient(pPos.x, pPos.y, 0, pPos.x, pPos.y, 150);
+    grad.addColorStop(0, "rgba(200, 150, 50, 0.4)");
+    grad.addColorStop(1, "transparent");
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.restore();
+    ctx.globalCompositeOperation = "source-over";
+}
+
+function drawBoss(pos) {
+    ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.beginPath(); ctx.ellipse(pos.x, pos.y+10, 30, 15, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = boss.state === 'HIT' ? "#fff" : "#3a2d26";
+    ctx.fillRect(pos.x-30, pos.y-80, 60, 85);
+    ctx.fillStyle = "#f33"; ctx.fillRect(pos.x-15, -70+pos.y, 8, 8); ctx.fillRect(pos.x+7, -70+pos.y, 8, 8);
+}
+
+function update() {
+    let moving = false;
+    if(keys['ArrowUp']) { player.y -= 0.08; moving = true; }
+    if(keys['ArrowDown']) { player.y += 0.08; moving = true; }
+    if(keys['ArrowLeft']) { player.x -= 0.08; player.facing = -1; moving = true; }
+    if(keys['ArrowRight']) { player.x += 0.08; player.facing = 1; moving = true; }
+    if(moving) player.anim += 0.2;
+
+    player.isAtk = keys['Space'];
+    let d = Math.sqrt((player.x-boss.x)**2 + (player.y-boss.y)**2);
+    
+    if(player.isAtk && d < 2.5 && boss.timer % 10 === 0) {
+        boss.hp -= 25; boss.state = 'HIT';
+        world.shake = 8;
+        addDamage(toIso(boss.x, boss.y).x, toIso(boss.x, boss.y).y - 90, "25");
+    } else if (boss.timer % 10 === 5) { boss.state = 'IDLE'; }
+
+    boss.timer++;
+    document.getElementById('pHP').style.width = player.hp + "%";
 }
 
 function loop() { update(); render(); requestAnimationFrame(loop); }
