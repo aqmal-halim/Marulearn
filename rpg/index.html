@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pixel RPG - Phase 2</title>
+    <title>Pixel RPG - Phase 2 Fixed</title>
     <style>
-        body { margin: 0; background: #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Courier New', Courier, monospace; overflow: hidden; height: 100vh; }
-        canvas { border: 4px solid #333; background: #222; image-rendering: pixelated; touch-action: none; width: 95vw; max-width: 600px; }
-        .ui-overlay { position: absolute; top: 10px; left: 10px; pointer-events: none; text-shadow: 2px 2px black; font-size: 14px; z-index: 10; }
-        .controls-container { display: flex; width: 100%; max-width: 600px; justify-content: space-between; padding: 15px; box-sizing: border-box; }
-        .d-pad { display: grid; grid-template-columns: repeat(3, 55px); gap: 5px; }
-        .btn { background: #333; color: white; border: 2px solid #555; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; user-select: none; }
-        .btn:active { background: #666; }
-        .attack-btn { width: 90px; height: 90px; border-radius: 50%; background: #a00; border: 4px solid #f00; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        body { margin: 0; background: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: 'Courier New', Courier, monospace; overflow: hidden; height: 100vh; }
+        canvas { border: 2px solid #444; background: #1a1a1a; image-rendering: pixelated; touch-action: none; width: 95vw; max-width: 600px; border-radius: 8px; }
+        .ui-overlay { position: absolute; top: 20px; left: 20px; pointer-events: none; text-shadow: 2px 2px black; font-size: 16px; z-index: 10; line-height: 1.5; }
+        .controls-container { display: flex; width: 100%; max-width: 600px; justify-content: space-between; padding: 20px; box-sizing: border-box; }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 60px); gap: 8px; }
+        .btn { background: #333; color: white; border: 1px solid #666; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; user-select: none; box-shadow: 0 4px 0 #111; }
+        .btn:active { background: #555; transform: translateY(2px); box-shadow: 0 2px 0 #111; }
+        .attack-btn { width: 100px; height: 100px; border-radius: 50%; background: #900; border: 4px solid #f22; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 0 #500; font-size: 18px; }
+        .attack-btn:active { background: #b00; transform: translateY(4px); box-shadow: 0 2px 0 #500; }
     </style>
 </head>
 <body>
 
     <div class="ui-overlay">
-        <div id="pHP">HP: 100</div>
-        <div id="bHP">BOSS: 100</div>
+        <div id="pHP" style="color: #0ff;">HP: 100</div>
+        <div id="bHP" style="color: #f55;">BOSS: 100</div>
         <div id="bState">STATUS: IDLE</div>
     </div>
 
@@ -31,82 +32,91 @@
             <div class="btn" id="left">◀</div><div></div><div class="btn" id="right">▶</div>
             <div></div><div class="btn" id="down">▼</div><div></div>
         </div>
-        <div class="attack-btn" id="attack">ATTACK</div>
+        <div class="attack-btn" id="attack">HIT</div>
     </div>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// --- ASSETS ---
+// --- EMBEDDED ASSETS (Base64) ---
 const images = {};
 const assets = {
-    hero: 'https://i.imgur.com/39p6M7X.png', // Small Knight Sprite
-    boss: 'https://i.imgur.com/O6S3TqO.png', // Golem/Boss Sprite
-    tile: 'https://i.imgur.com/W6A3A3G.png'  // Isometric Floor Tile
+    // A simple 32x32 green isometric tile
+    tile: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAP0lEQVR42u3BAQ0AAADCoPdPbQ8HFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8G8DAAAGp9jEAAAAASUVORK5CYII=',
+    // Simple Hero & Boss shapes to avoid link broken bugs
+    hero: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMElEQVRYR2N8zcDwn4GKgHHUAaMDRgeMDhgdMDpgaAAYHzA0AIwPGBoAxgeMDhgdQD8AALALZALWvY9VAAAAAElFTkSuQmCC',
+    boss: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAANElEQVRYR+3BAQ0AAADCoPdPbQ43FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOA3A7EAAAF7S8m4AAAAAElFTkSuQmCC'
 };
 
 let loadedCount = 0;
+const totalAssets = Object.keys(assets).length;
 for (let key in assets) {
     images[key] = new Image();
     images[key].src = assets[key];
-    images[key].onload = () => { loadedCount++; if(loadedCount === 3) gameLoop(); };
+    images[key].onload = () => {
+        loadedCount++;
+        if(loadedCount === totalAssets) gameLoop();
+    };
 }
 
 // --- GAME STATE ---
-let player = { x: 3, y: 3, hp: 100, isAttacking: false, animFrame: 0, facing: 'right' };
-let boss = { x: 6, y: 6, hp: 100, state: 'IDLE', timer: 0, animFrame: 0 };
+let player = { x: 4, y: 4, hp: 100, isAttacking: false, facing: 'right' };
+let boss = { x: 7, y: 7, hp: 100, state: 'IDLE', timer: 0 };
 let keys = {};
 
 // --- ISOMETRIC MATH ---
 function toIso(x, y) {
     return {
         screenX: (x - y) * 32 + (canvas.width / 2),
-        screenY: (x + y) * 16 + 120
+        screenY: (x + y) * 16 + 80
     };
 }
 
-// --- INPUTS ---
+// --- MOBILE/DESKTOP INPUTS ---
 const setupInput = (id, key) => {
     const el = document.getElementById(id);
     const start = (e) => { e.preventDefault(); keys[key] = true; };
     const end = (e) => { e.preventDefault(); keys[key] = false; };
-    el.addEventListener('touchstart', start); el.addEventListener('touchend', end);
-    el.addEventListener('mousedown', start); el.addEventListener('mouseup', end);
+    el.addEventListener('touchstart', start, {passive: false});
+    el.addEventListener('touchend', end, {passive: false});
+    el.addEventListener('mousedown', start);
+    el.addEventListener('mouseup', end);
 };
+
 setupInput('up', 'ArrowUp'); setupInput('down', 'ArrowDown');
 setupInput('left', 'ArrowLeft'); setupInput('right', 'ArrowRight');
 setupInput('attack', 'Space');
 
-// --- LOGIC ---
+// --- GAME LOGIC ---
 function update() {
-    let moving = false;
-    if (keys['ArrowUp']) { player.y -= 0.05; moving = true; }
-    if (keys['ArrowDown']) { player.y += 0.05; moving = true; }
-    if (keys['ArrowLeft']) { player.x -= 0.05; moving = true; player.facing = 'left'; }
-    if (keys['ArrowRight']) { player.x += 0.05; moving = true; player.facing = 'right'; }
+    if (keys['ArrowUp']) player.y -= 0.07;
+    if (keys['ArrowDown']) player.y += 0.07;
+    if (keys['ArrowLeft']) { player.x -= 0.07; player.facing = 'left'; }
+    if (keys['ArrowRight']) { player.x += 0.07; player.facing = 'right'; }
     
     player.isAttacking = keys['Space'];
-    if (moving) player.animFrame = (player.animFrame + 0.15) % 4; // Animate walking
 
-    // Boss AI
-    let dist = Math.sqrt(Math.pow(player.x - boss.x, 2) + Math.pow(player.y - boss.y, 2));
+    let dx = player.x - boss.x;
+    let dy = player.y - boss.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    
     boss.timer++;
-    boss.animFrame = (boss.animFrame + 0.05) % 2; // Slow breathing
-
     if (boss.state === 'IDLE') {
-        if (dist < 2.5) { boss.state = 'PREP'; boss.timer = 0; }
+        if (dist < 3) { boss.state = 'PREP'; boss.timer = 0; }
     } else if (boss.state === 'PREP') {
-        if (boss.timer > 50) { boss.state = 'ATTACK'; boss.timer = 0; }
+        if (boss.timer > 45) { boss.state = 'ATTACK'; boss.timer = 0; }
     } else if (boss.state === 'ATTACK') {
-        if (dist < 1.8) player.hp -= 0.5;
+        if (dist < 1.8) player.hp -= 0.8;
         if (boss.timer > 15) boss.state = 'IDLE';
     }
 
-    if (player.isAttacking && dist < 1.5) boss.hp -= 0.3;
+    if (player.isAttacking && dist < 1.5) {
+        boss.hp -= 0.4;
+    }
 
-    document.getElementById('pHP').innerText = `HP: ${Math.floor(player.hp)}`;
-    document.getElementById('bHP').innerText = `BOSS: ${Math.floor(boss.hp)}`;
+    document.getElementById('pHP').innerText = `HP: ${Math.max(0, Math.floor(player.hp))}`;
+    document.getElementById('bHP').innerText = `BOSS: ${Math.max(0, Math.floor(boss.hp))}`;
     document.getElementById('bState').innerText = `STATUS: ${boss.state}`;
 }
 
@@ -114,11 +124,13 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Draw Floor Tiles
-    for(let x=0; x<12; x++) {
-        for(let y=0; y<12; y++) {
+    // 1. Draw Grid
+    for(let x=0; x<15; x++) {
+        for(let y=0; y<15; y++) {
             let pos = toIso(x, y);
             ctx.drawImage(images.tile, pos.screenX - 32, pos.screenY);
+            ctx.strokeStyle = "rgba(255,255,255,0.05)";
+            ctx.strokeRect(pos.screenX - 32, pos.screenY, 64, 32);
         }
     }
 
@@ -131,19 +143,16 @@ function draw() {
     ents.forEach(e => {
         let pos = toIso(e.x, e.y);
         if (e.type === 'p') {
-            // Hero Sprite (Placeholder logic: flipping context for direction)
             ctx.save();
-            if(player.facing === 'left') { ctx.translate(pos.screenX, 0); ctx.scale(-1, 1); ctx.translate(-pos.screenX, 0); }
-            // Draw Player (Tinting yellow if attacking)
-            if(player.isAttacking) ctx.filter = "brightness(1.5) sepia(1) hue-rotate(10deg)";
-            ctx.drawImage(images.hero, pos.screenX - 16, pos.screenY - 32, 32, 32);
+            if(player.facing === 'left') { 
+                ctx.translate(pos.screenX, 0); ctx.scale(-1, 1); ctx.translate(-pos.screenX, 0); 
+            }
+            ctx.fillStyle = player.isAttacking ? '#ff0' : '#0ff';
+            ctx.fillRect(pos.screenX - 12, pos.screenY - 40, 24, 40); // Placeholder Knight
             ctx.restore();
         } else {
-            // Boss Sprite
-            if(boss.state === 'PREP') ctx.filter = "drop-shadow(0 0 5px orange)";
-            if(boss.state === 'ATTACK') ctx.filter = "brightness(2)";
-            ctx.drawImage(images.boss, pos.screenX - 48, pos.screenY - 80, 96, 96);
-            ctx.filter = "none";
+            ctx.fillStyle = boss.state === 'ATTACK' ? '#fff' : (boss.state === 'PREP' ? '#fa0' : '#f44');
+            ctx.fillRect(pos.screenX - 30, pos.screenY - 90, 60, 90); // Placeholder Boss
         }
     });
 }
