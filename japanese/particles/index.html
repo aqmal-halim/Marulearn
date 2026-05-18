@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧩 Particles Practice</title>
+<title>📚 Japanese Grammar Hub</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -282,19 +282,83 @@
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 
-/* END */
-.end-inner { max-width: 500px; margin: 0 auto; text-align: center; padding: 20px 0; }
-.trophy    { font-size: 5em; margin: 20px 0; }
-.end-title { font-size: 2em; font-weight: 900; color: white; margin-bottom: 8px; text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-.end-score { font-size: 1.8em; font-weight: 900; color: white; margin: 12px 0; }
-.end-msg   { color: rgba(255,255,255,0.85); font-size: 1em; margin-bottom: 22px; }
-.end-btns  { display: grid; gap: 10px; }
-.end-btn {
-  background: white; color: #6c3483; border: none; border-radius: 15px; padding: 16px;
-  font-family: inherit; font-weight: 800; font-size: 1em; cursor: pointer;
-  -webkit-appearance: none; -webkit-tap-highlight-color: transparent;
+/* ══ GRAMMAR MODULE STYLES ══ */
+/* Conjugation table */
+.conj-table { width:100%; border-collapse:collapse; margin-bottom:12px; border-radius:10px; overflow:hidden; }
+.conj-table th { background:#6c3483; color:white; font-size:0.72em; font-weight:800; padding:7px 8px; text-align:left; }
+.conj-table td { font-size:0.88em; padding:8px; border-bottom:1px solid #f0e6f9; font-weight:700; }
+.conj-table tr:last-child td { border-bottom:none; }
+.conj-table tr:nth-child(even) td { background:#faf5ff; }
+.conj-jp   { color:#2d3436; font-size:1em; }
+.conj-rom  { color:#9b59b6; font-size:0.75em; display:block; }
+.conj-en   { color:#888; font-size:0.78em; }
+.conj-tense-pill {
+  display:inline-block; padding:2px 8px; border-radius:8px;
+  font-size:0.65em; font-weight:800; margin-left:4px; vertical-align:middle;
 }
-.end-btn.secondary { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); }
+.pill-present  { background:#e8f4ff; color:#0984e3; }
+.pill-past     { background:#fff3e0; color:#e67e22; }
+.pill-negative { background:#ffeaea; color:#e63946; }
+.pill-te       { background:#e8fff5; color:#00b894; }
+.pill-nagara   { background:#f5eef8; color:#8e44ad; }
+.pill-temo     { background:#fff9e6; color:#f39c12; }
+
+/* Grammar hero (replaces particle-hero for grammar modules) */
+.grammar-hero {
+  background:linear-gradient(135deg, #1a252f, #2d3e50);
+  border-radius:18px; padding:20px 15px; text-align:center; margin-bottom:16px;
+}
+.grammar-pattern { font-size:1.6em; font-weight:900; color:#f1c40f; line-height:1.3; margin-bottom:6px; word-break:keep-all; }
+.grammar-romaji  { font-size:0.85em; color:#aaa; font-weight:700; margin-bottom:4px; }
+.grammar-name    { font-size:1.2em; font-weight:900; color:white; }
+.grammar-level-badge { display:inline-block; padding:3px 10px; border-radius:10px; font-size:0.68em; font-weight:800; margin-top:6px; }
+.glvl-n5 { background:#2ecc71; color:white; }
+.glvl-n4 { background:#3498db; color:white; }
+.glvl-n3 { background:#e67e22; color:white; }
+
+/* Pattern box (replaces function-box for grammar) */
+.pattern-box {
+  background:#1a252f; border-radius:14px; padding:14px 16px; margin-bottom:12px;
+  font-family:'Courier New',monospace;
+}
+.pattern-box .pb-title { font-size:0.72em; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#aaa; margin-bottom:8px; font-family:'Comic Sans MS','Trebuchet MS',sans-serif; }
+.pattern-formula { font-size:1em; color:#f1c40f; font-weight:700; line-height:1.8; }
+.pattern-formula .var { color:#74b9ff; }
+.pattern-formula .particle-part { color:#fd79a8; }
+.pattern-formula .verb-part { color:#55efc4; }
+
+/* Grammar screen (reuses learn-screen structure) */
+.grammar-screen-inner .learn-card { }
+
+/* Quiz instruction text for grammar */
+.q-instruction-grammar { font-size:0.85em; font-weight:700; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+
+/* Tense badge in quiz */
+.tense-badge { background:#f5eef8; color:#6c3483; padding:3px 10px; border-radius:20px; font-size:0.7em; font-weight:700; }
+
+/* Grammar card colors */
+.cat-tense    { background:#EBF9FF; border-bottom-color:#74b9ff; }
+.icon-tense   { background:#D0ECFF; }
+.cat-nagara   { background:#F5EEFF; border-bottom-color:#a29bfe; }
+.icon-nagara  { background:#E0D4FF; }
+.cat-teform   { background:#EDFFF6; border-bottom-color:#55efc4; }
+.icon-teform  { background:#C8FFE8; }
+.cat-tai      { background:#FFF5EB; border-bottom-color:#fab1a0; }
+.icon-tai     { background:#FFE0D4; }
+.cat-dekiru   { background:#FFFBEB; border-bottom-color:#ffeaa7; }
+.icon-dekiru  { background:#FFF4C4; }
+.cat-teiru    { background:#F0FFF8; border-bottom-color:#00cec9; }
+.icon-teiru   { background:#C8FFF5; }
+.cat-teから   { background:#FFF0F5; border-bottom-color:#fd79a8; }
+.icon-teから  { background:#FFD4E8; }
+
+/* Back to hub link style */
+.hub-section-header {
+  background:rgba(255,255,255,0.12); border-radius:14px; padding:10px 14px;
+  margin-bottom:10px; display:flex; align-items:center; gap:10px;
+}
+.hub-section-header span { font-size:1.1em; font-weight:900; color:white; }
+.hub-section-header small { font-size:0.78em; color:rgba(255,255,255,0.7); display:block; }
 </style>
 </head>
 <body>
@@ -303,19 +367,24 @@
 <!-- ══ MENU ══ -->
 <div id="menu-screen" class="screen active">
   <div class="menu-header">
-    <div style="font-size:2.5em;margin-bottom:5px;">🧩</div>
-    <div class="big-title">Particles Practice</div>
-    <div class="subtitle">は・が・を・に・で・と・も — the glue of Japanese!</div>
+    <div style="font-size:2.5em;margin-bottom:5px;">📚</div>
+    <div class="big-title">Japanese Grammar Hub</div>
+    <div class="subtitle">Particles · Tenses · Patterns — all in one place!</div>
   </div>
 
   <div class="tip-box">
-    🧩 <strong>What are particles?</strong> Tiny words placed AFTER nouns to show their role in a sentence. They have no direct English equivalent — master these and Japanese sentences click into place!
+    🎯 <strong>How to use:</strong> Pick a topic to <strong>Learn</strong> it, then test yourself with <strong>Quiz</strong> or <strong>Word Builder</strong>. Start with Particles if you're new — then tackle Tenses!
   </div>
 
+  <!-- PARTICLES SECTION -->
+  <div class="hub-section-header">
+    <span>🧩 Particles</span>
+    <small>は・が・を・に・で・と・も</small>
+  </div>
   <div class="section-lbl">📖 Choose a Particle to Study</div>
   <div class="menu-grid" id="particle-menu"></div>
 
-  <div class="section-lbl" style="margin-top:20px;">🎯 Quiz Modes</div>
+  <div class="section-lbl" style="margin-top:16px;">🎯 Particle Quiz Modes</div>
   <div class="menu-grid">
     <button type="button" class="menu-card" style="border-color:#6c3483;" id="quiz-all-btn">
       <div class="menu-icon">🎲</div>
@@ -336,20 +405,49 @@
     <button type="button" class="menu-card" style="border-color:#e67e22;" id="builder-all-btn">
       <div class="menu-icon">🏗️</div>
       <div class="menu-info">
-        <div class="menu-name">🏗️ Word Builder</div>
+        <div class="menu-name">Word Builder</div>
         <div class="menu-desc">Tap words in order to build a sentence!</div>
-        <div class="menu-count">All 7 particles · 12 sentences</div>
+        <div class="menu-count">All 7 particles · 14 sentences</div>
       </div>
     </button>
     <button type="button" class="menu-card" style="border-color:#8e44ad;" id="showdown-btn">
       <div class="menu-icon">⚔️</div>
       <div class="menu-info">
-        <div class="menu-name">⚔️ Particle Showdown</div>
-        <div class="menu-desc">Side-by-side comparison: は vs が, に vs で</div>
+        <div class="menu-name">Particle Showdown</div>
+        <div class="menu-desc">Side-by-side: は vs が, に vs で, と vs も</div>
         <div class="menu-count">Learn the difference!</div>
       </div>
     </button>
   </div>
+
+  <!-- GRAMMAR SECTION -->
+  <div class="hub-section-header" style="margin-top:22px;">
+    <span>📐 Grammar Patterns</span>
+    <small>Tenses · ながら · てから · たい · できる · ている</small>
+  </div>
+  <div class="section-lbl">📖 Choose a Grammar Topic</div>
+  <div class="menu-grid" id="grammar-menu"></div>
+
+  <div class="section-lbl" style="margin-top:16px;">🎯 Grammar Quiz Modes</div>
+  <div class="menu-grid">
+    <button type="button" class="menu-card" style="border-color:#0984e3;" id="grammar-quiz-all-btn">
+      <div class="menu-icon">🎲</div>
+      <div class="menu-info">
+        <div class="menu-name">Mixed Grammar Quiz</div>
+        <div class="menu-desc">All patterns — fill in the correct verb form</div>
+        <div class="menu-count">20 questions</div>
+      </div>
+    </button>
+    <button type="button" class="menu-card" style="border-color:#00b894;" id="grammar-builder-btn">
+      <div class="menu-icon">🏗️</div>
+      <div class="menu-info">
+        <div class="menu-name">Grammar Word Builder</div>
+        <div class="menu-desc">Put grammar patterns in the right order!</div>
+        <div class="menu-count">16 sentences</div>
+      </div>
+    </button>
+  </div>
+
   <a href="../" class="home-link">← Back to Japanese Hub</a>
 </div>
 
@@ -463,6 +561,74 @@
   <a href="#" class="home-link" id="showdown-back-link">← Back to menu</a>
 </div>
 
+<!-- ══ GRAMMAR LEARN ══ -->
+<div id="grammar-learn-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-grammar-learn">← Back</button>
+    <h2 id="grammar-learn-title">Tenses</h2>
+  </div>
+  <div class="learn-card">
+    <div class="grammar-hero" id="grammar-hero">
+      <div class="grammar-pattern" id="grammar-pattern"></div>
+      <div class="grammar-romaji"  id="grammar-romaji"></div>
+      <div class="grammar-name"    id="grammar-name"></div>
+      <span class="grammar-level-badge" id="grammar-level-badge"></span>
+    </div>
+    <div class="function-box" id="grammar-function-box">
+      <div class="fb-title">📌 How it works</div>
+      <div id="grammar-functions"></div>
+    </div>
+    <div id="grammar-conj-wrap" style="display:none;">
+      <div style="font-size:0.72em;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#6c3483;margin-bottom:8px;">🔄 Conjugation Table</div>
+      <div id="grammar-conj-table"></div>
+    </div>
+    <div class="example-sentences">
+      <div class="ex-sent-title">💬 Example Sentences</div>
+      <div class="ex-tabs" id="grammar-ex-tabs"></div>
+      <div id="grammar-examples"></div>
+    </div>
+    <div class="particle-tip"  id="grammar-tip"></div>
+    <div class="watch-out"     id="grammar-watchout"    style="display:none;"></div>
+    <div class="memory-trick"  id="grammar-memorytrick" style="display:none;"></div>
+  </div>
+  <div style="text-align:center;margin-bottom:12px;">
+    <button type="button" class="speak-btn" id="grammar-speak-btn">🔊 Hear examples</button>
+  </div>
+  <div class="learn-nav">
+    <button type="button" class="nav-btn" id="grammar-learn-prev">← Prev</button>
+    <span class="learn-counter" id="grammar-learn-counter">1 / 7</span>
+    <button type="button" class="nav-btn" id="grammar-learn-next">Next →</button>
+  </div>
+  <button type="button" class="start-quiz-btn"    id="start-grammar-quiz-from-learn">🎯 Quiz This Pattern!</button>
+  <button type="button" class="start-builder-btn" id="start-grammar-builder-from-learn">🏗️ Word Builder!</button>
+  <a href="#" class="home-link" id="grammar-learn-back-link">← Back to Grammar Hub</a>
+</div>
+
+<!-- ══ GRAMMAR QUIZ ══ -->
+<div id="grammar-quiz-screen" class="screen">
+  <div class="top-bar">
+    <button type="button" class="back-btn" id="back-to-menu-grammar-quiz">← Back</button>
+    <h2 id="grammar-quiz-title">Grammar Quiz</h2>
+  </div>
+  <div class="game-header">
+    <div class="progress-wrap"><div class="progress-fill" id="grammar-progress"></div></div>
+    <div class="q-count" id="grammar-q-count">1/10</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill score">⭐ <span id="grammar-score">0</span></div>
+    <div class="stat-pill streak">🔥 <span id="grammar-streak">0</span></div>
+  </div>
+  <div class="question-card">
+    <div class="q-type-badge" id="grammar-q-type-badge">Grammar</div>
+    <div class="q-instruction">Choose the correct form</div>
+    <div class="sentence-display" id="grammar-sentence-display"></div>
+    <div class="sentence-en"      id="grammar-sentence-en"></div>
+  </div>
+  <div class="particle-options" id="grammar-options"></div>
+  <div class="feedback" id="grammar-feedback"></div>
+  <button type="button" class="hint-btn" id="grammar-hint-btn" style="display:none;">💡 Need a hint?</button>
+</div>
+
 <!-- ══ END ══ -->
 <div id="end-screen" class="screen">
   <div class="end-inner">
@@ -472,7 +638,7 @@
     <div class="end-msg"   id="end-msg"></div>
     <div class="end-btns">
       <button type="button" class="end-btn"           id="try-again-btn">🔄 Try Again</button>
-      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 All Particles</button>
+      <button type="button" class="end-btn secondary" id="back-to-menu-end">📋 Back to Hub</button>
     </div>
     <a href="../" class="home-link">← Back to Japanese Hub</a>
   </div>
@@ -1316,8 +1482,815 @@ function renderShowdown() {
 }
 
 // ══════════════════════════════════════════════════════════
-// EVENT LISTENERS
+// GRAMMAR MODULE DATA
 // ══════════════════════════════════════════════════════════
+
+const GRAMMAR_MODULES = [
+  // ── 1. PRESENT / FUTURE TENSE ─────────────────────────
+  {
+    id:'present', icon:'⏩', color:'#0984e3', cardClass:'cat-tense', iconClass:'icon-tense',
+    name:'Present & Future Tense', shortName:'〜ます',
+    desc:'Polite present / future form of verbs',
+    pattern:'[Verb stem] + ます', romaji:'masu', level:'N5',
+    functions:[
+      {badge:'Present',  desc:'Actions that happen regularly or right now. "I eat / I read."'},
+      {badge:'Future',   desc:'Actions that will happen. Context tells you which! "I will eat tomorrow."'},
+      {badge:'Polite',   desc:'This is the standard polite form — use it with teachers, strangers, seniors.'},
+    ],
+    conjugation:[
+      {form:'〜ます',         rom:'〜masu',       en:'Present / Future (positive)',  pill:'pill-present'},
+      {form:'〜ません',       rom:'〜masen',      en:'Present / Future (negative)',   pill:'pill-negative'},
+      {form:'〜ました',       rom:'〜mashita',    en:'Past (positive)',               pill:'pill-past'},
+      {form:'〜ませんでした', rom:'〜masen deshita',en:'Past (negative)',             pill:'pill-negative'},
+      {form:'〜ますか？',     rom:'〜masu ka?',   en:'Question form',                pill:'pill-present'},
+    ],
+    verbExamples:[
+      {dict:'たべる', stem:'たべ', meaning:'eat'},
+      {dict:'のむ',   stem:'のみ', meaning:'drink'},
+      {dict:'みる',   stem:'み',   meaning:'see/watch'},
+      {dict:'いく',   stem:'いき', meaning:'go'},
+      {dict:'くる',   stem:'き',   meaning:'come (irregular)'},
+      {dict:'する',   stem:'し',   meaning:'do (irregular)'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['まいにちごはんを','たべます','。'],       p:[1], en:'I eat a meal every day.',          speak:'まいにちごはんをたべます。'},
+        {jp:['あしたがっこうに','いきます','。'],       p:[1], en:'I will go to school tomorrow.',    speak:'あしたがっこうにいきます。'},
+        {jp:['テレビを','みます','。'],                 p:[1], en:'I watch TV.',                      speak:'テレビをみます。'},
+        {jp:['こうちゃを','のみます','。'],             p:[1], en:'I drink black tea.',               speak:'こうちゃをのみます。'},
+        {jp:['にほんごを','べんきょうします','。'],     p:[1], en:'I study Japanese.',               speak:'にほんごをべんきょうします。'},
+        {jp:['ともだちが','きます','。'],               p:[1], en:'My friend will come.',             speak:'ともだちがきます。'},
+      ],
+      intermediate:[
+        {jp:['らいねんにほんに','いきます','。'],       p:[1], en:'I will go to Japan next year.',    speak:'らいねんにほんにいきます。'},
+        {jp:['まいあさろくじに','おきます','。'],       p:[1], en:'I wake up at 6am every morning.', speak:'まいあさろくじにおきます。'},
+        {jp:['なにを','しますか','？'],                 p:[1], en:'What will you do?',               speak:'なにをしますか？'},
+      ],
+      advanced:[
+        {jp:['こんしゅうまつともだちと','あいます','。'],p:[1],en:'I will meet my friend this weekend.',speak:'こんしゅうまつともだちとあいます。'},
+        {jp:['かれはまいにちうんどうを','します','。'], p:[1], en:'He exercises every day.',         speak:'かれはまいにちうんどうをします。'},
+      ],
+    },
+    tip:'💡 〜ます is for the present AND future — Japanese uses the same form! Context (まいにち, あした) makes the meaning clear.',
+    watchout:'⚠️ Verb → ます: Drop the dictionary ending and add the masu-stem. いく→いき→いきます, たべる→たべ→たべます.',
+    memorytrick:'🧠 Memory trick: ます = "mass" — you use it in front of a mass of people (polite situations)!',
+  },
+
+  // ── 2. PAST TENSE ─────────────────────────────────────
+  {
+    id:'past', icon:'⏮️', color:'#e67e22', cardClass:'cat-tense', iconClass:'icon-tense',
+    name:'Past Tense', shortName:'〜ました',
+    desc:'Polite past tense — what already happened',
+    pattern:'[Verb stem] + ました / ませんでした', romaji:'mashita / masen deshita', level:'N5',
+    functions:[
+      {badge:'Past +',  desc:'Something DID happen. "I ate / I went / I did."'},
+      {badge:'Past −',  desc:'Something did NOT happen. "I didn\'t eat / didn\'t go."'},
+      {badge:'Polite',  desc:'Polite form — same stem as ます, just swap the ending.'},
+    ],
+    conjugation:[
+      {form:'〜ました',         rom:'〜mashita',       en:'Past positive',          pill:'pill-past'},
+      {form:'〜ませんでした',   rom:'〜masen deshita', en:'Past negative',          pill:'pill-negative'},
+      {form:'〜ましたか？',     rom:'〜mashita ka?',   en:'Past question',          pill:'pill-past'},
+      {form:'〜でした',         rom:'〜deshita',       en:'Past of です (was/were)', pill:'pill-past'},
+      {form:'〜じゃなかった',   rom:'〜ja nakatta',    en:'Past negative of です (casual)',pill:'pill-negative'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['きのうすしを','たべました','。'],          p:[1], en:'I ate sushi yesterday.',          speak:'きのうすしをたべました。'},
+        {jp:['えいがを','みました','。'],                p:[1], en:'I watched a movie.',              speak:'えいがをみました。'},
+        {jp:['がっこうに','いきました','。'],            p:[1], en:'I went to school.',               speak:'がっこうにいきました。'},
+        {jp:['テレビを','みませんでした','。'],          p:[1], en:'I didn\'t watch TV.',             speak:'テレビをみませんでした。'},
+        {jp:['ごはんを','たべましたか','？'],            p:[1], en:'Did you eat? / Have you eaten?', speak:'ごはんをたべましたか？'},
+        {jp:['きのうはさむかった','です','。'],          p:[1], en:'It was cold yesterday.',          speak:'きのうはさむかったです。'},
+      ],
+      intermediate:[
+        {jp:['ともだちとこうえんで','あそびました','。'],p:[1], en:'I played at the park with my friend.',speak:'ともだちとこうえんであそびました。'},
+        {jp:['しゅくだいを','しませんでした','。'],      p:[1], en:'I didn\'t do my homework.',       speak:'しゅくだいをしませんでした。'},
+        {jp:['なにを','しましたか','？'],                p:[1], en:'What did you do?',               speak:'なにをしましたか？'},
+      ],
+      advanced:[
+        {jp:['さんじかんもべんきょうを','しました','。'],p:[1], en:'I studied for three whole hours!', speak:'さんじかんもべんきょうをしました。'},
+        {jp:['パーティーには','いきませんでした','。'],  p:[1], en:'I didn\'t go to the party.',      speak:'パーティーにはいきませんでした。'},
+      ],
+    },
+    tip:'💡 The masu-stem is shared — いきます → いきました. Just swap ます→ました or ません→ませんでした!',
+    watchout:'⚠️ です (to be) past tense is でした, not ました. Nouns and adjectives use でした; verbs use ました.',
+    memorytrick:'🧠 Memory trick: 〜SHITA sounds like "she-ta" — SHE already did it, so it\'s past!',
+  },
+
+  // ── 3. NEGATIVE PRESENT ───────────────────────────────
+  {
+    id:'negative', icon:'🚫', color:'#e63946', cardClass:'cat-tense', iconClass:'icon-tense',
+    name:'Negative Forms', shortName:'〜ません',
+    desc:'How to say "do not" and "did not" politely',
+    pattern:'[Verb stem] + ません / ませんでした', romaji:'masen / masen deshita', level:'N5',
+    functions:[
+      {badge:'Pres. Neg.',  desc:'"I don\'t / won\'t do X." Polite present negative.'},
+      {badge:'Past Neg.',   desc:'"I didn\'t do X." Polite past negative.'},
+      {badge:'Noun/Adj −',  desc:'Nouns/adjectives use じゃないです (casual) or ではありません (formal).'},
+    ],
+    conjugation:[
+      {form:'〜ません',          rom:'〜masen',         en:'Present negative (verb)',           pill:'pill-negative'},
+      {form:'〜ませんでした',    rom:'〜masen deshita', en:'Past negative (verb)',               pill:'pill-negative'},
+      {form:'〜じゃないです',    rom:'〜ja nai desu',   en:'Negative of noun/na-adj (casual)',   pill:'pill-negative'},
+      {form:'〜ではありません',  rom:'〜dewa arimasen', en:'Negative of noun/na-adj (formal)',   pill:'pill-negative'},
+      {form:'〜くないです',      rom:'〜ku nai desu',   en:'Negative of i-adjective',            pill:'pill-negative'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['にくを','たべません','。'],             p:[1], en:'I don\'t eat meat.',          speak:'にくをたべません。'},
+        {jp:['テレビを','みません','。'],             p:[1], en:'I don\'t watch TV.',          speak:'テレビをみません。'},
+        {jp:['わたしはがくせい','じゃないです','。'], p:[1], en:'I am not a student.',        speak:'わたしはがくせいじゃないです。'},
+        {jp:['このへやはひろく','ないです','。'],     p:[1], en:'This room is not spacious.',  speak:'このへやはひろくないです。'},
+        {jp:['きのうべんきょうを','しませんでした','。'],p:[1],en:'I didn\'t study yesterday.',speak:'きのうべんきょうをしませんでした。'},
+        {jp:['あまりすき','じゃないです','。'],       p:[1], en:'I don\'t really like it.',   speak:'あまりすきじゃないです。'},
+      ],
+      intermediate:[
+        {jp:['かれはせんせい','ではありません','。'], p:[1], en:'He is not a teacher. (formal)',speak:'かれはせんせいではありません。'},
+        {jp:['さとうを','いれません','。'],           p:[1], en:'I don\'t put in sugar.',     speak:'さとうをいれません。'},
+        {jp:['まだたべ','ません','。'],               p:[1], en:'I haven\'t eaten yet.',      speak:'まだたべません。'},
+      ],
+      advanced:[
+        {jp:['それはよく','わかりません','。'],       p:[1], en:'I don\'t quite understand that.',speak:'それはよくわかりません。'},
+        {jp:['このことはだれにも','いいません','。'], p:[1], en:'I won\'t tell this to anyone.',  speak:'このことはだれにもいいません。'},
+      ],
+    },
+    tip:'💡 For verbs: just replace ます with ません. That\'s it!',
+    watchout:'⚠️ i-adjectives go negative with 〜くない: おもしろい→おもしろくない. na-adjectives use じゃない: げんき→げんきじゃない.',
+    memorytrick:'🧠 Memory trick: ません has "sen" like "SEN-tinel blocking the door" — the action is BLOCKED.',
+  },
+
+  // ── 4. 〜ながら ───────────────────────────────────────
+  {
+    id:'nagara', icon:'🔀', color:'#8e44ad', cardClass:'cat-nagara', iconClass:'icon-nagara',
+    name:'〜ながら (While doing)', shortName:'〜ながら',
+    desc:'Two actions happening at the same time',
+    pattern:'[Verb stem] + ながら + [Main verb]', romaji:'〜nagara', level:'N4',
+    functions:[
+      {badge:'Simultaneous', desc:'Both actions happen at the SAME time. "While doing A, do B."'},
+      {badge:'Sub + Main',   desc:'The ながら verb is secondary. The main verb at the end is the focus.'},
+      {badge:'Same subject', desc:'BOTH actions must be done by the SAME person!'},
+    ],
+    conjugation:[
+      {form:'たべながら',   rom:'tabe-nagara',  en:'while eating',    pill:'pill-nagara'},
+      {form:'きながら',     rom:'ki-nagara',    en:'while listening', pill:'pill-nagara'},
+      {form:'あるきながら', rom:'aruki-nagara', en:'while walking',   pill:'pill-nagara'},
+      {form:'みながら',     rom:'mi-nagara',    en:'while watching',  pill:'pill-nagara'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['おんがくをき','ながら','べんきょうします。'],   p:[1], en:'I study while listening to music.', speak:'おんがくをきながらべんきょうします。'},
+        {jp:['テレビをみ','ながら','ごはんをたべます。'],     p:[1], en:'I eat while watching TV.',         speak:'テレビをみながらごはんをたべます。'},
+        {jp:['うたいながら','あるきます','。'],               p:[0], en:'I walk while singing.',           speak:'うたいながらあるきます。'},
+        {jp:['はなしながら','たべないでください。'],          p:[0], en:'Please don\'t eat while talking.',speak:'はなしながらたべないでください。'},
+        {jp:['コーヒーをのみ','ながら','ほんをよみます。'],   p:[1], en:'I read a book while drinking coffee.',speak:'コーヒーをのみながらほんをよみます。'},
+        {jp:['わらいながら','はなします。'],                  p:[0], en:'I talk while laughing.',          speak:'わらいながらはなします。'},
+      ],
+      intermediate:[
+        {jp:['でんわをしながら','うんてんします。'],          p:[0], en:'(Don\'t) drive while on the phone.',speak:'でんわをしながらうんてんします。'},
+        {jp:['かれはわらいながら','こたえました。'],          p:[0], en:'He answered while laughing.',     speak:'かれはわらいながらこたえました。'},
+        {jp:['なきながら','えいがをみました。'],              p:[0], en:'I watched the film while crying.',speak:'なきながらえいがをみました。'},
+      ],
+      advanced:[
+        {jp:['しごとをしながら','にほんごをまなんでいます。'],p:[0], en:'I\'m learning Japanese while working.',speak:'しごとをしながらにほんごをまなんでいます。'},
+        {jp:['しゃわーをあびながら','かんがえました。'],      p:[0], en:'I thought about it while showering.',speak:'しゃわーをあびながらかんがえました。'},
+      ],
+    },
+    tip:'💡 ながら verb = the BACKGROUND action. The verb at the END of the sentence is the main thing being done.',
+    watchout:'⚠️ Different subjects? Use 〜ているあいだに instead! "While I was sleeping, she came" = わたしがねているあいだに、かのじょがきました.',
+    memorytrick:'🧠 Memory trick: ながら = "naga" sounds like "longa" — you do something for a LONG time WHILE doing something else.',
+  },
+
+  // ── 5. 〜てから ───────────────────────────────────────
+  {
+    id:'tekara', icon:'➡️', color:'#e84393', cardClass:'cat-teから', iconClass:'icon-teから',
+    name:'〜てから (After doing)', shortName:'〜てから',
+    desc:'Do A first, THEN do B afterwards',
+    pattern:'[Verb て-form] + から + [Next action]', romaji:'〜te kara', level:'N4',
+    functions:[
+      {badge:'Sequence',  desc:'"After doing A, I do B." A happens FIRST, then B.'},
+      {badge:'て-form +から', desc:'Convert the first verb to て-form, then add から.'},
+      {badge:'Order matters', desc:'The order in the sentence = the order of events!'},
+    ],
+    conjugation:[
+      {form:'たべてから',   rom:'tabete kara',   en:'after eating',      pill:'pill-te'},
+      {form:'みてから',     rom:'mite kara',     en:'after watching/seeing',pill:'pill-te'},
+      {form:'してから',     rom:'shite kara',    en:'after doing',       pill:'pill-te'},
+      {form:'かえってから', rom:'kaette kara',   en:'after returning home',pill:'pill-te'},
+      {form:'ねてから',     rom:'nete kara',     en:'after sleeping',    pill:'pill-te'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['てをあらってから','たべます。'],             p:[0], en:'I eat after washing my hands.',  speak:'てをあらってからたべます。'},
+        {jp:['がっこうからかえってから','べんきょうします。'],p:[0],en:'I study after coming home from school.',speak:'がっこうからかえってからべんきょうします。'},
+        {jp:['シャワーをあびてから','ねます。'],           p:[0], en:'I sleep after taking a shower.', speak:'シャワーをあびてからねます。'},
+        {jp:['ごはんをたべてから','でかけました。'],       p:[0], en:'I went out after eating.',       speak:'ごはんをたべてからでかけました。'},
+        {jp:['みてから','かんがえます。'],                 p:[0], en:'I\'ll think about it after seeing it.',speak:'みてからかんがえます。'},
+        {jp:['はをみがいてから','ねてください。'],         p:[0], en:'Please sleep after brushing your teeth.',speak:'はをみがいてからねてください。'},
+      ],
+      intermediate:[
+        {jp:['だいがくをそつぎょうしてから','はたらきます。'],p:[0],en:'I will work after graduating from university.',speak:'だいがくをそつぎょうしてからはたらきます。'},
+        {jp:['おわってから','おしえてください。'],          p:[0], en:'Please tell me after it finishes.',speak:'おわってからおしえてください。'},
+        {jp:['なんかいもれんしゅうしてから','はっぴょうします。'],p:[0],en:'I will present after practising many times.',speak:'なんかいもれんしゅうしてからはっぴょうします。'},
+      ],
+      advanced:[
+        {jp:['かれがきてから','はなしましょう。'],          p:[0], en:'Let\'s talk after he arrives.',  speak:'かれがきてからはなしましょう。'},
+        {jp:['ひとくちたべてから','はんだんしました。'],    p:[0], en:'I judged it after one bite.',    speak:'ひとくちたべてからはんだんしました。'},
+      ],
+    },
+    tip:'💡 てから = "after doing". The て-form of the verb comes first, then から.',
+    watchout:'⚠️ Don\'t confuse with 〜たあとで (also "after") — both are correct but てから emphasises the sequence more strongly.',
+    memorytrick:'🧠 Memory trick: から = "from". After て-form, から means "from THAT point on" → then the next thing.',
+  },
+
+  // ── 6. 〜たい ─────────────────────────────────────────
+  {
+    id:'tai', icon:'💭', color:'#e17055', cardClass:'cat-tai', iconClass:'icon-tai',
+    name:'〜たい (Want to do)', shortName:'〜たい',
+    desc:'Express what YOU want to do',
+    pattern:'[Verb stem] + たい', romaji:'〜tai', level:'N5',
+    functions:[
+      {badge:'Want to',   desc:'"I want to do X." Used for your OWN desires.'},
+      {badge:'Adjective', desc:'たい conjugates like an い-adjective: たくない, たかった, たくなかった.'},
+      {badge:'3rd person', desc:'For others\' wants: 〜たがっている (seems to want) or 〜たいと言っていた.'},
+    ],
+    conjugation:[
+      {form:'〜たい',         rom:'〜tai',          en:'want to do',          pill:'pill-present'},
+      {form:'〜たくない',     rom:'〜takunai',       en:'don\'t want to do',   pill:'pill-negative'},
+      {form:'〜たかった',     rom:'〜takatta',       en:'wanted to do',        pill:'pill-past'},
+      {form:'〜たくなかった', rom:'〜takunakatta',   en:'didn\'t want to do',  pill:'pill-negative'},
+      {form:'〜たいです',     rom:'〜tai desu',      en:'polite: want to do',  pill:'pill-present'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['にほんに','いきたい','です。'],           p:[1], en:'I want to go to Japan.',        speak:'にほんにいきたいです。'},
+        {jp:['アイスを','たべたい','！'],               p:[1], en:'I want to eat ice cream!',      speak:'アイスをたべたい！'},
+        {jp:['もっとねたい','です。'],                  p:[0], en:'I want to sleep more.',         speak:'もっとねたいです。'},
+        {jp:['にほんごが','はなしたい','です。'],       p:[1], en:'I want to speak Japanese.',    speak:'にほんごがはなしたいです。'},
+        {jp:['なにが','したいですか','？'],             p:[1], en:'What do you want to do?',      speak:'なにがしたいですか？'},
+        {jp:['いまはなに','もたべたくない','。'],       p:[1], en:'I don\'t want to eat anything right now.',speak:'いまはなにもたべたくない。'},
+      ],
+      intermediate:[
+        {jp:['こどものころパイロットに','なりたかった','。'],p:[1],en:'When I was a child, I wanted to become a pilot.',speak:'こどものころパイロットになりたかった。'},
+        {jp:['もっとじかんが','ほしい','です。'],       p:[1], en:'I want more time. (ほしい = want thing)',speak:'もっとじかんがほしいです。'},
+        {jp:['かれはにほんに','いきたがっている','。'], p:[1], en:'He seems to want to go to Japan.',speak:'かれはにほんにいきたがっている。'},
+      ],
+      advanced:[
+        {jp:['そんなことは','したくなかった','です。'], p:[1], en:'I didn\'t want to do something like that.',speak:'そんなことはしたくなかったです。'},
+        {jp:['はやくじぶんの','いえをもちたい','です。'],p:[1],en:'I want to have my own home soon.', speak:'はやくじぶんのいえをもちたいです。'},
+      ],
+    },
+    tip:'💡 たい is for YOUR own wants. For THINGS you want (nouns), use ほしい instead!',
+    watchout:'⚠️ たい uses が OR を for the object: すしをたべたい / すしがたべたい — both OK! が is more emphatic.',
+    memorytrick:'🧠 Memory trick: たい = "tie" yourself to something you WANT — you really want it!',
+  },
+
+  // ── 7. 〜できる ───────────────────────────────────────
+  {
+    id:'dekiru', icon:'💪', color:'#f39c12', cardClass:'cat-dekiru', iconClass:'icon-dekiru',
+    name:'〜できる (Can / Able to)', shortName:'〜ができる',
+    desc:'Express ability — what you CAN do',
+    pattern:'[Noun] + ができる  OR  [Verb dict.] + ことができる', romaji:'〜ga dekiru', level:'N5',
+    functions:[
+      {badge:'Ability',    desc:'"I can do X." Covers skill, permission, and possibility.'},
+      {badge:'Noun + が',   desc:'[noun]ができます: にほんごができます = I can do Japanese / speak Japanese.'},
+      {badge:'Verb こと',  desc:'[verb dict.]ことができます: およぐことができます = I can swim.'},
+    ],
+    conjugation:[
+      {form:'〜ができます',       rom:'〜ga dekimasu',       en:'can do (polite)',         pill:'pill-present'},
+      {form:'〜ができません',     rom:'〜ga dekimasen',      en:'cannot do (polite)',      pill:'pill-negative'},
+      {form:'〜ができました',     rom:'〜ga dekimashita',    en:'could do / managed to',  pill:'pill-past'},
+      {form:'〜ことができます',   rom:'〜koto ga dekimasu',  en:'can do (verb form)',      pill:'pill-present'},
+      {form:'〜ことができません', rom:'〜koto ga dekimasen', en:'cannot do (verb form)',   pill:'pill-negative'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['にほんごが','できます','。'],               p:[1], en:'I can speak Japanese.',         speak:'にほんごができます。'},
+        {jp:['えいごが','できますか','？'],               p:[1], en:'Can you speak English?',        speak:'えいごができますか？'},
+        {jp:['りょうりが','できません','。'],             p:[1], en:'I can\'t cook.',                speak:'りょうりができません。'},
+        {jp:['およぐことが','できます','。'],             p:[1], en:'I can swim.',                   speak:'およぐことができます。'},
+        {jp:['じてんしゃにのることが','できます','か？'],p:[1], en:'Can you ride a bicycle?',       speak:'じてんしゃにのることができますか？'},
+        {jp:['ここでしゃしんをとることが','できます','。'],p:[1],en:'You can take photos here.',    speak:'ここでしゃしんをとることができます。'},
+      ],
+      intermediate:[
+        {jp:['こどものころおよぐことが','できませんでした','。'],p:[1],en:'I couldn\'t swim when I was a child.',speak:'こどものころおよぐことができませんでした。'},
+        {jp:['かんじがすこし','よめます','。'],           p:[1], en:'I can read a little kanji. (よめる = potential form)',speak:'かんじがすこしよめます。'},
+        {jp:['このしごとはわたしに','できます','。'],     p:[1], en:'I can do this job.',            speak:'このしごとはわたしにできます。'},
+      ],
+      advanced:[
+        {jp:['かれはなんでも','できる','。'],             p:[1], en:'He can do anything.',           speak:'かれはなんでもできる。'},
+        {jp:['じかんがあればいくことが','できます','。'], p:[1], en:'If I have time, I can go.',     speak:'じかんがあればいくことができます。'},
+      ],
+    },
+    tip:'💡 Two patterns: [noun]ができます OR [verb dict.]ことができます. Both mean "can do"!',
+    watchout:'⚠️ できる uses が, not を! にほんごができます ✅  NOT にほんごをできます ❌.',
+    memorytrick:'🧠 Memory trick: できる sounds like "deck-iru" — you\'re DECKED OUT with this ability!',
+  },
+
+  // ── 8. 〜ている ───────────────────────────────────────
+  {
+    id:'teiru', icon:'🔄', color:'#00b894', cardClass:'cat-teiru', iconClass:'icon-teiru',
+    name:'〜ている (Ongoing / State)', shortName:'〜ている',
+    desc:'Actions in progress OR a resulting state',
+    pattern:'[Verb て-form] + いる / います', romaji:'〜te iru / imasu', level:'N5',
+    functions:[
+      {badge:'Ongoing',  desc:'"is doing right now" — like English -ing: たべています = is eating.'},
+      {badge:'State',    desc:'Result of a completed action — しんでいる = has died (and is dead).'},
+      {badge:'Habit',    desc:'Repeated or habitual actions — まいにちはしっています = runs every day.'},
+    ],
+    conjugation:[
+      {form:'〜ています',        rom:'〜te imasu',        en:'is doing / has done (polite)',  pill:'pill-present'},
+      {form:'〜ていません',      rom:'〜te imasen',       en:'is not doing (polite)',         pill:'pill-negative'},
+      {form:'〜ていました',      rom:'〜te imashita',     en:'was doing (past progressive)',  pill:'pill-past'},
+      {form:'〜ている',          rom:'〜te iru',          en:'is doing (casual)',             pill:'pill-present'},
+      {form:'〜ていて',          rom:'〜te ite',          en:'is doing and... (te-form)',     pill:'pill-te'},
+    ],
+    examples:{
+      beginner:[
+        {jp:['いまほんを','よんでいます','。'],             p:[1], en:'I am reading a book right now.',     speak:'いまほんをよんでいます。'},
+        {jp:['あめが','ふっています','。'],                 p:[1], en:'It is raining.',                    speak:'あめがふっています。'},
+        {jp:['かのじょはうたを','うたっています','。'],     p:[1], en:'She is singing a song.',            speak:'かのじょはうたをうたっています。'},
+        {jp:['かれはにほんごを','べんきょうしています','。'],p:[1],en:'He is studying Japanese.',         speak:'かれはにほんごをべんきょうしています。'},
+        {jp:['でんしゃがき','ています','。'],               p:[1], en:'The train is coming.',              speak:'でんしゃがきています。'},
+        {jp:['まいにちはしって','います','。'],             p:[1], en:'I run every day. (habit)',          speak:'まいにちはしっています。'},
+      ],
+      intermediate:[
+        {jp:['けっこんして','います','。'],                 p:[1], en:'I am married. (resulting state)',   speak:'けっこんしています。'},
+        {jp:['めがねをかけて','います','。'],               p:[1], en:'I wear glasses. (resultant state)', speak:'めがねをかけています。'},
+        {jp:['なにを','していますか','？'],                 p:[1], en:'What are you doing?',               speak:'なにをしていますか？'},
+      ],
+      advanced:[
+        {jp:['かれはまだ','ねています','。'],               p:[1], en:'He is still sleeping.',            speak:'かれはまだねています。'},
+        {jp:['このビルはいま','たてられています','。'],     p:[1], en:'This building is being constructed.', speak:'このビルはいまたてられています。'},
+      ],
+    },
+    tip:'💡 Two main uses: (1) action in progress いまたべています, (2) resulting state けっこんしています.',
+    watchout:'⚠️ Movement verbs show RESULT, not process: いっています = has gone (and is there), not "is going".',
+    memorytrick:'🧠 Memory trick: 〜ている = "T-I-R-E-D" — the action is still going on and hasn\'t finished!',
+  },
+];
+
+// ── GRAMMAR FILL-IN-BLANK QUESTIONS ───────────────────────
+const GRAMMAR_SENTENCES = [
+  // Present/Future
+  {jp:['まいにちごはんを','***','。'],          correct:'たべます',      opts:['たべます','たべました','たべません','たべている'],      en:'I eat a meal every day.',             hint:'Use 〜ます for present / habitual action.',   module:'present'},
+  {jp:['あしたえいがを','***','。'],            correct:'みます',        opts:['みます','みました','みません','みている'],            en:'I will watch a movie tomorrow.',       hint:'〜ます = present AND future tense.',          module:'present'},
+  {jp:['にほんごを','***','か？'],              correct:'はなしますか',  opts:['はなしますか','はなしましたか','はなせますか','はなしていますか'],en:'Do you speak Japanese?',         hint:'〜ますか makes it a polite question.',        module:'present'},
+  // Past
+  {jp:['きのうすしを','***','。'],              correct:'たべました',    opts:['たべます','たべました','たべません','たべていました'],  en:'I ate sushi yesterday.',               hint:'Past tense = 〜ました.',                      module:'past'},
+  {jp:['えいがを','***','か？'],                correct:'みましたか',    opts:['みますか','みましたか','みませんか','みていますか'],    en:'Did you watch the movie?',             hint:'Past question = 〜ましたか.',                module:'past'},
+  {jp:['しゅくだいを','***','。'],              correct:'しませんでした', opts:['しません','しませんでした','しました','していました'],  en:'I didn\'t do my homework.',            hint:'Past negative = 〜ませんでした.',             module:'past'},
+  // Negative
+  {jp:['にくを','***','。'],                    correct:'たべません',    opts:['たべます','たべません','たべました','たべている'],      en:'I don\'t eat meat.',                   hint:'Present negative = 〜ません.',               module:'negative'},
+  {jp:['わたしはがくせい','***','。'],          correct:'じゃないです',  opts:['です','じゃないです','ではありました','でした'],        en:'I am not a student.',                  hint:'Noun negative: じゃないです (casual) or ではありません.',module:'negative'},
+  {jp:['このへやはひろく','***','。'],          correct:'ないです',      opts:['です','ないです','ありません','ませんでした'],          en:'This room is not spacious.',           hint:'i-adj negative: 〜くないです.',              module:'negative'},
+  // ながら
+  {jp:['おんがくをき','***','べんきょうします。'],correct:'ながら',      opts:['ながら','てから','たり','ても'],                        en:'I study while listening to music.',    hint:'ながら = while doing simultaneously.',       module:'nagara'},
+  {jp:['テレビをみ','***','ごはんをたべます。'],correct:'ながら',        opts:['ながら','てから','ために','ても'],                      en:'I eat while watching TV.',             hint:'ながら links two simultaneous actions.',     module:'nagara'},
+  {jp:['はなし','***','たべないでください。'],  correct:'ながら',        opts:['ながら','てから','たり','ても'],                        en:'Please don\'t eat while talking.',     hint:'Verb stem + ながら = while doing.',          module:'nagara'},
+  // てから
+  {jp:['てをあらって','***','たべます。'],       correct:'から',         opts:['から','ながら','ために','ても'],                        en:'I eat after washing my hands.',        hint:'てから = after doing. て-form + から.',      module:'tekara'},
+  {jp:['シャワーをあびて','***','ねます。'],     correct:'から',         opts:['から','ながら','たり','まで'],                          en:'I sleep after taking a shower.',       hint:'て-form + から = after doing.',              module:'tekara'},
+  {jp:['みて','***','かんがえます。'],          correct:'から',         opts:['から','ながら','ても','ために'],                        en:'I\'ll think about it after seeing it.',hint:'てから = sequence: first see, then think.',  module:'tekara'},
+  // たい
+  {jp:['にほんに','***','です。'],              correct:'いきたい',      opts:['いきたい','いきます','いきました','いきたかった'],      en:'I want to go to Japan.',               hint:'Verb stem + たい = want to do.',             module:'tai'},
+  {jp:['なにが','***','か？'],                  correct:'したいです',    opts:['したいです','しますか','しましたか','しています'],      en:'What do you want to do?',              hint:'〜たいですか = want to do? (polite question)',module:'tai'},
+  {jp:['いまはなにも','***','。'],              correct:'たべたくない',  opts:['たべたい','たべたくない','たべません','たべていない'],   en:'I don\'t want to eat anything now.',   hint:'たくない = negative of たい.',               module:'tai'},
+  // できる
+  {jp:['にほんごが','***','。'],                correct:'できます',      opts:['できます','できません','できました','できている'],      en:'I can speak Japanese.',                hint:'Noun + が + できます = can do.',             module:'dekiru'},
+  {jp:['およぐことが','***','。'],              correct:'できます',      opts:['できます','できません','できました','できていた'],      en:'I can swim.',                          hint:'Verb dict. + ことが + できます = can do.',   module:'dekiru'},
+  {jp:['こどものころおよぐことが','***','。'],  correct:'できませんでした',opts:['できません','できませんでした','できました','できなかった'],en:'I couldn\'t swim as a child.',       hint:'Past cannot = できませんでした.',            module:'dekiru'},
+  // ている
+  {jp:['いまほんを','***','。'],                correct:'よんでいます',  opts:['よんでいます','よみます','よみました','よみたいです'],   en:'I am reading a book right now.',       hint:'〜ています = action in progress.',           module:'teiru'},
+  {jp:['あめが','***','。'],                    correct:'ふっています',  opts:['ふっています','ふります','ふりました','ふっていた'],     en:'It is raining.',                       hint:'〜ています = ongoing natural action.',       module:'teiru'},
+  {jp:['けっこんして','***','。'],              correct:'います',        opts:['います','いました','いません','いきます'],              en:'I am married. (resulting state)',       hint:'〜ています can show a resulting state.',     module:'teiru'},
+];
+
+// ── GRAMMAR WORD BUILDER SENTENCES ───────────────────────
+const GRAMMAR_BUILDER = [
+  {en:'I eat a meal every day. 🍚',                   words:['まいにち','ごはんを','たべます','。'],                  particleIdx:[2], module:'present'},
+  {en:'I ate sushi yesterday. 🍣',                     words:['きのう','すしを','たべました','。'],                    particleIdx:[2], module:'past'},
+  {en:'I don\'t eat meat. 🚫🥩',                       words:['にくを','たべません','。'],                            particleIdx:[1], module:'negative'},
+  {en:'I study while listening to music. 🎵📚',        words:['おんがくを','きながら','べんきょうします','。'],        particleIdx:[1], module:'nagara'},
+  {en:'I eat after washing my hands. 🙌🍽️',           words:['てをあらって','から','たべます','。'],                  particleIdx:[1], module:'tekara'},
+  {en:'I want to go to Japan. 🗾💭',                   words:['にほんに','いきたい','です','。'],                      particleIdx:[1], module:'tai'},
+  {en:'I can speak Japanese. 💪🇯🇵',                  words:['にほんごが','できます','。'],                          particleIdx:[1], module:'dekiru'},
+  {en:'I am reading a book right now. 📖',             words:['いま','ほんを','よんでいます','。'],                    particleIdx:[2], module:'teiru'},
+  {en:'I will go to school tomorrow. 🏫',              words:['あした','がっこうに','いきます','。'],                  particleIdx:[2], module:'present'},
+  {en:'I didn\'t do my homework. 😅',                  words:['しゅくだいを','しません','でした','。'],                particleIdx:[1], module:'negative'},
+  {en:'I sleep after taking a shower. 🚿💤',           words:['シャワーを','あびて','から','ねます','。'],             particleIdx:[2], module:'tekara'},
+  {en:'I am married. (state) 💍',                      words:['けっこんして','います','。'],                          particleIdx:[0], module:'teiru'},
+  {en:'He is studying Japanese. 📚',                   words:['かれは','にほんごを','べんきょうしています','。'],      particleIdx:[2], module:'teiru'},
+  {en:'I can swim. 🏊',                                words:['およぐことが','できます','。'],                        particleIdx:[1], module:'dekiru'},
+  {en:'I watched the film while crying. 😢🎬',         words:['なきながら','えいがを','みました','。'],                particleIdx:[0], module:'nagara'},
+  {en:'What do you want to do? 🤔',                    words:['なにが','したいですか','？'],                          particleIdx:[1], module:'tai'},
+];
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR STATE
+// ══════════════════════════════════════════════════════════
+let grammarLearnIdx   = 0;
+let grammarExTabIdx   = 0;
+let grammarQuizData   = [];
+let grammarQuizIdx    = 0;
+let grammarQuizTotal  = 0;
+let grammarScore      = 0;
+let grammarStreak     = 0;
+let grammarAttempts   = 0;
+let grammarQuizMode   = 'all';
+let currentGrammarModule = null;
+
+let grammarBuilderData   = [];
+let grammarBuilderIdx    = 0;
+let grammarBuilderScore  = 0;
+let grammarBuilderStreak = 0;
+let grammarBuilderPlaced = [];
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR MENU BUILD
+// ══════════════════════════════════════════════════════════
+function buildGrammarMenu() {
+  const grid = document.getElementById('grammar-menu');
+  grid.innerHTML = '';
+  GRAMMAR_MODULES.forEach(m => {
+    const card = document.createElement('button');
+    card.type = 'button'; card.className = `menu-card ${m.cardClass}`; card.style.borderColor = m.color;
+    card.dataset.gid = m.id;
+    const qCount = GRAMMAR_SENTENCES.filter(s => s.module === m.id).length;
+    card.innerHTML = `
+      <div class="menu-icon ${m.iconClass}" style="pointer-events:none;font-size:2em;">${m.icon}</div>
+      <div class="menu-info" style="pointer-events:none;">
+        <div class="menu-name">${m.name}</div>
+        <div class="menu-desc">${m.desc}</div>
+        <div class="menu-count">${qCount} quiz questions · <span style="color:${m.color}">JLPT ${m.level}</span></div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  grid.addEventListener('click', function(e) {
+    const card = e.target.closest('button[data-gid]');
+    if (card) startGrammarLearn(card.dataset.gid);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR LEARN
+// ══════════════════════════════════════════════════════════
+const G_EX_LEVELS  = ['beginner','intermediate','advanced'];
+const G_EX_LABELS  = { beginner:'🟢 Beginner', intermediate:'🟡 Middle', advanced:'🔴 Advanced' };
+const LEVEL_COLORS = { N5:'#2ecc71', N4:'#3498db', N3:'#e67e22' };
+
+function startGrammarLearn(gid) {
+  grammarLearnIdx = GRAMMAR_MODULES.findIndex(m => m.id === gid);
+  grammarExTabIdx = 0;
+  currentGrammarModule = GRAMMAR_MODULES[grammarLearnIdx];
+  showGrammarLearnCard();
+  showScreen('grammar-learn-screen');
+  setTimeout(() => speak(currentGrammarModule.shortName), 400);
+}
+
+function showGrammarLearnCard() {
+  const m = GRAMMAR_MODULES[grammarLearnIdx];
+  currentGrammarModule = m;
+
+  document.getElementById('grammar-learn-title').textContent = m.name;
+  document.getElementById('grammar-pattern').textContent     = m.pattern;
+  document.getElementById('grammar-romaji').textContent      = m.romaji;
+  document.getElementById('grammar-name').textContent        = m.name;
+  document.getElementById('grammar-learn-counter').textContent = (grammarLearnIdx + 1) + ' / ' + GRAMMAR_MODULES.length;
+  document.getElementById('grammar-learn-prev').disabled = grammarLearnIdx === 0;
+  document.getElementById('grammar-learn-next').disabled = grammarLearnIdx === GRAMMAR_MODULES.length - 1;
+
+  const lvlBadge = document.getElementById('grammar-level-badge');
+  lvlBadge.textContent = 'JLPT ' + m.level;
+  lvlBadge.className = 'grammar-level-badge glvl-' + m.level.toLowerCase();
+
+  // Functions
+  const funcDiv = document.getElementById('grammar-functions');
+  funcDiv.innerHTML = '';
+  m.functions.forEach(f => {
+    const row = document.createElement('div'); row.className = 'function-row';
+    row.innerHTML = `<span class="func-badge" style="background:${m.color};">${f.badge}</span><span class="func-desc">${f.desc}</span>`;
+    funcDiv.appendChild(row);
+  });
+
+  // Conjugation table
+  const conjWrap = document.getElementById('grammar-conj-wrap');
+  const conjDiv  = document.getElementById('grammar-conj-table');
+  if (m.conjugation && m.conjugation.length) {
+    conjWrap.style.display = 'block';
+    conjDiv.innerHTML = `<table class="conj-table">
+      <tr><th>Form</th><th>Romaji</th><th>Meaning</th></tr>
+      ${m.conjugation.map(c => `<tr>
+        <td><span class="conj-jp">${c.form}</span></td>
+        <td><span class="conj-rom">${c.rom}</span></td>
+        <td><span class="conj-en">${c.en} <span class="conj-tense-pill ${c.pill}"></span></span></td>
+      </tr>`).join('')}
+    </table>`;
+  } else { conjWrap.style.display = 'none'; }
+
+  // Example tabs
+  const tabsEl = document.getElementById('grammar-ex-tabs');
+  tabsEl.innerHTML = '';
+  G_EX_LEVELS.forEach((level, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'ex-tab' + (i === grammarExTabIdx ? ' active' : '');
+    btn.textContent = G_EX_LABELS[level];
+    btn.onclick = () => { grammarExTabIdx = i; renderGrammarExamples(); updateGrammarExTabs(); };
+    tabsEl.appendChild(btn);
+  });
+
+  renderGrammarExamples();
+
+  document.getElementById('grammar-tip').textContent = m.tip;
+  const wo = document.getElementById('grammar-watchout');
+  if (m.watchout) { wo.textContent = m.watchout; wo.style.display = 'block'; }
+  else { wo.style.display = 'none'; }
+  const mt = document.getElementById('grammar-memorytrick');
+  if (m.memorytrick) { mt.textContent = m.memorytrick; mt.style.display = 'block'; }
+  else { mt.style.display = 'none'; }
+}
+
+function updateGrammarExTabs() {
+  document.querySelectorAll('#grammar-ex-tabs .ex-tab').forEach((btn, i) => {
+    btn.classList.toggle('active', i === grammarExTabIdx);
+  });
+}
+
+function renderGrammarExamples() {
+  const m   = GRAMMAR_MODULES[grammarLearnIdx];
+  const exs = m.examples[G_EX_LEVELS[grammarExTabIdx]] || [];
+  const exDiv = document.getElementById('grammar-examples');
+  exDiv.innerHTML = '';
+  if (!exs.length) {
+    exDiv.innerHTML = '<div style="color:#aaa;font-size:0.85em;text-align:center;padding:10px;">More examples coming soon!</div>';
+    return;
+  }
+  exs.forEach(ex => {
+    const jpHtml = ex.jp.map((part, i) =>
+      ex.p.includes(i) ? `<span class="particle-highlight" style="color:${m.color};background:${m.color}15;">${part}</span>` : part
+    ).join('');
+    const row = document.createElement('div'); row.className = 'ex-sent-row';
+    row.innerHTML = `<div class="ex-sent-jp">${jpHtml}</div><div class="ex-sent-en">${ex.en}</div>`;
+    row.addEventListener('click', () => speak(ex.speak || ex.jp.join('')));
+    exDiv.appendChild(row);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR QUIZ ENGINE
+// ══════════════════════════════════════════════════════════
+function startGrammarQuiz(mode, gid) {
+  grammarQuizMode = mode;
+  grammarScore = 0; grammarStreak = 0; grammarQuizIdx = 0; grammarAttempts = 0;
+  if (mode === 'single' && gid) {
+    grammarQuizData = GRAMMAR_SENTENCES.filter(s => s.module === gid).sort(() => Math.random() - 0.5);
+  } else {
+    grammarQuizData = [...GRAMMAR_SENTENCES].sort(() => Math.random() - 0.5).slice(0, 20);
+  }
+  grammarQuizTotal = grammarQuizData.length;
+  document.getElementById('grammar-score').textContent  = 0;
+  document.getElementById('grammar-streak').textContent = 0;
+  const m = gid ? GRAMMAR_MODULES.find(m => m.id === gid) : null;
+  document.getElementById('grammar-quiz-title').textContent = m ? m.shortName + ' Quiz' : 'Mixed Grammar Quiz';
+  showScreen('grammar-quiz-screen');
+  showGrammarQuizQ();
+}
+
+function showGrammarQuizQ() {
+  if (grammarQuizIdx >= grammarQuizTotal) { endQuiz(grammarScore, grammarQuizTotal, 'grammar'); return; }
+  grammarAttempts = 0;
+  const q = grammarQuizData[grammarQuizIdx];
+  const mod = GRAMMAR_MODULES.find(m => m.id === q.module);
+
+  document.getElementById('grammar-q-count').textContent   = (grammarQuizIdx + 1) + '/' + grammarQuizTotal;
+  document.getElementById('grammar-progress').style.width  = (grammarQuizIdx / grammarQuizTotal * 100) + '%';
+  document.getElementById('grammar-feedback').textContent  = '';
+  document.getElementById('grammar-hint-btn').style.display = 'none';
+  document.getElementById('grammar-q-type-badge').textContent = mod ? mod.shortName : 'Grammar';
+
+  const sentDiv = document.getElementById('grammar-sentence-display');
+  sentDiv.innerHTML = q.jp.map(part =>
+    part === '***' ? `<span class="blank-slot">＿＿＿</span>` : part
+  ).join('');
+  document.getElementById('grammar-sentence-en').textContent = q.en;
+
+  const opts = [...q.opts].sort(() => Math.random() - 0.5);
+  const optDiv = document.getElementById('grammar-options');
+  optDiv.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'particle-opt-btn';
+    btn.style.cssText = 'font-size:0.88em;padding:10px 14px;min-width:80px;';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => checkGrammarAnswer(opt === q.correct, btn, q));
+    optDiv.appendChild(btn);
+  });
+}
+
+function checkGrammarAnswer(isCorrect, btn, q) {
+  const feedback = document.getElementById('grammar-feedback');
+  grammarAttempts++;
+  const allBtns = document.querySelectorAll('#grammar-options .particle-opt-btn');
+  if (isCorrect) {
+    btn.classList.add('correct');
+    allBtns.forEach(b => b.disabled = true);
+    const blank = document.querySelector('#grammar-sentence-display .blank-slot');
+    if (blank) { blank.textContent = q.correct; blank.style.color = '#06d6a0'; blank.style.borderColor = '#06d6a0'; }
+    speak(q.jp.map(p => p === '***' ? q.correct : p).join(''));
+    const enc = ['すごい！🎉','よくできました！⭐','さいこう！💫','パーフェクト！🌟','がんばれ！🚀'];
+    if (grammarAttempts === 1) {
+      grammarScore++; grammarStreak++;
+      const msg = enc[Math.floor(Math.random() * enc.length)];
+      feedback.textContent = grammarStreak >= 3 ? msg + ' 🔥 ' + grammarStreak + ' in a row!' : msg;
+    } else {
+      grammarStreak = 0;
+      feedback.textContent = '✅ Correct form: 「' + q.correct + '」';
+    }
+    feedback.className = 'feedback correct-text';
+    document.getElementById('grammar-score').textContent  = grammarScore;
+    document.getElementById('grammar-streak').textContent = grammarStreak;
+    setTimeout(() => { grammarQuizIdx++; showGrammarQuizQ(); }, 1900);
+  } else {
+    btn.classList.add('wrong'); btn.disabled = true;
+    grammarStreak = 0; document.getElementById('grammar-streak').textContent = 0;
+    const ta = ['もう一度！Try again!💪','ちがいます。Not quite!🎯','がんばって！✨'];
+    feedback.textContent = ta[Math.floor(Math.random() * ta.length)];
+    feedback.className = 'feedback wrong-text';
+    if (grammarAttempts >= 2) document.getElementById('grammar-hint-btn').style.display = 'block';
+  }
+}
+
+document.getElementById('grammar-hint-btn').addEventListener('click', () => {
+  const q = grammarQuizData[grammarQuizIdx];
+  document.getElementById('grammar-feedback').textContent = '💡 Answer: 「' + q.correct + '」 — ' + (q.hint || '');
+  document.getElementById('grammar-feedback').className = 'feedback hint-text';
+});
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR WORD BUILDER
+// ══════════════════════════════════════════════════════════
+function startGrammarBuilder(mode, gid) {
+  grammarBuilderScore = 0; grammarBuilderStreak = 0; grammarBuilderIdx = 0;
+  if (mode === 'single' && gid) {
+    grammarBuilderData = GRAMMAR_BUILDER.filter(s => s.module === gid).sort(() => Math.random() - 0.5);
+    if (!grammarBuilderData.length) grammarBuilderData = [...GRAMMAR_BUILDER].sort(() => Math.random() - 0.5);
+  } else {
+    grammarBuilderData = [...GRAMMAR_BUILDER].sort(() => Math.random() - 0.5);
+  }
+  document.getElementById('builder-score').textContent  = 0;
+  document.getElementById('builder-streak').textContent = 0;
+  document.getElementById('builder-title').textContent  = gid ? (GRAMMAR_MODULES.find(m=>m.id===gid)?.shortName||'') + ' Builder' : 'Grammar Builder';
+  showScreen('builder-screen');
+  showGrammarBuilderQ();
+}
+
+function showGrammarBuilderQ() {
+  if (grammarBuilderIdx >= grammarBuilderData.length) { endQuiz(grammarBuilderScore, grammarBuilderData.length, 'grammar-builder'); return; }
+  const q = grammarBuilderData[grammarBuilderIdx];
+  grammarBuilderPlaced = [];
+
+  document.getElementById('builder-q-count').textContent = (grammarBuilderIdx + 1) + '/' + grammarBuilderData.length;
+  document.getElementById('builder-progress-fill').style.width = (grammarBuilderIdx / grammarBuilderData.length * 100) + '%';
+  document.getElementById('builder-en').textContent  = q.en;
+  document.getElementById('builder-feedback').textContent = '';
+  document.getElementById('builder-hint-btn').style.display = 'none';
+  document.getElementById('builder-check-btn').disabled = false;
+  document.getElementById('builder-answer-row').className = 'builder-answer-row';
+
+  renderGrammarAnswerRow(q);
+
+  const shuffled = [...q.words].map((w, i) => ({ word: w, idx: i })).sort(() => Math.random() - 0.5);
+  const bank = document.getElementById('word-bank');
+  bank.innerHTML = '';
+  shuffled.forEach(({ word, idx }) => {
+    const mod = GRAMMAR_MODULES.find(m => m.id === q.module);
+    const tile = document.createElement('button');
+    tile.type = 'button'; tile.dataset.idx = idx;
+    tile.className = 'word-tile' + (q.particleIdx.includes(idx) ? ' particle-tile' : '');
+    if (q.particleIdx.includes(idx) && mod) tile.style.background = mod.color;
+    tile.textContent = word;
+    tile.addEventListener('click', () => placeGrammarWord(idx, q));
+    bank.appendChild(tile);
+  });
+}
+
+function placeGrammarWord(idx, q) {
+  if (grammarBuilderPlaced.includes(idx)) return;
+  grammarBuilderPlaced.push(idx);
+  const bankTile = document.querySelector(`#word-bank button[data-idx="${idx}"]`);
+  if (bankTile) { bankTile.style.opacity = '0.3'; bankTile.disabled = true; }
+  renderGrammarAnswerRow(q);
+}
+
+function renderGrammarAnswerRow(q) {
+  const row = document.getElementById('builder-answer-row');
+  row.innerHTML = '';
+  const mod = GRAMMAR_MODULES.find(m => m.id === q.module);
+  grammarBuilderPlaced.forEach((idx, pos) => {
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'answer-tile word-tile' + (q.particleIdx.includes(idx) ? ' particle-tile' : '');
+    if (q.particleIdx.includes(idx) && mod) tile.style.background = mod.color;
+    tile.textContent = q.words[idx];
+    tile.addEventListener('click', () => removeGrammarWord(pos, q));
+    row.appendChild(tile);
+  });
+}
+
+function removeGrammarWord(pos, q) {
+  const removed = grammarBuilderPlaced.splice(pos, 1)[0];
+  const bankTile = document.querySelector(`#word-bank button[data-idx="${removed}"]`);
+  if (bankTile) { bankTile.style.opacity = '1'; bankTile.disabled = false; }
+  renderGrammarAnswerRow(q);
+}
+
+// ══════════════════════════════════════════════════════════
+// GRAMMAR EVENT LISTENERS INIT
+// ══════════════════════════════════════════════════════════
+function initGrammarListeners() {
+  // Back buttons
+  document.getElementById('back-to-menu-grammar-learn').addEventListener('click', () => showScreen('menu-screen'));
+  document.getElementById('back-to-menu-grammar-quiz').addEventListener('click',  () => showScreen('menu-screen'));
+  document.getElementById('grammar-learn-back-link').addEventListener('click', e => { e.preventDefault(); showScreen('menu-screen'); });
+
+  // Grammar menu quiz buttons
+  document.getElementById('grammar-quiz-all-btn').addEventListener('click', () => {
+    currentGrammarModule = null; startGrammarQuiz('all', null);
+  });
+  document.getElementById('grammar-builder-btn').addEventListener('click', () => startGrammarBuilder('all', null));
+
+  // Learn navigation
+  document.getElementById('grammar-speak-btn').addEventListener('click', function() {
+    const m   = GRAMMAR_MODULES[grammarLearnIdx];
+    const exs = m.examples[G_EX_LEVELS[grammarExTabIdx]] || [];
+    let i = 0;
+    function speakNext() { if (i < exs.length) { speak(exs[i].speak || exs[i].jp.join('')); i++; setTimeout(speakNext, 2700); } }
+    speakNext();
+  });
+  document.getElementById('grammar-learn-prev').addEventListener('click', () => {
+    if (grammarLearnIdx > 0) { grammarLearnIdx--; grammarExTabIdx = 0; showGrammarLearnCard(); setTimeout(() => speak(GRAMMAR_MODULES[grammarLearnIdx].shortName), 300); }
+  });
+  document.getElementById('grammar-learn-next').addEventListener('click', () => {
+    if (grammarLearnIdx < GRAMMAR_MODULES.length - 1) { grammarLearnIdx++; grammarExTabIdx = 0; showGrammarLearnCard(); setTimeout(() => speak(GRAMMAR_MODULES[grammarLearnIdx].shortName), 300); }
+  });
+  document.getElementById('start-grammar-quiz-from-learn').addEventListener('click', () =>
+    startGrammarQuiz('single', currentGrammarModule?.id));
+  document.getElementById('start-grammar-builder-from-learn').addEventListener('click', () =>
+    startGrammarBuilder('single', currentGrammarModule?.id));
+
+  // Grammar builder check
+  document.getElementById('builder-check-btn').addEventListener('click', () => {
+    // Determine if grammar or particle builder is active
+    const isGrammar = grammarBuilderData.length > 0 && grammarBuilderIdx < grammarBuilderData.length;
+    if (isGrammar) checkGrammarBuilderAnswer();
+    // else: original particle builder check handles it
+  }, { capture: false });
+}
+
+function checkGrammarBuilderAnswer() {
+  const q   = grammarBuilderData[grammarBuilderIdx];
+  const answer = grammarBuilderPlaced.map(i => q.words[i]).join('');
+  const correct = q.words.join('');
+  const row = document.getElementById('builder-answer-row');
+  const fb  = document.getElementById('builder-feedback');
+
+  if (grammarBuilderPlaced.length < q.words.length) { fb.textContent = '🤔 Place all the words first!'; return; }
+
+  document.getElementById('builder-check-btn').disabled = true;
+  document.querySelectorAll('#word-bank button').forEach(b => b.disabled = true);
+
+  if (answer === correct) {
+    row.classList.add('correct-row');
+    grammarBuilderScore++; grammarBuilderStreak++;
+    document.getElementById('builder-score').textContent  = grammarBuilderScore;
+    document.getElementById('builder-streak').textContent = grammarBuilderStreak;
+    const enc = ['すごい！🎉','よくできました！⭐','パーフェクト！🌟','さいこう！💫'];
+    fb.textContent = grammarBuilderStreak >= 3
+      ? enc[Math.floor(Math.random()*enc.length)] + ' 🔥 ' + grammarBuilderStreak + ' in a row!'
+      : enc[Math.floor(Math.random()*enc.length)];
+    speak(correct);
+    setTimeout(() => { grammarBuilderIdx++; showGrammarBuilderQ(); }, 2000);
+  } else {
+    row.classList.add('wrong-row');
+    grammarBuilderStreak = 0; document.getElementById('builder-streak').textContent = 0;
+    fb.textContent = 'ちがいます! Not quite — tap to undo a word and try again!';
+    document.getElementById('builder-hint-btn').style.display = 'block';
+    setTimeout(() => {
+      row.classList.remove('wrong-row');
+      document.getElementById('builder-check-btn').disabled = false;
+      document.querySelectorAll('#word-bank button').forEach(b => b.disabled = !!grammarBuilderPlaced.includes(parseInt(b.dataset.idx)));
+    }, 1200);
+  }
+}
+
+document.getElementById('builder-hint-btn').addEventListener('click', () => {
+  // Grammar builder hint
+  if (grammarBuilderIdx < grammarBuilderData.length) {
+    const q = grammarBuilderData[grammarBuilderIdx];
+    document.getElementById('builder-feedback').textContent = '💡 Correct order: ' + q.words.join(' ');
+  }
+}, { capture: false });
+
 document.addEventListener('DOMContentLoaded', function() {
   buildMenu();
 
@@ -1362,6 +2335,23 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('showdown-quiz-btn').addEventListener('click', () => {
     currentParticle = null; startQuizMode('showdown');
+  });
+
+  // ── Grammar init ──
+  buildGrammarMenu();
+  initGrammarListeners();
+
+  // ── Try-again handles all modes ──
+  document.getElementById('try-again-btn').addEventListener('click', () => {
+    if (grammarQuizMode === 'grammar') {
+      startGrammarQuiz('single', currentGrammarModule?.id);
+    } else if (grammarQuizMode === 'grammar-builder') {
+      startGrammarBuilder('single', currentGrammarModule?.id);
+    } else if (quizMode === 'builder') {
+      startBuilderMode('all');
+    } else {
+      startQuizMode(quizMode);
+    }
   });
 });
 </script>
