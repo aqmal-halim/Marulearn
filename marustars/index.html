@@ -1,1 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MaruStars: Times Table Galaxy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night-1:#1a1442;
+    --night-2:#2a1f63;
+    --panel:#322577;
+    --panel-2:#3d2e8c;
+    --gold:#ffd86b;
+    --gold-deep:#f5b942;
+    --lav:#b9a7f0;
+    --cream:#f5f0ff;
+    --mint:#7fe3c4;
+    --coral:#ff9d8a;
+    --dim:#6b5fa8;
+    --shadow:0 10px 30px rgba(8,4,30,.45);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:"Baloo 2","Zen Maru Gothic",system-ui,sans-serif;
+    background:radial-gradient(120% 80% at 50% -10%, #2c2070 0%, var(--night-1) 60%, #120d31 100%);
+    color:var(--cream);
+    min-height:100%;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+    touch-action:manipulation;
+  }
+  .jp{font-family:"Zen Maru Gothic","Baloo 2",sans-serif;}
+  .stage{
+    max-width:560px;margin:0 auto;padding:18px 16px 40px;
+    position:relative;min-height:100vh;
+  }
+  /* ambient stars */
+  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .twinkle{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.5;animation:tw 3s ease-in-out infinite;}
+  @keyframes tw{0%,100%{opacity:.15;transform:scale(.8);}50%{opacity:.9;transform:scale(1.3);}}
+  .stage>*{position:relative;z-index:1;}
 
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.3px;}
+  .brand .logo{font-size:26px;}
+  .iconbtn{
+    border:none;background:rgba(255,255,255,.08);color:var(--cream);
+    width:42px;height:42px;border-radius:14px;font-size:20px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:transform .12s,background .2s;
+  }
+  .iconbtn:hover{background:rgba(255,255,255,.16);}
+  .iconbtn:active{transform:scale(.92);}
+  .iconbtn.on{background:var(--gold);color:#3a2a00;}
+  .iconbtn *{pointer-events:none;}
+
+  .card{
+    background:linear-gradient(180deg, var(--panel) 0%, var(--night-2) 100%);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;padding:22px;box-shadow:var(--shadow);
+  }
+
+  /* screens */
+  .screen{display:none;}
+  .screen.active{display:block;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  /* HOME */
+  .owl-hero{font-size:78px;text-align:center;line-height:1;margin:6px 0 2px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.4));}
+  .tagline{text-align:center;color:var(--lav);font-weight:600;margin:0 0 16px;font-size:15px;}
+  .galaxy-progress{display:flex;align-items:center;gap:12px;justify-content:center;margin:6px 0 18px;}
+  .gp-num{font-size:40px;font-weight:800;color:var(--gold);line-height:1;}
+  .gp-label{font-size:13px;color:var(--lav);font-weight:600;}
+  .bar{height:12px;border-radius:8px;background:rgba(0,0,0,.28);overflow:hidden;margin-top:6px;}
+  .bar > i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--gold-deep),var(--gold));transition:width .6s cubic-bezier(.2,.9,.3,1);}
+
+  .section-label{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);font-weight:700;margin:18px 2px 8px;}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .chip{
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--cream);
+    padding:11px 0;border-radius:14px;font-family:inherit;font-weight:700;font-size:17px;cursor:pointer;
+    flex:1 1 calc(25% - 9px);min-width:62px;text-align:center;transition:transform .12s,background .2s,border-color .2s;
+    position:relative;
+  }
+  .chip *{pointer-events:none;}
+  .chip:active{transform:scale(.94);}
+  .chip.sel{background:var(--gold);color:#3a2a00;border-color:var(--gold);}
+  .chip.wide{flex:1 1 100%;font-size:16px;padding:13px 0;}
+  .chip .mini{display:block;font-size:11px;font-weight:600;opacity:.8;margin-top:2px;}
+  .chip.sel .mini{opacity:.9;}
+
+  .primary{
+    margin-top:20px;width:100%;border:none;cursor:pointer;
+    background:linear-gradient(180deg,var(--gold),var(--gold-deep));color:#3a2700;
+    font-family:inherit;font-weight:800;font-size:22px;padding:18px;border-radius:18px;
+    box-shadow:0 8px 0 #b5841f, var(--shadow);transition:transform .08s,box-shadow .08s;
+  }
+  .primary *{pointer-events:none;}
+  .primary:active{transform:translateY(4px);box-shadow:0 4px 0 #b5841f,var(--shadow);}
+  .ghost{
+    margin-top:10px;width:100%;border:1px solid rgba(255,255,255,.16);cursor:pointer;
+    background:transparent;color:var(--cream);font-family:inherit;font-weight:700;font-size:16px;padding:13px;border-radius:16px;
+  }
+  .ghost *{pointer-events:none;}
+
+  .streak-pill{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;color:var(--lav);font-weight:700;font-size:14px;}
+
+  /* PLAY */
+  .play-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .dots{display:flex;gap:6px;}
+  .dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.16);}
+  .dot.done{background:var(--mint);}
+  .dot.cur{background:var(--gold);box-shadow:0 0 0 4px rgba(255,216,107,.2);}
+  .stat{font-weight:800;font-size:16px;color:var(--gold);}
+  .stat small{color:var(--lav);font-weight:600;font-size:12px;}
+
+  .owl-react{font-size:54px;text-align:center;line-height:1;margin:10px 0 2px;height:60px;transition:transform .2s;}
+  .owl-react.pop{animation:pop .4s ease;}
+  @keyframes pop{0%{transform:scale(1);}40%{transform:scale(1.35) rotate(-6deg);}100%{transform:scale(1);}}
+  .bubble{
+    text-align:center;min-height:30px;font-weight:700;font-size:20px;margin:0 auto 10px;
+    color:var(--gold);
+  }
+  .bubble.mint{color:var(--mint);}
+  .bubble.coral{color:var(--coral);}
+
+  .problem{
+    text-align:center;font-weight:800;font-size:56px;letter-spacing:2px;margin:6px 0 4px;
+    text-shadow:0 6px 20px rgba(0,0,0,.4);
+  }
+  .answer-box{
+    margin:6px auto 14px;width:170px;height:74px;border-radius:18px;
+    background:rgba(0,0,0,.28);border:2px solid var(--lav);
+    display:flex;align-items:center;justify-content:center;
+    font-size:42px;font-weight:800;color:var(--cream);transition:border-color .2s,background .2s;
+  }
+  .answer-box.good{border-color:var(--mint);background:rgba(127,227,196,.16);}
+  .answer-box.bad{border-color:var(--coral);background:rgba(255,157,138,.16);animation:shake .35s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+  .answer-box .ph{color:var(--dim);}
+
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .key{
+    border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:26px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--cream);
+    padding:16px 0;border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.3);transition:transform .07s,box-shadow .07s;
+  }
+  .key *{pointer-events:none;}
+  .key:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.3);}
+  .key.act{background:linear-gradient(180deg,#4a3aa3,#3a2c84);}
+  .key.enter{background:linear-gradient(180deg,var(--mint),#4fcaa6);color:#053a2c;box-shadow:0 5px 0 #2f8c70;}
+  .key.clear{background:linear-gradient(180deg,#5a4aa8,#473893);color:var(--lav);}
+
+  .quitline{text-align:center;margin-top:14px;}
+  .quitline button{background:none;border:none;color:var(--dim);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;text-decoration:underline;}
+
+  /* SUMMARY */
+  .sum-stars{font-size:50px;text-align:center;margin:4px 0;}
+  .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+  .sum-cell{background:rgba(0,0,0,.22);border-radius:16px;padding:14px;text-align:center;}
+  .sum-cell b{display:block;font-size:30px;color:var(--gold);}
+  .sum-cell span{font-size:12px;color:var(--lav);font-weight:600;}
+  .newstars{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 4px;}
+  .ns{background:rgba(255,216,107,.16);border:1px solid var(--gold);color:var(--gold);border-radius:12px;padding:6px 10px;font-weight:800;font-size:15px;}
+
+  /* MAP */
+  .map-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-top:6px;}
+  .mstar{aspect-ratio:1;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.35);background:rgba(255,255,255,.04);position:relative;}
+  .mstar.b1{background:rgba(255,216,107,.10);}
+  .mstar.b2{background:rgba(255,216,107,.20);}
+  .mstar.b3{background:rgba(255,216,107,.34);}
+  .mstar.b4{background:rgba(255,216,107,.55);color:#3a2a00;}
+  .mstar.b5{background:linear-gradient(180deg,var(--gold),var(--gold-deep));color:#3a2a00;box-shadow:0 0 10px rgba(255,216,107,.6);}
+  .map-legend{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;font-size:12px;color:var(--lav);font-weight:600;}
+  .legdot{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:5px;}
+
+  /* chant */
+  .chantline{text-align:center;min-height:22px;margin:-2px 0 8px;font-size:22px;font-weight:700;color:var(--gold);letter-spacing:1px;}
+  .chantline.show{animation:fade .3s ease;}
+  .chant-intro{color:var(--lav);font-weight:600;font-size:14px;text-align:center;margin:2px 0 14px;}
+  .seg-row{display:flex;gap:8px;margin:0 0 14px;}
+  .seg{flex:1;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--cream);
+    font-family:inherit;font-weight:700;font-size:15px;padding:11px 0;border-radius:12px;cursor:pointer;text-align:center;}
+  .seg *{pointer-events:none;}
+  .seg.sel{background:var(--lav);color:#241a5c;border-color:var(--lav);}
+  .chant-list{display:flex;flex-direction:column;gap:8px;}
+  .chant-card{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.22);border-radius:14px;padding:12px 14px;cursor:pointer;border:1px solid transparent;transition:border-color .15s,background .15s;}
+  .chant-card *{pointer-events:none;}
+  .chant-card:active{background:rgba(255,216,107,.12);border-color:var(--gold);}
+  .cc-eq{font-weight:800;font-size:20px;min-width:74px;}
+  .cc-read{font-weight:700;font-size:20px;color:var(--gold);flex:1;}
+  .cc-play{font-size:20px;opacity:.8;}
+  .spark{position:fixed;pointer-events:none;font-size:22px;z-index:5;animation:rise 1s ease-out forwards;}
+  @keyframes rise{0%{opacity:1;transform:translateY(0) scale(.6);}100%{opacity:0;transform:translateY(-90px) scale(1.3);}}
+</style>
+</head>
+<body>
+<div class="sky" id="sky"></div>
+<div class="stage">
+
+  <div class="topbar">
+    <div class="brand"><span class="logo">🦉</span><span>MaruStars</span></div>
+    <div style="display:flex;gap:8px;">
+      <button class="iconbtn" id="soundBtn" data-act="sound" title="Sound">🔊</button>
+      <button class="iconbtn" id="voiceBtn" data-act="voice" title="Read aloud">🗣️</button>
+      <button class="iconbtn" id="mapBtn" data-act="map" title="Star map">🗺️</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="home">
+    <div class="card">
+      <div class="owl-hero">🦉</div>
+      <p class="tagline jp">星をぜんぶ ひからせよう！ <span style="opacity:.7;">Light up every star</span></p>
+
+      <div class="galaxy-progress">
+        <div class="gp-num" id="homeLit">0</div>
+        <div>
+          <div class="gp-label"><span id="homeTotal">64</span> stars in the galaxy</div>
+          <div class="bar" style="width:200px;"><i id="homeBar"></i></div>
+        </div>
+      </div>
+
+      <div class="section-label">Pick a mission</div>
+      <div class="chips" id="focusChips">
+        <button class="chip" data-focus="tricky">⭐<span class="mini">Tricky 15</span></button>
+        <button class="chip" data-focus="all">🌌<span class="mini">All stars</span></button>
+        <button class="chip" data-focus="2">2</button>
+        <button class="chip" data-focus="3">3</button>
+        <button class="chip" data-focus="4">4</button>
+        <button class="chip" data-focus="5">5</button>
+        <button class="chip" data-focus="6">6</button>
+        <button class="chip" data-focus="7">7</button>
+        <button class="chip" data-focus="8">8</button>
+        <button class="chip" data-focus="9">9</button>
+      </div>
+
+      <button class="primary" id="startBtn">スタート ✦ Start</button>
+      <button class="ghost" data-act="chant" style="margin-top:12px;">九九モード ✦ Listen &amp; chant</button>
+      <div class="streak-pill" id="streakPill"></div>
+    </div>
+  </div>
+
+  <!-- PLAY -->
+  <div class="screen" id="play">
+    <div class="card">
+      <div class="play-top">
+        <div class="dots" id="dots"></div>
+        <div class="stat" id="streakStat">🔥 0</div>
+      </div>
+      <div class="owl-react" id="owl">🦉</div>
+      <div class="bubble jp" id="bubble">&nbsp;</div>
+      <div class="chantline jp" id="chantline"></div>
+      <div class="problem" id="problem">6 × 7</div>
+      <div class="answer-box" id="answer"><span class="ph">?</span></div>
+      <div class="keypad" id="keypad">
+        <button class="key" data-k="1">1</button>
+        <button class="key" data-k="2">2</button>
+        <button class="key" data-k="3">3</button>
+        <button class="key" data-k="4">4</button>
+        <button class="key" data-k="5">5</button>
+        <button class="key" data-k="6">6</button>
+        <button class="key" data-k="7">7</button>
+        <button class="key" data-k="8">8</button>
+        <button class="key" data-k="9">9</button>
+        <button class="key clear" data-k="clear">⌫</button>
+        <button class="key" data-k="0">0</button>
+        <button class="key enter" data-k="enter">✓</button>
+      </div>
+      <div class="quitline"><button data-act="quit">end round</button></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="screen" id="summary">
+    <div class="card">
+      <div class="sum-stars" id="sumOwl">🎉</div>
+      <div class="bubble jp" id="sumTitle" style="font-size:24px;">よくできました！</div>
+      <div class="sum-grid">
+        <div class="sum-cell"><b id="sumAcc">0%</b><span>correct</span></div>
+        <div class="sum-cell"><b id="sumBest">-</b><span>fastest answer</span></div>
+      </div>
+      <div class="section-label" style="text-align:center;">New stars lit</div>
+      <div class="newstars" id="newStars"><span style="color:var(--dim);font-weight:600;">Keep going to light more ✦</span></div>
+      <div class="galaxy-progress" style="margin-top:16px;">
+        <div class="gp-num" id="sumLit">0</div>
+        <div>
+          <div class="gp-label">of <span id="sumTotal">64</span> stars lit</div>
+          <div class="bar" style="width:200px;"><i id="sumBar"></i></div>
+        </div>
+      </div>
+      <button class="primary" id="againBtn">もう一回 ✦ Play again</button>
+      <button class="ghost" data-act="home">Home</button>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="screen" id="map">
+    <div class="card">
+      <div class="section-label" style="margin-top:0;">Your galaxy ✦ tables 2–9</div>
+      <div class="map-grid" id="mapGrid"></div>
+      <div class="map-legend">
+        <span><i class="legdot" style="background:rgba(255,255,255,.06);"></i>not learned</span>
+        <span><i class="legdot" style="background:linear-gradient(180deg,var(--gold),var(--gold-deep));"></i>mastered</span>
+      </div>
+      <button class="ghost" data-act="home" style="margin-top:18px;">Back</button>
+    </div>
+  </div>
+
+  <!-- CHANT MODE -->
+  <div class="screen" id="chant">
+    <div class="card">
+      <div class="section-label" style="margin-top:0;">九九モード ✦ Listen &amp; chant</div>
+      <p class="chant-intro jp">学校とおなじ リズムで おぼえよう。タップで きこえるよ 🔊</p>
+      <div class="seg-row" id="segRow">
+        <button class="seg sel" data-dan="2">2</button>
+        <button class="seg" data-dan="3">3</button>
+        <button class="seg" data-dan="4">4</button>
+        <button class="seg" data-dan="5">5</button>
+        <button class="seg" data-dan="6">6</button>
+        <button class="seg" data-dan="7">7</button>
+        <button class="seg" data-dan="8">8</button>
+        <button class="seg" data-dan="9">9</button>
+      </div>
+      <div class="chant-list" id="chantList"></div>
+      <button class="ghost" data-act="home" style="margin-top:18px;">Back</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- storage (Safari-safe) ----------
+  var STORE = "marustars_v1";
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(raw){ return JSON.parse(raw); }
+    }catch(e){}
+    return null;
+  }
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){}
+  }
+
+  // ---------- fact set: tables 2..9 (the 九九 core = 64 stars) ----------
+  var MIN=2, MAX=9;
+  var TRICKY = ["6x7","6x8","7x8","7x9","8x9","6x9","4x7","4x8","4x6","3x7","3x8","3x9","7x7","8x8","6x6"];
+
+  function keyOf(a,b){ return a+"x"+b; }
+
+  function buildFacts(){
+    var f={};
+    for(var a=MIN;a<=MAX;a++){
+      for(var b=MIN;b<=MAX;b++){
+        f[keyOf(a,b)] = {a:a,b:b,box:0};
+      }
+    }
+    return f;
+  }
+
+  // ---------- state ----------
+  var state = load();
+  if(!state || !state.facts){
+    state = { facts:buildFacts(), sound:true, voice:false, dayStreak:0, lastDay:null };
+  }else{
+    // migrate: make sure every fact exists
+    var base = buildFacts();
+    for(var k in base){ if(!state.facts[k]){ state.facts[k]=base[k]; } }
+    if(typeof state.sound!=="boolean"){ state.sound=true; }
+    if(typeof state.voice!=="boolean"){ state.voice=false; }
+    if(typeof state.dayStreak!=="number"){ state.dayStreak=0; }
+  }
+
+  // ---------- day streak (rewards daily practice = the real driver) ----------
+  function todayStr(){
+    var d=new Date();
+    return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  function dayDiff(a,b){
+    var pa=a.split("-"), pb=b.split("-");
+    var da=new Date(pa[0],pa[1]-1,pa[2]);
+    var db=new Date(pb[0],pb[1]-1,pb[2]);
+    return Math.round((db-da)/86400000);
+  }
+  function touchDay(){
+    var t=todayStr();
+    if(state.lastDay===t){ return; }
+    if(state.lastDay){
+      var diff=dayDiff(state.lastDay,t);
+      if(diff===1){ state.dayStreak=(state.dayStreak||0)+1; }
+      else { state.dayStreak=1; }
+    }else{
+      state.dayStreak=1;
+    }
+    state.lastDay=t;
+    save();
+  }
+
+  // ---------- helpers ----------
+  var $=function(id){ return document.getElementById(id); };
+  function totalStars(){ return (MAX-MIN+1)*(MAX-MIN+1); }
+  function litCount(){
+    var n=0;
+    for(var k in state.facts){ if(state.facts[k].box>=5){ n++; } }
+    return n;
+  }
+  function show(id){
+    var s=document.querySelectorAll(".screen");
+    for(var i=0;i<s.length;i++){ s[i].className="screen"; }
+    $(id).className="screen active";
+  }
+
+  // ---------- audio ----------
+  var actx=null;
+  function beep(freq,dur,type){
+    if(!state.sound){ return; }
+    try{
+      if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); }
+      var o=actx.createOscillator(), g=actx.createGain();
+      o.type=type||"sine"; o.frequency.value=freq;
+      o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(.0001,actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.18,actx.currentTime+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+dur);
+      o.start(); o.stop(actx.currentTime+dur);
+    }catch(e){}
+  }
+  function goodSound(){ beep(660,.12,"triangle"); setTimeout(function(){ beep(990,.16,"triangle"); },90); }
+  function greatSound(){ beep(660,.1); setTimeout(function(){beep(880,.1);},80); setTimeout(function(){beep(1180,.18);},170); }
+  function badSound(){ beep(220,.22,"sawtooth"); }
+
+  // ---------- 九九 readings (common reading; varies by region/teacher) ----------
+  // Verified hard zone (6-9 rows) against standard chant references.
+  // Edit any line here to match her teacher's class chant.
+  var READINGS = {
+    "2x2":"ににんがし","2x3":"にさんがろく","2x4":"にしがはち","2x5":"にごじゅう",
+    "2x6":"にろくじゅうに","2x7":"にしちじゅうし","2x8":"にはちじゅうろく","2x9":"にくじゅうはち",
+    "3x2":"さんにがろく","3x3":"さざんがく","3x4":"さんしじゅうに","3x5":"さんごじゅうご",
+    "3x6":"さぶろくじゅうはち","3x7":"さんしちにじゅういち","3x8":"さんぱにじゅうし","3x9":"さんくにじゅうしち",
+    "4x2":"しにがはち","4x3":"しさんじゅうに","4x4":"ししじゅうろく","4x5":"しごにじゅう",
+    "4x6":"しろくにじゅうし","4x7":"ししちにじゅうはち","4x8":"しはさんじゅうに","4x9":"しくさんじゅうろく",
+    "5x2":"ごにじゅう","5x3":"ごさんじゅうご","5x4":"ごしにじゅう","5x5":"ごごにじゅうご",
+    "5x6":"ごろくさんじゅう","5x7":"ごしちさんじゅうご","5x8":"ごはしじゅう","5x9":"ごっくしじゅうご",
+    "6x2":"ろくにじゅうに","6x3":"ろくさんじゅうはち","6x4":"ろくしにじゅうし","6x5":"ろくごさんじゅう",
+    "6x6":"ろくろくさんじゅうろく","6x7":"ろくしちしじゅうに","6x8":"ろくはしじゅうはち","6x9":"ろくくごじゅうし",
+    "7x2":"しちにじゅうし","7x3":"しちさんにじゅういち","7x4":"しちしにじゅうはち","7x5":"しちごさんじゅうご",
+    "7x6":"しちろくしじゅうに","7x7":"しちしちしじゅうく","7x8":"しちはごじゅうろく","7x9":"しちくろくじゅうさん",
+    "8x2":"はちにじゅうろく","8x3":"はちさんにじゅうし","8x4":"はちしさんじゅうに","8x5":"はちごしじゅう",
+    "8x6":"はちろくしじゅうはち","8x7":"はちしちごじゅうろく","8x8":"はっぱろくじゅうし","8x9":"はっくしちじゅうに",
+    "9x2":"くにじゅうはち","9x3":"くさんにじゅうしち","9x4":"くしさんじゅうろく","9x5":"くごしじゅうご",
+    "9x6":"くろくごじゅうし","9x7":"くしちろくじゅうさん","9x8":"くはしちじゅうに","9x9":"くくはちじゅういち"
+  };
+  // plain Japanese number words for reading the QUESTION (no answer leak)
+  var NUMWORD = {2:"に",3:"さん",4:"し",5:"ご",6:"ろく",7:"しち",8:"はち",9:"く"};
+
+  function jpVoiceAvailable(){
+    try{
+      var vs=window.speechSynthesis.getVoices();
+      for(var i=0;i<vs.length;i++){ if(vs[i].lang && vs[i].lang.indexOf("ja")===0){ return true; } }
+    }catch(e){}
+    return false;
+  }
+  function sayJa(text){
+    try{
+      if(!window.speechSynthesis){ return; }
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang="ja-JP"; u.rate=.85; u.pitch=1.1;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  // read the problem aloud as plain factors, e.g. "ろく かける しち"
+  function speak(a,b){
+    if(!state.voice){ return; }
+    sayJa(NUMWORD[a]+" かける "+NUMWORD[b]);
+  }
+  // full kuku chant for a fact (used on wrong answer and in chant mode)
+  function chantOf(key){ return READINGS[key] || ""; }
+  function speakChant(key){ sayJa(chantOf(key)); }
+
+  // ---------- spaced-repetition selection ----------
+  function focusKeys(){
+    if(roundFocus==="all"){ return Object.keys(state.facts); }
+    if(roundFocus==="tricky"){ return TRICKY.slice(); }
+    var t=parseInt(roundFocus,10);
+    var arr=[];
+    for(var b=MIN;b<=MAX;b++){ arr.push(keyOf(t,b)); }
+    return arr;
+  }
+  function pickFact(pool,avoid){
+    var weighted=[], total=0;
+    for(var i=0;i<pool.length;i++){
+      var k=pool[i];
+      if(k===avoid && pool.length>1){ continue; }
+      var box=state.facts[k].box;
+      // lower box = higher weight; mastered still appears occasionally for review
+      var w = box>=5 ? 1 : (6-box)*4 + 2;
+      if(state.lastWrongKey===k){ w+=10; }
+      weighted.push({k:k,w:w}); total+=w;
+    }
+    var r=Math.random()*total, acc=0;
+    for(var j=0;j<weighted.length;j++){
+      acc+=weighted[j].w;
+      if(r<=acc){ return weighted[j].k; }
+    }
+    return weighted[weighted.length-1].k;
+  }
+
+  // ---------- praise strings (match gold standard) ----------
+  var PRAISE_FAST=["パーフェクト！","すごい！"];
+  var PRAISE_OK=["よくできました！","せいかい！"];
+  var PRAISE_WRONG=["もう一度！","がんばれ！"];
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  // ---------- round vars ----------
+  var ROUND_LEN=10;
+  var roundFocus="tricky";
+  var qIndex=0, curKey=null, curAns=0, qStart=0, entered="";
+  var rStats={correct:0, best:0, newStars:[]};
+
+  function setFocus(f){
+    roundFocus=f;
+    var chips=document.querySelectorAll("#focusChips .chip");
+    for(var i=0;i<chips.length;i++){
+      chips[i].className = chips[i].getAttribute("data-focus")===f ? "chip sel" : "chip";
+    }
+  }
+
+  function renderHome(){
+    var lit=litCount(), total=totalStars();
+    $("homeLit").textContent=lit;
+    $("homeTotal").textContent=total;
+    $("homeBar").style.width=(lit/total*100)+"%";
+    var sp=$("streakPill");
+    if(state.dayStreak>=2){
+      sp.innerHTML="🔥 "+state.dayStreak+"-day streak — come back tomorrow to keep it!";
+    }else{
+      sp.innerHTML="✦ Play a little every day to light the galaxy fastest";
+    }
+    $("soundBtn").className="iconbtn"+(state.sound?" on":"");
+    $("voiceBtn").className="iconbtn"+(state.voice?" on":"");
+  }
+
+  function renderDots(){
+    var d=$("dots"); d.innerHTML="";
+    for(var i=0;i<ROUND_LEN;i++){
+      var cls="dot";
+      if(i<qIndex){ cls="dot done"; }
+      else if(i===qIndex){ cls="dot cur"; }
+      var el=document.createElement("div"); el.className=cls; d.appendChild(el);
+    }
+  }
+
+  function startRound(){
+    touchDay();
+    qIndex=0;
+    rStats={correct:0, best:0, newStars:[]};
+    state.lastWrongKey=null;
+    show("play");
+    $("streakStat").textContent="🔥 0";
+    streak=0;
+    nextQuestion();
+  }
+
+  var streak=0;
+  function nextQuestion(){
+    if(qIndex>=ROUND_LEN){ endRound(); return; }
+    renderDots();
+    var pool=focusKeys();
+    curKey=pickFact(pool, curKey);
+    var f=state.facts[curKey];
+    curAns=f.a*f.b;
+    entered="";
+    $("answer").className="answer-box";
+    $("answer").innerHTML='<span class="ph">?</span>';
+    $("problem").textContent=f.a+" × "+f.b;
+    $("bubble").className="bubble jp"; $("bubble").innerHTML="&nbsp;";
+    $("chantline").textContent=""; $("chantline").className="chantline jp";
+    $("owl").textContent="🦉"; $("owl").className="owl-react";
+    qStart=Date.now();
+    speak(f.a,f.b);
+  }
+
+  function renderAnswer(){
+    var el=$("answer");
+    if(entered===""){ el.innerHTML='<span class="ph">?</span>'; }
+    else{ el.textContent=entered; }
+  }
+
+  function sparkle(){
+    var emo=["✦","⭐","✨","🌟"];
+    for(var i=0;i<6;i++){
+      (function(i){
+        setTimeout(function(){
+          var s=document.createElement("div");
+          s.className="spark"; s.textContent=emo[Math.floor(Math.random()*emo.length)];
+          s.style.left=(30+Math.random()*40)+"%";
+          s.style.top=(35+Math.random()*15)+"%";
+          document.body.appendChild(s);
+          setTimeout(function(){ if(s.parentNode){ s.parentNode.removeChild(s);} },1000);
+        }, i*70);
+      })(i);
+    }
+  }
+
+  function submit(){
+    if(entered===""){ return; }
+    var val=parseInt(entered,10);
+    var f=state.facts[curKey];
+    var t=(Date.now()-qStart)/1000;
+    var fast = t<=4;
+    var wasLit = f.box>=5;
+
+    if(val===curAns){
+      f.box=Math.min(5,f.box+1);
+      rStats.correct++;
+      streak++;
+      if(!wasLit && f.box>=5){ rStats.newStars.push(f.a+"×"+f.b); }
+      if(rStats.best===0 || t<rStats.best){ rStats.best=t; }
+      $("answer").className="answer-box good";
+      $("owl").textContent = fast ? "🤩" : "😊";
+      $("owl").className="owl-react pop";
+      $("bubble").className="bubble jp mint";
+      $("bubble").textContent = fast ? pick(PRAISE_FAST) : pick(PRAISE_OK);
+      state.lastWrongKey=null;
+      if(fast){ greatSound(); } else { goodSound(); }
+      sparkle();
+    }else{
+      f.box=Math.max(0,f.box-2);
+      streak=0;
+      state.lastWrongKey=curKey;
+      $("answer").className="answer-box bad";
+      $("answer").textContent=entered;
+      $("owl").textContent="🫣"; $("owl").className="owl-react";
+      $("bubble").className="bubble jp coral";
+      $("bubble").textContent=pick(PRAISE_WRONG)+" "+f.a+"×"+f.b+"="+curAns;
+      var cl=$("chantline"); cl.textContent=chantOf(curKey); cl.className="chantline jp show";
+      badSound();
+      if(state.voice){ setTimeout(function(){ speakChant(curKey); }, 350); }
+    }
+    $("streakStat").textContent="🔥 "+streak;
+    save();
+    qIndex++;
+    var delay = (val===curAns) ? 750 : 2600;
+    lock=true;
+    setTimeout(function(){ lock=false; nextQuestion(); }, delay);
+  }
+
+  var lock=false;
+  function keyPress(k){
+    if(lock){ return; }
+    if(k==="clear"){ entered=entered.slice(0,-1); renderAnswer(); return; }
+    if(k==="enter"){ submit(); return; }
+    if(entered.length>=3){ return; }
+    if(entered==="0"){ entered=k; } else { entered+=k; }
+    renderAnswer();
+  }
+
+  function endRound(){
+    show("summary");
+    var acc = Math.round(rStats.correct/ROUND_LEN*100);
+    $("sumAcc").textContent=acc+"%";
+    $("sumBest").textContent = rStats.best>0 ? rStats.best.toFixed(1)+"s" : "-";
+    $("sumOwl").textContent = acc>=80 ? "🌟" : (acc>=50 ? "🦉" : "💪");
+    $("sumTitle").textContent = acc>=80 ? pick(PRAISE_FAST) : (acc>=50 ? "よくできました！" : "がんばれ！");
+    var ns=$("newStars");
+    if(rStats.newStars.length){
+      ns.innerHTML="";
+      for(var i=0;i<rStats.newStars.length;i++){
+        var sp=document.createElement("span"); sp.className="ns"; sp.textContent="⭐ "+rStats.newStars[i];
+        ns.appendChild(sp);
+      }
+    }else{
+      ns.innerHTML='<span style="color:var(--dim);font-weight:600;">No new stars this round — they need a few correct tries to light ✦</span>';
+    }
+    var lit=litCount(), total=totalStars();
+    $("sumLit").textContent=lit; $("sumTotal").textContent=total;
+    $("sumBar").style.width=(lit/total*100)+"%";
+    if(acc>=80){ greatSound(); }
+  }
+
+  function renderMap(){
+    var g=$("mapGrid"); g.innerHTML="";
+    for(var a=MIN;a<=MAX;a++){
+      for(var b=MIN;b<=MAX;b++){
+        var f=state.facts[keyOf(a,b)];
+        var box=f.box;
+        var cls="mstar"+(box>0?(" b"+Math.min(5,box)):"");
+        var el=document.createElement("div");
+        el.className=cls;
+        el.textContent=a+"×"+b;
+        g.appendChild(el);
+      }
+    }
+    show("map");
+  }
+
+  var chantDan=2;
+  function renderChant(){
+    var segs=document.querySelectorAll("#segRow .seg");
+    for(var s=0;s<segs.length;s++){
+      segs[s].className = parseInt(segs[s].getAttribute("data-dan"),10)===chantDan ? "seg sel" : "seg";
+    }
+    var list=$("chantList"); list.innerHTML="";
+    for(var b=2;b<=9;b++){
+      var key=keyOf(chantDan,b);
+      var card=document.createElement("div");
+      card.className="chant-card"; card.setAttribute("data-chant",key);
+      var eq=document.createElement("div"); eq.className="cc-eq"; eq.textContent=chantDan+" × "+b+" = "+(chantDan*b);
+      var rd=document.createElement("div"); rd.className="cc-read jp"; rd.textContent=chantOf(key);
+      var pl=document.createElement("div"); pl.className="cc-play"; pl.textContent="🔊";
+      card.appendChild(eq); card.appendChild(rd); card.appendChild(pl);
+      list.appendChild(card);
+    }
+    show("chant");
+  }
+  function openChant(){ chantDan=2; renderChant(); }
+
+  // ---------- twinkle background ----------
+  (function(){
+    var sky=$("sky"), n=46;
+    for(var i=0;i<n;i++){
+      var s=document.createElement("div"); s.className="twinkle";
+      s.style.left=(Math.random()*100)+"%";
+      s.style.top=(Math.random()*100)+"%";
+      s.style.animationDelay=(Math.random()*3)+"s";
+      s.style.animationDuration=(2+Math.random()*3)+"s";
+      sky.appendChild(s);
+    }
+  })();
+
+  // ---------- events (delegation) ----------
+  document.addEventListener("click", function(e){
+    var chip=e.target.closest("[data-focus]");
+    if(chip){ setFocus(chip.getAttribute("data-focus")); return; }
+
+    var dan=e.target.closest("[data-dan]");
+    if(dan){ chantDan=parseInt(dan.getAttribute("data-dan"),10); renderChant(); return; }
+
+    var ccard=e.target.closest("[data-chant]");
+    if(ccard){ speakChant(ccard.getAttribute("data-chant")); return; }
+
+    var key=e.target.closest("[data-k]");
+    if(key){ keyPress(key.getAttribute("data-k")); return; }
+
+    var act=e.target.closest("[data-act]");
+    if(act){
+      var a=act.getAttribute("data-act");
+      if(a==="sound"){ state.sound=!state.sound; save(); renderHome(); }
+      else if(a==="voice"){ state.voice=!state.voice; save(); renderHome(); }
+      else if(a==="map"){ renderMap(); }
+      else if(a==="chant"){ openChant(); }
+      else if(a==="quit"){ endRound(); }
+      else if(a==="home"){ renderHome(); show("home"); }
+      return;
+    }
+
+    if(e.target.closest("#startBtn")){ startRound(); return; }
+    if(e.target.closest("#againBtn")){ startRound(); return; }
+  });
+
+  // physical keyboard (desktop)
+  document.addEventListener("keydown", function(e){
+    if(!$("play").classList.contains("active")){ return; }
+    if(e.key>="0" && e.key<="9"){ keyPress(e.key); }
+    else if(e.key==="Enter"){ keyPress("enter"); }
+    else if(e.key==="Backspace"){ keyPress("clear"); }
+  });
+
+  // ---------- init ----------
+  setFocus("tricky");
+  renderHome();
+})();
+</script>
+</body>
+</html>
