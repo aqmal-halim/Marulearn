@@ -1,1 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漢字れんしゅう Kanji Trainer</title>
+<style>
+  :root{
+    --bg:#fdf6ec; --card:#ffffff; --ink:#2b2b2b; --sub:#7a7a7a;
+    --accent:#e8633a; --accent2:#3aa0e8; --green:#3bb273; --red:#e0556b;
+    --gold:#f4b942; --line:#e7ddcc; --grid:#f0c9b8;
+    --shadow:0 4px 18px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Hiragino Maru Gothic ProN","Yu Gothic","Segoe UI",system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);-webkit-tap-highlight-color:transparent}
+  header{background:linear-gradient(135deg,#e8633a,#f4b942);color:#fff;padding:16px 18px;
+    box-shadow:var(--shadow);position:sticky;top:0;z-index:20}
+  header h1{margin:0;font-size:1.25rem;letter-spacing:.5px}
+  header .sub{font-size:.78rem;opacity:.95;margin-top:2px}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;padding:10px;max-width:760px;margin:0 auto}
+  .tab{flex:1 1 auto;min-width:110px;border:none;background:#fff;color:var(--ink);
+    padding:11px 8px;border-radius:14px;font-size:.92rem;font-weight:600;cursor:pointer;
+    box-shadow:var(--shadow);transition:.15s;border:2px solid transparent}
+  .tab small{display:block;font-weight:400;font-size:.66rem;color:var(--sub)}
+  .tab.active{background:var(--accent);color:#fff;transform:translateY(-1px)}
+  .tab.active small{color:#ffe9df}
+  main{max-width:760px;margin:0 auto;padding:8px 14px 60px}
+  .view{display:none;animation:fade .25s}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:18px;margin:12px 0}
+  .kanji-big{font-size:8rem;line-height:1.1;text-align:center;font-weight:500}
+  .reading{text-align:center;color:var(--accent2);font-size:1.1rem;margin-top:4px}
+  .meaning{text-align:center;color:var(--sub);font-size:1rem;margin-top:2px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  button.act{border:none;border-radius:14px;padding:12px 18px;font-size:1rem;font-weight:700;
+    cursor:pointer;box-shadow:var(--shadow);transition:.12s}
+  button.act:active{transform:scale(.96)}
+  .b-flip{background:#fff;color:var(--accent)}
+  .b-good{background:var(--green);color:#fff}
+  .b-bad{background:var(--red);color:#fff}
+  .b-mid{background:var(--gold);color:#5a4500}
+  .b-nav{background:#fff;color:var(--ink)}
+  .b-accent{background:var(--accent);color:#fff}
+  .hidden{display:none!important}
+  .pad-wrap{display:flex;justify-content:center}
+  .pad{position:relative;width:300px;height:300px;background:#fff;border-radius:16px;
+    box-shadow:var(--shadow);touch-action:none}
+  .ghost{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:15rem;color:rgba(232,99,58,.16);pointer-events:none;user-select:none;line-height:1}
+  canvas{position:absolute;inset:0;border-radius:16px}
+  .gridlines{position:absolute;inset:0;pointer-events:none}
+  .progress{height:8px;background:#eee2cf;border-radius:6px;overflow:hidden;margin:6px 0 0}
+  .progress>span{display:block;height:100%;background:var(--green);width:0;transition:.3s}
+  .counter{text-align:center;color:var(--sub);font-size:.82rem;margin-top:6px}
+  .opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);
+    border-radius:14px;padding:14px;margin:8px 0;font-size:1.05rem;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--accent2)}
+  .opt.correct{background:#e3f7ec;border-color:var(--green)}
+  .opt.wrong{background:#fbe3e8;border-color:var(--red)}
+  .q-kanji{font-size:5rem;text-align:center;margin:6px 0}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:#fff;border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:1.6rem;color:var(--accent)}
+  .stat small{color:var(--sub)}
+  .listrow{display:flex;align-items:center;gap:10px;padding:8px;border-bottom:1px solid var(--line)}
+  .listrow .k{font-size:1.8rem;width:44px;text-align:center}
+  .listrow .info{flex:1;font-size:.85rem}
+  .listrow .info .m{color:var(--sub)}
+  .badge{font-size:.7rem;padding:2px 8px;border-radius:20px;color:#fff}
+  .badge.new{background:#9aa0a6}.badge.learn{background:var(--gold);color:#5a4500}
+  .badge.know{background:var(--green)}
+  textarea{width:100%;min-height:120px;border:2px solid var(--line);border-radius:12px;padding:10px;font-size:.95rem;font-family:inherit}
+  .hint{font-size:.8rem;color:var(--sub);line-height:1.5}
+  .center{text-align:center}
+  .lang-en{color:var(--sub);font-size:.8rem}
+  code{background:#f3ead9;padding:1px 5px;border-radius:5px;font-size:.85em}
+</style>
+</head>
+<body>
+<header>
+  <h1>漢字れんしゅう <span style="font-size:.8rem;font-weight:400">Kanji Trainer</span></h1>
+  <div class="sub">3年生 · おぼえて、よんで、かいて！ <span class="lang-en">Remember · Read · Write</span></div>
+</header>
 
+<div class="tabs">
+  <button class="tab active" data-view="flash">📖 よみ<small>Read · flashcards</small></button>
+  <button class="tab" data-view="write">✍️ かき<small>Write · trace</small></button>
+  <button class="tab" data-view="quiz">❓ クイズ<small>Quiz</small></button>
+  <button class="tab" data-view="list">📋 リスト<small>List · stats</small></button>
+</div>
+
+<main>
+  <section class="view active" id="flash">
+    <div class="counter" id="flashCounter"></div>
+    <div class="progress"><span id="flashBar"></span></div>
+    <div class="card" id="flashCard">
+      <div class="kanji-big" id="fKanji">漢</div>
+      <div id="fBack" class="hidden">
+        <div class="reading" id="fReading"></div>
+        <div class="meaning" id="fMeaning"></div>
+      </div>
+      <div class="row" id="fFront">
+        <button class="act b-flip" onclick="flip()">めくる Flip 🔄</button>
+      </div>
+      <div class="row hidden" id="fGrade">
+        <button class="act b-bad" onclick="grade(0)">むずかしい<br><span class="lang-en">Again</span></button>
+        <button class="act b-mid" onclick="grade(1)">あと少し<br><span class="lang-en">Hard</span></button>
+        <button class="act b-good" onclick="grade(2)">かんたん<br><span class="lang-en">Easy</span></button>
+      </div>
+    </div>
+    <p class="hint center">「むずかしい」をえらぶと、あとでもう一度でてきます。<br>
+    <span class="lang-en">Cards you find hard come back sooner (spaced repetition).</span></p>
+  </section>
+
+  <section class="view" id="write">
+    <div class="card">
+      <div class="center reading" id="wPrompt"></div>
+      <div class="center meaning" id="wMeaning"></div>
+      <div class="pad-wrap">
+        <div class="pad" id="pad">
+          <div class="ghost" id="wGhost">字</div>
+          <svg class="gridlines" viewBox="0 0 300 300">
+            <rect x="2" y="2" width="296" height="296" rx="14" fill="none" stroke="#e7ddcc" stroke-width="2"/>
+            <line x1="150" y1="0" x2="150" y2="300" stroke="#f0c9b8" stroke-width="1.5" stroke-dasharray="6 8"/>
+            <line x1="0" y1="150" x2="300" y2="150" stroke="#f0c9b8" stroke-width="1.5" stroke-dasharray="6 8"/>
+          </svg>
+          <canvas id="canvas" width="300" height="300"></canvas>
+        </div>
+      </div>
+      <div class="row">
+        <button class="act b-nav" onclick="toggleGhost()" id="ghostBtn">おてほん ON/OFF</button>
+        <button class="act b-nav" onclick="clearPad()">けす Clear</button>
+      </div>
+      <div class="row">
+        <button class="act b-nav" onclick="writePrev()">◀ まえ</button>
+        <button class="act b-accent" onclick="writeNext()">つぎ ▶</button>
+      </div>
+      <p class="hint center">よみ方を見て、おてほんをなぞって、さいごはおてほんを消して自分で書いてみよう。<br>
+      <span class="lang-en">See the reading, trace the model, then hide it and write from memory.</span></p>
+    </div>
+  </section>
+
+  <section class="view" id="quiz">
+    <div class="counter" id="quizScore"></div>
+    <div class="card" id="quizCard">
+      <div class="center hint" id="quizMode"></div>
+      <div class="q-kanji" id="qStem"></div>
+      <div id="qOpts"></div>
+    </div>
+    <div class="row"><button class="act b-accent hidden" id="qNext" onclick="nextQuiz()">つぎ Next ▶</button></div>
+  </section>
+
+  <section class="view" id="list">
+    <div class="card">
+      <div class="stat-grid">
+        <div class="stat"><b id="stTotal">0</b><small>ぜんぶ<br>Total</small></div>
+        <div class="stat"><b id="stKnow">0</b><small>おぼえた<br>Known</small></div>
+        <div class="stat"><b id="stDue">0</b><small>ふくしゅう<br>To review</small></div>
+      </div>
+    </div>
+    <div class="card">
+      <b>このリストの漢字 <span class="lang-en">Kanji in this list</span></b>
+      <div id="listBody"></div>
+    </div>
+    <div class="card">
+      <b>✏️ じぶんのリストをいれる <span class="lang-en">Paste her test list</span></b>
+      <p class="hint">1行に1つ。形式：<code>漢字, よみ, 意味</code><br>
+      <span class="lang-en">One per line:</span> <code>kanji, reading, meaning</code> — 例: <code>橋, はし／キョウ, bridge</code></p>
+      <textarea id="customList" placeholder="橋, はし／キョウ, bridge&#10;湖, みずうみ／コ, lake&#10;族, ゾク, family/tribe"></textarea>
+      <div class="row" style="justify-content:flex-start">
+        <button class="act b-good" onclick="loadCustom()">このリストでべんきょう Use this list</button>
+        <button class="act b-nav" onclick="resetDefault()">さいしょの50に戻す Reset</button>
+      </div>
+      <p class="hint" id="customMsg"></p>
+    </div>
+    <div class="card center">
+      <b>進み具合をリセット Reset progress</b><br>
+      <button class="act b-nav" style="margin-top:8px" onclick="resetProgress()">わすれる Forget all progress</button>
+      <p class="hint">進み具合はこのブラウザに保存されます。<span class="lang-en">Progress is saved in this browser only.</span></p>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------- Her test list (deduplicated) ---------- */
+const DEFAULT = [
+["詩","シ","poem / poetry"],["葉","ヨウ／は","leaf"],
+["習","シュウ／なら-う","to learn / practice"],["着","チャク／き-る","to wear / arrive"],
+["登","トウ／のぼ-る","to climb"],["特","トク","special"],
+["旅","リョ／たび","trip / travel"],["始","シ／はじ-める","to begin"],
+["進","シン／すす-む","to advance / go forward"],["動","ドウ／うご-く","to move"],
+["深","シン／ふか-い","deep"],["様","ヨウ／さま","state / Mr.・Ms."],
+["面","メン／おもて","face / surface"],["号","ゴウ","number / name"],
+["調","チョウ／しら-べる","to investigate / tune"],["漢","カン","China / Han (kanji)"],
+["由","ユ／ユウ／よし","reason / cause"],["温","オン／あたた-かい","warm"],
+["酒","シュ／さけ","sake / alcohol"],["題","ダイ","topic / title"],
+["発","ハツ","departure / to emit"],["章","ショウ","chapter / badge"],
+["平","ヘイ／たい-ら","flat / peaceful"],["決","ケツ／き-める","to decide"],
+["事","ジ／こと","thing / matter"],["落","ラク／お-ちる","to fall / drop"],
+["相","ソウ／あい","mutual / aspect"],["洋","ヨウ","ocean / Western"],
+["服","フク","clothes"],["次","ジ／つぎ","next / order"],
+["所","ショ／ところ","place"],["県","ケン","prefecture"],
+["有","ユウ／あ-る","to exist / have"],["氷","ヒョウ／こおり","ice"],
+["秒","ビョウ","second (time)"],["農","ノウ","farming"],
+["仕","シ／つか-える","to serve / work"],["局","キョク","bureau / office"],
+["球","キュウ／たま","ball / sphere"],["全","ゼン／まった-く","whole / all"],
+["遊","ユウ／あそ-ぶ","to play"],["表","ヒョウ／おもて","surface / chart / express"],
+["昔","セキ／むかし","long ago / olden days"],["世","セ／よ","world / generation"],
+["界","カイ","world / boundary"],["速","ソク／はや-い","fast / speedy"],
+["横","オウ／よこ","side / horizontal"],["積","セキ／つ-む","to pile up / accumulate"],
+["指","シ／ゆび","finger / to point"],["鉄","テツ","iron"],
+["安","アン／やす-い","cheap / safe / peaceful"],["定","テイ／さだ-める","to fix / decide"],
+["運","ウン／はこ-ぶ","to carry / luck"],["住","ジュウ／す-む","to live / reside"],
+["具","グ","tool"],["拾","シュウ／ひろ-う","to pick up"],
+["向","コウ／む-く","to face / turn toward"],["坂","ハン／さか","slope / hill"],
+["悲","ヒ／かな-しい","sad"],["緑","リョク／みどり","green"],
+["開","カイ／ひら-く","to open"],["岸","ガン／きし","shore / coast"],
+["路","ロ／じ","road / path"],["感","カン","feeling / emotion"]
+];
+
+const LS_DATA="kanji_data_v2", LS_PROG="kanji_prog_v2";
+let DATA = load(LS_DATA) || DEFAULT.slice();
+let prog = load(LS_PROG) || {};
+let step = 0;
+
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function load(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function P(k){ if(!prog[k]) prog[k]={box:0,due:0}; return prog[k]; }
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.view).classList.add('active');
+  if(t.dataset.view==='flash') nextFlash();
+  if(t.dataset.view==='write'){writeIndex=0;showWrite();}
+  if(t.dataset.view==='quiz') nextQuiz();
+  if(t.dataset.view==='list') renderList();
+});
+
+/* ----- SRS flashcards ----- */
+let cur=null;
+function pickCard(){
+  let pool = DATA.filter(d=>P(d[0]).due<=step);
+  if(pool.length===0) pool = DATA.slice();
+  pool.sort((a,b)=>P(a[0]).box-P(b[0]).box);
+  const top = pool.slice(0, Math.max(4,Math.ceil(pool.length/3)));
+  return top[Math.floor(Math.random()*top.length)];
+}
+function nextFlash(){
+  cur=pickCard();
+  document.getElementById('fKanji').textContent=cur[0];
+  document.getElementById('fReading').textContent=cur[1]||"—";
+  document.getElementById('fMeaning').textContent=cur[2]||"";
+  document.getElementById('fBack').classList.add('hidden');
+  document.getElementById('fFront').classList.remove('hidden');
+  document.getElementById('fGrade').classList.add('hidden');
+  updateFlashStats();
+}
+function flip(){
+  document.getElementById('fBack').classList.remove('hidden');
+  document.getElementById('fFront').classList.add('hidden');
+  document.getElementById('fGrade').classList.remove('hidden');
+}
+function grade(score){
+  const p=P(cur[0]); step++;
+  if(score===0){p.box=0;p.due=step+1;}
+  else if(score===1){p.due=step+3;}
+  else {p.box=Math.min(3,p.box+1);p.due=step+(p.box*5+4);}
+  save(LS_PROG,prog);
+  nextFlash();
+}
+function updateFlashStats(){
+  const total=DATA.length;
+  const known=DATA.filter(d=>P(d[0]).box>=3).length;
+  document.getElementById('flashCounter').textContent=`おぼえた Known: ${known} / ${total}`;
+  document.getElementById('flashBar').style.width=(known/total*100)+'%';
+}
+
+/* ----- Writing pad ----- */
+let writeIndex=0, ghostOn=true;
+const canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
+ctx.lineWidth=12;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#2b2b2b';
+let drawing=false;
+function pos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;
+  return {x:(t.clientX-r.left)*(canvas.width/r.width),y:(t.clientY-r.top)*(canvas.height/r.height)};}
+function start(e){drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault();}
+function move(e){if(!drawing)return;const p=pos(e);ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault();}
+function end(){drawing=false;}
+canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);
+window.addEventListener('mouseup',end);
+canvas.addEventListener('touchstart',start,{passive:false});
+canvas.addEventListener('touchmove',move,{passive:false});
+canvas.addEventListener('touchend',end);
+function clearPad(){ctx.clearRect(0,0,300,300);}
+function toggleGhost(){ghostOn=!ghostOn;document.getElementById('wGhost').style.display=ghostOn?'flex':'none';}
+function showWrite(){
+  const d=DATA[(writeIndex+DATA.length)%DATA.length];
+  document.getElementById('wGhost').textContent=d[0];
+  document.getElementById('wPrompt').textContent=d[1]||"—";
+  document.getElementById('wMeaning').textContent=d[2]||"";
+  ghostOn=true;document.getElementById('wGhost').style.display='flex';
+  clearPad();
+}
+function writeNext(){writeIndex=(writeIndex+1)%DATA.length;showWrite();}
+function writePrev(){writeIndex=(writeIndex-1+DATA.length)%DATA.length;showWrite();}
+
+/* ----- Quiz ----- */
+let qAnswer=null, qScore=0, qCount=0;
+function shuffle(a){return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);}
+function nextQuiz(){
+  document.getElementById('qNext').classList.add('hidden');
+  const mode = Math.random()<0.5?'read':'meaning';
+  const correct = DATA[Math.floor(Math.random()*DATA.length)];
+  let others = shuffle(DATA.filter(d=>d[0]!==correct[0])).slice(0,3);
+  const opts = shuffle([correct,...others]);
+  qAnswer=correct[0];
+  document.getElementById('qStem').textContent=correct[0];
+  document.getElementById('quizMode').textContent = mode==='read'
+    ? "よみ方はどれ？  What is the reading?" : "意味はどれ？  What does it mean?";
+  const box=document.getElementById('qOpts');box.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='opt';
+    b.textContent = mode==='read' ? (o[1]||'—') : (o[2]||'—');
+    b.onclick=()=>answerQuiz(b,o[0]===correct[0],correct);
+    box.appendChild(b);
+  });
+  document.getElementById('quizScore').textContent=`スコア Score: ${qScore} / ${qCount}`;
+}
+function answerQuiz(btn,ok,correct){
+  document.querySelectorAll('#qOpts .opt').forEach(b=>b.onclick=null);
+  qCount++;
+  const p=P(qAnswer); step++;
+  if(ok){btn.classList.add('correct');qScore++;p.box=Math.min(3,p.box+1);p.due=step+(p.box*5+4);}
+  else{btn.classList.add('wrong');p.box=0;p.due=step+1;}
+  save(LS_PROG,prog);
+  document.getElementById('quizScore').textContent=`スコア Score: ${qScore} / ${qCount}`;
+  document.getElementById('qNext').classList.remove('hidden');
+}
+
+/* ----- List & stats ----- */
+function renderList(){
+  document.getElementById('stTotal').textContent=DATA.length;
+  document.getElementById('stKnow').textContent=DATA.filter(d=>P(d[0]).box>=3).length;
+  document.getElementById('stDue').textContent=DATA.filter(d=>P(d[0]).box<3).length;
+  const body=document.getElementById('listBody');body.innerHTML='';
+  DATA.forEach(d=>{
+    const p=P(d[0]);
+    const cls=p.box>=3?'know':p.box>=1?'learn':'new';
+    const lbl=p.box>=3?'おぼえた':p.box>=1?'べんきょう中':'まだ';
+    const row=document.createElement('div');row.className='listrow';
+    row.innerHTML=`<div class="k">${d[0]}</div>
+      <div class="info"><div>${d[1]||'—'}</div><div class="m">${d[2]||''}</div></div>
+      <span class="badge ${cls}">${lbl}</span>`;
+    body.appendChild(row);
+  });
+}
+function loadCustom(){
+  const raw=document.getElementById('customList').value.trim();
+  if(!raw){document.getElementById('customMsg').textContent="リストが空です。Empty list.";return;}
+  const rows=raw.split(/\n+/).map(l=>{
+    const parts=l.split(/[,、，]/).map(s=>s.trim());
+    return [parts[0]||'', parts[1]||'', parts.slice(2).join(', ')||''];
+  }).filter(r=>r[0]);
+  if(!rows.length){document.getElementById('customMsg').textContent="読み取れませんでした。";return;}
+  DATA=rows;save(LS_DATA,DATA);prog={};save(LS_PROG,prog);step=0;
+  document.getElementById('customMsg').textContent=`✅ ${rows.length}個の漢字を読み込みました！ Loaded ${rows.length} kanji.`;
+  renderList();updateFlashStats();
+}
+function resetDefault(){DATA=DEFAULT.slice();save(LS_DATA,DATA);prog={};save(LS_PROG,prog);step=0;
+  renderList();updateFlashStats();document.getElementById('customMsg').textContent="テストの64に戻しました。Reset to the 64 test kanji.";}
+function resetProgress(){prog={};save(LS_PROG,prog);step=0;renderList();updateFlashStats();}
+
+/* init */
+nextFlash();showWrite();
+</script>
+</body>
+</html>
